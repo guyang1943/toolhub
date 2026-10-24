@@ -1,0 +1,707 @@
+{
+  "version": "1.0",
+  "updated": "2026-10-24",
+  "policy": "本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。",
+  "groups": [
+    {
+      "key": "design",
+      "label": "设计素材"
+    },
+    {
+      "key": "dev",
+      "label": "开发资源"
+    },
+    {
+      "key": "learning",
+      "label": "学习成长"
+    }
+  ],
+  "collections": [
+    {
+      "slug": "icons",
+      "title": "免费图标库",
+      "icon": "🎨",
+      "group": "design",
+      "desc": "做界面最常用的图标来源，全部免费可用、授权清晰",
+      "intro": "图标是界面里最容易被忽略、又最难统一的细节。自己画太慢，随便找又风格混杂。这里收的都是开源或明确免费的图标库：有的胜在数量（20 万+），有的胜在风格统一（像素级对齐），有的胜在开箱即用（直接复制组件代码）。选的时候优先看三点——授权是否允许商用、风格是否成套、能否按需引入（避免整个图标库打进包里）。",
+      "choices": [
+        "要风格统一的产品界面：优先 Lucide 或 Tabler，一套图标贯穿全站",
+        "要品牌 logo（GitHub、微信、支付宝这些）：用 Simple Icons，3000+ 品牌图标",
+        "要中文场景的图标（含国内 App）：Iconfont 最全，但注意单个图标作者可能另有要求",
+        "只要几十个图标、不想引依赖：直接复制 SVG，别加图标库"
+      ],
+      "relatedTools": [
+        "color-contrast",
+        "color-convert"
+      ],
+      "items": [
+        {
+          "name": "Lucide",
+          "url": "https://lucide.dev",
+          "source": "github.com/lucide-icons/lucide",
+          "license": "ISC",
+          "note": "Feather 的社区延续版，线条干净、风格高度统一，产品界面首选；支持按需引入，不会拖大包体积。",
+          "tags": [
+            "线性",
+            "开源"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Icones",
+          "url": "https://icones.js.org",
+          "source": "github.com/antfu/icones",
+          "license": "MIT",
+          "note": "不是图标库本身，而是 20 万+ 图标集的统一搜索入口，能一键复制 Vue/React 组件或 SVG，找图标效率最高。",
+          "tags": [
+            "聚合",
+            "搜索"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Simple Icons",
+          "url": "https://simpleicons.org",
+          "source": "github.com/simple-icons/simple-icons",
+          "license": "CC0-1.0",
+          "note": "3000+ 品牌 logo，做「用 GitHub 登录」「支持微信支付」这类按钮时不用满网找。CC0 授权，商用无忧。",
+          "tags": [
+            "品牌",
+            "logo"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Tabler Icons",
+          "url": "https://tabler.io/icons",
+          "source": "github.com/tabler/tabler-icons",
+          "license": "MIT",
+          "note": "5000+ 图标，笔画宽度和视觉重心统一，适合做后台管理系统这类图标密集的界面。",
+          "tags": [
+            "线性",
+            "成套"
+          ]
+        },
+        {
+          "name": "Iconify",
+          "url": "https://icon-sets.iconify.design",
+          "source": "github.com/iconify/iconify",
+          "license": "MIT",
+          "note": "把上百套开源图标集统一成同一套 API，能在一个项目里混用不同来源的图标而不冲突。",
+          "tags": [
+            "聚合",
+            "api"
+          ]
+        },
+        {
+          "name": "Remix Icon",
+          "url": "https://remixicon.com",
+          "source": "github.com/Remix-Design/RemixIcon",
+          "license": "Apache-2.0",
+          "note": "中文团队维护，风格中性偏圆润，中文项目里比较常见，授权宽松。",
+          "tags": [
+            "线性",
+            "中文"
+          ]
+        },
+        {
+          "name": "Heroicons",
+          "url": "https://heroicons.com",
+          "source": "github.com/tailwindlabs/heroicons",
+          "license": "MIT",
+          "note": "Tailwind 官方出品，只有 300 多个但每个都打磨过，配 Tailwind 项目零违和。",
+          "tags": [
+            "tailwind"
+          ]
+        },
+        {
+          "name": "Phosphor Icons",
+          "url": "https://phosphoricons.com",
+          "source": "github.com/phosphor-icons/core",
+          "license": "MIT",
+          "note": "同一套图为 6 种粗细（thin 到 fill），做不同层级的视觉区分时很方便。",
+          "tags": [
+            "多字重"
+          ]
+        },
+        {
+          "name": "Feather",
+          "url": "https://feathericons.com",
+          "source": "github.com/feathericons/feather",
+          "license": "MIT",
+          "note": "极简线性图标的鼻祖，风格至今不过时；但已停止更新，新项目更推荐它的延续版 Lucide。",
+          "tags": [
+            "极简",
+            "停更"
+          ]
+        },
+        {
+          "name": "Iconfont（阿里巴巴）",
+          "url": "https://www.iconfont.cn",
+          "source": "iconfont.cn",
+          "license": "各图标作者授权不同",
+          "note": "国内最大的图标平台，中文场景图标最全；但图标来自不同作者，商用前务必逐个确认授权。",
+          "tags": [
+            "中文",
+            "需核授权"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "fonts",
+      "title": "免费商用字体",
+      "icon": "🔤",
+      "group": "design",
+      "desc": "中文与西文免费商用字体，附授权类型说明",
+      "intro": "字体是最容易踩版权坑的素材——一款字体商用授权动辄上千元，用错要赔钱。好消息是国内大厂这几年陆续开源了高质量免费商用字体：阿里巴巴普惠体、小米 MiSans、华为 HarmonyOS Sans 都能免费用在商业项目里（前提是遵守各自协议，比如不得单独售卖字体本身）。西文方面，SIL OFL 授权的字体几乎等于「自由使用」，Inter 和 JetBrains Mono 是开发场景的默认选择。使用前请务必点进原站看一眼授权说明，尤其是「可商用」的具体范围。",
+      "choices": [
+        "中文正文 / 界面：阿里巴巴普惠体（字重全）或 MiSans（现代感强）",
+        "中文标题要个性：得意黑（倾斜几何感，适合活动头图）",
+        "西文界面 / 正文：Inter（可读性好，屏显优化）",
+        "代码字体：JetBrains Mono（连字、易混淆字符优化）",
+        "版权最省心：优先选 OFL 授权（OFL 允许商用、修改与再分发）"
+      ],
+      "relatedTools": [
+        "word-count",
+        "image-compress"
+      ],
+      "items": [
+        {
+          "name": "阿里巴巴普惠体",
+          "url": "https://fonts.alibabagroup.com",
+          "source": "阿里巴巴",
+          "license": "免费商用（阿里授权，不可单独售卖）",
+          "note": "字重最全的中文免费商用字体之一（Thin 到 Heavy），覆盖中文、西文与数字，正文与标题都能用，中文项目的默认选择。",
+          "tags": [
+            "中文",
+            "字重全"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "MiSans",
+          "url": "https://hyperos.mi.com/font",
+          "source": "小米",
+          "license": "免费商用（小米授权）",
+          "note": "小米系统字体，几何感强、字形现代，适合做偏年轻的产品界面和运营图；字重覆盖完整。",
+          "tags": [
+            "中文",
+            "现代"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "HarmonyOS Sans",
+          "url": "https://developer.huawei.com/consumer/cn/design/resource",
+          "source": "华为",
+          "license": "免费商用（华为授权，需遵守协议）",
+          "note": "为多设备屏显设计，小字号清晰度高，适合需要在手机/平板/大屏上统一显示的界面。",
+          "tags": [
+            "中文",
+            "多设备"
+          ]
+        },
+        {
+          "name": "得意黑 Smiley Sans",
+          "url": "https://atelier-anchor.com/typefaces/smiley-sans",
+          "source": "Atelier Anchor",
+          "license": "SIL OFL 1.1",
+          "note": "倾斜 + 几何的中文标题字，辨识度极高，做活动头图、海报标题很出彩；OFL 授权，商用与修改都允许。",
+          "tags": [
+            "标题",
+            "OFL"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "站酷系列字体",
+          "url": "https://www.zcool.com.cn/special/zcoolfonts/",
+          "source": "站酷",
+          "license": "免费商用（站酷授权，逐款确认）",
+          "note": "站酷高端黑、酷黑、快乐体等多款，风格偏设计感；不同字体的授权条款略有差异，下载页会写明使用范围。",
+          "tags": [
+            "中文",
+            "设计感"
+          ]
+        },
+        {
+          "name": "Inter",
+          "url": "https://rsms.me/inter/",
+          "source": "Rasmus Andersson",
+          "license": "SIL OFL 1.1",
+          "note": "专为屏幕设计的西文字体，小字号可读性极佳，是大量设计系统（Figma、GitHub 等）的默认界面字体。",
+          "tags": [
+            "西文",
+            "界面"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "JetBrains Mono",
+          "url": "https://www.jetbrains.com/lp/mono/",
+          "source": "JetBrains",
+          "license": "SIL OFL 1.1",
+          "note": "为写代码优化的等宽字体：字符高度更大、0/O 与 1/l/I 区分明显，长时间看代码不累。",
+          "tags": [
+            "等宽",
+            "代码"
+          ]
+        },
+        {
+          "name": "Font Squirrel",
+          "url": "https://www.fontsquirrel.com",
+          "source": "Font Squirrel",
+          "license": "各字体授权不同（含 100% Free 分区）",
+          "note": "老牌西文字体聚合站，有专门的「100% Free」筛选；下载前务必看单款字体的授权说明，不能默认整站可商用。",
+          "tags": [
+            "聚合",
+            "需核授权"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "colors",
+      "title": "配色方案与调色板",
+      "icon": "🎨",
+      "group": "design",
+      "desc": "成套配色系统、数据可视化色板与配色灵感",
+      "intro": "配色最难的不是「挑一个好看的颜色」，而是「让一组颜色在一起有秩序、可访问、能扩展」。成套的配色系统（Radix、Tailwind、Open Color）解决的是这个问题：每个色相提供 9-12 个色阶，明暗过渡经过校准，直接取用就能撑起一个界面。数据可视化则另有讲究——分类色要能区分、色盲用户也能分辨，这正是 ColorBrewer 这类学术工具的价值。",
+      "choices": [
+        "做产品界面：Radix Colors（每色 12 阶，语义清晰）或 Tailwind 调色板",
+        "做数据图表 / 地图：ColorBrewer（色盲友好、学术标准）",
+        "要现代感知均匀配色：oklch.com（亮度一致的调色体验）",
+        "找灵感：Color Hunt 与 Huemint（后者可用 AI 生成配色）"
+      ],
+      "relatedTools": [
+        "color-convert",
+        "color-contrast"
+      ],
+      "items": [
+        {
+          "name": "Radix Colors",
+          "url": "https://www.radix-ui.com/colors",
+          "source": "github.com/radix-ui/colors",
+          "license": "MIT",
+          "note": "为界面设计的 12 阶色板，每一阶都有明确用途（背景/边框/悬浮/实心/文字），还提供深色模式对应值，是产品配色最省心的方案。",
+          "tags": [
+            "色阶",
+            "深色模式"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Open Color",
+          "url": "https://yeun.github.io/open-color/",
+          "source": "github.com/yeun/open-color",
+          "license": "MIT",
+          "note": "13 个色相 × 10 个色阶，克制耐看，适合不想引入复杂体系的中小项目，直接复制 HEX 就能用。",
+          "tags": [
+            "色阶",
+            "轻量"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "ColorBrewer",
+          "url": "https://colorbrewer2.org",
+          "source": "github.com/axismaps/colorbrewer",
+          "license": "Apache-2.0",
+          "note": "数据可视化的学术标准色板，明确标注是否色盲友好、是否适合打印、适合分类还是渐变，做图表时优先考虑。",
+          "tags": [
+            "数据可视化",
+            "色盲友好"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "OKLCH Color Picker",
+          "url": "https://oklch.com",
+          "source": "github.com/evilmartians/oklch-picker",
+          "license": "MIT",
+          "note": "基于 OKLCH 色彩空间选色，调亮度时不会像 HSL 那样让颜色「变脏」，适合做现代 CSS 配色。",
+          "tags": [
+            "oklch",
+            "现代"
+          ]
+        },
+        {
+          "name": "Tailwind 调色板",
+          "url": "https://tailwindcss.com/docs/customizing-colors",
+          "source": "github.com/tailwindlabs/tailwindcss",
+          "license": "MIT",
+          "note": "22 个色相各 11 阶，命名体系（50-950）已经被大量项目接受，即使不用 Tailwind 也可以直接抄数值。",
+          "tags": [
+            "色阶",
+            "tailwind"
+          ]
+        },
+        {
+          "name": "UI Colors",
+          "url": "https://uicolors.app",
+          "source": "uicolors.app",
+          "license": "免费使用（站点闭源）",
+          "note": "输入一个品牌色，自动生成 50-900 全套色阶，还能直接看按钮/卡片的实际效果，快速定主色时很好用。",
+          "tags": [
+            "色阶生成"
+          ]
+        },
+        {
+          "name": "Color Hunt",
+          "url": "https://colorhunt.co",
+          "source": "colorhunt.co",
+          "license": "免费浏览（配色可参考）",
+          "note": "四色配色灵感库，按热门/最新排序，适合做海报、Banner 时找组合；注意它是灵感参考而非授权素材库。",
+          "tags": [
+            "灵感"
+          ]
+        },
+        {
+          "name": "Huemint",
+          "url": "https://huemint.com",
+          "source": "huemint.com",
+          "license": "免费使用（站点闭源）",
+          "note": "用 ML 生成品牌配色，可以直接套在网页布局预览里看效果，适合快速探索不同配色方向。",
+          "tags": [
+            "ai 配色",
+            "灵感"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "learning",
+      "title": "学习路线与免费课程",
+      "icon": "📘",
+      "group": "learning",
+      "desc": "从入门到进阶的免费学习资源，含路线图、公开课与中文教程",
+      "intro": "碎片化地看教程，最大的问题是不知道「下一步该学什么」。这里收的资源分两类：一类给方向（路线图、周刊、名校公开课），一类给练习（交互式课程、编程题库）。建议的用法是——先用路线图确定学习顺序，再用交互式课程把基础打牢，最后用真实项目练手。注意：这些站点的免费范围各不相同，有的是全部免费，有的是免费旁听不发证书，报名付费前先看清楚。",
+      "choices": [
+        "不知道学什么顺序：先看 roadmap.sh 的对应方向路线图",
+        "想边学边写代码：freeCodeCamp 或 Exercism（有反馈）",
+        "查具体 API 用法：MDN（Web）与菜鸟教程（中文速查）",
+        "想系统补计算机基础：CS50 或中国大学 MOOC"
+      ],
+      "relatedTools": [
+        "python-run",
+        "markdown-preview"
+      ],
+      "items": [
+        {
+          "name": "roadmap.sh",
+          "url": "https://roadmap.sh",
+          "source": "github.com/kamranahmedse/developer-roadmap",
+          "license": "开源（自定义协议，免费使用）",
+          "note": "前端、后端、DevOps、AI 等方向的技能路线图，节点极细，能清楚看到「学完这个再学什么」，避免东一榔头西一棒子。",
+          "tags": [
+            "路线图",
+            "入门"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "freeCodeCamp",
+          "url": "https://www.freecodecamp.org",
+          "source": "freeCodeCamp.org",
+          "license": "免费（内容 CC-BY-SA，非营利）",
+          "note": "完全免费的交互式编程课程，边写代码边过关，从 HTML 到机器学习都有；不收费也不发付费证书，纯粹靠捐赠运营。",
+          "tags": [
+            "交互式",
+            "免费"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "MDN Web Docs",
+          "url": "https://developer.mozilla.org/zh-CN/",
+          "source": "Mozilla",
+          "license": "免费（内容 CC-BY-SA 2.5）",
+          "note": "Web 技术的权威文档，HTML/CSS/JavaScript 的每个 API 都有示例和浏览器兼容表；查「这个属性到底怎么用」时比搜索引擎可靠。",
+          "tags": [
+            "文档",
+            "web"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "廖雪峰的官方网站",
+          "url": "https://liaoxuefeng.com",
+          "source": "廖雪峰",
+          "license": "免费阅读（版权归作者，禁止转载）",
+          "note": "中文技术教程的经典，Python、Java、Git、JavaScript 都有完整体系，讲解从原理出发、例子能直接跑，适合系统入门。",
+          "tags": [
+            "中文",
+            "教程"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "CS50",
+          "url": "https://cs50.harvard.edu/x/",
+          "source": "Harvard University",
+          "license": "免费旁听（课程内容版权归 Harvard）",
+          "note": "哈佛的计算机科学导论课，讲 C、Python、SQL 与算法，作业质量极高；免费旁听全部课程与讲义，是补基础最好的公开课之一。",
+          "tags": [
+            "公开课",
+            "计算机基础"
+          ]
+        },
+        {
+          "name": "Exercism",
+          "url": "https://exercism.org",
+          "source": "github.com/exercism/exercism",
+          "license": "开源 MIT",
+          "note": "70+ 语言的练习题库，做完可以提交给真人导师点评——这是它和普通刷题站最大的差别，能拿到具体的改进建议。",
+          "tags": [
+            "练习",
+            "导师"
+          ]
+        },
+        {
+          "name": "中国大学 MOOC",
+          "url": "https://www.icourse163.org",
+          "source": "网易有道 & 高教社",
+          "license": "免费旁听（部分课程收费发证）",
+          "note": "国内高校的正式课程，计算机、数学、设计都有；免费可以看视频和讲义，想要证书或批改作业才需要付费。",
+          "tags": [
+            "中文",
+            "高校课程"
+          ]
+        },
+        {
+          "name": "菜鸟教程",
+          "url": "https://www.runoob.com",
+          "source": "runoob.com",
+          "license": "免费阅读（版权归站方）",
+          "note": "中文速查式教程，语法、示例、在线运行三件套齐全；不适合当系统教材，但查「某个语法怎么写」非常快。",
+          "tags": [
+            "中文",
+            "速查"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "open-source",
+      "title": "值得收藏的开源项目清单",
+      "icon": "🌟",
+      "group": "dev",
+      "desc": "帮你持续发现优质开源项目的渠道，比漫无目的刷 Trending 高效",
+      "intro": "「怎么找到好项目」往往比「怎么写代码」更影响成长速度。这里收的是发现渠道而不是项目本身：有中文社区的人工精选（HelloGitHub、阮一峰周刊），有数据驱动的榜单（OSS Insight、Trendshift），也有按领域查找同类库的工具（LibHunt）。建议订阅 1-2 个精选渠道，其余按需查找——订阅太多反而会变成信息噪音。",
+      "choices": [
+        "想每周固定看一批新项目：订阅 HelloGitHub 或阮一峰周刊",
+        "要按领域找同类库并比较：用 LibHunt",
+        "想看数据驱动的趋势榜：Trendshift 或 OSS Insight",
+        "国内网络访问 GitHub 慢：用 GitCode 镜像或 Gitee 探索"
+      ],
+      "relatedTools": [
+        "devdocs",
+        "quicktype"
+      ],
+      "items": [
+        {
+          "name": "HelloGitHub",
+          "url": "https://hellogithub.com",
+          "source": "HelloGitHub 团队",
+          "license": "免费阅读",
+          "note": "中文开源项目月刊，按「入门级/工具/实战」分类，每条都有人工写的推荐理由，是目前最适合中文开发者的发现渠道。",
+          "tags": [
+            "中文",
+            "月刊"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "阮一峰的网络日志",
+          "url": "https://www.ruanyifeng.com/blog/",
+          "source": "阮一峰",
+          "license": "免费阅读（版权归作者）",
+          "note": "《科技爱好者周刊》每期精选几十条技术资讯与开源项目，中文技术圈影响力最大的个人博客之一，信息密度高。",
+          "tags": [
+            "中文",
+            "周刊"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "OSS Insight",
+          "url": "https://ossinsight.io",
+          "source": "PingCAP",
+          "license": "开源（可自部署）",
+          "note": "用 GitHub 公开数据做分析：可以查某个语言最活跃的仓库、某个项目近三年的提交趋势，判断项目是否健康比看 Star 数可靠。",
+          "tags": [
+            "数据",
+            "趋势"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Trendshift",
+          "url": "https://trendshift.io",
+          "source": "trendshift.io",
+          "license": "免费浏览",
+          "note": "GitHub 趋势榜的增强版，能按语言、时间维度筛选，还保留了历史榜单；比官方 trending 页信息更全。",
+          "tags": [
+            "趋势榜"
+          ]
+        },
+        {
+          "name": "LibHunt",
+          "url": "https://www.libhunt.com",
+          "source": "libhunt.com",
+          "license": "免费浏览",
+          "note": "按语言与领域列出开源库，并把同类项目并列对比（Star 走势、活跃度、替代方案），选依赖时很有用。",
+          "tags": [
+            "对比",
+            "选型"
+          ]
+        },
+        {
+          "name": "开源中国",
+          "url": "https://www.oschina.net",
+          "source": "OSChina",
+          "license": "免费浏览",
+          "note": "国内老牌开源社区，开源资讯与项目库都有；适合快速了解国内开源生态在做什么。",
+          "tags": [
+            "中文",
+            "社区"
+          ]
+        },
+        {
+          "name": "Gitee 开源探索",
+          "url": "https://gitee.com/explore",
+          "source": "Gitee",
+          "license": "免费浏览",
+          "note": "国内代码托管平台的探索页，能找到大量中文文档齐全的项目，国内部署与访问也更方便。",
+          "tags": [
+            "中文",
+            "国内"
+          ]
+        },
+        {
+          "name": "GitCode",
+          "url": "https://gitcode.com",
+          "source": "GitCode（CSDN）",
+          "license": "免费使用",
+          "note": "GitHub 仓库的国内镜像与加速服务，拉取热门开源项目比直连 GitHub 稳定得多，适合国内网络环境。",
+          "tags": [
+            "镜像",
+            "加速"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "templates",
+      "title": "模板与设计素材站",
+      "icon": "📑",
+      "group": "design",
+      "desc": "PPT、海报、简历、流程图模板——注意，这类资源授权最复杂",
+      "intro": "模板类资源是版权风险最高的一类：同一个站点里，免费模板和付费模板的授权范围完全不同，有的允许商用、有的仅限个人学习、有的要求署名、有的禁止二次分发。本站只做外链整理，**下载或使用前请务必在站内确认该模板的具体授权**。实用建议：商业项目优先用明确标注「可商用」的模板，或者干脆用开源字体 + 自己做版式，反而更安全。",
+      "choices": [
+        "要高质量 PPT 模板：Slidesgo（免费需署名）或吾道",
+        "要做海报/封面：稿定设计（免费额度够用）",
+        "学术论文排版：Overleaf（LaTeX 模板丰富）",
+        "画流程图/思维导图：ProcessOn（有免费额度）",
+        "⚠️ 商用前：一定看清该模板是否标注「可商用」，别默认免费=可商用"
+      ],
+      "relatedTools": [
+        "image-compress",
+        "qrcode"
+      ],
+      "items": [
+        {
+          "name": "吾道幻灯片",
+          "url": "https://www.woodo.cn",
+          "source": "woodo.cn",
+          "license": "免费+付费模板（授权见站内说明）",
+          "note": "在线 PPT 工具，模板风格偏商务，支持多人协作；免费模板可用，商用前看清单模板标注。",
+          "tags": [
+            "ppt",
+            "在线"
+          ]
+        },
+        {
+          "name": "稿定设计",
+          "url": "https://www.gaoding.com",
+          "source": "稿定",
+          "license": "免费+付费（商用需对应授权）",
+          "note": "海报、公众号封面、电商图模板最全的国内站之一，免费额度日常够用；商用请认准「可商用」标记或购买授权。",
+          "tags": [
+            "海报",
+            "中文"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Slidesgo",
+          "url": "https://slidesgo.com",
+          "source": "Slidesgo",
+          "license": "免费需署名（Premium 付费）",
+          "note": "高质量的免费 PPT / Google Slides 模板，设计感强；免费版要求在使用处署名 Slidesgo，介意的话可买 Premium。",
+          "tags": [
+            "ppt",
+            "需署名"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "优品PPT",
+          "url": "https://www.ypppt.com",
+          "source": "ypppt.com",
+          "license": "免费下载（多用于个人/学习，商用需确认）",
+          "note": "老牌中文 PPT 模板站，模板量大、分类细；注意很多模板素材来源不明，商业项目慎用。",
+          "tags": [
+            "ppt",
+            "中文"
+          ]
+        },
+        {
+          "name": "第一PPT",
+          "url": "https://www.1ppt.com",
+          "source": "1ppt.com",
+          "license": "免费下载（商用需确认素材授权）",
+          "note": "模板数量极多的中文站，适合内部汇报快速找版式；同样存在素材来源不清的问题，对外材料不要直接用。",
+          "tags": [
+            "ppt",
+            "中文"
+          ]
+        },
+        {
+          "name": "Overleaf",
+          "url": "https://www.overleaf.com",
+          "source": "Overleaf",
+          "license": "免费额度（各 LaTeX 模板授权不同）",
+          "note": "在线 LaTeX 编辑器，论文与简历模板丰富，免费版够写一般文档；模板本身的授权要看作者声明。",
+          "tags": [
+            "latex",
+            "学术"
+          ]
+        },
+        {
+          "name": "ProcessOn",
+          "url": "https://www.processon.com",
+          "source": "ProcessOn",
+          "license": "免费额度（超出需订阅）",
+          "note": "流程图、思维导图、UML 模板都有现成的，拖拽即用；免费版有文件数与协作人数限制。",
+          "tags": [
+            "流程图",
+            "模板"
+          ]
+        },
+        {
+          "name": "Canva 可画",
+          "url": "https://www.canva.cn",
+          "source": "Canva",
+          "license": "免费+付费（素材授权分层）",
+          "note": "综合设计平台，模板覆盖 PPT/海报/简历/视频；注意区分免费素材与 Pro 素材，商用授权不同。",
+          "tags": [
+            "综合",
+            "中文"
+          ]
+        }
+      ]
+    }
+  ]
+}

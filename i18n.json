@@ -1,0 +1,407 @@
+{
+  "en": {
+    "ui": {
+      "searchPlaceholder": "Search tools… (press / to focus)",
+      "heroTitle1": "Great open-source tools from GitHub,",
+      "heroTitle2": "ready to use",
+      "heroDesc": "No install, no sign-up, no terminal — pick a tool, fill in the args, get the result.",
+      "statTools": "Curated tools",
+      "statLocal": "Run locally",
+      "statCats": "Categories",
+      "statUpload": "Data uploaded",
+      "random": "🎲 Surprise me",
+      "featured": "Popular picks",
+      "featuredSub": "Most used · start here",
+      "recent": "🕘 Recent",
+      "all": "All",
+      "mostUsed": "🔥 Most used",
+      "favorites": "⭐ Favorites",
+      "badgeLocal": "🔒 Runs locally",
+      "badgeLink": "🌐 External site",
+      "taskLabel": "I want to…",
+      "emptyAll": "No tools matched. Try another keyword",
+      "emptyFav": "No favorites yet — tap ☆ on a card to add",
+      "emptyUsed": "No usage yet — run any tool and it will appear here",
+      "viewAll": "Show all tools",
+      "used": "used",
+      "times": "times",
+      "footerNote": "🔒 Local tools process everything in your browser — nothing is uploaded · 🌐 Directory tools are third-party open-source projects; all rights belong to their authors and repositories are linked on each card",
+      "about": "About",
+      "submit": "Submit a tool",
+      "themeTitle": "Toggle theme",
+      "langTitle": "Switch language",
+      "listing": "All tools",
+      "detailUsage": "How to use",
+      "detailTips": "Tips",
+      "detailScenarios": "Use cases",
+      "how": "How",
+      "result": "Result",
+      "runDefault": "Run",
+      "processing": "Working…",
+      "errorPrefix": "Error: ",
+      "sourceLabel": "Source",
+      "categoryLabel": "Category",
+      "usedLocal": "used on this device",
+      "relatedLocal": "Related tools",
+      "relatedDir": "Similar online tools",
+      "relatedDirSub": "official sites of open-source projects",
+      "notFound": "Tool not found or removed",
+      "loadFailed": "Failed to load tool: ",
+      "enOnlyNotice": "",
+      "cmpTitle": "Compare tools",
+      "cmpSelected": "selected",
+      "cmpUnit": "tool(s)",
+      "cmpGo": "Compare",
+      "cmpClear": "Clear",
+      "cmpMax": "You can compare up to 4 tools",
+      "cmpLead": "See similar tools side by side: does data leave your device, does it work offline, does it need an account, license and source.",
+      "cmpRuntime": "Runs on",
+      "cmpInBrowser": "In your browser",
+      "cmpThirdParty": "Third-party site",
+      "cmpData": "Data flow",
+      "cmpDataLocal": "Stays on your device",
+      "cmpDataThird": "Handled by third party",
+      "cmpOffline": "Works offline",
+      "cmpYes": "Yes",
+      "cmpNo": "No",
+      "cmpSignup": "Account needed",
+      "cmpNoSignup": "Not needed",
+      "cmpDepends": "Depends on provider",
+      "cmpInput": "Inputs",
+      "cmpOutput": "Main output",
+      "cmpOutputDefault": "Result / downloadable file",
+      "cmpLicense": "License",
+      "cmpSource": "Source",
+      "cmpCategory": "Category",
+      "cmpOpen": "Open",
+      "cmpVisit": "Visit site",
+      "cmpOpenTool": "Open tool",
+      "cmpPick": "Pick a tool…",
+      "cmpOptional": "(optional)",
+      "cmpTip": "Note: directory tools run on third-party sites; ToolHub only curates and recommends them."
+    },
+    "cats": {
+      "文本": "Text",
+      "图片": "Image",
+      "文档": "Docs",
+      "数据": "Data",
+      "开发": "Dev",
+      "设计": "Design",
+      "音视频": "Media",
+      "效率": "Productivity",
+      "网络": "Web"
+    },
+    "tasks": [
+      {
+        "label": "🖼️ Images",
+        "kw": "image"
+      },
+      {
+        "label": "📄 PDF & docs",
+        "kw": "pdf"
+      },
+      {
+        "label": "🔐 Encode / hash",
+        "kw": "encode"
+      },
+      {
+        "label": "🧪 Debug APIs",
+        "kw": "jwt"
+      },
+      {
+        "label": "📊 Convert data",
+        "kw": "json"
+      },
+      {
+        "label": "✍️ Write docs",
+        "kw": "markdown"
+      },
+      {
+        "label": "🎨 Design",
+        "kw": "color"
+      },
+      {
+        "label": "🧠 Run code",
+        "kw": "python"
+      }
+    ],
+    "tools": {
+      "json-format": {
+        "name": "JSON Formatter",
+        "desc": "Pretty-print or minify JSON and validate syntax"
+      },
+      "image-compress": {
+        "name": "Image Compressor",
+        "desc": "Compress JPG/PNG/WebP in your browser — images never leave your device"
+      },
+      "qrcode": {
+        "name": "QR Code Generator",
+        "desc": "Turn any text or URL into a QR code, download as PNG"
+      },
+      "base64-url": {
+        "name": "Base64 / URL Codec",
+        "desc": "Encode and decode Base64 and URL components, UTF-8 safe"
+      },
+      "timestamp": {
+        "name": "Timestamp Converter",
+        "desc": "Convert Unix timestamps to readable dates across time zones"
+      },
+      "sha256-hash": {
+        "name": "Hash Calculator",
+        "desc": "SHA-256/384/512 digests powered by WebCrypto"
+      },
+      "password-gen": {
+        "name": "Password Generator",
+        "desc": "Cryptographically secure passwords, generated on your device"
+      },
+      "uuid-gen": {
+        "name": "UUID / ULID Generator",
+        "desc": "Batch generate UUID v4, ULID and Nano IDs"
+      },
+      "color-convert": {
+        "name": "Color Converter",
+        "desc": "Convert between HEX, RGB and HSL with live preview"
+      },
+      "text-diff": {
+        "name": "Text Diff",
+        "desc": "Line-by-line diff of two texts, additions and deletions highlighted"
+      },
+      "markdown-preview": {
+        "name": "Markdown Preview",
+        "desc": "Live Markdown rendering, sanitized with DOMPurify"
+      },
+      "python-run": {
+        "name": "Python Runner",
+        "desc": "Run Python in your browser via Pyodide WebAssembly"
+      },
+      "cron-parser": {
+        "name": "Cron Parser",
+        "desc": "Explain cron expressions in plain words and list next run times"
+      },
+      "jwt-decode": {
+        "name": "JWT Decoder",
+        "desc": "Decode JWT header and payload, flag expired tokens"
+      },
+      "csv-json": {
+        "name": "CSV to JSON",
+        "desc": "Convert CSV and JSON arrays both ways, quotes handled correctly"
+      },
+      "image-resize": {
+        "name": "Image Resizer",
+        "desc": "Scale images to a max edge length, perfect for avatars and covers"
+      },
+      "py-stats": {
+        "name": "Number Stats",
+        "desc": "Mean, median, quartiles and standard deviation via Python statistics"
+      },
+      "pandas-csv": {
+        "name": "CSV Health Check",
+        "desc": "pandas-powered analysis of a CSV: shape, dtypes, missing values, summaries"
+      },
+      "regex-tester": {
+        "name": "Regex Tester",
+        "desc": "Live-highlight regex matches with groups and positions"
+      },
+      "case-convert": {
+        "name": "Case Converter",
+        "desc": "Convert between camelCase, snake_case, kebab-case and more"
+      },
+      "text-dedupe": {
+        "name": "Dedupe & Sort Lines",
+        "desc": "Remove duplicate lines, sort, drop empty lines"
+      },
+      "word-count": {
+        "name": "Word Count",
+        "desc": "Characters, CJK characters, words, paragraphs and reading time"
+      },
+      "image-base64": {
+        "name": "Image to Base64",
+        "desc": "Convert images to Data URI / Base64 and back"
+      },
+      "color-contrast": {
+        "name": "Contrast Checker",
+        "desc": "Check WCAG contrast ratio between text and background"
+      },
+      "excalidraw": {
+        "desc": "Hand-drawn style whiteboard for diagrams and sketches"
+      },
+      "tldraw": {
+        "desc": "Slick infinite canvas for quick drawing and diagrams"
+      },
+      "diagrams": {
+        "desc": "The most popular flowchart and architecture diagram editor"
+      },
+      "jspaint": {
+        "desc": "Classic MS Paint rebuilt for the web"
+      },
+      "svgedit": {
+        "desc": "In-browser SVG vector editor"
+      },
+      "threejs-editor": {
+        "desc": "Browser-based 3D scene editor built on Three.js"
+      },
+      "oklch": {
+        "desc": "Perceptually uniform color picker for modern CSS"
+      },
+      "squoosh": {
+        "desc": "Google's image compression tool with side-by-side preview"
+      },
+      "picsum": {
+        "desc": "Placeholder image service for mockups and demos"
+      },
+      "tesseract": {
+        "desc": "In-browser OCR with Tesseract.js — extract text from images"
+      },
+      "bentopdf": {
+        "desc": "Merge, split and compress PDFs entirely on your machine"
+      },
+      "stirlingpdf": {
+        "desc": "Huge open-source PDF toolbox, official demo"
+      },
+      "pdfjs": {
+        "desc": "Mozilla's official PDF viewer demo"
+      },
+      "stackedit": {
+        "desc": "Markdown editor in the browser with cloud sync"
+      },
+      "dillinger": {
+        "desc": "Minimal online Markdown editor"
+      },
+      "hackmd": {
+        "desc": "Collaborative Markdown notes, edit together in real time"
+      },
+      "affine": {
+        "desc": "Open-source Notion alternative: docs + whiteboard + tables"
+      },
+      "cyberchef": {
+        "desc": "GCHQ's Swiss army knife for encoding, encryption and data"
+      },
+      "transform": {
+        "desc": "Convert between JSON, YAML, TOML, TypeScript and many more"
+      },
+      "quicktype": {
+        "desc": "Turn JSON into typed code for TypeScript, Go, Java and more"
+      },
+      "jsonhero": {
+        "desc": "Beautiful JSON explorer that makes structure obvious"
+      },
+      "jsoncrack": {
+        "desc": "Visualize JSON as an interactive node graph"
+      },
+      "jsonplaceholder": {
+        "desc": "Free fake REST API for front-end development"
+      },
+      "httpbin": {
+        "desc": "HTTP request and response testing service"
+      },
+      "webhook": {
+        "desc": "Instant temporary URLs to inspect webhook requests"
+      },
+      "duckdb": {
+        "desc": "Run DuckDB SQL right in the browser"
+      },
+      "rawgraphs": {
+        "desc": "Drag-and-drop data visualization charts"
+      },
+      "devdocs": {
+        "desc": "All your API docs in one searchable place"
+      },
+      "prettier": {
+        "desc": "Official Prettier playground for code formatting"
+      },
+      "regexper": {
+        "desc": "Visualize regular expressions as diagrams"
+      },
+      "regex-vis": {
+        "desc": "Annotated visual explainer for regular expressions"
+      },
+      "mermaid": {
+        "desc": "Draw flowcharts and sequence diagrams from text"
+      },
+      "markmap": {
+        "desc": "Turn Markdown into an interactive mind map"
+      },
+      "plantuml": {
+        "desc": "Text-to-UML diagram server"
+      },
+      "asciiflow": {
+        "desc": "Draw ASCII diagrams for README files"
+      },
+      "explainshell": {
+        "desc": "Explains every flag of a shell command"
+      },
+      "roadmap": {
+        "desc": "Developer roadmaps for frontend, backend, AI and more"
+      },
+      "icones": {
+        "desc": "Browse and search 200k+ open-source icons"
+      },
+      "lucide": {
+        "desc": "Clean, consistent open-source icon set"
+      },
+      "simpleicons": {
+        "desc": "3000+ brand SVG icons including major apps"
+      },
+      "quickref": {
+        "desc": "Cheat sheets for languages and CLI tools"
+      },
+      "carbon": {
+        "desc": "Turn code into beautiful shareable images"
+      },
+      "audiomass": {
+        "desc": "Audio editor and waveform tool in the browser"
+      },
+      "pairdrop": {
+        "desc": "Peer-to-peer file transfer between nearby devices"
+      },
+      "localsend": {
+        "desc": "Cross-platform LAN file transfer, AirDrop alternative"
+      },
+      "filepizza": {
+        "desc": "Browser-to-browser file transfer with expiring links"
+      },
+      "privatebin": {
+        "desc": "Encrypted pastebin with burn-after-read"
+      },
+      "bitwarden-gen": {
+        "desc": "Free password generator from Bitwarden"
+      },
+      "monkeytype": {
+        "desc": "Minimalist typing speed test and practice"
+      },
+      "exercism": {
+        "desc": "Free coding exercises with mentoring in 70+ languages"
+      },
+      "librespeed": {
+        "desc": "Open-source speed test without tracking"
+      },
+      "flexbox-froggy": {
+        "desc": "Learn CSS Flexbox by playing a game"
+      },
+      "layoutit": {
+        "desc": "Visual CSS Grid layout generator"
+      },
+      "svgomg": {
+        "desc": "GUI for SVGO to optimize and compress SVGs"
+      },
+      "placehold": {
+        "desc": "Generate placeholder images from a URL"
+      },
+      "dicebear": {
+        "desc": "Generate avatars without signing up"
+      },
+      "wisemapping": {
+        "desc": "Online mind mapping with keyboard shortcuts"
+      },
+      "colorbrewer": {
+        "desc": "Color-blind-safe palettes for charts and maps"
+      },
+      "simplytranslate": {
+        "desc": "Privacy-friendly translation front-end"
+      },
+      "vert": {
+        "desc": "Open-source file format converter"
+      }
+    }
+  }
+}

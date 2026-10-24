@@ -1,0 +1,724 @@
+{
+  "en": {
+    "json-format": {
+      "usage": "Paste JSON, then pretty-print it or minify it. Pretty-print aligns indentation for reading; minify strips all whitespace to shrink payload. Invalid input returns the exact parser error.",
+      "tips": [
+        "Minified JSON is 30%+ smaller — good for request bodies and config files",
+        "Paste an API response here to see its structure at a glance",
+        "Everything runs on your device, so secrets in configs are safe"
+      ],
+      "scenarios": [
+        {
+          "scene": "An API returned a wall of unformatted JSON",
+          "how": "Paste → choose Pretty → copy",
+          "result": "Readable indented structure in one click"
+        },
+        {
+          "scene": "Shrink a config before shipping",
+          "how": "Paste → choose Minify",
+          "result": "All whitespace removed, 30%+ smaller"
+        },
+        {
+          "scene": "Got 'Unexpected token' in a build",
+          "how": "Paste and read the error offset",
+          "result": "Pinpoints the offending character"
+        }
+      ],
+      "runLabel": "Format",
+      "labels": {
+        "json": "JSON input",
+        "mode": "Operation",
+        "indent": "Indent width"
+      }
+    },
+    "image-compress": {
+      "usage": "Pick an image and compress it locally in your browser. Choose JPEG/WebP/PNG and a quality level; the result shows the size reduction and can be downloaded directly.",
+      "tips": [
+        "Quality 70-80 is usually visually lossless while halving the file size",
+        "JPEG loses transparency — keep PNG output if you need a transparent background",
+        "Images never leave your device; safe for screenshots with sensitive info"
+      ],
+      "scenarios": [
+        {
+          "scene": "Screenshot too big to send in chat",
+          "how": "Pick image → quality 70 → download",
+          "result": "Half the size, text still crisp"
+        },
+        {
+          "scene": "Slow first-paint images on a site",
+          "how": "Choose WebP at quality 75",
+          "result": "Smaller than JPEG at similar quality"
+        },
+        {
+          "scene": "Screenshot containing customer data",
+          "how": "Compress and download",
+          "result": "Image never uploaded anywhere"
+        }
+      ],
+      "runLabel": "Compress",
+      "labels": {
+        "file": "Choose image",
+        "quality": "Quality (%)",
+        "format": "Output format"
+      }
+    },
+    "qrcode": {
+      "usage": "Turn any URL or text into a QR code and download it as PNG. Generation happens fully in your browser — the content is never sent anywhere.",
+      "tips": [
+        "Longer URLs create denser codes — use a short link if printing small",
+        "You can put a logo in the center without breaking scanning (level M)",
+        "Generation is local; no link or text is ever transmitted"
+      ],
+      "scenarios": [
+        {
+          "scene": "Put a QR code on a printed poster",
+          "how": "Paste link → 512px → download PNG",
+          "result": "High-resolution image for print"
+        },
+        {
+          "scene": "On-stage slide for people to scan",
+          "how": "Paste group link → 256px",
+          "result": "Readable from a distance"
+        },
+        {
+          "scene": "Share WiFi without typing the password",
+          "how": "Enter WIFI:T:WPA;S:name;P:pass;;",
+          "result": "Guests scan and join automatically"
+        }
+      ],
+      "runLabel": "Generate",
+      "labels": {
+        "text": "Content (URL or text)",
+        "size": "Size (px)"
+      }
+    },
+    "base64-url": {
+      "usage": "Encode or decode Base64 and URL components. Unlike native btoa, this handles UTF-8 so Chinese and emoji work correctly.",
+      "tips": [
+        "Use this tool for CJK text — native btoa() throws on non-Latin characters",
+        "URL-encode link parameters containing &, ? or non-ASCII",
+        "Base64 is encoding, not encryption — never store passwords this way"
+      ],
+      "scenarios": [
+        {
+          "scene": "Chinese text gets mangled when passing through an API",
+          "how": "Enter text → Base64 encode",
+          "result": "Text survives transport intact"
+        },
+        {
+          "scene": "A link with Chinese parameters won't open",
+          "how": "Paste the parameter → URL encode",
+          "result": "A safe string you can append to a URL"
+        },
+        {
+          "scene": "Received a Base64 blob and can't read it",
+          "how": "Paste → Base64 decode",
+          "result": "Original text restored, CJK included"
+        }
+      ],
+      "runLabel": "Run",
+      "labels": {
+        "text": "Text",
+        "op": "Operation"
+      }
+    },
+    "timestamp": {
+      "usage": "Convert Unix timestamps (seconds or milliseconds) to human-readable time in multiple time zones. Leave the field empty to get the current time.",
+      "tips": [
+        "Backend logs usually carry 10-digit (seconds) or 13-digit (milliseconds) values; both are auto-detected",
+        "To debug a timeout, compare the timestamps from both ends",
+        "Leave empty and convert to grab the current timestamp"
+      ],
+      "scenarios": [
+        {
+          "scene": "A log line shows 1761273600 and you don't know the date",
+          "how": "Paste → convert",
+          "result": "Local date, time and weekday shown"
+        },
+        {
+          "scene": "Coordinating time with a colleague abroad",
+          "how": "Switch the time zone to UTC / New York",
+          "result": "The same instant in several zones"
+        },
+        {
+          "scene": "Need a timestamp for test fixtures",
+          "how": "Leave empty → convert",
+          "result": "Seconds, milliseconds and ISO 8601"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "value": "Unix timestamp (or empty for now)",
+        "tz": "Time zone"
+      }
+    },
+    "sha256-hash": {
+      "usage": "Compute SHA-256/384/512 digests of any text using the browser's WebCrypto implementation. Inputs are never transmitted.",
+      "tips": [
+        "Verify downloads by comparing the digest with the publisher's checksum",
+        "SHA-1 is broken for security purposes; keep it only for legacy compatibility",
+        "Hashing is one-way — the original text cannot be recovered"
+      ],
+      "scenarios": [
+        {
+          "scene": "Worried a downloaded installer was tampered with",
+          "how": "Compute the digest and compare with the vendor's",
+          "result": "Matching values confirm integrity"
+        },
+        {
+          "scene": "Need a content fingerprint for de-duplication",
+          "how": "Enter text → SHA-256",
+          "result": "Identical content always hashes identically"
+        },
+        {
+          "scene": "Check whether two texts are byte-identical",
+          "how": "Hash both and compare",
+          "result": "Equal hashes mean equal content"
+        }
+      ],
+      "runLabel": "Hash",
+      "labels": {
+        "text": "Text to hash",
+        "algo": "Algorithm"
+      }
+    },
+    "password-gen": {
+      "usage": "Generate cryptographically secure passwords with your chosen length, character set and quantity. Uses the browser's crypto RNG — nothing is sent over the network.",
+      "tips": [
+        "For important accounts use 16+ characters with the full character set",
+        "For PINs, 6-8 digits is the practical choice",
+        "Powered by crypto.getRandomValues — no network, no logging"
+      ],
+      "scenarios": [
+        {
+          "scene": "Signing up for a new service",
+          "how": "Length 20 + full set → generate",
+          "result": "A very strong password created offline"
+        },
+        {
+          "scene": "Onboarding 5 team accounts",
+          "how": "Quantity 5 → generate",
+          "result": "Five distinct random passwords"
+        },
+        {
+          "scene": "Setting a phone PIN",
+          "how": "Digits only, length 6",
+          "result": "Random PIN instead of a birthday"
+        }
+      ],
+      "runLabel": "Generate",
+      "labels": {
+        "length": "Length (8-64)",
+        "charset": "Character set",
+        "count": "How many (1-10)"
+      }
+    },
+    "uuid-gen": {
+      "usage": "Batch-generate UUID v4, ULID (time-ordered) or Nano ID (21 chars). All values come from the browser's secure random source.",
+      "tips": [
+        "For database primary keys choose ULID — time-ordered and index-friendly",
+        "For public short links use Nano ID (shorter, URL-safe)",
+        "ULIDs generated within the same millisecond are kept strictly increasing"
+      ],
+      "scenarios": [
+        {
+          "scene": "Need a collision-free table primary key",
+          "how": "Choose ULID → generate a batch",
+          "result": "Unique and time-sortable IDs"
+        },
+        {
+          "scene": "Building short share links",
+          "how": "Choose Nano ID",
+          "result": "21-character IDs that are easy to share"
+        },
+        {
+          "scene": "Fake IDs for API tests",
+          "how": "Count 20 + UUID v4",
+          "result": "20 random IDs ready to paste into fixtures"
+        }
+      ],
+      "runLabel": "Generate",
+      "labels": {
+        "version": "Type",
+        "count": "How many (1-20)"
+      }
+    },
+    "color-convert": {
+      "usage": "Convert colors between HEX, RGB and HSL with a live swatch preview, plus a ready-to-paste CSS custom property.",
+      "tips": [
+        "Pick a color from a design file and convert it into CSS-ready values",
+        "For readable text keep a lightness difference above 40% in HSL",
+        "Copy the CSS variable line straight into :root"
+      ],
+      "scenarios": [
+        {
+          "scene": "Designer sent RGB, codebase needs HEX",
+          "how": "Paste rgb(59,130,246) → convert",
+          "result": "You get #3B82F6 and a CSS variable"
+        },
+        {
+          "scene": "Want a softer shade of the same hue",
+          "how": "Convert to HSL, adjust L/S",
+          "result": "HSL is far more intuitive than RGB"
+        },
+        {
+          "scene": "Standardize the brand color",
+          "how": "Copy the CSS variable row",
+          "result": "Drop into :root and use everywhere"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "color": "Color value (HEX / RGB / HSL)"
+      }
+    },
+    "text-diff": {
+      "usage": "Compare two texts line by line. Additions are highlighted green, deletions red. Good for config changes, code snippets and logs.",
+      "tips": [
+        "Green = added lines, red = removed lines",
+        "Different line endings (CRLF vs LF) can make every line look changed",
+        "Works up to 2000 lines per side; split larger inputs"
+      ],
+      "scenarios": [
+        {
+          "scene": "Confirm exactly which lines changed in a config",
+          "how": "Paste before/after → compare",
+          "result": "Changed lines highlighted instantly"
+        },
+        {
+          "scene": "A colleague says 'I only changed a little'",
+          "how": "Paste both versions",
+          "result": "The real diff is visible"
+        },
+        {
+          "scene": "Two environments behave differently",
+          "how": "Compare the two log outputs",
+          "result": "The inconsistent lines stand out"
+        }
+      ],
+      "runLabel": "Compare",
+      "labels": {
+        "a": "Original text (A)",
+        "b": "New text (B)"
+      }
+    },
+    "markdown-preview": {
+      "usage": "Paste Markdown to render it live. Output is sanitized with DOMPurify, so even malicious HTML embedded in the source will not execute.",
+      "tips": [
+        "Preview README or issue drafts before publishing",
+        "DOMPurify strips script tags and event handlers from the output",
+        "Supports common GitHub Flavored Markdown: tables, code blocks, strikethrough"
+      ],
+      "scenarios": [
+        {
+          "scene": "Unsure how a README table will render",
+          "how": "Paste Markdown → render",
+          "result": "See tables and code blocks before committing"
+        },
+        {
+          "scene": "Sending formatted notes to a colleague",
+          "how": "Preview to check heading levels",
+          "result": "No skipped headings or broken lists"
+        },
+        {
+          "scene": "Markdown came from an untrusted source",
+          "how": "Render and inspect",
+          "result": "Scripts and handlers are stripped"
+        }
+      ],
+      "runLabel": "Render",
+      "labels": {
+        "md": "Markdown source"
+      }
+    },
+    "python-run": {
+      "usage": "Paste Python and run it in your browser via Pyodide (WebAssembly). The first run downloads a ~10MB runtime (about 10-20s); later runs in the same session start instantly. print() output appears below.",
+      "tips": [
+        "First run downloads a ~10MB WASM runtime; afterwards it is instant",
+        "The sandbox has no network and no filesystem — that is the safety boundary",
+        "For extra libraries: await micropip.install('numpy') then import numpy"
+      ],
+      "scenarios": [
+        {
+          "scene": "Quickly verify a piece of Python logic",
+          "how": "Paste code → run",
+          "result": "No local Python install needed"
+        },
+        {
+          "scene": "On a machine where you can't install anything",
+          "how": "Open the page → paste code",
+          "result": "Runs in the browser, machine untouched"
+        },
+        {
+          "scene": "Teaching Python basics",
+          "how": "Edit code → run",
+          "result": "Instant print output for demos"
+        }
+      ],
+      "runLabel": "▶ Run",
+      "labels": {
+        "code": "Python code"
+      }
+    },
+    "cron-parser": {
+      "usage": "Enter a 5-field cron expression. The tool explains it in plain language and lists the next runs. Supports *, numbers, ranges (1-5) and steps (*/15).",
+      "tips": [
+        "Common patterns: 0 9 * * 1-5 = weekdays at 9am; */5 * * * * = every 5 minutes",
+        "Both 0 and 7 mean Sunday in the weekday field",
+        "Server time zones may differ from yours — verify before trusting the output"
+      ],
+      "scenarios": [
+        {
+          "scene": "Inherited a scheduled job you can't read",
+          "how": "Paste the expression",
+          "result": "Plain-language explanation instantly"
+        },
+        {
+          "scene": "Your cron job never ran",
+          "how": "Paste and check the next run times",
+          "result": "Wrong schedule becomes obvious"
+        },
+        {
+          "scene": "Confirm weekends are really skipped",
+          "how": "Paste 0 9 * * 1-5",
+          "result": "Only weekdays appear in the list"
+        }
+      ],
+      "runLabel": "Parse",
+      "labels": {
+        "expr": "Cron expression (5 fields)",
+        "count": "How many next runs"
+      }
+    },
+    "jwt-decode": {
+      "usage": "Paste a JWT to decode its header and payload. This is Base64 decoding only — signatures are NOT verified, so decoded output must not be trusted for authorization.",
+      "tips": [
+        "Check exp (expiry) and iat (issued at) when debugging 401s",
+        "Never paste production tokens into sites you don't trust — this one is fully local",
+        "Signature verification must happen server-side"
+      ],
+      "scenarios": [
+        {
+          "scene": "API keeps returning 401",
+          "how": "Paste the token, read the exp note",
+          "result": "Shows 'expired' or days remaining"
+        },
+        {
+          "scene": "Find out which scopes a token carries",
+          "how": "Paste and read the payload",
+          "result": "Scopes and roles in one view"
+        },
+        {
+          "scene": "Staging and production tokens behave differently",
+          "how": "Decode both and compare",
+          "result": "Spot mismatched iss/aud quickly"
+        }
+      ],
+      "runLabel": "Decode",
+      "labels": {
+        "token": "JWT token"
+      }
+    },
+    "csv-json": {
+      "usage": "Convert CSV to a JSON array or JSON back to CSV. The parser handles quoted fields containing commas and newlines, and treats the first row as the header.",
+      "tips": [
+        "Excel exports usually have a header row; it becomes the JSON keys",
+        "Fields containing commas must be quoted — this parser handles it",
+        "Garbled Chinese usually means the file isn't UTF-8"
+      ],
+      "scenarios": [
+        {
+          "scene": "Ops sent an Excel sheet, you need API data",
+          "how": "Save as CSV → paste → CSV to JSON",
+          "result": "A ready-to-use JSON array"
+        },
+        {
+          "scene": "Analyze an API response in Excel",
+          "how": "Paste the JSON array → JSON to CSV",
+          "result": "Paste into Excel and it splits into columns"
+        },
+        {
+          "scene": "A CSV column with commas breaks imports",
+          "how": "Convert to JSON first to inspect",
+          "result": "Find the unquoted field causing the shift"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "input": "Input (CSV or JSON)",
+        "dir": "Direction"
+      }
+    },
+    "image-resize": {
+      "usage": "Upload an image and set a maximum edge length. The tool scales proportionally (never upscales, never distorts) and lets you download the result.",
+      "tips": [
+        "Avatars are commonly 512x512; social covers 1200x630",
+        "Only the longest edge is constrained — aspect ratio is preserved",
+        "PNG to JPEG drops transparency; keep PNG if you need it"
+      ],
+      "scenarios": [
+        {
+          "scene": "Profile upload requires 512x512",
+          "how": "Pick image → 512 → download",
+          "result": "Compliant size with no distortion"
+        },
+        {
+          "scene": "Phone photo too large to upload",
+          "how": "Choose 1200 and JPEG output",
+          "result": "Both dimensions and file size reduced"
+        },
+        {
+          "scene": "Need a 1200-wide article cover",
+          "how": "Choose 1200 + JPEG",
+          "result": "Matches platform specs, no cropping"
+        }
+      ],
+      "runLabel": "Resize",
+      "labels": {
+        "file": "Choose image",
+        "max": "Max edge length",
+        "format": "Output format"
+      }
+    },
+    "py-stats": {
+      "usage": "Paste a list of numbers (comma, space or newline separated) to compute count, mean, median, standard deviation, quartiles and range using Python's statistics module.",
+      "tips": [
+        "The first run loads the Python runtime (10-20s); afterwards it is instant",
+        "Commas, spaces, tabs and newlines can be mixed — paste straight from Excel or logs",
+        "Quartiles use linear interpolation, matching Excel's QUARTILE.INC"
+      ],
+      "scenarios": [
+        {
+          "scene": "Get a feel for a batch of numbers",
+          "how": "Paste numbers → compute",
+          "result": "Mean, median and quartiles at once"
+        },
+        {
+          "scene": "Check for outliers",
+          "how": "Compare min/max with the standard deviation",
+          "result": "Outliers become obvious"
+        },
+        {
+          "scene": "Skip opening a spreadsheet just for an average",
+          "how": "Paste → copy the result",
+          "result": "No spreadsheet needed"
+        }
+      ],
+      "runLabel": "Compute stats",
+      "labels": {
+        "data": "Number list"
+      }
+    },
+    "pandas-csv": {
+      "usage": "Paste a CSV (first row as header) to get a full data health check: rows, columns, dtypes, missing values, unique counts and numeric summaries — computed with pandas in your browser.",
+      "tips": [
+        "The first run downloads pandas (20-40s); later runs are faster",
+        "Garbled Chinese means the CSV isn't UTF-8 — re-save as CSV UTF-8",
+        "A numeric column typed as object usually contains blanks, currency symbols or text"
+      ],
+      "scenarios": [
+        {
+          "scene": "A partner sent a CSV and you need to understand it",
+          "how": "Paste → health check",
+          "result": "Shape, missing values and dtypes at a glance"
+        },
+        {
+          "scene": "Suspect lots of empty cells",
+          "how": "Check the missing counts",
+          "result": "Which columns are sparse is obvious"
+        },
+        {
+          "scene": "Confirm a column is safe to compute on",
+          "how": "Inspect dtype and summary",
+          "result": "Spot dirty columns before you calculate"
+        }
+      ],
+      "runLabel": "Analyze",
+      "labels": {
+        "csv": "CSV content (header in first row)"
+      }
+    },
+    "regex-tester": {
+      "usage": "Type a regular expression and some text to see every match highlighted, with groups and positions listed. Toggle flags for global, case-insensitive, multiline and dotall modes.",
+      "tips": [
+        "Build the pattern incrementally instead of writing it all at once",
+        "Keep the g flag consistent between testing and production code",
+        "Greedy .* often eats too much — switch to .*? for non-greedy"
+      ],
+      "scenarios": [
+        {
+          "scene": "Extract IP addresses from a log",
+          "how": "Enter \\b\\d{1,3}(\\.\\d{1,3}){3}\\b then paste the log",
+          "result": "Every IP highlighted with a match count"
+        },
+        {
+          "scene": "Validate a phone or email rule",
+          "how": "Paste the pattern, test valid and invalid samples",
+          "result": "See instantly if the rule is too strict or loose"
+        },
+        {
+          "scene": "Estimate impact before a replace",
+          "how": "Check the match count and highlighted ranges",
+          "result": "Avoid replacing things you shouldn't"
+        }
+      ],
+      "runLabel": "Test matches",
+      "labels": {
+        "pattern": "Regular expression (no slashes)",
+        "flags": "Flags",
+        "text": "Test text"
+      }
+    },
+    "case-convert": {
+      "usage": "Convert identifiers between camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE and spaced words. Word splitting is detected automatically.",
+      "tips": [
+        "snake_case for database columns, camelCase for JS variables, kebab-case for URLs",
+        "Camel boundaries are split automatically, e.g. httpResponseCode",
+        "Double-check names with digits — v2Api can be ambiguous"
+      ],
+      "scenarios": [
+        {
+          "scene": "Backend returns snake_case, frontend wants camelCase",
+          "how": "Paste the field names, choose camelCase",
+          "result": "Ready-to-paste identifiers"
+        },
+        {
+          "scene": "Standardize column naming for a new table",
+          "how": "Paste names, choose snake_case",
+          "result": "Consistent naming across the schema"
+        },
+        {
+          "scene": "Naming CSS classes",
+          "how": "Choose kebab-case",
+          "result": "Matches CSS conventions"
+        }
+      ],
+      "runLabel": "Convert all styles",
+      "labels": {
+        "input": "Original names (one per line)"
+      }
+    },
+    "text-dedupe": {
+      "usage": "Remove duplicate lines, sort (ascending, descending or by length), and drop empty lines. Handy for cleaning name lists, logs and keywords.",
+      "tips": [
+        "Enable case-insensitive mode to merge Alice and alice",
+        "Dedupe before sorting is less error-prone than eyeballing a sorted list",
+        "Choose 'keep original order' to dedupe without sorting"
+      ],
+      "scenarios": [
+        {
+          "scene": "A keyword list has lots of duplicates",
+          "how": "Paste → dedupe → sort",
+          "result": "A clean list of unique values"
+        },
+        {
+          "scene": "One error floods the log",
+          "how": "Paste the error lines → dedupe",
+          "result": "See how many distinct errors there are"
+        },
+        {
+          "scene": "Group tags by length",
+          "how": "Choose sort by length",
+          "result": "Short and long tags grouped automatically"
+        }
+      ],
+      "runLabel": "Process",
+      "labels": {
+        "text": "Text (one item per line)",
+        "ignoreCase": "Ignore case and whitespace",
+        "sort": "Sort order",
+        "dropEmpty": "Drop empty lines"
+      }
+    },
+    "word-count": {
+      "usage": "Count characters (with and without spaces), CJK characters, English words, punctuation, lines and paragraphs, plus an estimated reading time.",
+      "tips": [
+        "CJK count is per character, English by whitespace — matching most platform rules",
+        "Reading time assumes 400 CJK characters per minute",
+        "Punctuation count helps spot mixed full-width and half-width symbols"
+      ],
+      "scenarios": [
+        {
+          "scene": "A platform limits articles to 800 characters",
+          "how": "Paste the draft, read the CJK count",
+          "result": "Know instantly whether you're over the limit"
+        },
+        {
+          "scene": "An abstract must be under 300 characters",
+          "how": "Paste and check characters without spaces",
+          "result": "Matches academic submission rules"
+        },
+        {
+          "scene": "Estimate the length of a talk",
+          "how": "Check the reading time",
+          "result": "Plan a 3-minute script realistically"
+        }
+      ],
+      "runLabel": "Count",
+      "labels": {
+        "text": "Text to analyse"
+      }
+    },
+    "image-base64": {
+      "usage": "Convert an image to Base64 or a full Data URI for inlining in HTML, CSS or JSON. Reverse mode restores an image from a pasted Data URI.",
+      "tips": [
+        "Only inline small icons (a few KB) — Base64 adds ~33% to the size",
+        "Data URI format is data:image/png;base64,xxx; use it inside url() in CSS",
+        "Conversion happens locally; the image is never uploaded"
+      ],
+      "scenarios": [
+        {
+          "scene": "An email template logo must render inline",
+          "how": "Upload a small image → copy the Data URI",
+          "result": "Displays without loading external files"
+        },
+        {
+          "scene": "A few-KB icon is needed in CSS",
+          "how": "Upload → copy Data URI into background-image",
+          "result": "One less HTTP request"
+        },
+        {
+          "scene": "An API returned an opaque Base64 image",
+          "how": "Paste the Data URI → download",
+          "result": "Saved as a viewable image file"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "file": "Choose image",
+        "dataUri": "Or paste a Data URI / Base64",
+        "mode": "Operation"
+      }
+    },
+    "color-contrast": {
+      "usage": "Enter text and background colors to compute the WCAG contrast ratio and see whether it passes AA (4.5:1) and AAA (7:1) for body text, plus AA for large text (3:1).",
+      "tips": [
+        "Body text needs 4.5:1; large text (18pt or 14pt bold) can go down to 3:1",
+        "Pure black on white is 21:1 but harsh for long reading — dark grey reads better",
+        "Always check contrast for buttons, not just visual harmony"
+      ],
+      "scenarios": [
+        {
+          "scene": "Grey caption text looks washed out",
+          "how": "Enter both colors",
+          "result": "See whether it passes and by how much it misses"
+        },
+        {
+          "scene": "Accessibility self-check before launch",
+          "how": "Test each main color pair",
+          "result": "Avoid failing an a11y audit"
+        },
+        {
+          "scene": "Choosing button label color",
+          "how": "Test white and black labels",
+          "result": "Pick the higher-contrast option"
+        }
+      ],
+      "runLabel": "Check contrast",
+      "labels": {
+        "fg": "Text color",
+        "bg": "Background color"
+      }
+    }
+  }
+}

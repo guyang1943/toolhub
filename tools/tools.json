@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "categories": ["文本", "图片", "文档", "数据", "开发", "设计", "音视频", "效率", "网络"],
+  "featured": ["json-format", "image-compress", "squoosh", "cyberchef", "bentopdf", "pairdrop", "devdocs", "python-run"],
+  "tools": [
+    { "id": "json-format", "name": "JSON 格式化", "desc": "美化/压缩 JSON，自动校验语法错误", "category": "文本", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["json", "格式化", "校验"], "hot": true },
+    { "id": "image-compress", "name": "图片压缩", "desc": "在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器", "category": "图片", "source": "内置实现 (Canvas API)", "license": "MIT", "runtime": "browser", "tags": ["图片", "压缩", "canvas"], "hot": true },
+    { "id": "qrcode", "name": "二维码生成", "desc": "把文本/网址变成二维码，可下载 PNG", "category": "开发", "source": "基于开源 qrcodejs (MIT)", "license": "MIT", "runtime": "browser", "tags": ["二维码", "qr"], "hot": true },
+    { "id": "base64-url", "name": "Base64 / URL 编解码", "desc": "Base64 与 URL 编码互转，支持中文", "category": "文本", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["base64", "url", "编码"] },
+    { "id": "timestamp", "name": "时间戳转换", "desc": "Unix 时间戳与可读时间互转，多时区支持", "category": "效率", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["时间戳", "unix", "时区"] },
+    { "id": "sha256-hash", "name": "哈希计算", "desc": "SHA-256/384/512 哈希，基于 WebCrypto 安全实现", "category": "开发", "source": "内置实现 (WebCrypto)", "license": "MIT", "runtime": "browser", "tags": ["hash", "sha256", "校验"] },
+    { "id": "password-gen", "name": "强密码生成", "desc": "crypto 安全随机源生成强密码，本机生成不上传", "category": "效率", "source": "内置实现 (WebCrypto)", "license": "MIT", "runtime": "browser", "tags": ["密码", "随机"], "hot": true },
+    { "id": "uuid-gen", "name": "UUID / ULID 生成", "desc": "UUID v4、ULID、Nano ID 批量生成，可作数据库主键", "category": "开发", "source": "内置实现 (WebCrypto)", "license": "MIT", "runtime": "browser", "tags": ["uuid", "ulid", "id"] },
+    { "id": "color-convert", "name": "颜色格式转换", "desc": "HEX / RGB / HSL 互转，附色块预览与 CSS 变量", "category": "设计", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["颜色", "hex", "rgb", "css"] },
+    { "id": "text-diff", "name": "文本对比", "desc": "两段文本行级差异对比，新增/删除一目了然", "category": "文本", "source": "内置实现 (LCS 算法)", "license": "MIT", "runtime": "browser", "tags": ["diff", "对比"], "hot": true },
+    { "id": "markdown-preview", "name": "Markdown 预览", "desc": "实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS", "category": "文本", "source": "基于开源 marked (MIT) + DOMPurify (Apache-2.0)", "license": "MIT", "runtime": "browser", "tags": ["markdown", "预览"] },
+    { "id": "python-run", "name": "Python 运行器", "desc": "浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机", "category": "开发", "source": "基于开源 Pyodide (MPL-2.0)", "license": "MPL-2.0", "runtime": "pyodide", "tags": ["python", "沙箱", "wasm"], "hot": true },
+    { "id": "cron-parser", "name": "Cron 解析", "desc": "用人话解释 cron 表达式，并算出接下来 5 次执行时间", "category": "开发", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["cron", "定时任务", "运维"], "hot": true },
+    { "id": "jwt-decode", "name": "JWT 解码", "desc": "解码 JWT 的 Header/Payload，标注过期时间，本地不上传", "category": "开发", "source": "内置实现 (Base64URL)", "license": "MIT", "runtime": "browser", "tags": ["jwt", "token", "调试"], "hot": true },
+    { "id": "csv-json", "name": "CSV ↔ JSON", "desc": "CSV 与 JSON 数组互转，正确处理引号与换行", "category": "数据", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["csv", "json", "表格"] },
+    { "id": "image-resize", "name": "图片缩放", "desc": "按最大边长等比缩放图片，生成头像/封面尺寸", "category": "图片", "source": "内置实现 (Canvas API)", "license": "MIT", "runtime": "browser", "tags": ["图片", "缩放", "尺寸"] },
+    { "id": "py-stats", "name": "数值统计", "desc": "用 Python statistics 计算均值/中位数/标准差/四分位", "category": "数据", "source": "Python 标准库 statistics (Pyodide)", "license": "PSF-2.0", "runtime": "pyodide", "tags": ["统计", "python", "数据"], "hot": true },
+    { "id": "pandas-csv", "name": "CSV 数据体检", "desc": "pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要", "category": "数据", "source": "基于 pandas (BSD-3-Clause) + Pyodide", "license": "BSD-3-Clause", "runtime": "pyodide", "tags": ["csv", "pandas", "数据分析"], "hot": true },
+    { "id": "regex-tester", "name": "正则测试器", "desc": "实时高亮正则匹配结果，列出分组与位置", "category": "开发", "source": "内置实现 (RegExp)", "license": "MIT", "runtime": "browser", "tags": ["正则", "regex", "调试"], "hot": true },
+    { "id": "case-convert", "name": "命名风格转换", "desc": "camelCase / snake_case / kebab-case 等命名互转", "category": "开发", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["命名", "camel", "snake"] },
+    { "id": "text-dedupe", "name": "文本去重排序", "desc": "按行去重、排序、去空行，适合清洗名单与日志", "category": "文本", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["去重", "排序", "清洗"] },
+    { "id": "word-count", "name": "字数统计", "desc": "中英文字数、字符、段落与阅读时长统计", "category": "文本", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["字数", "统计", "写作"], "hot": true },
+    { "id": "image-base64", "name": "图片转 Base64", "desc": "图片与 Data URI / Base64 双向转换", "category": "图片", "source": "内置实现", "license": "MIT", "runtime": "browser", "tags": ["base64", "图片", "datauri"] },
+    { "id": "color-contrast", "name": "颜色对比度检查", "desc": "按 WCAG 标准检查文字与背景的对比度是否达标", "category": "设计", "source": "内置实现 (WCAG 2.1)", "license": "MIT", "runtime": "browser", "tags": ["对比度", "无障碍", "wcag"] }
+  ]
+}

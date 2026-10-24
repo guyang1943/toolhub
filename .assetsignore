@@ -1,0 +1,6 @@
+# 不发布到公网的文件（构建产物之外的开发文件）
+scripts/
+README.md
+wrangler.toml
+release.bat
+.assetsignore

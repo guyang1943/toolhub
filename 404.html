@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>页面不存在 · ToolHub</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <style>
+    :root { --bg:#f6f7f9; --panel:#fff; --border:#e3e6ea; --text:#1c2128; --muted:#6b7280; --accent:#2563eb; }
+    [data-theme='dark'] { --bg:#0e1116; --panel:#161a22; --border:#262b36; --text:#e6e9ef; --muted:#98a1b0; --accent:#6b97ff; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--bg); color: var(--text); padding: 24px;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+    .box { max-width: 520px; text-align: center; }
+    .code {
+      font-size: 84px; font-weight: 800; line-height: 1;
+      background: linear-gradient(90deg, #2563eb, #7c3aed, #db2777);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    h1 { font-size: 20px; margin: 12px 0 8px; }
+    p { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 0 0 22px; }
+    .btn {
+      display: inline-block; padding: 11px 24px; border-radius: 9px; background: var(--accent);
+      color: #fff; text-decoration: none; font-size: 14px; font-weight: 600;
+    }
+    .btn.ghost { background: var(--panel); color: var(--text); border: 1px solid var(--border); margin-left: 8px; }
+    .tools { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .tools a {
+      font-size: 12.5px; color: var(--accent); text-decoration: none;
+      border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; background: var(--panel);
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="code">404</div>
+    <h1>这个页面不存在</h1>
+    <p>链接可能已经变更，或者工具已下线。<br />你可以回到首页，或试试下面这些常用工具。</p>
+    <a class="btn" href="/">回到首页</a>
+    <a class="btn ghost" href="/feedback/">反馈问题</a>
+    <div class="tools">
+      <a href="/tools/json-format/">JSON 格式化</a>
+      <a href="/tools/image-compress/">图片压缩</a>
+      <a href="/tools/qrcode/">二维码生成</a>
+      <a href="/tools/jwt-decode/">JWT 解码</a>
+      <a href="/tools/word-count/">字数统计</a>
+      <a href="/tools/regex-tester/">正则测试</a>
+    </div>
+  </div>
+  <script>
+    // 跟随系统深色偏好
+    try {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
+    } catch (e) {}
+  </script>
+</body>
+</html>

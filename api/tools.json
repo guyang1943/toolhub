@@ -1,0 +1,1202 @@
+{
+  "site": "ToolHub",
+  "version": 1,
+  "updated": "2026-10-24",
+  "total": 84,
+  "tools": [
+    {
+      "id": "json-format",
+      "name": "JSON 格式化",
+      "desc": "美化/压缩 JSON，自动校验语法错误",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/json-format/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "json",
+        "格式化",
+        "校验"
+      ]
+    },
+    {
+      "id": "image-compress",
+      "name": "图片压缩",
+      "desc": "在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/image-compress/",
+      "source": "内置实现 (Canvas API)",
+      "license": "MIT",
+      "tags": [
+        "图片",
+        "压缩",
+        "canvas"
+      ]
+    },
+    {
+      "id": "qrcode",
+      "name": "二维码生成",
+      "desc": "把文本/网址变成二维码，可下载 PNG",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/qrcode/",
+      "source": "基于开源 qrcodejs (MIT)",
+      "license": "MIT",
+      "tags": [
+        "二维码",
+        "qr"
+      ]
+    },
+    {
+      "id": "base64-url",
+      "name": "Base64 / URL 编解码",
+      "desc": "Base64 与 URL 编码互转，支持中文",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/base64-url/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "base64",
+        "url",
+        "编码"
+      ]
+    },
+    {
+      "id": "timestamp",
+      "name": "时间戳转换",
+      "desc": "Unix 时间戳与可读时间互转，多时区支持",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/timestamp/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "时间戳",
+        "unix",
+        "时区"
+      ]
+    },
+    {
+      "id": "sha256-hash",
+      "name": "哈希计算",
+      "desc": "SHA-256/384/512 哈希，基于 WebCrypto 安全实现",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/sha256-hash/",
+      "source": "内置实现 (WebCrypto)",
+      "license": "MIT",
+      "tags": [
+        "hash",
+        "sha256",
+        "校验"
+      ]
+    },
+    {
+      "id": "password-gen",
+      "name": "强密码生成",
+      "desc": "crypto 安全随机源生成强密码，本机生成不上传",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/password-gen/",
+      "source": "内置实现 (WebCrypto)",
+      "license": "MIT",
+      "tags": [
+        "密码",
+        "随机"
+      ]
+    },
+    {
+      "id": "uuid-gen",
+      "name": "UUID / ULID 生成",
+      "desc": "UUID v4、ULID、Nano ID 批量生成，可作数据库主键",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/uuid-gen/",
+      "source": "内置实现 (WebCrypto)",
+      "license": "MIT",
+      "tags": [
+        "uuid",
+        "ulid",
+        "id"
+      ]
+    },
+    {
+      "id": "color-convert",
+      "name": "颜色格式转换",
+      "desc": "HEX / RGB / HSL 互转，附色块预览与 CSS 变量",
+      "category": "设计",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/color-convert/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "颜色",
+        "hex",
+        "rgb",
+        "css"
+      ]
+    },
+    {
+      "id": "text-diff",
+      "name": "文本对比",
+      "desc": "两段文本行级差异对比，新增/删除一目了然",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/text-diff/",
+      "source": "内置实现 (LCS 算法)",
+      "license": "MIT",
+      "tags": [
+        "diff",
+        "对比"
+      ]
+    },
+    {
+      "id": "markdown-preview",
+      "name": "Markdown 预览",
+      "desc": "实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/markdown-preview/",
+      "source": "基于开源 marked (MIT) + DOMPurify (Apache-2.0)",
+      "license": "MIT",
+      "tags": [
+        "markdown",
+        "预览"
+      ]
+    },
+    {
+      "id": "python-run",
+      "name": "Python 运行器",
+      "desc": "浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机",
+      "category": "开发",
+      "runtime": "pyodide",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/python-run/",
+      "source": "基于开源 Pyodide (MPL-2.0)",
+      "license": "MPL-2.0",
+      "tags": [
+        "python",
+        "沙箱",
+        "wasm"
+      ]
+    },
+    {
+      "id": "cron-parser",
+      "name": "Cron 解析",
+      "desc": "用人话解释 cron 表达式，并算出接下来 5 次执行时间",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/cron-parser/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "cron",
+        "定时任务",
+        "运维"
+      ]
+    },
+    {
+      "id": "jwt-decode",
+      "name": "JWT 解码",
+      "desc": "解码 JWT 的 Header/Payload，标注过期时间，本地不上传",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/jwt-decode/",
+      "source": "内置实现 (Base64URL)",
+      "license": "MIT",
+      "tags": [
+        "jwt",
+        "token",
+        "调试"
+      ]
+    },
+    {
+      "id": "csv-json",
+      "name": "CSV ↔ JSON",
+      "desc": "CSV 与 JSON 数组互转，正确处理引号与换行",
+      "category": "数据",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/csv-json/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "csv",
+        "json",
+        "表格"
+      ]
+    },
+    {
+      "id": "image-resize",
+      "name": "图片缩放",
+      "desc": "按最大边长等比缩放图片，生成头像/封面尺寸",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/image-resize/",
+      "source": "内置实现 (Canvas API)",
+      "license": "MIT",
+      "tags": [
+        "图片",
+        "缩放",
+        "尺寸"
+      ]
+    },
+    {
+      "id": "py-stats",
+      "name": "数值统计",
+      "desc": "用 Python statistics 计算均值/中位数/标准差/四分位",
+      "category": "数据",
+      "runtime": "pyodide",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/py-stats/",
+      "source": "Python 标准库 statistics (Pyodide)",
+      "license": "PSF-2.0",
+      "tags": [
+        "统计",
+        "python",
+        "数据"
+      ]
+    },
+    {
+      "id": "pandas-csv",
+      "name": "CSV 数据体检",
+      "desc": "pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要",
+      "category": "数据",
+      "runtime": "pyodide",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/pandas-csv/",
+      "source": "基于 pandas (BSD-3-Clause) + Pyodide",
+      "license": "BSD-3-Clause",
+      "tags": [
+        "csv",
+        "pandas",
+        "数据分析"
+      ]
+    },
+    {
+      "id": "regex-tester",
+      "name": "正则测试器",
+      "desc": "实时高亮正则匹配结果，列出分组与位置",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/regex-tester/",
+      "source": "内置实现 (RegExp)",
+      "license": "MIT",
+      "tags": [
+        "正则",
+        "regex",
+        "调试"
+      ]
+    },
+    {
+      "id": "case-convert",
+      "name": "命名风格转换",
+      "desc": "camelCase / snake_case / kebab-case 等命名互转",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/case-convert/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "命名",
+        "camel",
+        "snake"
+      ]
+    },
+    {
+      "id": "text-dedupe",
+      "name": "文本去重排序",
+      "desc": "按行去重、排序、去空行，适合清洗名单与日志",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/text-dedupe/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "去重",
+        "排序",
+        "清洗"
+      ]
+    },
+    {
+      "id": "word-count",
+      "name": "字数统计",
+      "desc": "中英文字数、字符、段落与阅读时长统计",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/word-count/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "字数",
+        "统计",
+        "写作"
+      ]
+    },
+    {
+      "id": "image-base64",
+      "name": "图片转 Base64",
+      "desc": "图片与 Data URI / Base64 双向转换",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/image-base64/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "base64",
+        "图片",
+        "datauri"
+      ]
+    },
+    {
+      "id": "color-contrast",
+      "name": "颜色对比度检查",
+      "desc": "按 WCAG 标准检查文字与背景的对比度是否达标",
+      "category": "设计",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/color-contrast/",
+      "source": "内置实现 (WCAG 2.1)",
+      "license": "MIT",
+      "tags": [
+        "对比度",
+        "无障碍",
+        "wcag"
+      ]
+    },
+    {
+      "id": "excalidraw",
+      "name": "Excalidraw",
+      "desc": "手绘风格白板画图，协作绘图神器",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://excalidraw.com",
+      "source": "github.com/excalidraw/excalidraw",
+      "license": "MIT",
+      "tags": [
+        "白板",
+        "画图",
+        "协作"
+      ]
+    },
+    {
+      "id": "tldraw",
+      "name": "tldraw",
+      "desc": "精致的无限画布白板，交互丝滑",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://www.tldraw.com",
+      "source": "github.com/tldraw/tldraw",
+      "license": "自定义源可用",
+      "tags": [
+        "白板",
+        "画布"
+      ]
+    },
+    {
+      "id": "diagrams",
+      "name": "draw.io",
+      "desc": "最流行的流程图/架构图绘制工具",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://app.diagrams.net",
+      "source": "github.com/jgraph/drawio",
+      "license": "Apache-2.0",
+      "tags": [
+        "流程图",
+        "架构图"
+      ]
+    },
+    {
+      "id": "jspaint",
+      "name": "JSPaint",
+      "desc": "网页版经典画图（复刻 Windows 画板）",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://jspaint.app",
+      "source": "github.com/1j01/jspaint",
+      "license": "MIT",
+      "tags": [
+        "画图",
+        "怀旧"
+      ]
+    },
+    {
+      "id": "svgedit",
+      "name": "SVG-Edit",
+      "desc": "浏览器里的 SVG 矢量图编辑器",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://svgedit.netlify.app",
+      "source": "github.com/SVG-Edit/svgedit",
+      "license": "MIT",
+      "tags": [
+        "svg",
+        "矢量"
+      ]
+    },
+    {
+      "id": "threejs-editor",
+      "name": "Three.js Editor",
+      "desc": "浏览器内 3D 场景编辑器",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://threejs.org/editor/",
+      "source": "github.com/mrdoob/three.js",
+      "license": "MIT",
+      "tags": [
+        "3d",
+        "three.js"
+      ]
+    },
+    {
+      "id": "oklch",
+      "name": "OKLCH Color Picker",
+      "desc": "新一代感知均匀选色器，前端配色利器",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://oklch.com",
+      "source": "github.com/evilmartians/oklch-picker",
+      "license": "MIT",
+      "tags": [
+        "颜色",
+        "css"
+      ]
+    },
+    {
+      "id": "squoosh",
+      "name": "Squoosh",
+      "desc": "Google 出品的图片压缩，对比预览效果极佳",
+      "category": "图片",
+      "runtime": "link",
+      "url": "https://squoosh.app",
+      "source": "github.com/GoogleChromeLabs/squoosh",
+      "license": "Apache-2.0",
+      "tags": [
+        "图片",
+        "压缩"
+      ]
+    },
+    {
+      "id": "picsum",
+      "name": "Picsum Photos",
+      "desc": "占位图服务，开发测试用假图一键生成",
+      "category": "图片",
+      "runtime": "link",
+      "url": "https://picsum.photos",
+      "source": "github.com/DMarby/picsum-photos",
+      "license": "MIT",
+      "tags": [
+        "占位图",
+        "开发"
+      ]
+    },
+    {
+      "id": "tesseract",
+      "name": "Tesseract.js OCR",
+      "desc": "浏览器本地图片文字识别（OCR）官方演示",
+      "category": "图片",
+      "runtime": "link",
+      "url": "https://tesseract.projectnaptha.com",
+      "source": "github.com/naptha/tesseract.js",
+      "license": "Apache-2.0",
+      "tags": [
+        "ocr",
+        "文字识别"
+      ]
+    },
+    {
+      "id": "bentopdf",
+      "name": "BentoPDF",
+      "desc": "PDF 合并/拆分/压缩，全部本地处理",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://bentopdf.com",
+      "source": "github.com/alam00000/bentopdf",
+      "license": "MIT",
+      "tags": [
+        "pdf",
+        "隐私"
+      ]
+    },
+    {
+      "id": "stirlingpdf",
+      "name": "Stirling-PDF",
+      "desc": "功能最全的开源 PDF 工具箱（官方演示站）",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://stirlingpdf.com",
+      "source": "github.com/Stirling-Tools/Stirling-PDF",
+      "license": "MIT",
+      "tags": [
+        "pdf"
+      ]
+    },
+    {
+      "id": "pdfjs",
+      "name": "PDF.js Viewer",
+      "desc": "Mozilla 官方 PDF 阅读器在线演示",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://mozilla.github.io/pdf.js/web/viewer.html",
+      "source": "github.com/mozilla/pdf.js",
+      "license": "Apache-2.0",
+      "tags": [
+        "pdf",
+        "阅读"
+      ]
+    },
+    {
+      "id": "stackedit",
+      "name": "StackEdit",
+      "desc": "浏览器内 Markdown 编辑器，支持云同步",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://stackedit.io",
+      "source": "github.com/benweet/stackedit",
+      "license": "Apache-2.0",
+      "tags": [
+        "markdown",
+        "编辑器"
+      ]
+    },
+    {
+      "id": "dillinger",
+      "name": "Dillinger",
+      "desc": "简洁的在线 Markdown 编辑器",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://dillinger.io",
+      "source": "github.com/joemccann/dillinger",
+      "license": "MIT",
+      "tags": [
+        "markdown"
+      ]
+    },
+    {
+      "id": "hackmd",
+      "name": "HackMD",
+      "desc": "协作 Markdown 笔记，实时共同编辑",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://hackmd.io",
+      "source": "github.com/hackmdio/hackmd",
+      "license": "AGPL-3.0",
+      "tags": [
+        "markdown",
+        "协作",
+        "笔记"
+      ]
+    },
+    {
+      "id": "affine",
+      "name": "AFFiNE",
+      "desc": "开源 Notion 替代品：文档+白板+表格一体",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://app.affine.pro",
+      "source": "github.com/toeverything/AFFiNE",
+      "license": "MIT",
+      "tags": [
+        "笔记",
+        "知识库"
+      ]
+    },
+    {
+      "id": "cyberchef",
+      "name": "CyberChef",
+      "desc": "GCHQ 出品的数据解码/加密/转换瑞士军刀",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://gchq.github.io/CyberChef/",
+      "source": "github.com/gchq/CyberChef",
+      "license": "Apache-2.0",
+      "tags": [
+        "编码",
+        "解码",
+        "安全"
+      ]
+    },
+    {
+      "id": "transform",
+      "name": "Transform",
+      "desc": "JSON/YAML/TOML/TS 等几十种格式互转",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://transform.tools",
+      "source": "github.com/transform-tools/transform",
+      "license": "MIT",
+      "tags": [
+        "格式转换"
+      ]
+    },
+    {
+      "id": "quicktype",
+      "name": "quicktype",
+      "desc": "JSON 一键生成 TypeScript/Java/Go 等类型定义",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://app.quicktype.io",
+      "source": "github.com/glideapps/quicktype",
+      "license": "Apache-2.0",
+      "tags": [
+        "json",
+        "类型",
+        "代码生成"
+      ]
+    },
+    {
+      "id": "jsonhero",
+      "name": "JSON Hero",
+      "desc": "高颜值 JSON 浏览器，结构一目了然",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://jsonhero.io",
+      "source": "github.com/jsonhero-io/jsonhero-web",
+      "license": "MIT",
+      "tags": [
+        "json",
+        "可视化"
+      ]
+    },
+    {
+      "id": "jsonplaceholder",
+      "name": "JSONPlaceholder",
+      "desc": "免费假 REST API，前端开发调试必备",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://jsonplaceholder.typicode.com",
+      "source": "github.com/typicode/jsonplaceholder",
+      "license": "MIT",
+      "tags": [
+        "api",
+        "mock"
+      ]
+    },
+    {
+      "id": "httpbin",
+      "name": "httpbin",
+      "desc": "HTTP 请求测试服务，调试接口的好帮手",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://httpbin.org",
+      "source": "github.com/psf/requests (生态)",
+      "license": "MIT",
+      "tags": [
+        "http",
+        "调试"
+      ]
+    },
+    {
+      "id": "webhook",
+      "name": "Webhook.site",
+      "desc": "即时生成临时 URL 捕获查看 Webhook 请求",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://webhook.site",
+      "source": "github.com/fredsted/webhook.site",
+      "license": "MIT",
+      "tags": [
+        "webhook",
+        "调试"
+      ]
+    },
+    {
+      "id": "duckdb",
+      "name": "DuckDB Shell",
+      "desc": "浏览器里直接跑 DuckDB SQL 分析",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://shell.duckdb.org",
+      "source": "github.com/duckdb/duckdb",
+      "license": "MIT",
+      "tags": [
+        "sql",
+        "数据库"
+      ]
+    },
+    {
+      "id": "devdocs",
+      "name": "DevDocs",
+      "desc": "一站式 API 文档聚合（100+ 语言/框架）",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://devdocs.io",
+      "source": "github.com/freeCodeCamp/devdocs",
+      "license": "MPL-2.0",
+      "tags": [
+        "文档",
+        "api"
+      ]
+    },
+    {
+      "id": "prettier",
+      "name": "Prettier Playground",
+      "desc": "官方在线代码格式化试验场",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://playground.prettier.io",
+      "source": "github.com/prettier/prettier",
+      "license": "MIT",
+      "tags": [
+        "格式化",
+        "代码"
+      ]
+    },
+    {
+      "id": "regexper",
+      "name": "Regexper",
+      "desc": "正则表达式可视化图解，一眼看懂",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://regexper.com",
+      "source": "github.com/javallone/regexper-static",
+      "license": "MIT",
+      "tags": [
+        "正则"
+      ]
+    },
+    {
+      "id": "mermaid",
+      "name": "Mermaid Live",
+      "desc": "用文本语法画流程图/时序图，实时预览",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://mermaid.live",
+      "source": "github.com/mermaid-js/mermaid-live-editor",
+      "license": "MIT",
+      "tags": [
+        "图表",
+        "uml"
+      ]
+    },
+    {
+      "id": "markmap",
+      "name": "Markmap",
+      "desc": "把 Markdown 变成互动思维导图",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://markmap.js.org/repl",
+      "source": "github.com/markmap/markmap",
+      "license": "MIT",
+      "tags": [
+        "思维导图",
+        "markdown"
+      ]
+    },
+    {
+      "id": "plantuml",
+      "name": "PlantUML Server",
+      "desc": "文本生成 UML 类图/时序图官方服务",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://www.plantuml.com/plantuml",
+      "source": "github.com/plantuml/plantuml",
+      "license": "GPL-3.0",
+      "tags": [
+        "uml",
+        "建模"
+      ]
+    },
+    {
+      "id": "asciiflow",
+      "name": "AsciiFlow",
+      "desc": "ASCII 架构图绘制，README 注释神器",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://asciiflow.com",
+      "source": "github.com/lewish/asciiflow",
+      "license": "MIT",
+      "tags": [
+        "ascii",
+        "图"
+      ]
+    },
+    {
+      "id": "explainshell",
+      "name": "ExplainShell",
+      "desc": "逐段解释 Linux 命令每个参数的含义",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://explainshell.com",
+      "source": "github.com/idank/explainshell",
+      "license": "GPL-3.0",
+      "tags": [
+        "linux",
+        "命令行"
+      ]
+    },
+    {
+      "id": "roadmap",
+      "name": "roadmap.sh",
+      "desc": "开发者成长路线图（前端/后端/AI 等）",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://roadmap.sh",
+      "source": "github.com/kamranahmedse/developer-roadmap",
+      "license": "自定义",
+      "tags": [
+        "学习",
+        "路线图"
+      ]
+    },
+    {
+      "id": "icones",
+      "name": "Icônes",
+      "desc": "浏览/搜索 20 万+ 开源图标，一键复制组件",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://icones.js.org",
+      "source": "github.com/antfu/icones",
+      "license": "MIT",
+      "tags": [
+        "图标",
+        "svg"
+      ]
+    },
+    {
+      "id": "lucide",
+      "name": "Lucide Icons",
+      "desc": "Feather Icons 社区延续版，干净现代图标库",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://lucide.dev",
+      "source": "github.com/lucide-icons/lucide",
+      "license": "ISC",
+      "tags": [
+        "图标"
+      ]
+    },
+    {
+      "id": "audiomass",
+      "name": "AudioMass",
+      "desc": "浏览器音频剪辑/特效，免安装的声波编辑器",
+      "category": "音视频",
+      "runtime": "link",
+      "url": "https://audiomass.co",
+      "source": "github.com/pkalogiros/audiomass",
+      "license": "GPL-3.0",
+      "tags": [
+        "音频",
+        "剪辑"
+      ]
+    },
+    {
+      "id": "pairdrop",
+      "name": "PairDrop",
+      "desc": "同一网络设备间 P2P 互传文件，免安装",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://pairdrop.net",
+      "source": "github.com/schlagmichdoch/PairDrop",
+      "license": "GPL-3.0",
+      "tags": [
+        "传文件",
+        "p2p"
+      ]
+    },
+    {
+      "id": "localsend",
+      "name": "LocalSend",
+      "desc": "跨平台局域网传文件（AirDrop 开源替代，需装 App）",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://localsend.org",
+      "source": "github.com/localsend/localsend",
+      "license": "Apache-2.0",
+      "tags": [
+        "传文件",
+        "局域网"
+      ]
+    },
+    {
+      "id": "filepizza",
+      "name": "FilePizza",
+      "desc": "浏览器 P2P 临时传文件，链接即焚",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://file.pizza",
+      "source": "github.com/kern/filepizza",
+      "license": "BSD-3-Clause",
+      "tags": [
+        "传文件"
+      ]
+    },
+    {
+      "id": "privatebin",
+      "name": "PrivateBin",
+      "desc": "阅后即焚的加密粘贴板",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://privatebin.net",
+      "source": "github.com/PrivateBin/PrivateBin",
+      "license": "MIT",
+      "tags": [
+        "粘贴板",
+        "加密"
+      ]
+    },
+    {
+      "id": "bitwarden-gen",
+      "name": "Bitwarden 密码生成器",
+      "desc": "知名开源密码管理商的免费在线生成器",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://bitwarden.com/password-generator/",
+      "source": "github.com/bitwarden/clients",
+      "license": "GPL-3.0",
+      "tags": [
+        "密码"
+      ]
+    },
+    {
+      "id": "monkeytype",
+      "name": "Monkeytype",
+      "desc": "最优雅的打字速度测试与练习",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://monkeytype.com",
+      "source": "github.com/monkeytypegame/monkeytype",
+      "license": "GPL-3.0",
+      "tags": [
+        "打字",
+        "练习"
+      ]
+    },
+    {
+      "id": "librespeed",
+      "name": "LibreSpeed",
+      "desc": "开源无追踪网速测试",
+      "category": "网络",
+      "runtime": "link",
+      "url": "https://librespeed.org",
+      "source": "github.com/librespeed/speedtest",
+      "license": "LGPL-3.0",
+      "tags": [
+        "测速",
+        "网络"
+      ]
+    },
+    {
+      "id": "flexbox-froggy",
+      "name": "Flexbox Froggy",
+      "desc": "玩游戏学会 Flex 布局（经典教学）",
+      "category": "网络",
+      "runtime": "link",
+      "url": "https://flexboxfroggy.com",
+      "source": "github.com/thomaspark/flexboxfroggy",
+      "license": "自定义",
+      "tags": [
+        "css",
+        "学习"
+      ]
+    },
+    {
+      "id": "layoutit",
+      "name": "Layoutit Grid",
+      "desc": "可视化拖拽生成 CSS Grid 布局代码",
+      "category": "网络",
+      "runtime": "link",
+      "url": "https://grid.layoutit.com",
+      "source": "github.com/Leniolabs/layoutit-grid",
+      "license": "MIT",
+      "tags": [
+        "css",
+        "grid",
+        "布局"
+      ]
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon",
+      "desc": "把代码变成漂亮的分享图片，配主题/配色",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://carbon.now.sh",
+      "source": "github.com/carbon-app/carbon",
+      "license": "MIT",
+      "tags": [
+        "代码截图",
+        "分享"
+      ]
+    },
+    {
+      "id": "jsoncrack",
+      "name": "JSON Crack",
+      "desc": "JSON 转成可视化节点图谱，结构一眼看穿",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://jsoncrack.com",
+      "source": "github.com/jsoncrack-io/jsoncrack",
+      "license": "GPL-3.0",
+      "tags": [
+        "json",
+        "可视化"
+      ]
+    },
+    {
+      "id": "regex-vis",
+      "name": "Regex Vis",
+      "desc": "正则表达式可视化图解（高亮每个片段）",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://regex-vis.com",
+      "source": "github.com/Bowen7/regex-vis",
+      "license": "MIT",
+      "tags": [
+        "正则",
+        "可视化"
+      ]
+    },
+    {
+      "id": "wisemapping",
+      "name": "WiseMapping",
+      "desc": "在线思维导图，支持快捷键与分享",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://wisemapping.com",
+      "source": "github.com/wisemapping/wisemapping",
+      "license": "自定义",
+      "tags": [
+        "思维导图"
+      ]
+    },
+    {
+      "id": "rawgraphs",
+      "name": "RAWGraphs",
+      "desc": "拖拽生成数据可视化图表（开源数据工具）",
+      "category": "数据",
+      "runtime": "link",
+      "url": "https://www.rawgraphs.io",
+      "source": "github.com/rawgraphs/rawgraphs-app",
+      "license": "Apache-2.0",
+      "tags": [
+        "图表",
+        "可视化"
+      ]
+    },
+    {
+      "id": "svgomg",
+      "name": "SVGOMG",
+      "desc": "SVG 优化压缩 GUI（SVGO 的可视化界面）",
+      "category": "图片",
+      "runtime": "link",
+      "url": "https://jakearchibald.github.io/svgomg/",
+      "source": "github.com/jakearchibald/svgomg",
+      "license": "MIT",
+      "tags": [
+        "svg",
+        "优化",
+        "压缩"
+      ]
+    },
+    {
+      "id": "placehold",
+      "name": "Placehold",
+      "desc": "一行 URL 生成占位图，开发测试利器",
+      "category": "图片",
+      "runtime": "link",
+      "url": "https://placehold.co",
+      "source": "github.com/kevin-smets/placehold.co",
+      "license": "MIT",
+      "tags": [
+        "占位图"
+      ]
+    },
+    {
+      "id": "dicebear",
+      "name": "DiceBear",
+      "desc": "自动生成可爱头像，无需注册",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://www.dicebear.com",
+      "source": "github.com/dicebear/dicebear",
+      "license": "MIT",
+      "tags": [
+        "头像",
+        "生成"
+      ]
+    },
+    {
+      "id": "simpleicons",
+      "name": "Simple Icons",
+      "desc": "3000+ 品牌 SVG 图标库（含国内主流 App）",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://simpleicons.org",
+      "source": "github.com/simple-icons/simple-icons",
+      "license": "CC0-1.0",
+      "tags": [
+        "图标",
+        "svg"
+      ]
+    },
+    {
+      "id": "quickref",
+      "name": "QuickRef",
+      "desc": "各语言/命令速查表，开发时随手翻",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://quickref.me",
+      "source": "github.com/jaywcjlove/quickref",
+      "license": "MIT",
+      "tags": [
+        "速查表",
+        "文档"
+      ]
+    },
+    {
+      "id": "exercism",
+      "name": "Exercism",
+      "desc": "70+ 语言免费编程练习与导师点评",
+      "category": "效率",
+      "runtime": "link",
+      "url": "https://exercism.org",
+      "source": "github.com/exercism/exercism",
+      "license": "MIT",
+      "tags": [
+        "学习",
+        "编程"
+      ]
+    },
+    {
+      "id": "colorbrewer",
+      "name": "ColorBrewer",
+      "desc": "数据可视化安全配色方案（地图/图表）",
+      "category": "设计",
+      "runtime": "link",
+      "url": "https://colorbrewer2.org",
+      "source": "github.com/axismaps/colorbrewer",
+      "license": "Apache-2.0",
+      "tags": [
+        "颜色",
+        "图表"
+      ]
+    },
+    {
+      "id": "simplytranslate",
+      "name": "SimplyTranslate",
+      "desc": "开源无追踪翻译引擎聚合（隐私友好）",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://simplytranslate.org",
+      "source": "github.com/Simple-Translate",
+      "license": "AGPL-3.0",
+      "tags": [
+        "翻译",
+        "隐私"
+      ]
+    },
+    {
+      "id": "vert",
+      "name": "Vert",
+      "desc": "文件格式转换器（支持批量，跨平台开源）",
+      "category": "文档",
+      "runtime": "link",
+      "url": "https://vert.sh",
+      "source": "github.com/npezza93/vert",
+      "license": "Apache-2.0",
+      "tags": [
+        "格式转换",
+        "文件"
+      ]
+    }
+  ]
+}

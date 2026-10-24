@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>二维码生成 / QR Code Generator · ToolHub</title>
+  <meta name="description" content="把文本/网址变成二维码，可下载 PNG Turn any text or URL into a QR code, download as PNG" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/tools/qrcode/" />
+  <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/tools/qrcode/" />
+  <meta property="og:title" content="二维码生成 / QR Code Generator · ToolHub" />
+  <meta property="og:description" content="把文本/网址变成二维码，可下载 PNG Turn any text or URL into a QR code, download as PNG" />
+  <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:description" content="精选 84 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"二维码生成","description":"把文本/网址变成二维码，可下载 PNG","url":"https://toolhub.guyang1966.workers.dev/tools/qrcode/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"二维码中间放 logo 会影响识别吗？","acceptedAnswer":{"@type":"Answer","text":"只要不超过约 20% 面积且使用容错级别 M 及以上，通常仍可正常识别。本工具默认使用 M 级容错。"}},{"@type":"Question","name":"生成的二维码会过期吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具生成的是静态二维码，内容直接编码在图形里，不依赖任何服务器，永久有效。"}}]}</script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav">
+      <a href="/" data-nav="tools">工具</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <div class="header-actions">
+      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>二维码生成</h1><p>把文本/网址变成二维码，可下载 PNG</p><h2>关于二维码生成</h2><p>二维码把文本或网址编码成黑白矩阵图形，手机摄像头扫一下就能还原内容。二维码的密度由内容长度决定：内容越长，矩阵越密，同等打印尺寸下每个色块越小，扫描成功率就越低。因此印刷品上的长链接，通常建议先转成短链再生成二维码。</p><h2>使用步骤</h2><ol><li>输入要编码的文本或网址，Wi-Fi 密码等可直接选对应类型</li><li>按印刷尺寸选择像素规格（屏幕用 256，海报用 512 以上）</li><li>需要容错时选 M 级及以上，可在中间叠加 logo</li><li>下载 PNG 或复制图片，打印前先用真机扫一遍验证</li></ol><h2>常见错误</h2><h3>长链接直接编码</h3><p>上百个字符的 URL 会让矩阵密到印刷后无法辨认。先做短链，再生成二维码。</p><h3>打印前不验证</h3><p>屏幕清晰不代表印刷清晰。油墨洇渗会让浅色模块变浅，务必打样后真机扫描再批量印刷。</p><h3>把动态码当静态码用</h3><p>本工具生成的是内容固定的静态码；需要“扫码后内容可更新”的场景要用服务端动态码，那是另一套机制。</p><h2>常见问题</h2><h3>二维码中间放 logo 会影响识别吗？</h3><p>只要不超过约 20% 面积且使用容错级别 M 及以上，通常仍可正常识别。本工具默认使用 M 级容错。</p><h3>生成的二维码会过期吗？</h3><p>不会。本工具生成的是静态二维码，内容直接编码在图形里，不依赖任何服务器，永久有效。</p><p>来源：基于开源 qrcodejs (MIT) · License: MIT · 分类：开发</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <input id="hero-search" type="text" placeholder="搜索工具或资源…（⌘K 打开命令面板）" />
+          <div class="hero-search-hint">84 个工具 · 50 条资源 · 全部免费，无需注册</div>
+        </div>
+        <div class="hero-stats" id="hero-stats"></div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="display:none">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-grid" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="display:none">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+  </footer>
+
+  <script src="/assets/vendor/qrcode.min.js"></script>
+  <script src="/assets/vendor/marked.min.js"></script>
+  <script src="/assets/vendor/purify.min.js"></script>
+  <script defer src="/assets/vendor/pyodide-loader.js"></script>
+  <script>window.__TOOL__="qrcode";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

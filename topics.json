@@ -1,0 +1,135 @@
+{
+  "version": "2.0",
+  "topics": [
+    {
+      "slug": "frontend-debug",
+      "title": "前端调试工具包",
+      "icon": "🧪",
+      "desc": "排查接口、解码 Token、验证正则、对比日志——前端日常最常用的 7 个工具",
+      "intro": "前端排错的固定套路：先看接口返回对不对（JSON 格式化），再看身份凭证有没有过期（JWT 解码），然后验证数据格式（正则测试），最后对比改动前后的差异（文本对比）。这 7 个工具覆盖了这条链路，且全部在浏览器本地执行——生产环境的 Token 和数据不会外传。",
+      "tools": ["json-format", "jwt-decode", "regex-tester", "text-diff", "base64-url", "cron-parser", "markdown-preview"],
+      "resources": ["icons", "colors"],
+      "guides": [
+        { "title": "401 报错怎么排查", "body": "把 Token 粘进 JWT 解码，先看 exp 是否已过期，再看 scope 是否包含接口要求的权限。" },
+        { "title": "接口返回结构太深看不清", "body": "JSON 格式化后按层级折叠阅读；如果嵌套超过三层，用 JSON Crack（目录里的在线工具）看成图更直观。" }
+      ]
+    },
+    {
+      "slug": "image-workflow",
+      "title": "图片处理全流程",
+      "icon": "🖼️",
+      "desc": "压缩、缩放、转 Base64、生成二维码——从拿到图到能用图，一条链路走完",
+      "intro": "做内容时图片处理占了大量时间：截图太大发不出去、头像尺寸不合规、图标要内联进 CSS、链接要做成二维码。这组工具的共性是「处理完就能直接下载/复制」，不需要打开 PS 或在线图床，而且图片始终留在本机。",
+      "tools": ["image-compress", "image-resize", "image-base64", "qrcode", "color-convert"],
+      "resources": ["icons", "colors", "templates"],
+      "guides": [
+        { "title": "为什么压缩后反而变大了？", "body": "原图本身已经被压过（比如微信传过的图），再压会重新编码导致体积上升。可以降低质量到 50-60 试，或改用 WebP。" },
+        { "title": "透明背景保不住？", "body": "JPEG 不支持透明通道，需要透明的图请保留 PNG 或输出 WebP。" }
+      ]
+    },
+    {
+      "slug": "data-cleanup",
+      "title": "数据清洗与转换",
+      "icon": "📊",
+      "desc": "CSV 与 JSON 互转、去重排序、数值统计、编码哈希——拿到脏数据的处理流程",
+      "intro": "拿到的数据往往不能直接用：格式不对、有重复、缺字段、编码混乱。这组工具按「转换 → 体检 → 清洗 → 统计」的顺序串起来使用，覆盖大多数一次性数据处理任务，不需要为此写脚本。",
+      "tools": ["csv-json", "pandas-csv", "py-stats", "text-dedupe", "json-format", "sha256-hash"],
+      "resources": ["learning"],
+      "guides": [
+        { "title": "中文 CSV 打开是乱码", "body": "源头编码不是 UTF-8。用 Excel「另存为 → CSV UTF-8」，或在导入时手动指定编码。" },
+        { "title": "数值列算不出结果", "body": "先用 CSV 数据体检看列类型，如果是 object 说明混入了空格、货币符号或「无」这类文字，清洗后再统计。" }
+      ]
+    },
+    {
+      "slug": "writing-toolkit",
+      "title": "写作工具箱",
+      "icon": "✍️",
+      "desc": "字数统计、Markdown 排版、文本去重、版本对比——写作者的日常五件套",
+      "intro": "写作的流程通常是：打草稿（Markdown 预览）→ 卡字数（字数统计）→ 修改稿（文本对比）→ 整理素材（去重排序）。这组工具覆盖从起草到定稿的全过程，都不需要注册、不收集内容，写完直接复制走人。投公众号、知乎或内部文档，格式一次搞定。",
+      "tools": ["markdown-preview", "word-count", "text-diff", "text-dedupe", "case-convert"],
+      "resources": ["fonts", "learning", "templates"],
+      "guides": [
+        { "title": "中文字数为什么和 Word 不一样？", "body": "统计口径不同：中文按「字」计（含标点），Word 按「字符数」计。本工具两者都给，投不同平台时按对方要求的口径看对应数字。" },
+        { "title": "Markdown 表格对不齐", "body": "表格第二行的分隔线（|---|）才是表格生效的关键，前后留一个空行；预览里样式以渲染结果为准，源码里的空格不影响显示。" }
+      ]
+    },
+    {
+      "slug": "api-debug",
+      "title": "接口联调试探",
+      "icon": "🔌",
+      "desc": "联调排错全链路：看返回、解 Token、对时间、验规则——后端联调不再抓瞎",
+      "intro": "前后端联调时 80% 的问题集中在四类：返回结构不对、凭证过期或权限不足、时间/时区对不上、字段格式不符合约定。这组工具对应这四个环节，按顺序过一遍，大部分联调问题能自己定位，不用拉对方开会。全程本地执行，生产 Token 不外泄。",
+      "tools": ["json-format", "jwt-decode", "timestamp", "regex-tester", "base64-url", "cron-parser"],
+      "resources": ["learning", "open-source"],
+      "guides": [
+        { "title": "跨域报错 CORS 是什么意思", "body": "是浏览器安全策略拦截，不是接口坏了。需要服务端在响应头加 Access-Control-Allow-Origin；本地开发也可以用代理转发绕过，别关浏览器安全选项。" },
+        { "title": "定时任务没按预期执行", "body": "把 cron 表达式粘进解析器，先确认服务端时区（多数服务器是 UTC），再核对是否用了五段式还是六段式（带秒）语法。" }
+      ]
+    },
+    {
+      "slug": "open-source-alternatives",
+      "title": "开源替代品清单",
+      "icon": "🔓",
+      "desc": "不花钱、不注册、数据在自己手里——主流付费软件的开源平替都在这",
+      "intro": "很多常用软件都有能打的开源替代：Notion 有 AFFiNE、AirDrop 有 LocalSend、Audition 有 AudioMass、各种「在线转换网站」有本地运行的 Vert。选开源替代品的核心判断标准只有两个：数据是否留在自己手里，停止维护了你能不能自己跑起来。下面按「笔记白板 / 文件传输 / 音视频处理 / 隐私工具」四类列出，全部点开即用。",
+      "tools": ["affine", "excalidraw", "localsend", "pairdrop", "audiomass", "bentopdf", "privatebin", "vert"],
+      "resources": ["open-source", "learning"],
+      "guides": [
+        { "title": "怎么判断一个开源项目靠不靠谱", "body": "看四点：最近一次提交（超过一年动的谨慎）、Issue 响应速度、License 是否允许商用、有没有自己的部署文档。star 数只能参考，刷票项目不少。" },
+        { "title": "开源软件一定免费吗", "body": "软件免费，但服务不一定：自托管要服务器成本，部分项目是「开源核心 + 付费增值」模式（open-core）。用之前看官网的 pricing 页，别想当然。" }
+      ]
+    },
+    {
+      "slug": "work-efficiency",
+      "title": "职场效率工具包",
+      "icon": "💼",
+      "desc": "密码、UUID、时间戳、二维码、名单清洗——办公场景高频小工具一次配齐",
+      "intro": "办公场景里最烦人的往往不是大事，而是这些重复小操作：又要编个测试账号密码、数据库主键用什么 ID、活动时间写成时间戳、分享链接做个二维码、名单去重排序。这组工具主打「三秒出结果」，每个都能直接复制粘贴到工作流里，不装插件不登录。",
+      "tools": ["password-gen", "uuid-gen", "timestamp", "qrcode", "text-dedupe", "base64-url"],
+      "resources": ["templates", "learning"],
+      "guides": [
+        { "title": "生成的密码怎么保管", "body": "强密码的唯一正解是密码管理器（Bitwarden 有免费档），不要记在备忘录或共享文档里。涉及公司账号的密码，遵循公司密码策略，不要绕过。" },
+        { "title": "活动倒计时总差一天", "body": "多半是时区没对齐：服务器存的是 UTC，前端显示的是本地时间。生成时间戳时留意用的是哪个时区，跨天活动建议同时给出两地的具体时刻。" }
+      ]
+    },
+    {
+      "slug": "dev-quickref",
+      "title": "开发者速查手册",
+      "icon": "📚",
+      "desc": "cron 怎么说人话、命名怎么统一、正则怎么写对——查完接着写代码",
+      "intro": "写代码时总有一类「不值当搜文档、但又记不牢」的小问题：这条 cron 几点跑、UUID 该用哪个版本、kebab 和 snake 怎么转、正则分组怎么写。这个专题把这些高频速查场景打包，配合 DevDocs 和 QuickRef 两个文档聚合站，查完直接回到编码，少切十个标签页。",
+      "tools": ["cron-parser", "case-convert", "regex-tester", "uuid-gen", "sha256-hash", "timestamp"],
+      "resources": ["learning", "open-source"],
+      "guides": [
+        { "title": "UUID 四个版本怎么选", "body": "v4 随机，绝大多数场景用它；v7 带时间戳且字典序递增，适合做数据库主键（比 v4 更利于索引）；v3/v5 基于命名空间哈希，需要「同一名字永远同一 ID」时用。" },
+        { "title": "正则明明在线测试通过，代码里却不匹配", "body": "八成是语言差异：JS 的正则不支持后行断言（lookbehind）的老语法细节、Python 要用 re.fullmatch 才是整串匹配。把表达式和测试文本一起贴到测试器里，选对语言再验证。" }
+      ]
+    },
+    {
+      "slug": "privacy-security",
+      "title": "隐私与安全工具箱",
+      "icon": "🔐",
+      "desc": "密码生成、文件校验、Token 检查——敏感操作全部在本机完成",
+      "intro": "处理敏感信息时最大的风险不是工具不够强，而是数据在传输过程中离开了你的控制。这个专题的每个工具都在浏览器本地运行：密码在本机生成、哈希在本机计算、Token 在本机解码。配合 PrivateBin（阅后即焚）和 Bitwarden（密码管理），可以搭起一条「数据不出设备」的工作流。",
+      "tools": ["password-gen", "sha256-hash", "jwt-decode", "base64-url", "python-run"],
+      "resources": ["open-source", "learning"],
+      "guides": [
+        { "title": "Base64 能保护密码吗", "body": "不能。Base64 是公开可逆编码，没有密钥，任何人一秒还原。绝不要用它「加密」敏感数据，需要传输保护请用 HTTPS，需要存储保护请用 bcrypt 这类单向哈希。" },
+        { "title": "JWT 里能放敏感信息吗", "body": "Payload 只是 Base64 编码，不是加密，任何人拿到都能读。JWT 里只放非敏感的身份标识，敏感信息放服务端，过期时间设短一点，并始终走 HTTPS。" }
+      ]
+    },
+    {
+      "slug": "design-color",
+      "title": "设计与配色",
+      "icon": "🎨",
+      "desc": "颜色格式互转、对比度达标检查——配色不再凭感觉，交出能过审的界面",
+      "intro": "配色最常见的翻车点有两个：设计稿和代码里的颜色格式对不上（HEX/RGB/HSL 混用），以及浅灰字配白底根本看不清。这个专题围绕这两个痛点：用转换器统一格式，用对比度检查器按 WCAG 标准验收，再配上经过验证的可视化配色方案和图标库，保证界面既好看又合规。",
+      "tools": ["color-convert", "color-contrast", "image-base64", "qrcode"],
+      "resources": ["colors", "icons", "fonts"],
+      "guides": [
+        { "title": "对比度多少才算达标", "body": "WCAG 2.1 AA 级要求正文对比度至少 4.5:1，大号文字（18pt 以上或 14pt 加粗）至少 3:1；AAA 级是 7:1。做后台系统和适老化界面建议直接按 AAA 做。" },
+        { "title": "深色模式直接把颜色反色行吗", "body": "不行。纯反色会让品牌色变色、阴影发灰、大面积纯黑刺眼。正确做法是单独定义一套深色变量，亮度整体下移、饱和度略降，对比度重新过一遍检查器。" }
+      ]
+    }
+  ]
+}

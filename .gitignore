@@ -1,0 +1,14 @@
+# 部署与本地工具产物
+.wrangler/
+node_modules/
+package-lock.json
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
