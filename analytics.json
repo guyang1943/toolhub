@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "token": "",
+  "note": "填入 Cloudflare Web Analytics 的 token 即自动启用访问统计（免费、无 cookie、不跨站跟踪）。留空则完全不加载任何统计脚本。获取方式：Cloudflare 后台 → Web Analytics → Add a site → 填入站点域名 → 复制 beacon token。"
+}

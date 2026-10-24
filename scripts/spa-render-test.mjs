@@ -2,6 +2,7 @@
 // SPA 渲染测试：用最小 DOM 桩加载 app.js，驱动路由并检查关键输出
 // 用法：node scripts/spa-render-test.mjs [BASE_URL]
 import { registerHooks } from 'node:module';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -75,7 +76,17 @@ const navigator = { language: 'zh-CN', serviceWorker: { register: () => Promise.
 
 // 注入全局并加载 app.js
 const src = await (await import('node:fs')).readFileSync(new URL('../assets/app.js', import.meta.url), 'utf8');
-const relFetch = (url, opts) => fetch(url.startsWith('/') ? BASE + url : url, opts);
+// fetch 桩：直接从本地文件系统读取（根相对路径 → root/ 下同名文件），无需起静态服务器
+const relFetch = (url) => {
+  const rel = url.startsWith(BASE + '/') ? url.slice(BASE.length + 1) : url.startsWith('/') ? url.slice(1) : null;
+  if (!rel) return Promise.reject(new Error('test fetch: 不支持的 URL ' + url));
+  try {
+    const body = readFileSync(join(root, rel), 'utf8');
+    return Promise.resolve({ ok: true, status: 200, json: async () => JSON.parse(body), text: async () => body });
+  } catch {
+    return Promise.reject(new Error('test fetch 404: ' + url));
+  }
+};
 const fn = new Function('document', 'window', 'location', 'localStorage', 'navigator', 'fetch', 'URLSearchParams', 'history', 'AbortSignal', 'setTimeout', src);
 await fn(document, window, location, localStorage, navigator, relFetch, URLSearchParams, { pushState() {} }, AbortSignal, setTimeout);
 

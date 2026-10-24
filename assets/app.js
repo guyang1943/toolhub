@@ -81,6 +81,22 @@ if (LANG === 'en') {
 }
 
 /* ---------- 主题 ---------- */
+/* ---------- Cloudflare Web Analytics ---------- */
+// 统计开关：编辑根目录 analytics.json 填入 token 即启用；留空则零统计脚本
+async function initAnalytics() {
+  try {
+    const cfg = await (await fetch('/analytics.json')).json();
+    if (!cfg || !cfg.token) return;
+    const s = document.createElement('script');
+    s.defer = true;
+    s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    s.setAttribute('data-cf-beacon', JSON.stringify({ token: cfg.token }));
+    document.head.appendChild(s);
+  } catch {
+    /* 配置缺失时静默跳过，不影响站点功能 */
+  }
+}
+
 function initTheme() {
   const saved = localStorage.getItem('toolhub:theme');
   const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -95,6 +111,7 @@ $('#theme-btn') && $('#theme-btn').addEventListener('click', () => {
   $('#theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
 });
 initTheme();
+initAnalytics();
 
 /* ---------- 收藏 ---------- */
 const favs = () => JSON.parse(localStorage.getItem('toolhub:favs') || '[]');
