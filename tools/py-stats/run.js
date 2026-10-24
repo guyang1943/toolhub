@@ -3,7 +3,7 @@ import { runPython } from '/assets/pyodide-runtime.js';
 
 export const manifest = {
   usage: '粘贴一组数字（可用逗号、空格或换行分隔），自动计算总数、均值、中位数、标准差、分位数、最大值与最小值。使用 Python 标准库 statistics，无需额外依赖。',
-  tips: ['首次使用需要加载 Python 运行时（约十几秒），之后整个会话内都即时返回', '支持逗号/空格/换行/制表符混排，可直接从 Excel 或日志里复制粘贴', '分位数用线性插值法（与 Excel QUARTILE.INC 一致）'],
+  tips: ['首次使用需要下载 Python 运行时（约 13MB，有进度条），之后整个会话内都即时返回', '支持逗号/空格/换行/制表符混排，可直接从 Excel 或日志里复制粘贴', '分位数用线性插值法（与 Excel QUARTILE.INC 一致）'],
   scenarios: [
     { scene: '拿到一批数据想快速看分布', how: '粘贴数字 → 计算', result: '均值/中位数/四分位一次看全' },
     { scene: '判断数据是否有异常值', how: '看最大值最小值与标准差', result: '离群点很快暴露出来' },

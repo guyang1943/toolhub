@@ -43,6 +43,8 @@ const paths = [
   '/feed.xml',
   ...tools.map((t) => `/tools/${t.id}/`),
   '/tools/json-format/run.js',
+  '/assets/vendor/pyodide/pyodide-lock.json',
+  '/assets/vendor/pyodide/pyodide.asm.js',
 ];
 
 let ok = 0;

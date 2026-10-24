@@ -2,9 +2,9 @@
 import { ensurePackage, runPython } from '/assets/pyodide-runtime.js';
 
 export const manifest = {
-  usage: '粘贴 CSV（首行为表头），自动做一次"数据体检"：行数列数、每列类型、缺失值、唯一值数量、数值列的统计摘要。使用 pandas 在浏览器内计算，数据不上传。首次使用需加载 pandas（约 20MB，等待时间较长）。',
+  usage: '粘贴 CSV（首行为表头），自动做一次"数据体检"：行数列数、每列类型、缺失值、唯一值数量、数值列的统计摘要。使用 pandas 在浏览器内计算，数据不上传。首次使用需从本站下载 pandas（约 36MB，有进度条，等待时间较长，之后可离线复用）。',
   tips: [
-    '首次运行要下载 pandas 运行时（约 20-40 秒），之后本次会话内变快',
+    '首次运行要下载 pandas 库（约 36MB，有进度条），之后本次会话内变快，断网也能用',
     '中文乱码时确认 CSV 是 UTF-8 编码，可在 Excel 里"另存为 CSV UTF-8"',
     '数值列出现 object 类型，通常是混入了空格、货币符号或"无"等文字',
   ],

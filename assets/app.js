@@ -1,5 +1,6 @@
 // ToolHub 主逻辑 v0.6：注册表 → 渲染 → hash 路由（Manifest 驱动表单）
 // 新增：深色模式 / 收藏 / URL 分类状态 / 关于与提交页 / 快捷键 / 回顶
+import { setProgressHandler } from '/assets/pyodide-runtime.js';
 let REGISTRY = null;
 let I18N = null;
 let D18N = null; // 工具详情页英文内容
@@ -216,6 +217,24 @@ function bindCards(container) {
   });
 }
 
+/* ---------- 站内搜索：权重评分 ---------- */
+// 匹配优先级：名称（前缀 > 包含）> 标签 > 别名（拼音全拼/首字母/英文关键词）> 描述
+// 别名词条由 scripts/gen-search-aliases.mjs 在构建期写入 tools.json / directory.json
+function toolScore(tool, kw) {
+  if (!kw) return 1;
+  const m = toolMeta(tool);
+  const name = (tool.name + ' ' + m.name).toLowerCase();
+  const tags = ((tool.tags || []).join(' ') + ' ' + tool.name).toLowerCase();
+  const alias = (tool.aliases || []).join(' ').toLowerCase();
+  const desc = (tool.desc + ' ' + m.desc).toLowerCase();
+  let s = 0;
+  if (name.includes(kw)) s += name.startsWith(kw) ? 100 : 60;
+  if (tags.includes(kw)) s += 40;
+  if (alias.includes(kw)) s += 30;
+  if (desc.includes(kw)) s += 10;
+  return s;
+}
+
 function renderFeatured(tools) {
   const sec = $('#featured-section');
   const searching = !!$('#search').value.trim();
@@ -249,19 +268,32 @@ function renderGrid(tools, keyword) {
   const favList = favs();
   const usage = usageMap();
   const list = tools
-    .filter((tool) => {
-      if (activeCategory === '⭐ 收藏' && !favList.includes(tool.id)) return false;
-      if (activeCategory === '🔥 最常用' && !usage[tool.id]) return false;
+    .map((tool) => {
+      if (activeCategory === '⭐ 收藏' && !favList.includes(tool.id)) return null;
+      if (activeCategory === '🔥 最常用' && !usage[tool.id]) return null;
       const catOk =
         activeCategory === '全部' || activeCategory === '⭐ 收藏' || activeCategory === '🔥 最常用' || tool.category === activeCategory;
-      const m = toolMeta(tool);
-      const kwOk = !kw || (tool.name + tool.desc + (tool.tags || []).join(' ') + m.name + m.desc).toLowerCase().includes(kw);
-      return catOk && kwOk;
+      if (!catOk) return null;
+      const score = kw ? toolScore(tool, kw) : 0;
+      if (kw && score <= 0) return null;
+      return [tool, score];
     })
+    .filter(Boolean)
     .sort((a, b) => {
-      if (activeCategory === '🔥 最常用') return (usage[b.id] || 0) - (usage[a.id] || 0);
-      return (b.runtime === 'browser') - (a.runtime === 'browser') || (b.hot ? 1 : 0) - (a.hot ? 1 : 0);
-    });
+      if (kw) {
+        return (
+          b[1] - a[1] ||
+          (b[0].runtime === 'browser') - (a[0].runtime === 'browser') ||
+          (b[0].hot ? 1 : 0) - (a[0].hot ? 1 : 0)
+        );
+      }
+      if (activeCategory === '🔥 最常用') return (usage[b[0].id] || 0) - (usage[a[0].id] || 0);
+      return (
+        (b[0].runtime === 'browser') - (a[0].runtime === 'browser') ||
+        (b[0].hot ? 1 : 0) - (a[0].hot ? 1 : 0)
+      );
+    })
+    .map((x) => x[0]);
 
   if (!list.length) {
     const emptyMsg =
@@ -459,7 +491,7 @@ function buildPaletteItems(reg, res, evals) {
       desc: m.desc,
       url: '/tools/' + tool.id + '/',
       external: false,
-      keywords: (tool.tags || []).join(' ') + ' ' + tool.name,
+      keywords: (tool.tags || []).join(' ') + ' ' + tool.name + ' ' + (tool.aliases || []).join(' '),
     });
   }
   // 资源合集
@@ -488,11 +520,23 @@ function closePalette() {
   PALETTE.open = false;
 }
 
+function paletteScore(x, kw) {
+  const name = (x.name || '').toLowerCase();
+  let s = 0;
+  if (name.includes(kw)) s += name.startsWith(kw) ? 100 : 60;
+  if ((x.keywords || '').toLowerCase().includes(kw)) s += 40;
+  if ((x.desc || '').toLowerCase().includes(kw)) s += 10;
+  return s;
+}
+
 function renderPaletteResults(q) {
   const kw = (q || '').trim().toLowerCase();
   const list = PALETTE.items
-    .filter((x) => !kw || (x.name + x.desc + (x.keywords || '')).toLowerCase().includes(kw))
-    .slice(0, 12);
+    .map((x) => [x, kw ? paletteScore(x, kw) : 1])
+    .filter(([, s]) => s > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12)
+    .map(([x]) => x);
   PALETTE.filtered = list;
   PALETTE.idx = Math.min(PALETTE.idx, Math.max(0, list.length - 1));
   const box = document.getElementById('palette-results');
@@ -1280,7 +1324,26 @@ async function openTool(id) {
     }
     const box = $('#tool-result');
     box.style.display = '';
-    box.innerHTML = `<div class="empty">${t('处理中…', 'processing')}</div>`;
+    if (meta.runtime === 'pyodide') {
+      // Python 工具：首次需下载自托管运行时，展示确定性进度条
+      box.innerHTML = `<div class="py-load"><div class="py-load-bar"><div class="py-load-fill" id="py-fill"></div></div><div class="py-load-txt" id="py-txt">正在准备 Python 运行时…</div></div>`;
+      setProgressHandler((loaded, total, phase) => {
+        const fill = document.getElementById('py-fill');
+        const txt = document.getElementById('py-txt');
+        if (!fill || !txt) return;
+        const mb = (n) => (n / 1048576).toFixed(1);
+        if (phase === 'init') {
+          fill.style.width = '100%';
+          txt.textContent = '正在初始化 Python 环境…';
+          return;
+        }
+        fill.style.width = (total ? Math.min(100, Math.round((loaded / total) * 100)) : 0) + '%';
+        const label = total > 20000000 ? 'pandas 数据处理库' : 'Python 运行时';
+        txt.textContent = `正在下载${label} ${mb(loaded)} / ${mb(total)} MB（仅首次，之后可离线使用）`;
+      });
+    } else {
+      box.innerHTML = `<div class="empty">${t('处理中…', 'processing')}</div>`;
+    }
     try {
       const out = await mod.run(values);
       box.innerHTML = out.html;
@@ -1288,6 +1351,8 @@ async function openTool(id) {
       pushUsage(meta.id); // 仅本机计数
     } catch (e) {
       box.innerHTML = `<div class="msg-err">${t('出错了：', 'errorPrefix')}${esc(e.message)}</div>`;
+    } finally {
+      setProgressHandler(null);
     }
   }
 

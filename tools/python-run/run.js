@@ -2,8 +2,8 @@
 import { runPython } from '/assets/pyodide-runtime.js';
 
 export const manifest = {
-  usage: '在下方粘贴 Python 代码并点击运行。首次运行需从 CDN 加载 Pyodide 运行时（约 10MB，需等待十几秒），之后同一次会话内瞬时启动。print() 输出会显示在结果区。内置标准库 + numpy/micro 常用包可按需加载。',
-  tips: ['首次运行需下载约 10MB 的 WASM 运行时（十几秒），之后本次会话内瞬时启动', '沙箱内无网络、无文件系统——这是安全边界也是限制', '需要 numpy 等库时：await micropip.install("numpy") 后 import numpy'],
+  usage: '在下方粘贴 Python 代码并点击运行。首次运行需从本站下载 Pyodide 运行时（约 13MB，有进度条，需等待十几秒），之后同一次会话内瞬时启动。print() 输出会显示在结果区。内置标准库 + numpy/micro 常用包可按需加载。',
+  tips: ['首次运行需下载约 13MB 的 WASM 运行时（有进度条，之后本次会话内瞬时启动，断网也能用）', '沙箱内无网络、无文件系统——这是安全边界也是限制', '需要 numpy 等库时：await micropip.install("numpy") 后 import numpy'],
   scenarios: [
     { scene: '临时验证一段 Python 逻辑对不对', how: '粘贴代码 → 运行', result: '无需装 Python 环境，直接看输出' },
     { scene: '电脑不是自己的，不想装环境', how: '打开网页 → 粘贴代码', result: '浏览器内执行，不污染本机' },
