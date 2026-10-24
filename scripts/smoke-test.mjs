@@ -45,6 +45,8 @@ const paths = [
   '/tools/json-format/run.js',
   '/assets/vendor/pyodide/pyodide-lock.json',
   '/assets/vendor/pyodide/pyodide.asm.js',
+  '/assets/vendor/jsQR.js',
+  '/assets/vendor/pdf-lib.min.js',
 ];
 
 let ok = 0;

@@ -618,7 +618,7 @@ async function openTopics() {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:1000px">
       <h1>🧩 专题合集</h1>
-      <p class="lead">按「要完成的事」打包好的工具组合，不用自己从 84 个工具里挑。每个专题都包含使用顺序、关联资源与常见问题。</p>
+      <p class="lead">按「要完成的事」打包好的工具组合，不用自己从 ${reg.tools.length} 个工具里挑。每个专题都包含使用顺序、关联资源与常见问题。</p>
       <div class="topic-grid">
         ${data.topics
           .map(
@@ -1152,7 +1152,7 @@ function fieldHTML(inp) {
     case 'range':
       return `<input type="range" id="f-${inp.name}" min="${inp.min}" max="${inp.max}" value="${dv || 75}" style="width:100%">`;
     case 'file':
-      return `<input type="file" id="f-${inp.name}" accept="${esc(inp.accept || '*')}" />`;
+      return `<input type="file" id="f-${inp.name}" accept="${esc(inp.accept || '*')}"${inp.multiple ? ' multiple' : ''} />`;
     case 'number':
       return `<input type="number" id="f-${inp.name}" value="${dv}" ${ph} />`;
     default:
@@ -1316,11 +1316,20 @@ async function openTool(id) {
     await doRun();
   };
 
+  // 工具可选钩子：表单渲染完成后做联动（如单位换算的「类型 → 单位」下拉联动）
+  if (typeof mod.onForm === 'function') {
+    try {
+      mod.onForm($('#tool-form'));
+    } catch (e) {
+      console.warn('onForm 钩子执行失败：', e);
+    }
+  }
+
   async function doRun() {
     const values = {};
     for (const inp of manifest.inputs) {
       const el = document.getElementById('f-' + inp.name);
-      values[inp.name] = inp.type === 'file' ? el.files[0] : el.value;
+      values[inp.name] = inp.type === 'file' ? (inp.multiple ? Array.from(el.files || []) : el.files[0]) : el.value;
     }
     const box = $('#tool-result');
     box.style.display = '';

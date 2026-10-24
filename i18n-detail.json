@@ -719,6 +719,138 @@
         "fg": "Text color",
         "bg": "Background color"
       }
+    },
+    "tax-calc": {
+      "usage": "Enter your gross monthly salary, month of the year and deductions. The tool applies the cumulative withholding method exactly as the tax authority does: taxable income accumulates from January, is matched against the withholding rate table, and the tax already withheld in previous months is subtracted. You also get a month-by-month forecast for the whole year.",
+      "tips": [
+        "Under cumulative withholding, early months are taxed at lower rates and later months at higher ones — the 12 months sum exactly to the annual tax",
+        "Annual bonus can be taxed separately or merged into comprehensive income; compute both and pick the lower total",
+        "Deductions accumulate only from the month they actually start — a child born in September should not trigger deductions for January-August"
+      ],
+      "scenarios": [
+        {
+          "scene": "The tax line on your payslip makes no sense",
+          "how": "Enter salary, social insurance and special deductions",
+          "result": "Month-by-month taxable income, rate and tax, fully itemized"
+        },
+        {
+          "scene": "Two employers withheld tax separately this year",
+          "how": "Recompute from the new employer cumulative base, net of what was already withheld",
+          "result": "Avoid a reconciliation-time top-up in April"
+        },
+        {
+          "scene": "Comparing annual bonus options before payout",
+          "how": "Compute the merged-income annual tax here, then compare with separate taxation",
+          "result": "Pick whichever option owes less"
+        }
+      ],
+      "runLabel": "Calculate tax",
+      "labels": {
+        "salary": "Gross monthly salary (CNY)",
+        "month": "Month of the year (1-12)",
+        "social": "Personal social insurance & housing fund (per month)",
+        "kids": "Child education deduction",
+        "toddlers": "Infant care (under age 3)",
+        "elder": "Elderly support deduction",
+        "housing": "Housing deduction (loan interest OR rent)",
+        "edu": "Continuing education deduction",
+        "other": "Other deductions (per month)"
+      }
+    },
+    "unit-convert": {
+      "usage": "Pick a quantity type and both unit dropdowns switch to that category automatically. Enter any value to see the one-to-one result plus a full comparison table across every unit in the category. Temperature conversions are handled with exact linear formulas rather than factors.",
+      "tips": [
+        "Storage has two standards: KB/MB are decimal (vendor labeling), KiB/MiB are binary (OS display) — a 1TB drive showing 931GB is normal",
+        "Mach number depends on local temperature and pressure; this tool assumes 15°C at sea level",
+        "Imperial and US gallons differ by ~20%; US customary units are used throughout"
+      ],
+      "scenarios": [
+        {
+          "scene": "An overseas listing says 5.5 ft and you need meters",
+          "how": "Length → 5.5 feet → meters",
+          "result": "About 1.676 m"
+        },
+        {
+          "scene": "A recipe uses fl oz but you only have a measuring cup",
+          "how": "Volume → 8 fl oz → mL",
+          "result": "About 236.6 mL"
+        },
+        {
+          "scene": "A 1TB drive shows only 931GB in Explorer",
+          "how": "Data → 1 TB → GiB",
+          "result": "About 931.32 GiB — no capacity was lost"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "cat": "Quantity type",
+        "value": "Value",
+        "from": "From unit",
+        "to": "To unit"
+      }
+    },
+    "qr-decode": {
+      "usage": "Upload a screenshot, photo or scan containing a QR code. Decoding runs fully in your browser via the open-source jsQR library: it locates the three finder patterns, decodes the data region, and marks the detected position with a red box. Works with URLs, plain text, WiFi configs and vCards.",
+      "tips": [
+        "Decoding is fully local — even QR codes holding sensitive links are safe to read here",
+        "Cropping tightly around the QR code (with a small white margin) dramatically improves recognition",
+        "Inverted codes (white on black) are also supported — both polarities are attempted",
+        "Only the first code in an image is returned; crop the target code to the center for others"
+      ],
+      "scenarios": [
+        {
+          "scene": "A screenshot arrived with a QR code in it",
+          "how": "Upload the image → decode",
+          "result": "The link text, no phone camera needed"
+        },
+        {
+          "scene": "A QR code printed on a poster",
+          "how": "Take a straight, well-lit photo and upload",
+          "result": "Recognized when square-on and unobstructed"
+        },
+        {
+          "scene": "Checking whether a QR target is trustworthy",
+          "how": "Decode first and inspect the full URL before visiting",
+          "result": "See the real domain before you commit"
+        }
+      ],
+      "runLabel": "Decode QR",
+      "labels": {
+        "file": "Choose QR code image (screenshot or photo)"
+      }
+    },
+    "pdf-merge": {
+      "usage": "Merge multiple PDFs in selection order, extract a page range (e.g. 1,3,5-8) from a single file, or split a file into fixed-size chunks. Everything runs locally with the open-source pdf-lib library — your documents never leave the device.",
+      "tips": [
+        "All processing happens in-browser — contracts and ID scans are safe to use",
+        "Encrypted PDFs are not supported; decrypt them first",
+        "pdf-lib preserves page content and size, but bookmarks, form fields and some annotations are not carried over",
+        "In split mode each chunk downloads separately; your browser may ask to allow multiple downloads"
+      ],
+      "scenarios": [
+        {
+          "scene": "Three reports to send as one file",
+          "how": "Merge mode, multi-select in order",
+          "result": "One properly sequenced PDF"
+        },
+        {
+          "scene": "Only the signature pages of an 80-page contract",
+          "how": "Extract mode, enter range 12,45",
+          "result": "A new file with just those pages"
+        },
+        {
+          "scene": "Distributing a scanned booklet page by page",
+          "how": "Split mode, 1 page per chunk",
+          "result": "Individual files, each downloadable"
+        }
+      ],
+      "runLabel": "Process",
+      "labels": {
+        "mode": "Operation",
+        "files": "Choose PDF(s) (Ctrl/⌘ for multi-select in merge mode)",
+        "pages": "Page range (e.g. 1,3,5-8; empty = all)",
+        "every": "Pages per chunk"
+      }
     }
   }
 }

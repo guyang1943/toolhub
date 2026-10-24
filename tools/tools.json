@@ -19,7 +19,9 @@
     "bentopdf",
     "pairdrop",
     "devdocs",
-    "python-run"
+    "python-run",
+    "tax-calc",
+    "unit-convert"
   ],
   "tools": [
     {
@@ -540,6 +542,97 @@
         "contrast checker",
         "contrast",
         "checker"
+      ]
+    },
+    {
+      "id": "tax-calc",
+      "name": "个税计算器",
+      "desc": "工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测",
+      "category": "效率",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "个税",
+        "工资",
+        "累计预扣"
+      ],
+      "hot": true,
+      "aliases": [
+        "geshuijisuanqi",
+        "gsjsq",
+        "income tax calculator",
+        "income",
+        "tax",
+        "calculator"
+      ]
+    },
+    {
+      "id": "unit-convert",
+      "name": "单位换算",
+      "desc": "长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转",
+      "category": "效率",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "单位",
+        "换算",
+        "度量衡"
+      ],
+      "hot": true,
+      "aliases": [
+        "danweihuansuan",
+        "dwhs",
+        "unit converter",
+        "unit",
+        "converter"
+      ]
+    },
+    {
+      "id": "qr-decode",
+      "name": "二维码解析",
+      "desc": "上传图片本地识别二维码内容，图片不上传，标注识别位置",
+      "category": "效率",
+      "source": "内置实现 (jsQR)",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "二维码",
+        "qr",
+        "解码"
+      ],
+      "hot": true,
+      "aliases": [
+        "erweimajiexi",
+        "ewmjx",
+        "qr code reader",
+        "qr",
+        "code",
+        "reader"
+      ]
+    },
+    {
+      "id": "pdf-merge",
+      "name": "PDF 合并拆分",
+      "desc": "多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传",
+      "category": "文档",
+      "source": "内置实现 (pdf-lib)",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "pdf",
+        "合并",
+        "拆分"
+      ],
+      "hot": true,
+      "aliases": [
+        "hebingchaifen",
+        "hbcf",
+        "pdf merge & split",
+        "pdf",
+        "merge",
+        "split"
       ]
     }
   ]

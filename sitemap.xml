@@ -151,6 +151,30 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://toolhub.guyang1966.workers.dev/tools/tax-calc/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.guyang1966.workers.dev/tools/unit-convert/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.guyang1966.workers.dev/tools/qr-decode/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.guyang1966.workers.dev/tools/pdf-merge/</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://toolhub.guyang1966.workers.dev/tools/excalidraw/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>

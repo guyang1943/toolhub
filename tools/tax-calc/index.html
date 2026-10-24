@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>个税计算器 / Income Tax Calculator · ToolHub</title>
+  <meta name="description" content="工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测 Monthly withholding under the cumulative method, with special deductions and a full-year forecast" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/tools/tax-calc/" />
+  <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/tools/tax-calc/" />
+  <meta property="og:title" content="个税计算器 / Income Tax Calculator · ToolHub" />
+  <meta property="og:description" content="工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测 Monthly withholding under the cumulative method, with special deductions and a full-year forecast" />
+  <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:description" content="精选 84 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"个税计算器","description":"工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测","url":"https://toolhub.guyang1966.workers.dev/tools/tax-calc/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么年初个税低、年底越来越高？","acceptedAnswer":{"@type":"Answer","text":"累计预扣法下，累计应纳税所得额逐月累加，会依次滑入更高的税率档（3% → 10% → 20% …）。同样月薪，1 月可能只扣几十元，12 月可能扣几百元。全年十二个月相加正好等于全年应纳税额，并没有多扣。"}},{"@type":"Question","name":"年终奖要不要单独计税？","acceptedAnswer":{"@type":"Answer","text":"看情况。年终奖可以选单独计税（除以 12 找税率，税额不与工资合并），也可以并入综合所得。收入较低、扣除较多的人并入往往更省；收入较高、工资已适用高税率的人单独计税可能更划算。两种方式都算一遍，选总税负小的。"}},{"@type":"Question","name":"汇算清缴时会不会退税或补税？","acceptedAnswer":{"@type":"Answer","text":"工资部分通常不退不补（累计预扣已精准扣缴）。但如果全年还有稿酬、劳务报酬、特许权使用费，或者中途换过工作、年中才新增专项附加扣除，合并后与预扣有差异，次年 3–6 月汇算时就会多退少补。"}}]}</script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav">
+      <a href="/" data-nav="tools">工具</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <div class="header-actions">
+      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>个税计算器</h1><p>工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测</p><h2>关于个税计算器</h2><p>个税计算器把工资条上难以复核的扣税过程完整拆开。工资薪金所得采用累计预扣法：税务系统不按单月收入算税，而是把年初至今的收入、起征点、三险一金和专项附加扣除全部累加，先算出累计应纳税所得额，对照预扣率表得出累计应预扣税额，再减去此前几个月已经预扣的金额，才是这个月实际扣的税。这样做的好处是收入均匀时各月税负分布合理，年终也不再需要为工资部分单独汇算；代价是月初月份个税低、临近年底单月个税会逐渐升高，看工资条时容易误以为「扣得越来越多」。本工具按同一套规则逐月还原，并给出全年十二个月的预测表。</p><h2>使用步骤</h2><ol><li>填写税前月薪（劳动合同上的固定工资，不含年终奖等一次性收入），以及工资条上三险一金的个人缴纳部分</li><li>选择计算第几个月（1–12），累计预扣法下每个月的扣除都是「年初到现在」的累计值</li><li>按实际情况选择专项附加扣除：子女教育、3 岁以下婴幼儿照护、赡养老人、住房贷款利息或住房租金、继续教育，均可多选叠加</li><li>点击「计算个税」，查看本月应预扣税额、税后到手金额，以及全年各月预测表和全年合计</li><li>换工作或有一次性收入时，用年终奖单独计税的方式再算一次，比较哪种总税负更低</li></ol><h2>常见错误</h2><h3>把税前月薪填成税后到手</h3><p>预扣法算的是「税前」。如果把到手金额填进去，会低估税基、算出的个税明显偏低。以劳动合同和工资条上的「应发工资」为准。</p><h3>重复享受住房扣除</h3><p>住房贷款利息与住房租金只能二选一，且夫妻双方申报的也不能超过标准额度。本工具已做互斥，但前提是如实填写——同时符合两项条件时只应保留一项。</p><h3>忽略扣除的起始月份</h3><p>累计预扣的扣除额按「实际发生月份」累加。比如 9 月才出生的宝宝，1–8 月不该有婴幼儿照护扣除，直接用全年额度会高估扣除、低估税负。精确计算时请按实际起止月份分摊。</p><h3>拿本工具结果直接修改工资条</h3><p>本工具是估算：未考虑企业年金、商业健康险递延、残疾孤老烈属减征、以及各地社保基数上下限等细节。金额以争议时，以个人所得税 App 和税务机关的记录为准。</p><h2>常见问题</h2><h3>为什么年初个税低、年底越来越高？</h3><p>累计预扣法下，累计应纳税所得额逐月累加，会依次滑入更高的税率档（3% → 10% → 20% …）。同样月薪，1 月可能只扣几十元，12 月可能扣几百元。全年十二个月相加正好等于全年应纳税额，并没有多扣。</p><h3>年终奖要不要单独计税？</h3><p>看情况。年终奖可以选单独计税（除以 12 找税率，税额不与工资合并），也可以并入综合所得。收入较低、扣除较多的人并入往往更省；收入较高、工资已适用高税率的人单独计税可能更划算。两种方式都算一遍，选总税负小的。</p><h3>汇算清缴时会不会退税或补税？</h3><p>工资部分通常不退不补（累计预扣已精准扣缴）。但如果全年还有稿酬、劳务报酬、特许权使用费，或者中途换过工作、年中才新增专项附加扣除，合并后与预扣有差异，次年 3–6 月汇算时就会多退少补。</p><p>来源：内置实现 · License: MIT · 分类：效率</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <input id="hero-search" type="text" placeholder="搜索工具或资源…（⌘K 打开命令面板）" />
+          <div class="hero-search-hint">88 个工具 · 50 条资源 · 全部免费，无需注册</div>
+        </div>
+        <div class="hero-stats" id="hero-stats"></div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="display:none">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-grid" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="display:none">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+  </footer>
+
+  <script src="/assets/vendor/qrcode.min.js"></script>
+  <script src="/assets/vendor/marked.min.js"></script>
+  <script src="/assets/vendor/purify.min.js"></script>
+  <script defer src="/assets/vendor/pyodide-loader.js"></script>
+  <script>window.__TOOL__="tax-calc";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

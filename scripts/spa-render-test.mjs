@@ -214,6 +214,87 @@ const palHtml = document.getElementById('palette-results').innerHTML;
 check('命令面板支持拼音首字母', palHtml.includes('哈希计算'), `${palHtml.length} 字符`);
 searchEl.value = '';
 
+// 8) 新工具：页面渲染 + onForm 联动 + 多文件输入 + 端到端运行链路
+// 8a. 个税计算器页渲染（10 个输入）
+await go('/tools/tax-calc/');
+await sleep(400);
+let taxForm = document.getElementById('tool-form') ? document.getElementById('tool-form').innerHTML : '';
+check('个税计算器页渲染', taxForm.includes('税前月薪') && taxForm.includes('累计预扣'), `#tool-form ${taxForm.length} 字符`);
+check('个税页含专项附加扣除选项', taxForm.includes('子女教育') && taxForm.includes('赡养老人'));
+
+// 8b. 单位换算 onForm 钩子：类型 → 单位下拉联动
+const unitMod = await import('/tools/unit-convert/run.js');
+{
+  const mk = () => {
+    const el = makeEl('x');
+    el.closest = () => ({ style: {} });
+    return el;
+  };
+  const catEl = mk();
+  const fromEl = mk();
+  const toEl = mk();
+  catEl.value = 'length';
+  const form = { querySelector: (sel) => ({ '#f-cat': catEl, '#f-from': fromEl, '#f-to': toEl })[sel] || null };
+  unitMod.onForm(form);
+  check('onForm 填充长度单位下拉', fromEl.innerHTML.includes('米 m') && fromEl.innerHTML.includes('英尺 ft'), `${fromEl.innerHTML.length} 字符`);
+  check('onForm 默认选中米/英尺', fromEl.value === 'm' && toEl.value === 'ft');
+  catEl.value = 'temperature';
+  fire(catEl, 'change');
+  check('切换类型后联动温度单位', toEl.innerHTML.includes('摄氏度') && toEl.innerHTML.includes('开尔文'));
+
+  // 8c. 单位换算端到端：填值 → 点运行 → 结果
+  await go('/tools/unit-convert/');
+  await sleep(400);
+  document.getElementById('f-cat').value = 'length';
+  document.getElementById('f-value').value = '1';
+  document.getElementById('f-from').value = 'm';
+  document.getElementById('f-to').value = 'ft';
+  await document.getElementById('run-btn').onclick();
+  await waitFor(() => (document.getElementById('tool-result').innerHTML || '').includes('3.2808399'));
+  check('单位换算端到端出结果', document.getElementById('tool-result').innerHTML.includes('3.2808399'));
+}
+
+// 8d. PDF 工具 onForm：按模式显隐字段
+const pdfMod = await import('/tools/pdf-merge/run.js');
+{
+  const mk = () => {
+    const el = makeEl('x');
+    el._field = { style: {} };
+    el.closest = () => el._field;
+    return el;
+  };
+  const modeEl = mk();
+  const pagesEl = mk();
+  const everyEl = mk();
+  modeEl.value = 'merge';
+  const form = { querySelector: (sel) => ({ '#f-mode': modeEl, '#f-pages': pagesEl, '#f-every': everyEl })[sel] || null };
+  pdfMod.onForm(form);
+  check('PDF 合并模式隐藏页码/每份页数', pagesEl._field.style.display === 'none' && everyEl._field.style.display === 'none');
+  modeEl.value = 'extract';
+  fire(modeEl, 'change');
+  check('提取模式显示页码范围', pagesEl._field.style.display === '' && everyEl._field.style.display === 'none');
+  modeEl.value = 'split';
+  fire(modeEl, 'change');
+  check('拆分模式显示每份页数', everyEl._field.style.display === '');
+  check('PDF 页含多选文件输入', (await import('node:fs')).readFileSync(new URL('../tools/pdf-merge/run.js', import.meta.url), 'utf8').includes('multiple: true'));
+}
+
+// 8e. 个税端到端：填值 → 点运行 → 结果含计算明细
+await go('/tools/tax-calc/');
+await sleep(400);
+document.getElementById('f-salary').value = '15000';
+document.getElementById('f-month').value = '10';
+document.getElementById('f-social').value = '2500';
+document.getElementById('f-kids').value = '2000';
+document.getElementById('f-toddlers').value = '0';
+document.getElementById('f-elder').value = '0';
+document.getElementById('f-housing').value = '1500';
+document.getElementById('f-edu').value = '0';
+document.getElementById('f-other').value = '0';
+await document.getElementById('run-btn').onclick();
+await waitFor(() => (document.getElementById('tool-result').innerHTML || '').includes('累计计算明细'));
+check('个税端到端出结果', document.getElementById('tool-result').innerHTML.includes('¥400.00'), '本月个税 400');
+
 // 汇总
 let pass = 0;
 for (const r of results) {

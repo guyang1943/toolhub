@@ -401,6 +401,22 @@
       },
       "vert": {
         "desc": "Open-source file format converter"
+      },
+      "tax-calc": {
+        "name": "Income Tax Calculator",
+        "desc": "Monthly withholding under the cumulative method, with special deductions and a full-year forecast"
+      },
+      "unit-convert": {
+        "name": "Unit Converter",
+        "desc": "Convert length, area, volume, mass, temperature, speed, time, data, pressure, power, energy and angle"
+      },
+      "qr-decode": {
+        "name": "QR Code Reader",
+        "desc": "Decode QR codes from images locally — images never leave your device, with detection box overlay"
+      },
+      "pdf-merge": {
+        "name": "PDF Merge & Split",
+        "desc": "Merge, extract pages, or split PDFs locally — files never leave your device"
       }
     }
   }

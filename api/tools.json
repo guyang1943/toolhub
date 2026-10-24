@@ -2,7 +2,7 @@
   "site": "ToolHub",
   "version": 1,
   "updated": "2026-10-24",
-  "total": 84,
+  "total": 88,
   "tools": [
     {
       "id": "json-format",
@@ -359,6 +359,66 @@
         "对比度",
         "无障碍",
         "wcag"
+      ]
+    },
+    {
+      "id": "tax-calc",
+      "name": "个税计算器",
+      "desc": "工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/tax-calc/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "个税",
+        "工资",
+        "累计预扣"
+      ]
+    },
+    {
+      "id": "unit-convert",
+      "name": "单位换算",
+      "desc": "长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/unit-convert/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "单位",
+        "换算",
+        "度量衡"
+      ]
+    },
+    {
+      "id": "qr-decode",
+      "name": "二维码解析",
+      "desc": "上传图片本地识别二维码内容，图片不上传，标注识别位置",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/qr-decode/",
+      "source": "内置实现 (jsQR)",
+      "license": "MIT",
+      "tags": [
+        "二维码",
+        "qr",
+        "解码"
+      ]
+    },
+    {
+      "id": "pdf-merge",
+      "name": "PDF 合并拆分",
+      "desc": "多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传",
+      "category": "文档",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/pdf-merge/",
+      "source": "内置实现 (pdf-lib)",
+      "license": "MIT",
+      "tags": [
+        "pdf",
+        "合并",
+        "拆分"
       ]
     },
     {
