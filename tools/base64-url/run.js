@@ -42,15 +42,8 @@ export async function run({ text, op }) {
     return { html: `<div class="msg-err">❌ 解码失败：内容不是合法的编码格式</div>` };
   }
   return {
-    html: `<div class="msg-ok">✅ 完成</div><pre class="ok">${escapeHTML(out)}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制结果</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(out);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制结果'), 1500);
-      };
-    },
+    html: `<div class="msg-ok">✅ 完成</div><pre class="ok">${escapeHTML(out)}</pre>`,
+    text: out,
   };
 }
 

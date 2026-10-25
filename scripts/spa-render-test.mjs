@@ -47,6 +47,11 @@ function makeEl(id) {
     focus() {},
     closest: () => null,
     insertAdjacentHTML() {},
+    appendChild(child) {
+      this.children.push(child);
+      this.innerHTML += (child && child.innerHTML) || '';
+      return child;
+    },
     remove() {},
     onclick: null,
   };

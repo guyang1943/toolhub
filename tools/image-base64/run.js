@@ -42,15 +42,8 @@ export async function run({ file, dataUri, mode }) {
   const kb = (n) => (n / 1024).toFixed(1) + ' KB';
   return {
     html: `<div class="msg-ok">✅ ${file.name} · 原图 ${kb(file.size)} → Base64 约 ${kb(out.length)}（体积约增加 33%）</div>
-      <pre class="ok" style="max-height:300px">${escapeHTML(out)}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(out);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制'), 1500);
-      };
-    },
+      <pre class="ok" style="max-height:300px">${escapeHTML(out)}</pre>`,
+    text: out,
   };
 }
 

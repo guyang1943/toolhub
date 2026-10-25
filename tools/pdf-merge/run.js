@@ -106,8 +106,8 @@ export function onForm(form) {
   sync();
 }
 
-function dl(url, name, pages) {
-  return `<a class="btn ghost" href="${url}" download="${name}">下载 ${name}${pages ? `（${pages} 页）` : ''}</a>`;
+function pdfBlob(bytes) {
+  return new Blob([bytes], { type: 'application/pdf' });
 }
 
 export async function run(v) {
@@ -140,12 +140,12 @@ export async function run(v) {
       info.push(`${f.name}（${n} 页）`);
     }
     const bytes = await out.save();
-    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
     return {
       html: `
         <div class="msg-ok">✅ 已合并 ${files.length} 个文件，共 ${totalPages} 页 · ${(bytes.length / 1048576).toFixed(2)} MB</div>
-        <div class="row" style="margin-top:12px">${dl(url, 'merged.pdf', totalPages)}</div>
         <p style="font-size:13px;color:var(--muted);margin-top:10px">合并顺序：${info.join(' → ')}</p>`,
+      files: [{ name: 'merged.pdf', blob: pdfBlob(bytes) }],
+      text: info.map((s, i) => `${i + 1}. ${s}`).join('\n'),
     };
   }
 
@@ -166,12 +166,12 @@ export async function run(v) {
     const copied = await out.copyPages(src, idx);
     copied.forEach((p) => out.addPage(p));
     const bytes = await out.save();
-    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
     return {
       html: `
         <div class="msg-ok">✅ 已提取 ${idx.length} / ${total} 页 · ${(bytes.length / 1048576).toFixed(2)} MB</div>
-        <div class="row" style="margin-top:12px">${dl(url, `${base}-extracted.pdf`, idx.length)}</div>
         <p style="font-size:13px;color:var(--muted);margin-top:10px">提取页码：${idx.map((i) => i + 1).join(', ')}</p>`,
+      files: [{ name: `${base}-extracted.pdf`, blob: pdfBlob(bytes) }],
+      text: idx.map((i) => i + 1).join(', '),
     };
   }
 
@@ -185,12 +185,12 @@ export async function run(v) {
     const copied = await out.copyPages(src, idx);
     copied.forEach((p) => out.addPage(p));
     const bytes = await out.save();
-    const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-    chunks.push({ name: `${base}-${i + 1}-${idx[idx.length - 1] + 1}.pdf`, url, pages: idx.length });
+    chunks.push({ name: `${base}-${i + 1}-${idx[idx.length - 1] + 1}.pdf`, blob: pdfBlob(bytes) });
   }
   return {
-    html: `
-      <div class="msg-ok">✅ 已拆成 ${chunks.length} 个文件（每份最多 ${every} 页）</div>
-      <div class="row" style="margin-top:12px;flex-wrap:wrap;gap:8px">${chunks.map((c) => dl(c.url, c.name, c.pages)).join('')}</div>`,
+    html: `<div class="msg-ok">✅ 已拆成 ${chunks.length} 个文件（每份最多 ${every} 页）</div>
+      <p style="font-size:13px;color:var(--muted);margin-top:10px">文件名格式：原名-起始页-结束页.pdf</p>`,
+    files: chunks.map((c) => ({ name: c.name, blob: c.blob })),
+    text: chunks.map((c) => c.name).join('\n'),
   };
 }

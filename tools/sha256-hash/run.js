@@ -29,14 +29,7 @@ export async function run({ text, algo }) {
   const buf = await crypto.subtle.digest(algo, new TextEncoder().encode(text));
   const hex = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
   return {
-    html: `<div class="msg-ok">✅ ${algo}（${hex.length * 4} 位）</div><pre class="ok">${hex}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制哈希</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(hex);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制哈希'), 1500);
-      };
-    },
+    html: `<div class="msg-ok">✅ ${algo}（${hex.length * 4} 位）</div><pre class="ok">${hex}</pre>`,
+    text: hex,
   };
 }

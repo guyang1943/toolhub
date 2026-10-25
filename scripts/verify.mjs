@@ -334,6 +334,24 @@ check('无障碍基础（skip link / 地标 / aria）', () => {
   return 'skip link + landmark + aria + focus-visible';
 });
 
+check('结果出口契约（text / files）', () => {
+  const localDirs = readdirSync(join(root, 'tools')).filter((d) => existsSync(join(root, 'tools', d, 'run.js')));
+  const src = (d) => readFileSync(join(root, 'tools', d, 'run.js'), 'utf8');
+  const covered = localDirs.filter((d) => /^\s{2,6}(text|files)\s*[:,]/m.test(src(d)));
+  const bad = [];
+  if (covered.length < 30) bad.push(`仅 ${covered.length}/${localDirs.length} 个工具返回 text/files`);
+  // 不允许回退成工具自绘复制按钮或下载链接（否则无法统一回收 objectURL）
+  const legacy = localDirs.filter((d) => /id="copy-btn"/.test(src(d)));
+  if (legacy.length) bad.push('自绘复制按钮: ' + legacy.join(','));
+  const appSrc2 = readFileSync(join(root, 'assets/app.js'), 'utf8');
+  if (!/function renderResultActions\(/.test(appSrc2)) bad.push('app.js 缺统一结果出口');
+  if (!/releaseResultUrls\(\)/.test(appSrc2)) bad.push('app.js 缺 objectURL 回收');
+  const css2 = readFileSync(join(root, 'assets/style.css'), 'utf8');
+  if (!/\.result-actions\s*\{/.test(css2)) bad.push('缺 .result-actions 样式');
+  assert(!bad.length, bad.join('; '));
+  return `${covered.length}/${localDirs.length} 工具走标准出口`;
+});
+
 // ---------- 输出 ----------
 console.log('\n🔍 ToolHub 全量校验\n');
 for (const r of results) {

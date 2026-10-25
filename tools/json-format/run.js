@@ -48,17 +48,8 @@ export async function run({ json, mode, indent }) {
   return {
     html: `
       <div class="msg-ok">✅ JSON 合法 · 输出 ${size} 字节</div>
-      <pre class="ok">${escapeHTML(text)}</pre>
-      <div class="row" style="margin-top:12px">
-        <button class="btn ghost" id="copy-btn">复制结果</button>
-      </div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(text);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制结果'), 1500);
-      };
-    },
+      <pre class="ok">${escapeHTML(text)}</pre>`,
+    text,
   };
 }
 

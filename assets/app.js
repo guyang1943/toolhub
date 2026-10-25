@@ -1,11 +1,20 @@
 // ToolHub 主逻辑 v0.6：注册表 → 渲染 → hash 路由（Manifest 驱动表单）
 // 新增：深色模式 / 收藏 / URL 分类状态 / 关于与提交页 / 快捷键 / 回顶
 import { setProgressHandler } from '/assets/pyodide-runtime.js';
+import { CHAINS, setHandoff, takeHandoff } from '/assets/pipeline.js';
 let REGISTRY = null;
 let I18N = null;
 let D18N = null; // 工具详情页英文内容
 let LANG = localStorage.getItem('toolhub:lang') || 'zh';
 let activeCategory = '全部';
+// 运行时筛选与排序：状态同步到 URL，刷新/分享后保持
+const QS0 = new URLSearchParams(location.search);
+let activeRuntime = ['local', 'offline'].includes(QS0.get('runtime')) ? QS0.get('runtime') : 'all';
+let activeSort = ['used', 'new'].includes(QS0.get('sort')) ? QS0.get('sort') : 'default';
+// 需要运行时下载大依赖的工具（首次访问联网后即可离线）
+const NEEDS_FIRST_FETCH = new Set(['pdf-merge', 'img-to-pdf', 'qr-decode', 'python-run', 'py-stats', 'pandas-csv']);
+const isLocalTool = (tool) => tool.runtime !== 'link';
+const isOfflineTool = (tool) => tool.runtime === 'browser' && !NEEDS_FIRST_FETCH.has(tool.id);
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -184,6 +193,51 @@ function renderChips(categories) {
   });
 }
 
+// 筛选与排序状态写入 URL（不产生历史记录，刷新后保持）
+function syncUrlState() {
+  const url = new URL(location.href);
+  if (activeRuntime === 'all') url.searchParams.delete('runtime');
+  else url.searchParams.set('runtime', activeRuntime);
+  if (activeSort === 'default') url.searchParams.delete('sort');
+  else url.searchParams.set('sort', activeSort);
+  history.replaceState(null, '', url);
+}
+
+function renderFilterbar() {
+  const bar = $('#filterbar');
+  if (!bar) return;
+  const rts = [
+    { key: 'all', label: t('全部', 'filterAll') },
+    { key: 'local', label: t('🔒 仅本机执行', 'filterLocal') },
+    { key: 'offline', label: t('📴 断网也能用', 'filterOffline') },
+  ];
+  const sorts = [
+    { key: 'default', label: t('默认', 'sortDefault') },
+    { key: 'used', label: t('🔥 最常用', 'sortUsed') },
+    { key: 'new', label: t('🆕 最近收录', 'sortUpdated') },
+  ];
+  bar.innerHTML =
+    `<span class="fb-label">${t('运行方式', 'filterRuntime')}</span>` +
+    rts.map((x) => `<button type="button" class="chip ${activeRuntime === x.key ? 'active' : ''}" data-rt="${x.key}">${x.label}</button>`).join('') +
+    `<span class="fb-sep"></span><span class="fb-label">${t('排序', 'sortBy')}</span>` +
+    sorts.map((x) => `<button type="button" class="chip ${activeSort === x.key ? 'active' : ''}" data-sort="${x.key}">${x.label}</button>`).join('') +
+    `<span class="fb-count" id="fb-count"></span>`;
+  bar.querySelectorAll('[data-rt]').forEach((el) => {
+    el.onclick = () => {
+      activeRuntime = el.dataset.rt;
+      syncUrlState();
+      renderHome();
+    };
+  });
+  bar.querySelectorAll('[data-sort]').forEach((el) => {
+    el.onclick = () => {
+      activeSort = el.dataset.sort;
+      syncUrlState();
+      renderHome();
+    };
+  });
+}
+
 function cardHTML(tool) {
   const isLocal = tool.runtime !== 'link';
   const badge = isLocal
@@ -305,8 +359,13 @@ function renderGrid(tools, keyword) {
   const kw = (keyword || '').trim().toLowerCase();
   const favList = favs();
   const usage = usageMap();
+  const idxOf = new Map((REGISTRY ? REGISTRY.tools : tools).map((x, i) => [x.id, i]));
+  // 最近收录：本地工具按新增顺序倒排（新工具追加在 tools.json 末尾），目录工具保持原序垫后
+  const newOrder = (tool) => (tool.runtime === 'link' ? 10000 + (idxOf.get(tool.id) || 0) : -(idxOf.get(tool.id) || 0));
+  const runtimeOk = (tool) => activeRuntime === 'all' || (activeRuntime === 'local' ? isLocalTool(tool) : isOfflineTool(tool));
   const list = tools
     .map((tool) => {
+      if (!runtimeOk(tool)) return null;
       if (activeCategory === '⭐ 收藏' && !favList.includes(tool.id)) return null;
       if (activeCategory === '🔥 最常用' && !usage[tool.id]) return null;
       const catOk =
@@ -325,6 +384,14 @@ function renderGrid(tools, keyword) {
           (b[0].hot ? 1 : 0) - (a[0].hot ? 1 : 0)
         );
       }
+      if (activeSort === 'used') {
+        const d = (usage[b[0].id] || 0) - (usage[a[0].id] || 0);
+        if (d) return d;
+      }
+      if (activeSort === 'new') {
+        const d = newOrder(a[0]) - newOrder(b[0]);
+        if (d) return d;
+      }
       if (activeCategory === '🔥 最常用') return (usage[b[0].id] || 0) - (usage[a[0].id] || 0);
       return (
         (b[0].runtime === 'browser') - (a[0].runtime === 'browser') ||
@@ -333,10 +400,14 @@ function renderGrid(tools, keyword) {
     })
     .map((x) => x[0]);
 
+  const countEl = $('#fb-count');
+  if (countEl) countEl.textContent = LANG === 'en' ? `${list.length} / ${tools.length} shown` : `显示 ${list.length} / ${tools.length}`;
+
   if (!list.length) {
     const emptyMsg =
       activeCategory === '⭐ 收藏' ? t('收藏夹是空的，点卡片右上角 ☆ 添加', 'emptyFav')
       : activeCategory === '🔥 最常用' ? t('还没有使用记录，运行任意工具后这里会自动统计', 'emptyUsed')
+      : activeRuntime !== 'all' ? t('当前筛选下没有工具，试试切回「全部」', 'emptyRuntime')
       : t('没有匹配的工具，换个关键词试试', 'emptyAll');
     $('#grid').innerHTML = `
       <div class="empty">
@@ -345,7 +416,13 @@ function renderGrid(tools, keyword) {
         <div style="margin-top:14px"><button class="btn ghost" id="reset-filter">${t('查看全部工具', 'viewAll')}</button></div>
       </div>`;
     const rb = $('#reset-filter');
-    if (rb) rb.onclick = () => { activeCategory = '全部'; $('#search').value = ''; renderHome(); };
+    if (rb) rb.onclick = () => {
+      activeCategory = '全部';
+      activeRuntime = 'all';
+      syncUrlState();
+      $('#search').value = '';
+      renderHome();
+    };
     return;
   }
   $('#grid').innerHTML = list.map((tool) => cardHTML(tool)).join('');
@@ -1118,6 +1195,7 @@ async function renderHome() {
   renderFeatured(reg.tools);
   renderRecent(reg.tools);
   renderChips(reg.categories);
+  renderFilterbar();
   renderGrid(reg.tools, $('#search').value);
   renderCompareBar();
 }
@@ -1242,6 +1320,129 @@ function shareUrlOf(id, manifest) {
   }
   if (!hasFile) url.searchParams.set('run', '1'); // 收到链接即自动算一遍
   return url.toString();
+}
+
+/* ---------- 统一结果出口：复制文本 / 下载文件 / 分享链接 ----------
+   run() 返回 { html, text?, files?: [{ name, blob?, url? }] }
+   平台据此渲染统一操作条，工具内不再自绘复制/下载按钮。 */
+let RESULT_URLS = [];
+function releaseResultUrls() {
+  for (const u of RESULT_URLS) {
+    try {
+      URL.revokeObjectURL(u);
+    } catch {
+      /* 已被浏览器回收 */
+    }
+  }
+  RESULT_URLS = [];
+}
+function blobUrlOf(f) {
+  if (f.url) return f.url;
+  if (!f.blob) return null;
+  const u = URL.createObjectURL(f.blob);
+  RESULT_URLS.push(u);
+  return u;
+}
+function legacyCopy(str) {
+  const ta = document.createElement('textarea');
+  ta.value = str;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:-1000px;left:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try {
+    ok = document.execCommand('copy');
+  } catch {
+    ok = false;
+  }
+  ta.remove();
+  return ok;
+}
+async function copyWithFeedback(str, btn, okText) {
+  const label = btn.dataset.label || btn.textContent;
+  btn.dataset.label = label;
+  let ok = true;
+  try {
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(str);
+    else ok = legacyCopy(str);
+  } catch {
+    ok = legacyCopy(str);
+  }
+  btn.textContent = ok ? okText : t('复制失败，请手动选中', 'copyFail');
+  setTimeout(() => (btn.textContent = label), 1600);
+}
+function triggerDownload(url, name) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name || 'download';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => a.remove(), 120);
+}
+function renderResultActions(out, box, id, manifest) {
+  const files = (Array.isArray(out.files) ? out.files : [])
+    .map((f) => ({ name: f.name || 'output', kind: f.kind || '', blob: f.blob || null, url: blobUrlOf(f) }))
+    .filter((f) => f.url);
+  const hasText = typeof out.text === 'string' && out.text.length > 0;
+  if (!files.length && !hasText) return null;
+
+  // 图片产物：预览也走平台，工具不再自建 objectURL（否则无法统一回收）
+  const imgs = files.filter((f) => f.kind === 'image');
+  if (imgs.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'result-preview';
+    wrap.innerHTML = imgs.map((f) => `<img src="${f.url}" alt="${esc(t('生成结果预览', 'previewAlt'))}" loading="lazy">`).join('');
+    box.appendChild(wrap);
+  }
+
+  const bar = document.createElement('div');
+  bar.className = 'result-actions';
+  bar.setAttribute('role', 'group');
+  bar.setAttribute('aria-label', t('结果操作', 'resultActions'));
+  const parts = [];
+  if (hasText) parts.push(`<button type="button" class="btn ghost" data-act="copy">${t('📋 复制结果', 'copyResult')}</button>`);
+  if (files.length === 1) parts.push(`<a class="btn ghost" data-act="download" href="${files[0].url}" download="${esc(files[0].name)}">${t('⬇ 下载', 'download')} ${esc(files[0].name)}</a>`);
+  if (files.length > 1) parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 全部下载', 'downloadAll')}（${files.length}）</button>`);
+  // 工具链：把这次产出直接交给下游工具，不用先下载再上传
+  const chains = (CHAINS && typeof CHAINS === 'object' && CHAINS[id]) || [];
+  for (const c of chains) parts.push(`<button type="button" class="btn ghost" data-go="${c.to}">→ ${esc(c.label)}</button>`);
+  parts.push(`<button type="button" class="btn ghost" data-act="share">${t('🔗 分享此结果', 'shareResult')}</button>`);
+  parts.push(`<span class="ra-note">${t('全程在本机完成，文件不会上传', 'localNote')}</span>`);
+  bar.innerHTML = parts.join('');
+
+  const copyBtn = bar.querySelector('[data-act="copy"]');
+  if (copyBtn) copyBtn.onclick = () => copyWithFeedback(out.text, copyBtn, t('✓ 已复制', 'copied'));
+  const allBtn = bar.querySelector('[data-act="download-all"]');
+  if (allBtn) allBtn.onclick = () => files.forEach((f, i) => setTimeout(() => triggerDownload(f.url, f.name), i * 350));
+  const shareBtn = bar.querySelector('[data-act="share"]');
+  if (shareBtn) shareBtn.onclick = () => copyWithFeedback(shareUrlOf(id, manifest), shareBtn, t('✓ 链接已复制', 'linkCopied'));
+  bar.querySelectorAll('[data-go]').forEach((btn) => {
+    btn.onclick = async () => {
+      btn.disabled = true;
+      const payload = { from: id, files: [], text: out.text || '' };
+      for (const f of files) {
+        let blob = f.blob;
+        if (!blob) {
+          try {
+            blob = await (await fetch(f.url)).blob();
+          } catch {
+            continue;
+          }
+        }
+        payload.files.push({ name: f.name, blob });
+      }
+      if (!payload.files.length && !payload.text) {
+        btn.disabled = false;
+        return;
+      }
+      setHandoff(payload);
+      navigate('/tools/' + btn.dataset.go + '/');
+    };
+  });
+  box.appendChild(bar);
+  return bar;
 }
 
 function fieldHTML(inp) {
@@ -1439,10 +1640,15 @@ async function openTool(id) {
     const params = new URLSearchParams(location.search);
     const fromUrl = {};
     for (const [k, v] of params) if (k !== 'embed' && k !== 'run') fromUrl[k] = v;
+    // run=1 时收到链接即自动算一遍（文件类工具无法自动跑）
+    const wantRun = params.get('run') === '1' && !manifest.inputs.some((i) => i.type === 'file');
     if (Object.keys(fromUrl).length && applyValues(manifest, fromUrl)) {
-      if (params.get('run') === '1' && !manifest.inputs.some((i) => i.type === 'file')) {
-        setTimeout(() => doRun(), 60);
-      }
+      if (wantRun) setTimeout(() => doRun(), 60);
+      return;
+    }
+    // 只带 run=1（无字段参数）：按默认值直接运行
+    if (wantRun) {
+      setTimeout(() => doRun(), 60);
       return;
     }
     const draft = loadDraft(meta.id);
@@ -1458,6 +1664,42 @@ async function openTool(id) {
       bar.remove();
       renderTool(meta.id);
     };
+  })();
+
+  // 工具链接力：把上一步的产出直接填进本次表单（同一次会话内，不上传）
+  (function applyPipelineHandoff() {
+    const h = takeHandoff();
+    if (!h) return;
+    const inputs = manifest.inputs || [];
+    const fileInp = inputs.find((i) => i.type === 'file');
+    const fileEl = fileInp ? document.getElementById('f-' + fileInp.name) : null;
+    let injected = 0;
+    if (fileEl && h.files && h.files.length) {
+      try {
+        const dt = new DataTransfer();
+        h.files.forEach((f) => dt.items.add(new File([f.blob], f.name, { type: f.blob.type || 'application/octet-stream' })));
+        fileEl.files = dt.files;
+        injected = h.files.length;
+      } catch {
+        injected = 0; // 老浏览器不支持构造 FileList，退回手动选择
+      }
+    }
+    if (!injected && h.text) {
+      const txtInp = inputs.find((i) => i.type === 'textarea') || inputs.find((i) => i.type === 'text');
+      const txtEl = txtInp ? document.getElementById('f-' + txtInp.name) : null;
+      if (txtEl && !txtEl.value) {
+        txtEl.value = h.text;
+        injected = 1;
+      }
+    }
+    if (!injected) return;
+    const note = document.createElement('div');
+    note.className = 'pipe-note';
+    note.innerHTML = `↪ ${t('已带入上一步的结果', 'handoffNote')}${
+      injected > 1 ? `（${injected} ${t('个文件', 'filesUnit')}）` : ''
+    }，${t('确认参数后点运行即可', 'handoffHint')}`;
+    const fields = document.getElementById('tool-fields');
+    if (fields) fields.insertBefore(note, fields.firstChild);
   })();
 
   async function doRun() {
@@ -1487,7 +1729,9 @@ async function openTool(id) {
     }
     try {
       const out = await mod.run(values);
+      releaseResultUrls();
       box.innerHTML = out.html;
+      renderResultActions(out, box, meta.id, manifest);
       if (out.after) out.after(box);
       pushUsage(meta.id); // 仅本机计数
     } catch (e) {

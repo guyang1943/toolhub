@@ -28,7 +28,7 @@ export async function run({ code }) {
   if (out) html += `<pre class="ok">${escapeHTML(out)}</pre>`;
   if (err) html += `<pre class="err">${escapeHTML(String(err))}</pre>`;
   if (!out && !err) html = '<div class="msg-ok">✅ 执行完成（无输出）</div>';
-  return { html };
+  return { html, text: out || (err ? String(err) : '') };
 }
 
 function escapeHTML(s) {

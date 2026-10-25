@@ -67,5 +67,6 @@ export async function run({ fg, bg }) {
         <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 4px;color:var(--muted)">大字 AA（≥3:1）</td><td style="padding:7px 4px">${pick(passLarge)}</td></tr>
       </table>
       <div class="panel" style="margin-top:12px;background:var(--accent-soft);border-color:#c7d4f5;font-size:13px">💡 ${advice}</div>`,
+    text: `对比度 ${r}:1 · 正文 AA ${passAA ? '通过' : '未通过'} · 正文 AAA ${passAAA ? '通过' : '未通过'} · 大字 AA ${passLarge ? '通过' : '未通过'}`,
   };
 }

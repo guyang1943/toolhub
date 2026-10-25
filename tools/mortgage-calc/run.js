@@ -174,5 +174,10 @@ export async function run(v) {
           <li>组合贷请把公积金与商业两部分分别计算后相加</li>
         </ul>
       </div>`,
+    text: [
+      `贷款 ${num(principal)} · ${rateText(rate)} · ${years} 年 · ${mode === 'equal-payment' ? '等额本息' : '等额本金'}`,
+      mode === 'equal-payment' ? `每月还款 ${yuan(main.fixedPayment)}` : `首月还款 ${yuan(other.rows[0].pay)} → 末月 ${yuan(other.rows[other.rows.length - 1].pay)}`,
+      `支付利息 ${yuan(main.totalInterest)} · 还款总额 ${yuan(main.total)}（利息占本金 ${interestRatio.toFixed(2)}%）`,
+    ].join('\n'),
   };
 }

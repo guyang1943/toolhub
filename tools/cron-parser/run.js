@@ -99,5 +99,6 @@ export async function run({ expr, count }) {
       <div class="panel" style="margin-top:12px;background:var(--accent-soft);border-color:#c7d4f5;font-size:13.5px">📖 ${summary}</div>
       <div style="margin-top:12px;font-size:13px;color:var(--muted)">接下来 ${runs.length} 次执行：</div>
       <pre class="ok">${list}</pre>`,
+    text: list,
   };
 }

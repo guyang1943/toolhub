@@ -24,7 +24,8 @@ export const manifest = {
   usage:
     '把若干张图片合成一个 PDF，每张图片一页。可选用 A4 页面（等比缩放居中，适合打印和报销）或「适应图片」（页面与图片等大，适合电子归档）。整个过程在浏览器内用 pdf-lib 完成，图片不会上传到任何服务器。',
   tips: [
-    '支持 JPG 与 PNG；WebP、GIF、HEIC（iPhone 默认格式）请先用「图片格式转换」转成 PNG',
+    '支持 JPG / PNG / WebP / AVIF / GIF；WebP 等格式会先在本机解码再嵌入，画质与尺寸不变',
+    'HEIC（iPhone 默认格式）、RAW、TIFF 浏览器无法解码，先用系统预览另存为 JPG',
     'A4 模式只缩小不放大，小图会被居中放置而不会拉伸变糊',
     '多选时按选择顺序排列页面，想调整顺序就重新按顺序点选',
     '手机竖拍的照片若横躺，是 EXIF 方向信息未被 PDF 读取，先把图片旋转正再转',
@@ -35,7 +36,7 @@ export const manifest = {
     { scene: '把长截图变成可打印文档', how: 'A4 纵向 + 10mm 边距', result: '每页一张图，留出打印安全边距' },
   ],
   inputs: [
-    { name: 'files', label: '选择图片（可多选，选择顺序即页面顺序）', type: 'file', accept: 'image/png,image/jpeg', multiple: true },
+    { name: 'files', label: '选择图片（可多选，选择顺序即页面顺序）', type: 'file', accept: 'image/*', multiple: true },
     {
       name: 'size',
       label: '页面尺寸',
@@ -62,6 +63,23 @@ export const manifest = {
   runLabel: '生成 PDF',
 };
 
+// WebP / AVIF / GIF → PNG（pdf-lib 只接受 PNG / JPEG 内嵌）
+async function decodeToPng(f) {
+  try {
+    const bmp = await createImageBitmap(f);
+    const canvas = document.createElement('canvas');
+    canvas.width = bmp.width;
+    canvas.height = bmp.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bmp, 0, 0);
+    const blob = await new Promise((r) => canvas.toBlob(r, 'image/png'));
+    if (!blob) return null;
+    return new Uint8Array(await blob.arrayBuffer());
+  } catch {
+    return null;
+  }
+}
+
 export async function run(v) {
   const files = Array.isArray(v.files) ? v.files : v.files ? [v.files] : [];
   if (!files.length) throw new Error('请先选择至少一张图片');
@@ -83,7 +101,12 @@ export async function run(v) {
       let img;
       if (isPng) img = await doc.embedPng(bytes);
       else if (isJpg) img = await doc.embedJpg(bytes);
-      else throw new Error('格式不支持，请先转成 JPG / PNG');
+      else {
+        // WebP / AVIF / GIF 等：pdf-lib 只认 PNG/JPEG，先用浏览器解码再转 PNG
+        const pngBytes = await decodeToPng(f);
+        if (!pngBytes) throw new Error('浏览器无法解码这张图片（HEIC / RAW / TIFF 请先另存为 JPG 或 PNG）');
+        img = await doc.embedPng(pngBytes);
+      }
 
       let pageW;
       let pageH;
@@ -119,7 +142,7 @@ export async function run(v) {
 
   const bytes = await doc.save();
   const blob = new Blob([bytes], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
+  const outName = `images-${Date.now()}.pdf`;
   const pagesRows = report
     .map(
       (r, i) => `<tr><td>${i + 1}</td><td>${r.name}</td><td>${r.w}×${r.h} px</td><td>${Math.round(r.pageW)}×${Math.round(r.pageH)} pt</td><td>${(r.scale * 100).toFixed(0)}%</td></tr>`
@@ -128,10 +151,7 @@ export async function run(v) {
 
   return {
     html: `
-      <div class="row" style="justify-content:space-between">
-        <div class="msg-ok">✅ 已生成 ${report.length} 页 PDF（${kb(blob.size)}）</div>
-        <a class="btn" href="${url}" download="images-${Date.now()}.pdf">下载 PDF</a>
-      </div>
+      <div class="msg-ok">✅ 已生成 ${report.length} 页 PDF（${kb(blob.size)}）</div>
       ${failed.length ? `<div class="panel tips" style="margin-top:12px">⚠️ <b>${failed.length} 张图片被跳过</b><ul>${failed.map((x) => `<li>${x}</li>`).join('')}</ul></div>` : ''}
       <div style="overflow-x:auto;margin-top:12px">
         <table class="tbl">
@@ -142,9 +162,11 @@ export async function run(v) {
       <div class="panel tips" style="margin-top:14px">📌 <b>说明</b>
         <ul>
           <li>图片没有放大，只按比例缩小到页面内并居中（缩放 100% 表示原尺寸放置）</li>
-          <li>PDF 内嵌的是原始图片数据，不重新压缩；如需减小体积，先把图片压缩再转</li>
+          <li>JPG / PNG 原样内嵌、不重新压缩；WebP 等格式会先转 PNG 再嵌入，体积可能变大，建议先压缩再转</li>
           <li>生成的文件在浏览器内存中，刷新页面即失效，请先下载保存</li>
         </ul>
       </div>`,
+    files: [{ name: outName, blob }],
+    text: report.map((r, i) => `第 ${i + 1} 页：${r.name} ${r.w}×${r.h}px`).join('\n'),
   };
 }

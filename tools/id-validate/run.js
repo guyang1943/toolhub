@@ -189,5 +189,6 @@ export async function run({ list }) {
           <li>归属地按前两位省级代码解析，精确到区县需要完整行政区划库，本工具不提供</li>
         </ul>
       </div>`,
+    text: results.map((r) => `${mask(r.input)}　${r.type}　${r.ok ? '通过' : '未通过'}　${r.detail}`).join('\n'),
   };
 }

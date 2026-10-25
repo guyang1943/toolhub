@@ -48,6 +48,7 @@ export async function run({ a, b }) {
   return {
     html: `<div class="msg-ok">✅ 差异：新增 ${add} 行，删除 ${del} 行</div>
       <pre class="ok" style="padding:0"><div class="diff-box">${html}</div></pre>`,
+    text: rows.map(([t, s]) => `${t === '=' ? '  ' : t} ${s}`).join('\n'),
   };
 }
 

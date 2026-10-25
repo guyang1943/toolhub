@@ -84,18 +84,16 @@ export async function run({ file, format, quality, bg }) {
 
   // unsupported 类型会被浏览器静默降级为 PNG
   const degraded = blob.type && blob.type !== target;
-  const url = URL.createObjectURL(blob);
   const base = (file.name || 'image').replace(/\.\w+$/, '');
   const delta = file.size ? ((1 - blob.size / file.size) * 100).toFixed(1) : '0';
   const bigger = Number(delta) < 0;
   const srcExt = (file.type || '').split('/')[1] || '未知';
+  // 以 blob 的实际类型为准，避免降级后扩展名与内容不符
+  const outExt = ((blob.type || target).split('/')[1] || EXT[target]).replace('jpeg', 'jpg');
 
   return {
     html: `
-      <div class="row" style="justify-content:space-between">
-        <div class="msg-ok">✅ ${srcExt.toUpperCase()} → ${EXT[target].toUpperCase()}（${kb(file.size)} → ${kb(blob.size)}，${bigger ? '增加' : '减少'} ${Math.abs(Number(delta)).toFixed(1)}%）</div>
-        <a class="btn" href="${url}" download="${base}.${EXT[target]}">下载</a>
-      </div>
+      <div class="msg-ok">✅ ${srcExt.toUpperCase()} → ${EXT[target].toUpperCase()}（${kb(file.size)} → ${kb(blob.size)}，${bigger ? '增加' : '减少'} ${Math.abs(Number(delta)).toFixed(1)}%）</div>
       ${degraded ? `<div class="panel tips" style="margin-top:12px">⚠️ 当前浏览器不支持 ${EXT[target].toUpperCase()} 编码，已降级输出 ${(blob.type || 'PNG').toUpperCase()}</div>` : ''}
       <table class="tbl" style="margin-top:12px">
         <thead><tr><th>项目</th><th style="text-align:right">值</th></tr></thead>
@@ -106,7 +104,6 @@ export async function run({ file, format, quality, bg }) {
           <tr><td>输出文件大小</td><td style="text-align:right">${kb(blob.size)}</td></tr>
         </tbody>
       </table>
-      <div style="margin-top:12px"><img class="qr" src="${url}" alt="转换结果预览" style="max-width:100%;max-height:320px" /></div>
       <div class="panel tips" style="margin-top:14px">📌 <b>说明</b>
         <ul>
           <li>转换只改编码，不改尺寸；要同时缩小尺寸请用「图片缩放」工具</li>
@@ -114,5 +111,7 @@ export async function run({ file, format, quality, bg }) {
           <li>如果转完反而变大，说明原图本身就是高压缩格式，保留原文件即可</li>
         </ul>
       </div>`,
+    files: [{ name: `${base}.${outExt}`, blob, kind: 'image' }],
+    text: `${base}.${outExt} · ${bmp.width}×${bmp.height}px · ${kb(blob.size)}`,
   };
 }

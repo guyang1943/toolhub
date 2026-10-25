@@ -54,14 +54,7 @@ export async function run({ input }) {
           <tr style="border-bottom:2px solid var(--border)"><th style="padding:6px;text-align:left">输入</th>${head}</tr>
           ${rows}
         </table>
-      </div>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制 snake_case 列</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(all);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制 snake_case 列'), 1500);
-      };
-    },
+      </div>`,
+    text: all,
   };
 }

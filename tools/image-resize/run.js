@@ -38,16 +38,14 @@ export async function run({ file, max, format }) {
   ctx.drawImage(bmp, 0, 0, w, h);
   const blob = await new Promise((r) => canvas.toBlob(r, format, 0.9));
   if (!blob) throw new Error('该格式不被浏览器支持');
-  const url = URL.createObjectURL(blob);
   const ext = format.split('/')[1].replace('jpeg', 'jpg');
   const base = file.name.replace(/\.\w+$/, '');
   const kb = (n) => (n > 1048576 ? (n / 1048576).toFixed(2) + ' MB' : (n / 1024).toFixed(1) + ' KB');
+  const outName = `${base}-${w}x${h}.${ext}`;
   return {
     html: `
-      <div class="row" style="justify-content:space-between">
-        <div class="msg-ok">✅ ${bmp.width}×${bmp.height} → ${w}×${h}（${kb(file.size)} → ${kb(blob.size)}）</div>
-        <a class="btn ghost" href="${url}" download="${base}-${w}x${h}.${ext}">下载</a>
-      </div>
-      <div style="margin-top:12px"><img class="qr" src="${url}" style="max-width:100%;max-height:320px" /></div>`,
+      <div class="msg-ok">✅ ${bmp.width}×${bmp.height} → ${w}×${h}（${kb(file.size)} → ${kb(blob.size)}）</div>`,
+    files: [{ name: outName, blob, kind: 'image' }],
+    text: `${outName} · ${w}×${h}px · ${kb(blob.size)}`,
   };
 }

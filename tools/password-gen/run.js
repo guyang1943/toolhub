@@ -46,15 +46,8 @@ export async function run({ length, charset, count }) {
   const strength = len >= 16 && charset === 'full' ? '极强' : len >= 12 ? '强' : '中等';
   return {
     html: `<div class="msg-ok">✅ 已生成 ${n} 个密码（强度：${strength}，基于 crypto 安全随机源，不会离开本机）</div>
-      <pre class="ok">${list.map(escapeHTML).join('\n')}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制全部</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(list.join('\n'));
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制全部'), 1500);
-      };
-    },
+      <pre class="ok">${list.map(escapeHTML).join('\n')}</pre>`,
+    text: list.join('\n'),
   };
 }
 

@@ -250,15 +250,8 @@ export async function run({ cat, value, from, to }) {
   return {
     html: `
       <div class="msg-ok">✅ ${fmt(v)} ${fu.name} = <b>${fmt(result)}</b> ${tu.name}</div>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制结果</button></div>
       <h3 style="margin:18px 0 8px">全部${c.label}单位对照<span style="font-size:13px;color:var(--muted);font-weight:400">（高亮为目标单位）</span></h3>
       <table class="tbl"><thead><tr><th>单位</th><th style="text-align:right">等于</th></tr></thead><tbody>${table}</tbody></table>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(fmt(result));
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制结果'), 1500);
-      };
-    },
+    text: fmt(result),
   };
 }

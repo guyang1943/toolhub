@@ -72,5 +72,6 @@ print(json.dumps(res, ensure_ascii=False))
           )
           .join('')}
       </table>`,
+    text: rows.map(([k, v]) => `${k}：${v}`).join('\n'),
   };
 }

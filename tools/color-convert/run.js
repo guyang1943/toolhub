@@ -69,5 +69,6 @@ export async function run({ color }) {
             `<tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 4px;color:var(--muted);width:30%">${k}</td><td style="padding:8px 4px;font-family:var(--mono)">${v}</td></tr>`
         )
         .join('')}</table>`,
+    text: rows.map(([k, v]) => `${k}：${v}`).join('\n'),
   };
 }

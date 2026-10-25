@@ -41,15 +41,8 @@ export async function run({ text, ignoreCase, sort, dropEmpty }) {
   const result = out.join('\n');
   return {
     html: `<div class="msg-ok">✅ ${before} 行 → ${out.length} 行（去重 ${before - out.length} 条）</div>
-      <pre class="ok">${escapeHTML(result)}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制结果</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(result);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制结果'), 1500);
-      };
-    },
+      <pre class="ok">${escapeHTML(result)}</pre>`,
+    text: result,
   };
 }
 

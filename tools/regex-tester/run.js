@@ -64,5 +64,6 @@ export async function run({ pattern, flags, text }) {
           <th style="padding:5px 6px">分组</th><th style="padding:5px 6px">位置</th>
         </tr>${rows}
       </table>`,
+    text: matches.map((m, i) => `${i + 1}. ${m[0]}（位置 ${m.index}）`).join('\n') || '无匹配',
   };
 }

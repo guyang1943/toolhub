@@ -390,6 +390,78 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const searchHit = await evaluate(`document.getElementById('grid').textContent.includes('房贷计算器')`);
   check('搜索 fdjsq 命中房贷', searchHit);
 
+  // ---- 9.5 首页运行时筛选与排序（v2.6 A1）----
+  await goto('/');
+  const rtBtns = await evaluate(`document.querySelectorAll('#filterbar [data-rt]').length`);
+  check('首页运行方式筛选 3 档', rtBtns === 3, rtBtns + ' 档');
+  const sortBtns = await evaluate(`document.querySelectorAll('#filterbar [data-sort]').length`);
+  check('首页排序 3 档', sortBtns === 3, sortBtns + ' 档');
+  const allNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  await evaluate(`document.querySelector('#filterbar [data-rt="local"]').click()`);
+  await sleep(500);
+  const localNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  check('仅本机执行筛出 33 个', localNum === 33, `${localNum} / 全部 ${allNum}`);
+  const qs = await evaluate(`location.search`);
+  check('筛选状态写入 URL', qs.includes('runtime=local'), qs);
+  await evaluate(`document.querySelector('#filterbar [data-rt="offline"]').click()`);
+  await sleep(500);
+  const offNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  check('断网也能用少于本机执行', offNum > 0 && offNum < localNum, `${offNum} 个`);
+  await cdp.send('Page.reload');
+  await sleep(1200);
+  const kept = await evaluate(
+    `(document.querySelector('#filterbar [data-rt="offline"]') || {}).className || ''`
+  );
+  const keptNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  check('刷新后筛选保持', String(kept).includes('active') && keptNum === offNum, `${keptNum} 个 · ${kept.includes('active')}`);
+  await evaluate(`document.querySelector('#filterbar [data-sort="used"]').click()`);
+  await sleep(400);
+  const sortQs = await evaluate(`location.search`);
+  check('排序状态写入 URL', sortQs.includes('sort=used'), sortQs);
+  await goto('/');
+
+  // ---- 9.6 结果统一出口（v2.6 A3）----
+  await goto('/tools/uuid-gen/?run=1');
+  const raCopy = await waitText('#tool-result', '复制结果', 8000);
+  check('文本类结果出现统一操作条', raCopy);
+  const raShare = await evaluate(`!!document.querySelector('#tool-result .result-actions [data-act="share"]')`);
+  check('操作条含分享按钮', raShare === true);
+  await goto('/tools/image-convert/');
+  const png2 = await evaluate(`(() => {
+    const c = document.createElement('canvas');
+    c.width = 120; c.height = 80;
+    const g = c.getContext('2d');
+    g.fillStyle = '#16a34a'; g.fillRect(0, 0, 120, 80);
+    return c.toDataURL('image/png');
+  })()`);
+  await feedFile('#f-file', png2, 'shot.png', 'image/png');
+  await clickRun();
+  const raDl = await waitText('#tool-result', '下载', 15000);
+  check('文件类结果出现下载入口', raDl);
+  const previewed = await evaluate(`document.querySelectorAll('#tool-result .result-preview img').length`);
+  check('图片产物自动渲染预览', previewed >= 1, previewed + ' 张');
+
+  // ---- 9.7 工具链接力（v2.6 A2）：转换结果直接送进「图片转 PDF」----
+  const hasGo = await evaluate(`!!document.querySelector('#tool-result [data-go="img-to-pdf"]')`);
+  check('结果区提供下游工具入口', hasGo === true);
+  if (hasGo) {
+    await evaluate(`document.querySelector('#tool-result [data-go="img-to-pdf"]').click()`);
+    for (let i = 0; i < 30; i++) {
+      const p = await evaluate(`location.pathname`).catch(() => '');
+      if (p === '/tools/img-to-pdf/') break;
+      await sleep(200);
+    }
+    const p1 = await evaluate(`location.pathname`);
+    check('点接力按钮进入目标工具', p1 === '/tools/img-to-pdf/', p1);
+    const fed = await evaluate(`(() => { const el = document.getElementById('f-files'); return el && el.files ? el.files.length : -1; })()`);
+    check('接力把上一步产物填进文件输入', fed >= 1, fed + ' 个文件');
+    check('接力后显示来源提示', (await evaluate(`!!document.querySelector('.pipe-note')`)) === true);
+    await clickRun();
+    const pdfDone = await waitText('#tool-result', 'PDF', 25000);
+    const pdfTxt = await evaluate(`(document.getElementById('tool-result').textContent || '').slice(0, 120)`);
+    check('接力后直接产出 PDF', pdfDone, pdfTxt.replace(/\s+/g, ' '));
+  }
+
   // ---- 10. 刷新深链 + 返回按钮 ----
   await goto('/tools/mortgage-calc/');
   await cdp.send('Page.reload');

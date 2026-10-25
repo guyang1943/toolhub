@@ -184,5 +184,10 @@ export async function run(v) {
           <li>结果为本地估算，仅供参考，具体以税务机关计算为准</li>
         </ul>
       </div>`,
+    text: [
+      `税前月薪 ${yuan(salary)} · 三险一金 ${yuan(social)} · 专项附加扣除 ${yuan(extra)}`,
+      `${month} 月应预扣个税 ${yuan(monthTax)}（适用税率 ${pct(now.rate)}），税后到手 ${yuan(net)}`,
+      `全年合计：税前 ${yuan(salary * 12)} · 个税 ${yuan(year.cum)} · 税后 ${yuan(salary * 12 - social * 12 - year.cum)}（税负率 ${burden.toFixed(2)}%）`,
+    ].join('\n'),
   };
 }

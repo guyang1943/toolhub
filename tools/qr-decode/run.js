@@ -84,14 +84,12 @@ export async function run({ file }) {
         <div class="qr-text">
           <label style="font-size:13px;color:var(--muted)">二维码内容</label>
           <pre class="ok" id="qr-content">${found.data.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]))}</pre>
-          <div class="row" style="margin-top:10px">
-            <button class="btn ghost" id="copy-btn">复制内容</button>
-            ${kind.url ? `<a class="btn ghost" href="${kind.url}" target="_blank" rel="noopener">打开链接 ↗</a>` : ''}
-          </div>
+          ${kind.url ? `<div class="row" style="margin-top:10px"><a class="btn ghost" href="${kind.url}" target="_blank" rel="noopener">打开链接 ↗</a></div>` : ''}
           <p style="font-size:13px;color:var(--muted);margin-top:10px">图片 ${bitmap.width}×${bitmap.height}${scale < 1 ? `（已缩至 ${w}×${h} 解析）` : ''} · 解码全程在本机完成</p>
         </div>
         <div class="qr-preview" id="qr-preview"></div>
       </div>`,
+    text: found.data,
     after(box) {
       // 预览图 + 识别框标注
       const holder = box.querySelector('#qr-preview');
@@ -116,17 +114,6 @@ export async function run({ file }) {
       vctx.closePath();
       vctx.stroke();
       holder.appendChild(view);
-
-      const btn = box.querySelector('#copy-btn');
-      btn.onclick = async (e) => {
-        try {
-          await navigator.clipboard.writeText(found.data);
-          e.target.textContent = '已复制 ✓';
-        } catch {
-          e.target.textContent = '复制失败';
-        }
-        setTimeout(() => (e.target.textContent = '复制内容'), 1500);
-      };
     },
   };
 }

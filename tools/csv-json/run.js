@@ -71,15 +71,8 @@ export async function run({ input, dir }) {
     out = JSON.stringify(arr, null, 2);
     return {
       html: `<div class="msg-ok">✅ 已转换：${body.length} 行 × ${head.length} 列</div>
-        <pre class="ok">${escapeHTML(out)}</pre>
-        <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制 JSON</button></div>`,
-      after(box) {
-        box.querySelector('#copy-btn').onclick = async (e) => {
-          await navigator.clipboard.writeText(out);
-          e.target.textContent = '已复制 ✓';
-          setTimeout(() => (e.target.textContent = '复制 JSON'), 1500);
-        };
-      },
+        <pre class="ok">${escapeHTML(out)}</pre>`,
+      text: out,
     };
   }
   let arr;
@@ -91,15 +84,8 @@ export async function run({ input, dir }) {
   out = toCSV(arr);
   return {
     html: `<div class="msg-ok">✅ 已转换：${arr.length} 条记录</div>
-      <pre class="ok">${escapeHTML(out)}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制 CSV</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(out);
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制 CSV'), 1500);
-      };
-    },
+      <pre class="ok">${escapeHTML(out)}</pre>`,
+    text: out,
   };
 }
 

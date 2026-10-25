@@ -37,21 +37,19 @@ export async function run({ file, quality, format }) {
   const blob = await new Promise((res) => canvas.toBlob(res, format, q));
   if (!blob) throw new Error('该图片无法以此格式压缩（PNG 源转 PNG 时请调高质量）');
 
-  const outURL = URL.createObjectURL(blob);
   const before = file.size, after = blob.size;
   const pct = before ? Math.round((1 - after / before) * 100) : 0;
   const ext = format.split('/')[1].replace('jpeg', 'jpg');
   const base = file.name.replace(/\.\w+$/, '');
+  const outName = `${base}-compressed.${ext}`;
 
   return {
     html: `
-      <div class="row" style="justify-content:space-between">
-        <div class="msg-ok">✅ ${canvas.width}×${canvas.height} · ${fmt(before)} → ${fmt(after)}（${
-          pct > 0 ? '省 ' + pct + '%' : '已比原图大，可调低质量'
-        }）</div>
-        <a class="btn ghost" href="${outURL}" download="${base}-compressed.${ext}">下载</a>
-      </div>
-      <div style="margin-top:12px"><img class="qr" src="${outURL}" style="max-width:100%;max-height:320px" /></div>`,
+      <div class="msg-ok">✅ ${canvas.width}×${canvas.height} · ${fmt(before)} → ${fmt(after)}（${
+        pct > 0 ? '省 ' + pct + '%' : '已比原图大，可调低质量'
+      }）</div>`,
+    files: [{ name: outName, blob, kind: 'image' }],
+    text: `${outName} · ${canvas.width}×${canvas.height}px · ${fmt(before)} → ${fmt(after)}`,
   };
 }
 

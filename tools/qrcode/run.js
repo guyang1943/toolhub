@@ -27,11 +27,8 @@ export async function run({ text, size }) {
   if (!url && img) url = img.src;
 
   return {
-    html: `
-      <div class="msg-ok">✅ 已生成 ${s}×${s} 二维码</div>
-      <div style="margin-top:12px"><img class="qr" src="${url}" width="${s}" height="${s}" alt="QR" /></div>
-      <div class="row" style="margin-top:12px">
-        <a class="btn ghost" href="${url}" download="qrcode.png">下载 PNG</a>
-      </div>`,
+    html: `<div class="msg-ok">✅ 已生成 ${s}×${s} 二维码</div>`,
+    files: [{ name: 'qrcode.png', url, kind: 'image' }],
+    text,
   };
 }

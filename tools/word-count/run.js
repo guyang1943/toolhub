@@ -43,5 +43,6 @@ export async function run({ text }) {
           )
           .join('')}
       </table>`,
+    text: rows.map(([k, v]) => `${k}：${v}`).join('\n'),
   };
 }

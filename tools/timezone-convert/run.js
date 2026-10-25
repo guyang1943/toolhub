@@ -199,5 +199,10 @@ export async function run(v) {
           <li>夏令时信息按 ${instant.getUTCFullYear()} 年的时区规则判定，未来的规则变化以各国公告为准</li>
         </ul>
       </div>`,
+    text: [
+      `来源：${headline}（${fmtOffset(srcOff)}）`,
+      `北京时间：${beijing ? `${beijing.year}-${beijing.month}-${beijing.day} ${beijing.hour}:${beijing.minute}` : `${srcParts.year}-${srcParts.month}-${srcParts.day} ${srcParts.hour}:${srcParts.minute}`}`,
+      `UTC：${instant.toISOString().slice(0, 16).replace('T', ' ')}`,
+    ].join('\n'),
   };
 }

@@ -62,6 +62,7 @@ export async function run({ token }) {
       <div style="margin-top:12px;font-size:13px;color:var(--muted)">Payload</div>
       <pre class="ok">${escapeHTML(JSON.stringify(payload, null, 2))}</pre>
       ${notes.length ? `<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">${notes.join('　')}</div>` : ''}`,
+    text: JSON.stringify({ header, payload }, null, 2),
   };
 }
 

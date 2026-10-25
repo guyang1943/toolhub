@@ -73,6 +73,20 @@ a { color: inherit; text-decoration: none; }
 }
 .chip:hover { border-color: var(--accent); color: var(--accent); }
 .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* 运行时筛选 + 排序：与分类 chip 区分开，弱化为工具栏 */
+.filterbar {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  margin: -8px 0 18px; padding: 8px 12px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--panel);
+}
+.filterbar .fb-label { font-size: 12px; color: var(--muted); }
+.filterbar .fb-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+.filterbar .chip { padding: 4px 11px; font-size: 12.5px; }
+.filterbar .fb-count { margin-left: auto; font-size: 12px; color: var(--muted); }
+@media (max-width: 600px) {
+  .filterbar { justify-content: center; }
+  .filterbar .fb-count { margin-left: 0; width: 100%; text-align: center; }
+}
 
 /* ===== 推荐区（与普通列表明显区分：渐变边框 + 排名）===== */
 .featured-section {
@@ -168,6 +182,11 @@ a { color: inherit; text-decoration: none; }
   border: none; background: transparent; color: var(--accent); font-size: 12px;
   cursor: pointer; text-decoration: underline; padding: 0;
 }
+/* 工具链接力提示：比草稿提示更强调（这是一次跨工具的动作） */
+.pipe-note {
+  font-size: 12.5px; color: #166534; background: #f0fdf4;
+  border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 11px; margin-bottom: 14px;
+}
 .btn {
   padding: 10px 22px; border: none; border-radius: 8px; background: var(--accent);
   color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
@@ -184,6 +203,15 @@ a { color: inherit; text-decoration: none; }
 .result pre.err { outline: 2px solid var(--err); }
 .msg-ok { color: var(--ok); font-size: 13px; }
 .msg-err { color: var(--err); font-size: 13px; }
+/* 统一结果出口：复制 / 下载 / 分享 */
+.result-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.result-preview img { max-width: 100%; max-height: 320px; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+.result-actions {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border);
+}
+.result-actions .btn { padding: 8px 14px; font-size: 13px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.result-actions .ra-note { font-size: 12px; color: var(--muted); margin-left: auto; }
 canvas.qr { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
 
 /* 结果表格（个税 / 单位换算等） */

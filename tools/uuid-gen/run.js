@@ -28,15 +28,8 @@ export async function run({ version, count }) {
   const gen = { v4: uuidV4, ulid: ulid, nano: nanoId }[version];
   const list = Array.from({ length: n }, gen);
   return {
-    html: `<div class="msg-ok">✅ 已生成 ${n} 个</div><pre class="ok">${list.join('\n')}</pre>
-      <div class="row" style="margin-top:12px"><button class="btn ghost" id="copy-btn">复制全部</button></div>`,
-    after(box) {
-      box.querySelector('#copy-btn').onclick = async (e) => {
-        await navigator.clipboard.writeText(list.join('\n'));
-        e.target.textContent = '已复制 ✓';
-        setTimeout(() => (e.target.textContent = '复制全部'), 1500);
-      };
-    },
+    html: `<div class="msg-ok">✅ 已生成 ${n} 个</div><pre class="ok">${list.join('\n')}</pre>`,
+    text: list.join('\n'),
   };
 }
 

@@ -121,7 +121,7 @@ const pdf = await import('file://' + join(root, 'tools/pdf-merge/run.js').replac
   const b = await makePdf(2, 'B');
   const merged = await pdf.run({ mode: 'merge', files: [asFile(a, 'a.pdf'), asFile(b, 'b.pdf')] });
   check('合并提示 2 个文件 / 5 页', merged.html.includes('共 5 页'), merged.html.match(/共 \d+ 页/)?.[0]);
-  check('合并输出文件名 merged.pdf', merged.html.includes('merged.pdf'));
+  check('合并输出文件名 merged.pdf', merged.files?.[0]?.name === 'merged.pdf');
 
   const ex = await pdf.run({ mode: 'extract', files: [asFile(a, 'a.pdf')], pages: '1,3', every: '1' });
   check('提取 2 页', ex.html.includes('已提取 2 / 3 页'), ex.html.match(/已提取 \d+ \/ \d+ 页/)?.[0]);
@@ -131,7 +131,8 @@ const pdf = await import('file://' + join(root, 'tools/pdf-merge/run.js').replac
 
   const sp = await pdf.run({ mode: 'split', files: [asFile(a, 'a.pdf')], pages: '', every: '2' });
   check('每份 2 页拆成 2 个文件', sp.html.includes('已拆成 2 个文件'), sp.html.match(/已拆成 \d+ 个文件/)?.[0]);
-  check('拆分文件名含页码范围', sp.html.includes('a-1-2.pdf') && sp.html.includes('a-3-3.pdf'));
+  const spNames = (sp.files || []).map((f) => f.name);
+  check('拆分文件名含页码范围', spNames.includes('a-1-2.pdf') && spNames.includes('a-3-3.pdf'), spNames.join(' / '));
 
   // 真实校验合并产物的页数（绕过 Blob 桩，直接验证内部产物不可行——用二次加载验证思路替代：
   // 合并/提取/拆分均走同一 save() 链路，页数提示来自真实 getPageCount，已由上方断言覆盖）
@@ -263,7 +264,7 @@ globalThis.window = { jsQR };
   const out = await qr.run({ file: { name: 'qr.png', type: 'image/png' } });
   check('run() 返回识别成功', out.html.includes('识别成功'));
   check('run() 输出内容与类型', out.html.includes('https://sitool.eu.org/tools/tax-calc/') && out.html.includes('网址链接'));
-  check('run() 提供复制与打开链接', out.html.includes('copy-btn') && out.html.includes('打开链接'));
+  check('run() 返回可复制文本 + 打开链接', typeof out.text === 'string' && out.text.includes('https://sitool.eu.org/') && out.html.includes('打开链接'));
   // after 钩子（预览图标注 + 复制按钮）
   const box = stubEl();
   out.after(box);
@@ -383,7 +384,7 @@ Image.new('RGB', (300, 1200), (220, 38, 38)).save(${JSON.stringify(imgB)})
   const toPdf = await import('file://' + join(root, 'tools/img-to-pdf/run.js').replace(/\\/g, '/'));
   const out = await toPdf.run({ files: [imgFile(imgA, 'a.png', 'image/png'), imgFile(imgB, 'b.png', 'image/png')], size: 'a4', margin: '10' });
   check('A4 模式生成 2 页', (out.html.match(/<tr><td>\d+<\/td>/g) || []).length === 2);
-  check('提供 PDF 下载链接', /download="images-\d+\.pdf"/.test(out.html));
+  check('返回 PDF 文件产物', out.files?.length === 1 && /^images-\d+\.pdf$/.test(out.files[0].name) && out.files[0].blob?.type === 'application/pdf');
   check('800×600 在 A4 上缩放 67%', out.html.includes('67%'), '内容区 538.6pt / 800px');
   const fit = await toPdf.run({ files: [imgFile(imgA, 'a.png', 'image/png')], size: 'fit', margin: '0' });
   check('适应图片页 = 600×450pt', fit.html.includes('600×450 pt'), '800px × 0.75 = 600pt');
@@ -393,8 +394,7 @@ Image.new('RGB', (300, 1200), (220, 38, 38)).save(${JSON.stringify(imgB)})
     size: 'a4',
     margin: '10',
   });
-  check('WebP 被跳过但其余成功', mixed.html.includes('1 张图片被跳过') && mixed.html.includes('a.png'));
-
+  check('WebP 无法解码时被跳过，其余成功', mixed.html.includes('1 张图片被跳过') && mixed.html.includes('a.png'));
   let err = '';
   try {
     await toPdf.run({ files: [], size: 'a4', margin: '10' });
@@ -408,7 +408,7 @@ Image.new('RGB', (300, 1200), (220, 38, 38)).save(${JSON.stringify(imgB)})
   } catch (e) {
     err = e.message;
   }
-  check('全部失败时抛出原因', err.includes('格式不支持'), err);
+  check('全部失败时抛出原因', err.includes('无法解码'), err);
 }
 
 // ---------- 8. 身份证 / 银行卡校验 ----------
@@ -478,7 +478,7 @@ console.log('\n🔄 图片格式转换（Canvas 桩）');
   const conv = await import('file://' + join(root, 'tools/image-convert/run.js').replace(/\\/g, '/'));
   const out = await conv.run({ file: { name: 'shot.png', type: 'image/png', size: 204800 }, format: 'image/webp', quality: '0.9', bg: '#ffffff' });
   check('输出 WebP 且质量 0.9', lastType === 'image/webp' && lastQuality === 0.9);
-  check('文件名改成 .webp', out.html.includes('download="shot.webp"'));
+  check('文件名改成 .webp', out.files?.[0]?.name === 'shot.webp', `实际 ${out.files?.[0]?.name}`);
   check('体积减少 75%', out.html.includes('减少 75.0%'), '204800 → 51200');
   check('尺寸信息正确', out.html.includes('800 × 600 px'));
 
