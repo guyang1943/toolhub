@@ -418,6 +418,26 @@
       "cryptpad": {
         "name": "CryptPad",
         "desc": "End-to-end encrypted docs, sheets and boards — collaborate without an account"
+      },
+      "mortgage-calc": {
+        "name": "Mortgage Calculator",
+        "desc": "Equal-payment vs equal-principal monthly instalments, total interest, and a year-by-year schedule"
+      },
+      "timezone-convert": {
+        "name": "Time Zone Converter",
+        "desc": "Convert one moment across 20+ cities with time differences, day shifts and DST flags"
+      },
+      "img-to-pdf": {
+        "name": "Images to PDF",
+        "desc": "Combine images into a single PDF — A4 or fit-to-image, generated locally"
+      },
+      "image-convert": {
+        "name": "Image Converter",
+        "desc": "Convert between PNG, JPEG and WebP with quality control and transparent-area fill"
+      },
+      "id-validate": {
+        "name": "ID & Card Validator",
+        "desc": "Batch-check Chinese ID checksums and bank card Luhn digits, with region and birthdate parsing"
       }
     }
   }

@@ -851,6 +851,165 @@
         "pages": "Page range (e.g. 1,3,5-8; empty = all)",
         "every": "Pages per chunk"
       }
+    },
+    "mortgage-calc": {
+      "usage": "Enter the loan amount, annual rate, term and repayment method. The tool builds the full monthly schedule and reports the instalment, total interest and the share of interest in the principal — plus a side-by-side comparison of the other repayment method so you can see exactly how much interest you would save and how much higher the first payments would be.",
+      "tips": [
+        "Equal payment: fixed instalment every month, interest-heavy at the start. Equal principal: instalment decreases monthly, less total interest but a much higher first payment",
+        "Enter the annual rate from your contract — 3.5 means 3.5%. If the number you type is above 10 you are probably entering a monthly rate",
+        "The amount field is in units of 10,000 CNY: a 1,000,000 loan is entered as 100",
+        "A combined fund plus commercial loan is simply the sum of two separate calculations"
+      ],
+      "scenarios": [
+        {
+          "scene": "Signing a loan and checking monthly pressure",
+          "how": "Amount / rate / term → equal payment",
+          "result": "Fixed instalment, total interest, interest-to-principal ratio"
+        },
+        {
+          "scene": "Deciding between equal payment and equal principal",
+          "how": "Compare the two blocks at the bottom",
+          "result": "See the interest saved and the extra cost in early months"
+        },
+        {
+          "scene": "Auditing the bank repayment schedule",
+          "how": "Recompute with the same inputs and compare yearly balances",
+          "result": "Spot a wrong rate or term immediately"
+        }
+      ],
+      "runLabel": "Calculate",
+      "labels": {
+        "amount": "Loan amount (10k CNY)",
+        "rate": "Annual interest rate (%)",
+        "years": "Loan term",
+        "mode": "Repayment method"
+      }
+    },
+    "timezone-convert": {
+      "usage": "Enter a time and pick the zone it belongs to. The tool converts that single instant into the local time of 20+ cities and flags the time difference, whether the date shifts, and whether daylight saving is in effect. Leave the time empty to convert right now.",
+      "tips": [
+        "Daylight saving is handled from the IANA database — European and American summers are one hour ahead of winter",
+        "Watch the ±1 day marker: 9 AM in Beijing is 9 PM the previous evening in New York",
+        "Some zones use half-hour offsets (India is UTC+5:30); they are shown exactly, not rounded",
+        "Always name the city or the UTC offset in messages — abbreviations like CST are ambiguous"
+      ],
+      "scenarios": [
+        {
+          "scene": "Scheduling a call with an overseas client",
+          "how": "Enter your time, read their city row",
+          "result": "Their local time and date, no mental arithmetic"
+        },
+        {
+          "scene": "An overseas launch or livestream time",
+          "how": "Enter the announced local time and its city zone",
+          "result": "Your local equivalent, correctly shifted"
+        },
+        {
+          "scene": "Finding an overlap for a distributed team",
+          "how": "Convert several candidate slots",
+          "result": "The window where everyone is awake"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "datetime": "Time (YYYY-MM-DD HH:mm, empty = now)",
+        "zone": "Time zone of that time"
+      }
+    },
+    "img-to-pdf": {
+      "usage": "Combine images into one PDF, one image per page. Choose A4 for printing (scaled to fit and centred) or fit-to-image for archiving at the exact pixel size. Everything runs in your browser with pdf-lib — the images never leave your device.",
+      "tips": [
+        "JPG and PNG only; convert WebP, GIF or iPhone HEIC to PNG first",
+        "A4 mode only shrinks images, never enlarges them, so small images stay sharp and centred",
+        "Pages follow the order in which you selected the files",
+        "Phone photos may appear sideways because EXIF orientation is not applied by PDF"
+      ],
+      "scenarios": [
+        {
+          "scene": "Expense reports need one PDF of receipt photos",
+          "how": "Multi-select → A4 portrait → Generate",
+          "result": "One ordered PDF ready to upload"
+        },
+        {
+          "scene": "Archiving scans and certificates",
+          "how": "Fit-to-image with no margin",
+          "result": "Page size equals image size, no scaling"
+        },
+        {
+          "scene": "Turning screenshots into a printable document",
+          "how": "A4 portrait with a 10 mm margin",
+          "result": "One image per page with print-safe margins"
+        }
+      ],
+      "runLabel": "Generate PDF",
+      "labels": {
+        "files": "Choose images (multi-select; order = page order)",
+        "size": "Page size",
+        "margin": "Margin"
+      }
+    },
+    "image-convert": {
+      "usage": "Convert images between PNG, JPEG and WebP locally with Canvas: shrink a site asset with WebP, satisfy a JPEG-only submission form, or keep transparency with PNG. Quality and transparent-area fill colour are selectable, and the converted file downloads immediately.",
+      "tips": [
+        "Need transparency? Output PNG — JPEG and lossy WebP have no alpha channel",
+        "PNG screenshots converted to WebP at quality 90 are often less than half the size with no visible difference",
+        "JPEG re-encoding is lossy each time; always convert from the original master",
+        "Format conversion does not resize — pair it with the Image Resizer for web use"
+      ],
+      "scenarios": [
+        {
+          "scene": "Site images are too heavy",
+          "how": "PNG/JPG → WebP at 90",
+          "result": "Much smaller file, ready to swap in"
+        },
+        {
+          "scene": "A form only accepts JPEG",
+          "how": "Target JPEG with a white fill",
+          "result": "Compliant file without black transparent areas"
+        },
+        {
+          "scene": "An icon must keep its transparent background",
+          "how": "Target PNG",
+          "result": "Alpha channel preserved as-is"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "file": "Choose image",
+        "format": "Target format",
+        "quality": "Output quality",
+        "bg": "Transparent-area fill (JPEG / lossy WebP)"
+      }
+    },
+    "id-validate": {
+      "usage": "Batch-validate Chinese ID numbers against the GB 11643 weighted checksum and bank card numbers against Luhn, while parsing province, birthdate, gender, age and card network. Paste one number per line — ideal for cleaning a spreadsheet or checking form submissions before they reach the backend.",
+      "tips": [
+        "A valid checksum only means the digits are well-formed, not that the number exists or belongs to anyone",
+        "A single mistyped digit is caught by Luhn about 90% of the time",
+        "In an 18-digit ID the 17th digit encodes gender: odd male, even female",
+        "Spaces and hyphens are stripped automatically when pasting"
+      ],
+      "scenarios": [
+        {
+          "scene": "A collected spreadsheet of ID numbers",
+          "how": "Paste one per line → Validate",
+          "result": "Bad checksums and impossible birthdates stand out"
+        },
+        {
+          "scene": "Users keep failing card submission",
+          "how": "Paste the card number and read the Luhn result",
+          "result": "Distinguish a typo from a wrong length"
+        },
+        {
+          "scene": "Writing front-end validation",
+          "how": "Use the tool to confirm expected outcomes",
+          "result": "A reference for test cases"
+        }
+      ],
+      "runLabel": "Validate",
+      "labels": {
+        "list": "ID or card numbers (one per line, up to 200)"
+      }
     }
   }
 }

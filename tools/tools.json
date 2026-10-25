@@ -21,7 +21,10 @@
     "devdocs",
     "python-run",
     "tax-calc",
-    "unit-convert"
+    "unit-convert",
+    "mortgage-calc",
+    "timezone-convert",
+    "img-to-pdf"
   ],
   "tools": [
     {
@@ -633,6 +636,125 @@
         "pdf",
         "merge",
         "split"
+      ]
+    },
+    {
+      "id": "mortgage-calc",
+      "name": "房贷计算器",
+      "desc": "等额本息与等额本金月供、总利息对比，含逐年还款明细表",
+      "category": "效率",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "房贷",
+        "月供",
+        "等额本息",
+        "等额本金"
+      ],
+      "hot": true,
+      "aliases": [
+        "fangdaijisuanqi",
+        "fdjsq",
+        "mortgage calculator",
+        "mortgage",
+        "calculator"
+      ]
+    },
+    {
+      "id": "timezone-convert",
+      "name": "时区转换",
+      "desc": "一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时",
+      "category": "效率",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "时区",
+        "时间",
+        "时差",
+        "夏令时"
+      ],
+      "hot": true,
+      "aliases": [
+        "shiquzhuanhuan",
+        "sqzh",
+        "time zone converter",
+        "time",
+        "zone",
+        "converter"
+      ]
+    },
+    {
+      "id": "img-to-pdf",
+      "name": "图片转 PDF",
+      "desc": "多张图片合成一个 PDF，A4 或适应图片，本地生成不上传",
+      "category": "文档",
+      "source": "内置实现 (pdf-lib)",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "pdf",
+        "图片",
+        "转换"
+      ],
+      "hot": true,
+      "aliases": [
+        "tupianzhuan",
+        "tpz",
+        "images to pdf",
+        "images",
+        "to",
+        "pdf"
+      ]
+    },
+    {
+      "id": "image-convert",
+      "name": "图片格式转换",
+      "desc": "PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码",
+      "category": "图片",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "图片",
+        "webp",
+        "格式转换"
+      ],
+      "hot": true,
+      "aliases": [
+        "tupiangeshizhuanhuan",
+        "tpgszh",
+        "image converter",
+        "image",
+        "converter"
+      ]
+    },
+    {
+      "id": "id-validate",
+      "name": "身份证 / 银行卡校验",
+      "desc": "批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "身份证",
+        "银行卡",
+        "校验",
+        "luhn"
+      ],
+      "hot": true,
+      "aliases": [
+        "shenfenzheng",
+        "sfz",
+        "yinxingkaxiaoyan",
+        "yxkxy",
+        "sfzyxkxy",
+        "id & card validator",
+        "id",
+        "card",
+        "validator"
       ]
     }
   ]

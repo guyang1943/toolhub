@@ -295,6 +295,37 @@ await document.getElementById('run-btn').onclick();
 await waitFor(() => (document.getElementById('tool-result').innerHTML || '').includes('累计计算明细'));
 check('个税端到端出结果', document.getElementById('tool-result').innerHTML.includes('¥400.00'), '本月个税 400');
 
+// 8f. 房贷端到端 + 时区端到端
+await go('/tools/mortgage-calc/');
+await sleep(400);
+document.getElementById('f-amount').value = '100';
+document.getElementById('f-rate').value = '3.5';
+document.getElementById('f-years').value = '30';
+document.getElementById('f-mode').value = 'equal-payment';
+await document.getElementById('run-btn').onclick();
+await waitFor(() => (document.getElementById('tool-result').innerHTML || '').includes('每月还款额'));
+check('房贷端到端出月供', document.getElementById('tool-result').innerHTML.includes('¥4,490.45'), '100 万 / 3.5% / 30 年');
+
+await go('/tools/timezone-convert/');
+await sleep(400);
+document.getElementById('f-datetime').value = '2026-10-25 20:00';
+document.getElementById('f-zone').value = 'Asia/Shanghai';
+await document.getElementById('run-btn').onclick();
+await waitFor(() => (document.getElementById('tool-result').innerHTML || '').includes('当地时间'));
+check('时区端到端出对照表', document.getElementById('tool-result').innerHTML.includes('2026-10-25 08:00'), '纽约 08:00');
+
+// 8g. 新工具的搜索别名
+const search2 = document.getElementById('search');
+search2.value = 'fdjsq';
+await go('/');
+await waitFor(() => document.getElementById('grid').innerHTML.includes('房贷计算器'));
+check('搜索 fdjsq 命中房贷计算器', document.getElementById('grid').innerHTML.includes('房贷计算器'));
+search2.value = 'shiqu';
+await go('/');
+await waitFor(() => document.getElementById('grid').innerHTML.includes('时区转换'));
+check('搜索 shiqu 命中时区转换', document.getElementById('grid').innerHTML.includes('时区转换'));
+search2.value = '';
+
 // 汇总
 let pass = 0;
 for (const r of results) {

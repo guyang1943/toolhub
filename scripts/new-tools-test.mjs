@@ -280,8 +280,225 @@ globalThis.window = { jsQR };
   check('无二维码图片友好报错', err.includes('没有识别到二维码'), err);
 }
 
+// ---------- 5. 房贷计算器 ----------
+console.log('\n🏠 房贷计算器（等额本息 / 等额本金）');
+const mortgage = await import('file://' + join(root, 'tools/mortgage-calc/run.js').replace(/\\/g, '/'));
+{
+  const eq = await mortgage.run({ amount: '100', rate: '3.5', years: '30', mode: 'equal-payment' });
+  // 100 万 · 3.5% · 360 期：月供 4490.45，总利息 616,560.88
+  check('等额本息月供 ¥4,490.45', eq.html.includes('¥4,490.45'), 'P·r(1+r)^n / ((1+r)^n−1)');
+  check('支付利息 ¥616,560.88', eq.html.includes('¥616,560.88'));
+  check('还款总额 ¥1,616,560.88', eq.html.includes('¥1,616,560.88'));
+  check('逐年表 30 行', (eq.html.match(/<td>第 \d+ 年<\/td>/g) || []).length === 30);
+
+  const ep = await mortgage.run({ amount: '100', rate: '3.5', years: '30', mode: 'equal-principal' });
+  // 首月 = 1000000/360 + 1000000*0.035/12 = 2777.78 + 2916.67
+  check('等额本金首月 ¥5,694.44', ep.html.includes('¥5,694.44'), '本金均摊 + 首月全额利息');
+  check('等额本金总利息更少', ep.html.includes('¥526,458.33'), ep.html.match(/¥[\d,]+\.\d\d<\/b><span>支付利息总额/)?.[0]);
+
+  const zero = await mortgage.run({ amount: '100', rate: '0', years: '10', mode: 'equal-payment' });
+  check('零利率月供 ¥8,333.33', zero.html.includes('¥8,333.33'), '100 万 / 120 期');
+  check('零利率无利息', zero.html.includes('¥0.00'));
+
+  let err = '';
+  try {
+    await mortgage.run({ amount: '0', rate: '3.5', years: '30', mode: 'equal-payment' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('金额为 0 报错', err.includes('大于 0'), err);
+  err = '';
+  try {
+    await mortgage.run({ amount: '100', rate: '40', years: '30', mode: 'equal-payment' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('利率 40% 报错', err.includes('0–30'), err);
+}
+
+// ---------- 6. 时区转换 ----------
+console.log('\n🌍 时区转换（真实 IANA 数据）');
+const tzc = await import('file://' + join(root, 'tools/timezone-convert/run.js').replace(/\\/g, '/'));
+{
+  const rowOf = (html, city) => html.split('<tr').find((x) => x.includes(city)) || '';
+  const strip = (s) => s.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+  const t1 = await tzc.run({ datetime: '2026-10-25 20:00', zone: 'Asia/Shanghai' });
+  check('北京 20:00 → 纽约 08:00', strip(rowOf(t1.html, '纽约')).includes('2026-10-25 08:00'), 'UTC+8 → UTC−4');
+  check('纽约时差 −12 小时', strip(rowOf(t1.html, '纽约')).includes('−12 小时'));
+  check('东京 +1 小时', strip(rowOf(t1.html, '东京')).includes('+1 小时'));
+  check('伦敦 10 月末为标准时', strip(rowOf(t1.html, '伦敦')).includes('标准时'), 'BST 于 10 月最后一个周日结束');
+  check('印度半小时偏移 UTC+5:30', strip(rowOf(t1.html, '孟买')).includes('UTC+5:30'));
+  check('UTC 时间 12:00', t1.html.includes('12:00'));
+
+  const t2 = await tzc.run({ datetime: '2026-07-15 20:00', zone: 'Asia/Shanghai' });
+  check('7 月伦敦为夏令时', strip(rowOf(t2.html, '伦敦')).includes('夏令时'));
+  check('7 月纽约时差 −12 小时（夏令时）', strip(rowOf(t2.html, '纽约')).includes('−12 小时'));
+
+  const t3 = await tzc.run({ datetime: '2026-01-15 09:00', zone: 'Asia/Shanghai' });
+  check('冬天纽约跨到前一天', strip(rowOf(t3.html, '纽约')).includes('-1 天'), '北京 09:00 = 纽约前一日 20:00');
+  check('冬令时纽约时差 −13 小时', strip(rowOf(t3.html, '纽约')).includes('−13 小时'));
+
+  const t4 = await tzc.run({ datetime: '', zone: 'Asia/Shanghai' });
+  check('留空按当前时刻换算', t4.html.includes('当前时刻') && t4.html.includes('北京时间'));
+  check('城市表 22 行', (t4.html.match(/<tr/g) || []).length === 23, '22 城市 + 表头');
+
+  let err = '';
+  try {
+    await tzc.run({ datetime: '2026-02-30 10:00', zone: 'Asia/Shanghai' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('不存在的日期报错', err.includes('不存在'), err);
+  err = '';
+  try {
+    await tzc.run({ datetime: '25/10/2026 10:00', zone: 'Asia/Shanghai' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('非法格式报错', err.includes('无法识别'), err);
+}
+
+// ---------- 7. 图片转 PDF（真实 PNG + 真实 pdf-lib） ----------
+console.log('\n🖼️ 图片转 PDF（真实 PNG 生成真实 PDF）');
+const imgA = join(root, '.tmp-img-a.png');
+const imgB = join(root, '.tmp-img-b.png');
+if (!existsSync(imgA) || !existsSync(imgB)) {
+  execFileSync('C:\\Users\\huwei\\.workbuddy\\binaries\\python\\versions\\3.13.12\\python.exe', ['-c', `
+from PIL import Image
+Image.new('RGB', (800, 600), (37, 99, 235)).save(${JSON.stringify(imgA)})
+Image.new('RGB', (300, 1200), (220, 38, 38)).save(${JSON.stringify(imgB)})
+`], { stdio: 'pipe' });
+}
+{
+  // 还原 document/window 桩（上一节被 jsQR 覆盖）
+  const stubHead = { appendChild() {} };
+  globalThis.document = { createElement: () => ({ set src(v) {}, set onload(fn) {}, set onerror(fn) {} }), head: stubHead };
+  globalThis.window = { PDFLib };
+
+  const imgFile = (p, name, type) => {
+    const buf = readFileSync(p);
+    return { name, type, size: buf.length, arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) };
+  };
+  const toPdf = await import('file://' + join(root, 'tools/img-to-pdf/run.js').replace(/\\/g, '/'));
+  const out = await toPdf.run({ files: [imgFile(imgA, 'a.png', 'image/png'), imgFile(imgB, 'b.png', 'image/png')], size: 'a4', margin: '10' });
+  check('A4 模式生成 2 页', (out.html.match(/<tr><td>\d+<\/td>/g) || []).length === 2);
+  check('提供 PDF 下载链接', /download="images-\d+\.pdf"/.test(out.html));
+  check('800×600 在 A4 上缩放 67%', out.html.includes('67%'), '内容区 538.6pt / 800px');
+  const fit = await toPdf.run({ files: [imgFile(imgA, 'a.png', 'image/png')], size: 'fit', margin: '0' });
+  check('适应图片页 = 600×450pt', fit.html.includes('600×450 pt'), '800px × 0.75 = 600pt');
+
+  const mixed = await toPdf.run({
+    files: [imgFile(imgA, 'a.png', 'image/png'), { name: 'x.webp', type: 'image/webp', size: 10, arrayBuffer: async () => new ArrayBuffer(8) }],
+    size: 'a4',
+    margin: '10',
+  });
+  check('WebP 被跳过但其余成功', mixed.html.includes('1 张图片被跳过') && mixed.html.includes('a.png'));
+
+  let err = '';
+  try {
+    await toPdf.run({ files: [], size: 'a4', margin: '10' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('未选图片报错', err.includes('至少一张'), err);
+  err = '';
+  try {
+    await toPdf.run({ files: [{ name: 'x.webp', type: 'image/webp', size: 10, arrayBuffer: async () => new ArrayBuffer(8) }], size: 'a4', margin: '10' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('全部失败时抛出原因', err.includes('格式不支持'), err);
+}
+
+// ---------- 8. 身份证 / 银行卡校验 ----------
+console.log('\n🪪 身份证 / 银行卡校验');
+const idv = await import('file://' + join(root, 'tools/id-validate/run.js').replace(/\\/g, '/'));
+{
+  const W = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+  const C = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'];
+  const p17 = '11010119900307451';
+  let s = 0;
+  for (let i = 0; i < 17; i++) s += Number(p17[i]) * W[i];
+  const goodId = p17 + C[s % 11];
+  check('测试号校验码 = 4', goodId.endsWith('4'), goodId);
+
+  const r = await idv.run({ list: `${goodId}\n${p17}0\n110101199002304514\n4111111111111111\n110101900307451\n123456` });
+  check('合法身份证通过并解析性别', r.html.includes('校验码正确') && r.html.includes('男'));
+  check('解析出生日期与年龄', r.html.includes('1990-03-07') && /\d+ 岁/.test(r.html));
+  check('解析归属地北京', r.html.includes('归属地 北京'));
+  check('错误校验码提示应为 4', r.html.includes('校验码应为 4'));
+  check('2 月 30 日判为非法生日', r.html.includes('出生日期非法'));
+  check('Visa 测试卡 Luhn 通过', r.html.includes('Visa') && r.html.includes('Luhn 校验通过'));
+  check('15 位识别为旧版', r.html.includes('15 位·旧版'));
+  check('无法识别提示', r.html.includes('无法识别'));
+  check('汇总统计 6 个', r.html.includes('共校验 6 个'));
+  check('号码已打码', r.html.includes('*'));
+  check('全同数字被识别', (await idv.run({ list: '7777777777777777' })).html.includes('同一数字'));
+
+  let err = '';
+  try {
+    await idv.run({ list: '   ' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('空输入报错', err.includes('至少一个'), err);
+}
+
+// ---------- 9. 图片格式转换（Canvas 桩，验证转码链路） ----------
+console.log('\n🔄 图片格式转换（Canvas 桩）');
+{
+  let lastType = '';
+  let lastQuality = 0;
+  globalThis.URL.createObjectURL = () => 'blob:mock';
+  globalThis.createImageBitmap = async () => ({ width: 800, height: 600 });
+  globalThis.document = {
+    createElement: () => {
+      const ops = [];
+      return {
+        width: 0,
+        height: 0,
+        getContext: () => ({
+          _fill: '',
+          set fillStyle(v) { this._fill = v; ops.push(v); },
+          get fillStyle() { return this._fill; },
+          fillRect() { ops.push('fillRect'); },
+          drawImage() { ops.push('drawImage'); },
+        }),
+        _ops: ops,
+        toBlob(cb, type, q) {
+          lastType = type;
+          lastQuality = q;
+          cb({ size: 51200, type: q === 1 ? 'image/png' : type });
+        },
+      };
+    },
+    head: { appendChild() {} },
+  };
+  const conv = await import('file://' + join(root, 'tools/image-convert/run.js').replace(/\\/g, '/'));
+  const out = await conv.run({ file: { name: 'shot.png', type: 'image/png', size: 204800 }, format: 'image/webp', quality: '0.9', bg: '#ffffff' });
+  check('输出 WebP 且质量 0.9', lastType === 'image/webp' && lastQuality === 0.9);
+  check('文件名改成 .webp', out.html.includes('download="shot.webp"'));
+  check('体积减少 75%', out.html.includes('减少 75.0%'), '204800 → 51200');
+  check('尺寸信息正确', out.html.includes('800 × 600 px'));
+
+  const png = await conv.run({ file: { name: 'a.jpg', type: 'image/jpeg', size: 1024 }, format: 'image/png', quality: '0.9', bg: '#ffffff' });
+  check('转 PNG 不填背景', png.html.includes('PNG（无损）'));
+
+  let err = '';
+  globalThis.createImageBitmap = async () => {
+    throw new Error('decode fail');
+  };
+  try {
+    await conv.run({ file: { name: 'x.heic', type: 'image/heic', size: 10 }, format: 'image/png', quality: '0.9', bg: '#fff' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('HEIC 解码失败友好报错', err.includes('HEIC'), err);
+}
+
 // 清理临时文件
-for (const f of [qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
+for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {
     if (existsSync(f)) require('node:fs').unlinkSync(f);
   } catch {}

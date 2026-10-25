@@ -1,8 +1,8 @@
-# ToolHub — 开源项目工具化平台（v2.3）
+# ToolHub — 开源项目工具化平台（v2.4）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
-**当前收录 88 个工具**：28 个本地执行（浏览器内完成，数据不上传）+ 60 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、28 篇使用教程。
+**当前收录 93 个工具**：33 个本地执行（浏览器内完成，数据不上传）+ 60 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、33 篇使用教程。
 
 ## 架构（可扩展核心）
 
@@ -19,12 +19,12 @@ toolhub/
 │   ├── pyodide-runtime.js  # Pyodide 共享运行时（多 Python 工具复用）
 │   └── vendor/           # 本地化的开源库（qrcode / marked / purify / jsQR / pdf-lib / pyodide）
 ├── tools/
-│   ├── tools.json        # 本地工具注册表（Manifest 元信息，28 个）
+│   ├── tools.json        # 本地工具注册表（Manifest 元信息，33 个）
 │   ├── directory.json    # 在线目录：60 个开源项目官网（URL 已验证）
 │   └── <工具id>/run.js   # 每个工具一个目录
 ├── topics.json           # 10 个专题（按场景打包工具 + 资源 + FAQ）
 ├── evaluations.json      # 5 篇工具横评（隐私/速度/功能取舍）
-├── articles.json         # 28 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
+├── articles.json         # 33 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
 ├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
 ├── changelog.json        # 更新日志数据
 ├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test / new-tools-test
@@ -268,3 +268,13 @@ npx wrangler deploy --config wrangler.toml
 - `sw.js` VERSION → toolhub-v2.3
 - **部署**：wrangler v `766b484a`。首次部署发现 `.git/` 被当作静态资产上传（1044 个资产，公网可下载完整提交历史），已在 `.assetsignore` 补 `.git/ .wrangler/ node_modules/` 并重新部署（189 个资产），verify 增加第 26 项「部署安全」守卫
 - 本机网络无法直连 `*.workers.dev`（DNS 污染）与代理白名单限制，`smoke-test.mjs` 需在可访问网络或绑定 `sitool.eu.org` 后执行
+
+## v2.4：5 个高频本地工具（2026-10-25）
+
+- **房贷计算器** `mortgage-calc`：等额本息 M = P·r(1+r)^n/((1+r)^n−1) 与等额本金逐月摊还；输出月供、总利息、利息占本金比例、首末月构成、逐年明细（年末剩余本金），并对比两种方式的总利息差额
+- **时区转换** `timezone-convert`：22 个城市一张表，wall clock → UTC 瞬时（两轮偏移迭代）→ 各时区显示；夏令时按全年偏移区间判定，跨日标 ±1 天，半小时偏移（UTC+5:30）不取整
+- **图片转 PDF** `img-to-pdf`：pdf-lib 本地生成，A4 纵向/横向/适应图片 + 三档边距；按比例缩放居中、不放大；单张失败不影响其余
+- **图片格式转换** `image-convert`：Canvas 转 PNG/JPEG/WebP，可选质量与透明填充色，报告体积变化；浏览器不支持编码时提示降级为 PNG
+- **身份证 / 银行卡校验** `id-validate`：GB 11643 加权校验码 + Luhn，解析省级归属地、生日、性别、年龄、卡组织；展示打码，全同数字与非法生日单独识别
+- 测试：功能测试 **91 项**（原 41），SPA 渲染 **38 项**（原 34）；新增真实 PNG → PDF 页尺寸校验、冬夏令时与跨日校验
+- 全站 88 → **93** 工具（本地 28 → 33），静态页 **122**，sitemap **123**，`sw.js` VERSION → toolhub-v2.4
