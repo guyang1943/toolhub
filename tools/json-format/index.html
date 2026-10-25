@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"JSON 格式化","description":"美化/压缩 JSON，自动校验语法错误","url":"https://toolhub.guyang1966.workers.dev/tools/json-format/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"格式化会不会改变 JSON 的内容或语义？","acceptedAnswer":{"@type":"Answer","text":"不会。JSON 规范中空白字符不参与语义，格式化只改变排版，键值顺序和数据内容完全不变。"}},{"@type":"Question","name":"遇到 Unexpected token 报错怎么办？","acceptedAnswer":{"@type":"Answer","text":"把光标定位到报错提示的位置附近，常见原因包括：多了一个尾随逗号、用了单引号而不是双引号、注释（JSON 标准不支持注释）、中文全角标点。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用JSON 格式化","description":"美化/压缩 JSON，自动校验语法错误","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"JSON 格式化"}],"step":[{"@type":"HowToStep","position":1,"name":"把接口返回、日志或配置里的 JSON 文本粘贴进左侧输入框","text":"把接口返回、日志或配置里的 JSON 文本粘贴进左侧输入框","url":"https://toolhub.guyang1966.workers.dev/tools/json-format/#step1"},{"@type":"HowToStep","position":2,"name":"选择「格式化」（美化缩进）或「压缩」（去空白），可指定 2/4 空格或 Ta…","text":"选择「格式化」（美化缩进）或「压缩」（去空白），可指定 2/4 空格或 Tab 缩进","url":"https://toolhub.guyang1966.workers.dev/tools/json-format/#step2"},{"@type":"HowToStep","position":3,"name":"有语法错误时，按提示的行列号定位到问题字符附近修改","text":"有语法错误时，按提示的行列号定位到问题字符附近修改","url":"https://toolhub.guyang1966.workers.dev/tools/json-format/#step3"},{"@type":"HowToStep","position":4,"name":"用右侧折叠视图逐层检查结构，确认无误后复制结果","text":"用右侧折叠视图逐层检查结构，确认无误后复制结果","url":"https://toolhub.guyang1966.workers.dev/tools/json-format/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>JSON 格式化</h1><p>美化/压缩 JSON，自动校验语法错误</p><h2>关于JSON 格式化</h2><p>JSON 格式化是把一段压缩或混乱的 JSON 文本，按照固定的缩进规则重新排版的过程。原始 JSON 常常是一整行，人眼几乎无法阅读；格式化之后每个键值对单独成行，嵌套层级用缩进表示，出错的括号位置也更容易定位。反过来，压缩（minify）会去掉全部空白字符，通常能把体积减少 30% 以上，适合放在请求体和配置文件里。</p><h2>使用步骤</h2><ol><li>把接口返回、日志或配置里的 JSON 文本粘贴进左侧输入框</li><li>选择「格式化」（美化缩进）或「压缩」（去空白），可指定 2/4 空格或 Tab 缩进</li><li>有语法错误时，按提示的行列号定位到问题字符附近修改</li><li>用右侧折叠视图逐层检查结构，确认无误后复制结果</li></ol><h2>常见错误</h2><h3>尾随逗号</h3><p>最后一对花括号前多写的逗号在 JavaScript 里合法，在 JSON 里直接报错。复制自代码对象时最常见。</p><h3>全角标点冒充半角</h3><p>中文输入法下的引号“”、冒号：形状和半角几乎一样，但 JSON 只认英文双引号和冒号，报错信息往往只指向行尾。</p><h3>把压缩结果当成“另一种数据”</h3><p>压缩不改变语义，只是去掉空白。不要因为压缩后“变短了”就以为内容被裁剪过。</p><h2>常见问题</h2><h3>格式化会不会改变 JSON 的内容或语义？</h3><p>不会。JSON 规范中空白字符不参与语义，格式化只改变排版，键值顺序和数据内容完全不变。</p><h3>遇到 Unexpected token 报错怎么办？</h3><p>把光标定位到报错提示的位置附近，常见原因包括：多了一个尾随逗号、用了单引号而不是双引号、注释（JSON 标准不支持注释）、中文全角标点。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/tools/markdown-preview/">Markdown 预览</a> —— 实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/topics/api-debug/">接口联调试探</a> —— 专题工具包</li><li><a href="/evaluations/json-tools/">JSON 工具横评：格式化只是入门，可视化才是分水岭</a> —— 横评对比</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

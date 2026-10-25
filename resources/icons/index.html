@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>免费图标库</h1><p>做界面最常用的图标来源，全部免费可用、授权清晰</p><h2>合集导语</h2><p>图标是界面里最容易被忽略、又最难统一的细节。自己画太慢，随便找又风格混杂。这里收的都是开源或明确免费的图标库：有的胜在数量（20 万+），有的胜在风格统一（像素级对齐），有的胜在开箱即用（直接复制组件代码）。选的时候优先看三点——授权是否允许商用、风格是否成套、能否按需引入（避免整个图标库打进包里）。</p><h2>怎么选</h2><ul><li>要风格统一的产品界面：优先 Lucide 或 Tabler，一套图标贯穿全站</li><li>要品牌 logo（GitHub、微信、支付宝这些）：用 Simple Icons，3000+ 品牌图标</li><li>要中文场景的图标（含国内 App）：Iconfont 最全，但注意单个图标作者可能另有要求</li><li>只要几十个图标、不想引依赖：直接复制 SVG，别加图标库</li></ul><h2>全部来源</h2><h3>Lucide</h3><p>Feather 的社区延续版，线条干净、风格高度统一，产品界面首选；支持按需引入，不会拖大包体积。</p><p>授权：ISC · 来源：github.com/lucide-icons/lucide · <a href="https://lucide.dev" target="_blank" rel="noopener">访问 ↗</a></p><h3>Icones</h3><p>不是图标库本身，而是 20 万+ 图标集的统一搜索入口，能一键复制 Vue/React 组件或 SVG，找图标效率最高。</p><p>授权：MIT · 来源：github.com/antfu/icones · <a href="https://icones.js.org" target="_blank" rel="noopener">访问 ↗</a></p><h3>Simple Icons</h3><p>3000+ 品牌 logo，做「用 GitHub 登录」「支持微信支付」这类按钮时不用满网找。CC0 授权，商用无忧。</p><p>授权：CC0-1.0 · 来源：github.com/simple-icons/simple-icons · <a href="https://simpleicons.org" target="_blank" rel="noopener">访问 ↗</a></p><h3>Tabler Icons</h3><p>5000+ 图标，笔画宽度和视觉重心统一，适合做后台管理系统这类图标密集的界面。</p><p>授权：MIT · 来源：github.com/tabler/tabler-icons · <a href="https://tabler.io/icons" target="_blank" rel="noopener">访问 ↗</a></p><h3>Iconify</h3><p>把上百套开源图标集统一成同一套 API，能在一个项目里混用不同来源的图标而不冲突。</p><p>授权：MIT · 来源：github.com/iconify/iconify · <a href="https://icon-sets.iconify.design" target="_blank" rel="noopener">访问 ↗</a></p><h3>Remix Icon</h3><p>中文团队维护，风格中性偏圆润，中文项目里比较常见，授权宽松。</p><p>授权：Apache-2.0 · 来源：github.com/Remix-Design/RemixIcon · <a href="https://remixicon.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>Heroicons</h3><p>Tailwind 官方出品，只有 300 多个但每个都打磨过，配 Tailwind 项目零违和。</p><p>授权：MIT · 来源：github.com/tailwindlabs/heroicons · <a href="https://heroicons.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>Phosphor Icons</h3><p>同一套图为 6 种粗细（thin 到 fill），做不同层级的视觉区分时很方便。</p><p>授权：MIT · 来源：github.com/phosphor-icons/core · <a href="https://phosphoricons.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>Feather</h3><p>极简线性图标的鼻祖，风格至今不过时；但已停止更新，新项目更推荐它的延续版 Lucide。</p><p>授权：MIT · 来源：github.com/feathericons/feather · <a href="https://feathericons.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>Iconfont（阿里巴巴）</h3><p>国内最大的图标平台，中文场景图标最全；但图标来自不同作者，商用前务必逐个确认授权。</p><p>授权：各图标作者授权不同 · 来源：iconfont.cn · <a href="https://www.iconfont.cn" target="_blank" rel="noopener">访问 ↗</a></p><p>本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。</p><p><a href="/resources/">← 返回资源库</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +124,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +155,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

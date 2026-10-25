@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>免费商用字体</h1><p>中文与西文免费商用字体，附授权类型说明</p><h2>合集导语</h2><p>字体是最容易踩版权坑的素材——一款字体商用授权动辄上千元，用错要赔钱。好消息是国内大厂这几年陆续开源了高质量免费商用字体：阿里巴巴普惠体、小米 MiSans、华为 HarmonyOS Sans 都能免费用在商业项目里（前提是遵守各自协议，比如不得单独售卖字体本身）。西文方面，SIL OFL 授权的字体几乎等于「自由使用」，Inter 和 JetBrains Mono 是开发场景的默认选择。使用前请务必点进原站看一眼授权说明，尤其是「可商用」的具体范围。</p><h2>怎么选</h2><ul><li>中文正文 / 界面：阿里巴巴普惠体（字重全）或 MiSans（现代感强）</li><li>中文标题要个性：得意黑（倾斜几何感，适合活动头图）</li><li>西文界面 / 正文：Inter（可读性好，屏显优化）</li><li>代码字体：JetBrains Mono（连字、易混淆字符优化）</li><li>版权最省心：优先选 OFL 授权（OFL 允许商用、修改与再分发）</li></ul><h2>全部来源</h2><h3>阿里巴巴普惠体</h3><p>字重最全的中文免费商用字体之一（Thin 到 Heavy），覆盖中文、西文与数字，正文与标题都能用，中文项目的默认选择。</p><p>授权：免费商用（阿里授权，不可单独售卖） · 来源：阿里巴巴 · <a href="https://fonts.alibabagroup.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>MiSans</h3><p>小米系统字体，几何感强、字形现代，适合做偏年轻的产品界面和运营图；字重覆盖完整。</p><p>授权：免费商用（小米授权） · 来源：小米 · <a href="https://hyperos.mi.com/font" target="_blank" rel="noopener">访问 ↗</a></p><h3>HarmonyOS Sans</h3><p>为多设备屏显设计，小字号清晰度高，适合需要在手机/平板/大屏上统一显示的界面。</p><p>授权：免费商用（华为授权，需遵守协议） · 来源：华为 · <a href="https://developer.huawei.com/consumer/cn/design/resource" target="_blank" rel="noopener">访问 ↗</a></p><h3>得意黑 Smiley Sans</h3><p>倾斜 + 几何的中文标题字，辨识度极高，做活动头图、海报标题很出彩；OFL 授权，商用与修改都允许。</p><p>授权：SIL OFL 1.1 · 来源：Atelier Anchor · <a href="https://atelier-anchor.com/typefaces/smiley-sans" target="_blank" rel="noopener">访问 ↗</a></p><h3>站酷系列字体</h3><p>站酷高端黑、酷黑、快乐体等多款，风格偏设计感；不同字体的授权条款略有差异，下载页会写明使用范围。</p><p>授权：免费商用（站酷授权，逐款确认） · 来源：站酷 · <a href="https://www.zcool.com.cn/special/zcoolfonts/" target="_blank" rel="noopener">访问 ↗</a></p><h3>Inter</h3><p>专为屏幕设计的西文字体，小字号可读性极佳，是大量设计系统（Figma、GitHub 等）的默认界面字体。</p><p>授权：SIL OFL 1.1 · 来源：Rasmus Andersson · <a href="https://rsms.me/inter/" target="_blank" rel="noopener">访问 ↗</a></p><h3>JetBrains Mono</h3><p>为写代码优化的等宽字体：字符高度更大、0/O 与 1/l/I 区分明显，长时间看代码不累。</p><p>授权：SIL OFL 1.1 · 来源：JetBrains · <a href="https://www.jetbrains.com/lp/mono/" target="_blank" rel="noopener">访问 ↗</a></p><h3>Font Squirrel</h3><p>老牌西文字体聚合站，有专门的「100% Free」筛选；下载前务必看单款字体的授权说明，不能默认整站可商用。</p><p>授权：各字体授权不同（含 100% Free 分区） · 来源：Font Squirrel · <a href="https://www.fontsquirrel.com" target="_blank" rel="noopener">访问 ↗</a></p><p>本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。</p><p><a href="/resources/">← 返回资源库</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +124,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +155,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

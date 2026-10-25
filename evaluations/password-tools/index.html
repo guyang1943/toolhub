@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>密码工具横评：生成器只是起点，管理才是终点</h1><p>对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。</p><p><b>结论：</b>用密码管理器的内置生成器（Bitwarden 免费档就够用）；本站密码生成器的价值是「完全本地、可离线」——适合生成一次性密码和不想装 App 的场景。</p><h2>对比项</h2><ul><li><b>Bitwarden</b>（密码管理器 · 隐私：端到端加密）</li><li><b>1Password</b>（密码管理器 · 隐私：端到端加密）</li><li><b>本站 · 强密码生成</b>（纯本地生成器 · 隐私：完全本地）</li></ul><h2>详细解读</h2><p>先纠正一个常见误区：密码安不安全，90% 取决于「存在哪、怎么同步」，生成算法反而是次要的——只要是密码学安全随机源（crypto.getRandomValues 或同等级别），生成器之间的差距可以忽略。所以横评的重点是管理链路，不是生成那一刻。</p><p>密码管理器的核心价值是「生成即入库 + 自动填充」的闭环：每个站点用独立强密码，你只需要记住主密码。Bitwarden 在开源、免费、可自托管三点上同时成立，个人用户免费档没有实质限制，是这类工具的默认答案。1Password 体验更好但闭源且只有订阅制，适合愿意为体验付费的用户。</p><p>本站的密码生成器是另一条路：它不管存储，只负责在本地生成。这个定位适合三类场景——一次性密码（注册个什么账号、临时共享个文件）、离线环境（内网机器没网）、以及「我就是不想装 App」的时刻。用 crypto 安全随机源意味着它和服务端生成的一样不可预测，生成的密码直接复制走，设备上不留痕。</p><p>真正危险的做法是「用大脑管理密码」：一套密码走天下、或者按规律变形（P@ssw0rd1、P@ssw0rd2）。前者的后果是撞库全面失守，后者在懂行的人眼里等于明文。如果只能记住一条建议：重要账号（邮箱、支付、社交）必须独立强密码 + 管理器，次要账号才考虑规律记忆。</p><p>收尾建议：装一个密码管理器（Bitwarden 起步），把高频密码交给它；本站生成器作为补充，应付一次性和离线场景。两者不冲突，覆盖的场景正好互补。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +124,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +155,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

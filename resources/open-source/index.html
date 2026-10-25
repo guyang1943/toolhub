@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>值得收藏的开源项目清单</h1><p>帮你持续发现优质开源项目的渠道，比漫无目的刷 Trending 高效</p><h2>合集导语</h2><p>「怎么找到好项目」往往比「怎么写代码」更影响成长速度。这里收的是发现渠道而不是项目本身：有中文社区的人工精选（HelloGitHub、阮一峰周刊），有数据驱动的榜单（OSS Insight、Trendshift），也有按领域查找同类库的工具（LibHunt）。建议订阅 1-2 个精选渠道，其余按需查找——订阅太多反而会变成信息噪音。</p><h2>怎么选</h2><ul><li>想每周固定看一批新项目：订阅 HelloGitHub 或阮一峰周刊</li><li>要按领域找同类库并比较：用 LibHunt</li><li>想看数据驱动的趋势榜：Trendshift 或 OSS Insight</li><li>国内网络访问 GitHub 慢：用 GitCode 镜像或 Gitee 探索</li></ul><h2>全部来源</h2><h3>HelloGitHub</h3><p>中文开源项目月刊，按「入门级/工具/实战」分类，每条都有人工写的推荐理由，是目前最适合中文开发者的发现渠道。</p><p>授权：免费阅读 · 来源：HelloGitHub 团队 · <a href="https://hellogithub.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>阮一峰的网络日志</h3><p>《科技爱好者周刊》每期精选几十条技术资讯与开源项目，中文技术圈影响力最大的个人博客之一，信息密度高。</p><p>授权：免费阅读（版权归作者） · 来源：阮一峰 · <a href="https://www.ruanyifeng.com/blog/" target="_blank" rel="noopener">访问 ↗</a></p><h3>OSS Insight</h3><p>用 GitHub 公开数据做分析：可以查某个语言最活跃的仓库、某个项目近三年的提交趋势，判断项目是否健康比看 Star 数可靠。</p><p>授权：开源（可自部署） · 来源：PingCAP · <a href="https://ossinsight.io" target="_blank" rel="noopener">访问 ↗</a></p><h3>Trendshift</h3><p>GitHub 趋势榜的增强版，能按语言、时间维度筛选，还保留了历史榜单；比官方 trending 页信息更全。</p><p>授权：免费浏览 · 来源：trendshift.io · <a href="https://trendshift.io" target="_blank" rel="noopener">访问 ↗</a></p><h3>LibHunt</h3><p>按语言与领域列出开源库，并把同类项目并列对比（Star 走势、活跃度、替代方案），选依赖时很有用。</p><p>授权：免费浏览 · 来源：libhunt.com · <a href="https://www.libhunt.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>开源中国</h3><p>国内老牌开源社区，开源资讯与项目库都有；适合快速了解国内开源生态在做什么。</p><p>授权：免费浏览 · 来源：OSChina · <a href="https://www.oschina.net" target="_blank" rel="noopener">访问 ↗</a></p><h3>Gitee 开源探索</h3><p>国内代码托管平台的探索页，能找到大量中文文档齐全的项目，国内部署与访问也更方便。</p><p>授权：免费浏览 · 来源：Gitee · <a href="https://gitee.com/explore" target="_blank" rel="noopener">访问 ↗</a></p><h3>GitCode</h3><p>GitHub 仓库的国内镜像与加速服务，拉取热门开源项目比直连 GitHub 稳定得多，适合国内网络环境。</p><p>授权：免费使用 · 来源：GitCode（CSDN） · <a href="https://gitcode.com" target="_blank" rel="noopener">访问 ↗</a></p><p>本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。</p><p><a href="/resources/">← 返回资源库</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +124,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +155,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

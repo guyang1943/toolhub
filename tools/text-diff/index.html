@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"文本对比","description":"两段文本行级差异对比，新增/删除一目了然","url":"https://toolhub.guyang1966.workers.dev/tools/text-diff/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么明明只改了一个字，却显示整段都变了？","acceptedAnswer":{"@type":"Answer","text":"多半是换行符不一致（Windows 的 CRLF 与 Unix 的 LF），或者行首缩进被统一替换。统一换行符后重新对比即可。"}},{"@type":"Question","name":"支持多大的文本？","acceptedAnswer":{"@type":"Answer","text":"本工具上限约 2000 行/侧（受浏览器内存约束），更大的文件建议用本地 git diff 或专用工具。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用文本对比","description":"两段文本行级差异对比，新增/删除一目了然","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"文本对比"}],"step":[{"@type":"HowToStep","position":1,"name":"把改动前后的两段文本分别粘贴进左右输入框","text":"把改动前后的两段文本分别粘贴进左右输入框","url":"https://toolhub.guyang1966.workers.dev/tools/text-diff/#step1"},{"@type":"HowToStep","position":2,"name":"选择对比粒度：按行（适合代码、配置）或按词（适合句子微调）","text":"选择对比粒度：按行（适合代码、配置）或按词（适合句子微调）","url":"https://toolhub.guyang1966.workers.dev/tools/text-diff/#step2"},{"@type":"HowToStep","position":3,"name":"查看高亮：删除行为红色、新增行为绿色，未变行置灰","text":"查看高亮：删除行为红色、新增行为绿色，未变行置灰","url":"https://toolhub.guyang1966.workers.dev/tools/text-diff/#step3"},{"@type":"HowToStep","position":4,"name":"逐块核对差异，用统计数字（+几行 -几行）快速评估改动量","text":"逐块核对差异，用统计数字（+几行 -几行）快速评估改动量","url":"https://toolhub.guyang1966.workers.dev/tools/text-diff/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>文本对比</h1><p>两段文本行级差异对比，新增/删除一目了然</p><h2>关于文本对比</h2><p>文本对比（diff）通过最长公共子序列算法找出两段文本的最小差异集，是代码审查、配置比对、日志排查的基础工具。行级 diff 会把相同的行视为未变，标出新增行和删除行；好的 diff 实现应该让差异块尽量少、尽量集中，否则可读性会急剧下降。</p><h2>使用步骤</h2><ol><li>把改动前后的两段文本分别粘贴进左右输入框</li><li>选择对比粒度：按行（适合代码、配置）或按词（适合句子微调）</li><li>查看高亮：删除行为红色、新增行为绿色，未变行置灰</li><li>逐块核对差异，用统计数字（+几行 -几行）快速评估改动量</li></ol><h2>常见错误</h2><h3>换行符不一致造成假差异</h3><p>从 Windows 记事本复制的文本带 CRLF，与 LF 文本对比时每行都“不同”。先统一换行符再对比。</p><h3>按词对比看不出结构变化</h3><p>按词 diff 会把整段重排显示成碎片。代码和配置请用按行对比，按词只适合自然语言微调。</p><h3>忽略空白差异选项</h3><p>缩进从空格改成 Tab 会让整篇“全变”。多数 diff 工具有“忽略空白”开关，比对逻辑改动时先打开它。</p><h2>常见问题</h2><h3>为什么明明只改了一个字，却显示整段都变了？</h3><p>多半是换行符不一致（Windows 的 CRLF 与 Unix 的 LF），或者行首缩进被统一替换。统一换行符后重新对比即可。</p><h3>支持多大的文本？</h3><p>本工具上限约 2000 行/侧（受浏览器内存约束），更大的文件建议用本地 git diff 或专用工具。</p><p>来源：内置实现 (LCS 算法) · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/markdown-preview/">Markdown 预览</a> —— 实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

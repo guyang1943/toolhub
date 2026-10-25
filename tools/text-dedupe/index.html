@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"文本去重排序","description":"按行去重、排序、去空行，适合清洗名单与日志","url":"https://toolhub.guyang1966.workers.dev/tools/text-dedupe/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"去重会保留哪一条？","acceptedAnswer":{"@type":"Answer","text":"保留首次出现的那条。开启忽略大小写后，输出的内容是按首次出现的原始写法，而不是全小写。"}},{"@type":"Question","name":"为什么排序结果和我预期不同？","acceptedAnswer":{"@type":"Answer","text":"中文排序依赖区域规则（localeCompare），数字与字母混排时也需要注意。需要严格 ASCII 序时请自行调整。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用文本去重排序","description":"按行去重、排序、去空行，适合清洗名单与日志","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"文本去重排序"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴待处理的文本，一行一条","text":"粘贴待处理的文本，一行一条","url":"https://toolhub.guyang1966.workers.dev/tools/text-dedupe/#step1"},{"@type":"HowToStep","position":2,"name":"按需开启：忽略大小写、去除首尾空格、删除空行","text":"按需开启：忽略大小写、去除首尾空格、删除空行","url":"https://toolhub.guyang1966.workers.dev/tools/text-dedupe/#step2"},{"@type":"HowToStep","position":3,"name":"选择排序方式（字典序 / 数字感知 / 长度）或保持原顺序","text":"选择排序方式（字典序 / 数字感知 / 长度）或保持原顺序","url":"https://toolhub.guyang1966.workers.dev/tools/text-dedupe/#step3"},{"@type":"HowToStep","position":4,"name":"复制去重后的结果，或直接下载为 txt","text":"复制去重后的结果，或直接下载为 txt","url":"https://toolhub.guyang1966.workers.dev/tools/text-dedupe/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>文本去重排序</h1><p>按行去重、排序、去空行，适合清洗名单与日志</p><h2>关于文本去重排序</h2><p>去重与排序是数据清洗里最基础也最高频的操作：名单去重、日志归类、关键词整理、URL 清单合并。关键细节在于是否忽略大小写和首尾空格——严格模式下 Alice 与 alice 会被当成两条，往往不是想要的结果。</p><h2>使用步骤</h2><ol><li>粘贴待处理的文本，一行一条</li><li>按需开启：忽略大小写、去除首尾空格、删除空行</li><li>选择排序方式（字典序 / 数字感知 / 长度）或保持原顺序</li><li>复制去重后的结果，或直接下载为 txt</li></ol><h2>常见错误</h2><h3>该忽略大小写时没开</h3><p>名单里 Alice 和 alice 常被当成两条，统计人数虚高。清洗前先想好“重复”的定义。</p><h3>看不见的空格</h3><p>行尾半角空格让两条看起来一样的内容被判为不同。开“去除首尾空格”再对比。</p><h3>排序规则不统一</h3><p>同一次分析里别混用字典序和数字感知序，v2 和 v10 的相对位置会变，结论会自相矛盾。</p><h2>常见问题</h2><h3>去重会保留哪一条？</h3><p>保留首次出现的那条。开启忽略大小写后，输出的内容是按首次出现的原始写法，而不是全小写。</p><h3>为什么排序结果和我预期不同？</h3><p>中文排序依赖区域规则（localeCompare），数字与字母混排时也需要注意。需要严格 ASCII 序时请自行调整。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/topics/work-efficiency/">职场效率工具包</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

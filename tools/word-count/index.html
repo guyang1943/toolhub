@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"字数统计","description":"中英文字数、字符、段落与阅读时长统计","url":"https://toolhub.guyang1966.workers.dev/tools/word-count/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"中文字数怎么算？","acceptedAnswer":{"@type":"Answer","text":"按汉字字符个数统计，不含标点与空格。这是公众号、多数内容平台采用的口径。"}},{"@type":"Question","name":"阅读时长准吗？","acceptedAnswer":{"@type":"Answer","text":"只是估算，按中文 400 字/分钟、英文 200 词/分钟计算，实际受内容难度与讲者语速影响。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用字数统计","description":"中英文字数、字符、段落与阅读时长统计","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"字数统计"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴或输入正文内容","text":"粘贴或输入正文内容","url":"https://toolhub.guyang1966.workers.dev/tools/word-count/#step1"},{"@type":"HowToStep","position":2,"name":"查看分开统计的汉字数、英文单词数、字符数（含/不含空格）","text":"查看分开统计的汉字数、英文单词数、字符数（含/不含空格）","url":"https://toolhub.guyang1966.workers.dev/tools/word-count/#step2"},{"@type":"HowToStep","position":3,"name":"按目标平台的口径取对应数字核对限制","text":"按目标平台的口径取对应数字核对限制","url":"https://toolhub.guyang1966.workers.dev/tools/word-count/#step3"},{"@type":"HowToStep","position":4,"name":"参考阅读时长估算安排讲稿或视频节奏","text":"参考阅读时长估算安排讲稿或视频节奏","url":"https://toolhub.guyang1966.workers.dev/tools/word-count/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>字数统计</h1><p>中英文字数、字符、段落与阅读时长统计</p><h2>关于字数统计</h2><p>不同平台对字数的统计口径不一样：有的按字符数（含空格），有的只算汉字，有的把英文按单词计。投稿、公众号、论文摘要的字数限制如果按错口径核对，很容易在最后一步被打回。分开统计中英文与标点，才能对上平台规则。</p><h2>使用步骤</h2><ol><li>粘贴或输入正文内容</li><li>查看分开统计的汉字数、英文单词数、字符数（含/不含空格）</li><li>按目标平台的口径取对应数字核对限制</li><li>参考阅读时长估算安排讲稿或视频节奏</li></ol><h2>常见错误</h2><h3>口径对不上平台</h3><p>有的平台把标点计入字数，有的不计。提交前看清对方规则，取对应的统计项，别只看一个总数。</p><h3>粘贴时带上格式残留</h3><p>从 Word 或网页复制会带入零宽字符和全角空格，统计数虚高。先过一遍纯文本再计数。</p><h3>英文按字符数估算</h3><p>英文文章用“字符数”对字数限制没有意义，平台基本按单词计。双语内容要分开看两个口径。</p><h2>常见问题</h2><h3>中文字数怎么算？</h3><p>按汉字字符个数统计，不含标点与空格。这是公众号、多数内容平台采用的口径。</p><h3>阅读时长准吗？</h3><p>只是估算，按中文 400 字/分钟、英文 200 词/分钟计算，实际受内容难度与讲者语速影响。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

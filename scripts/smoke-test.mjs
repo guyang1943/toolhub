@@ -86,3 +86,32 @@ if (fails.length) {
 } else {
   console.log('\n✅ 全部关键路径正常，可以对外发布');
 }
+
+// ---- 内容抽查：v2.7 起，目录工具页必须有正文、内链与 FAQ 结构化数据 ----
+// 状态码 200 只能证明「页面在」，不能证明「页面有内容」，这一层专门防正文被模板改坏。
+{
+  const sample = ['excalidraw', 'bentopdf', 'duckdb', 'mermaid', 'pairdrop', 'librespeed'];
+  const bad = [];
+  for (const id of sample) {
+    try {
+      const html = await (await fetch(`${BASE}/tools/${id}/`, { signal: AbortSignal.timeout(15000) })).text();
+      const i = html.indexOf('seo-static');
+      const seg = i >= 0 ? html.slice(i, i + 20000) : '';
+      const text = seg.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, '');
+      const links = (seg.match(/href="\/(?:tools|topics|evaluations)\//g) || []).length;
+      if (text.length < 400) bad.push(`${id} 正文仅 ${text.length} 字`);
+      if (links < 3) bad.push(`${id} 内链仅 ${links} 条`);
+      if (!/FAQPage/.test(html)) bad.push(`${id} 缺 FAQPage`);
+      if (!/rel="canonical"/.test(html)) bad.push(`${id} 缺 canonical`);
+    } catch (e) {
+      bad.push(`${id} 抓取失败: ${e.message}`);
+    }
+  }
+  console.log(`\n📄 内容抽查（${sample.length} 个目录工具页）`);
+  if (bad.length) {
+    console.log('   ❌ ' + bad.join('\n   ❌ '));
+    process.exitCode = 1;
+  } else {
+    console.log('   ✅ 正文 ≥400 字、内链 ≥3 条、FAQPage 与 canonical 齐备');
+  }
+}

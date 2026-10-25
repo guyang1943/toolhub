@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Base64 / URL 编解码","description":"Base64 与 URL 编码互转，支持中文","url":"https://toolhub.guyang1966.workers.dev/tools/base64-url/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么用 btoa() 处理中文会报错？","acceptedAnswer":{"@type":"Answer","text":"btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。"}},{"@type":"Question","name":"Base64 能用来加密数据吗？","acceptedAnswer":{"@type":"Answer","text":"不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用Base64 / URL 编解码","description":"Base64 与 URL 编码互转，支持中文","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"Base64 / URL 编解码"}],"step":[{"@type":"HowToStep","position":1,"name":"选择模式：Base64 编解码、URL 编解码或 Data URI 处理","text":"选择模式：Base64 编解码、URL 编解码或 Data URI 处理","url":"https://toolhub.guyang1966.workers.dev/tools/base64-url/#step1"},{"@type":"HowToStep","position":2,"name":"粘贴原文或密文，中文内容勾选 UTF-8 处理","text":"粘贴原文或密文，中文内容勾选 UTF-8 处理","url":"https://toolhub.guyang1966.workers.dev/tools/base64-url/#step2"},{"@type":"HowToStep","position":3,"name":"核对输出结果，复制到目标位置","text":"核对输出结果，复制到目标位置","url":"https://toolhub.guyang1966.workers.dev/tools/base64-url/#step3"},{"@type":"HowToStep","position":4,"name":"批量场景可一次性粘贴多行，按行分别处理","text":"批量场景可一次性粘贴多行，按行分别处理","url":"https://toolhub.guyang1966.workers.dev/tools/base64-url/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Base64 / URL 编解码</h1><p>Base64 与 URL 编码互转，支持中文</p><h2>关于Base64 / URL 编解码</h2><p>Base64 是把二进制数据映射成 64 个可打印字符的编码方式，常用在只能传输文本的场景，比如邮件、JSON 字段、URL 参数。URL 编码（percent-encoding）则是把空格、中文、& ? 等特殊字符转成 %XX 形式，避免破坏 URL 结构。两者都是编码，不是加密——任何人都能还原。</p><h2>使用步骤</h2><ol><li>选择模式：Base64 编解码、URL 编解码或 Data URI 处理</li><li>粘贴原文或密文，中文内容勾选 UTF-8 处理</li><li>核对输出结果，复制到目标位置</li><li>批量场景可一次性粘贴多行，按行分别处理</li></ol><h2>常见错误</h2><h3>把 Base64 当加密</h3><p>解码只需要一秒。任何“看起来乱码就觉得安全”的想法都危险，敏感数据请用真正的加密算法。</p><h3>URL 编码不完整</h3><p>只转义空格不转义 & 和 #，链接照样会断。整个查询串都要编码，服务端再解码。</p><h3>编码后当作二进制直接比较</h3><p>Base64 输出依赖填充和换行约定，不同实现可能差在行尾换行；比对内容前先统一格式。</p><h2>常见问题</h2><h3>为什么用 btoa() 处理中文会报错？</h3><p>btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。</p><h3>Base64 能用来加密数据吗？</h3><p>不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/tools/markdown-preview/">Markdown 预览</a> —— 实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/api-debug/">接口联调试探</a> —— 专题工具包</li><li><a href="/topics/work-efficiency/">职场效率工具包</a> —— 专题工具包</li><li><a href="/topics/privacy-security/">隐私与安全工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

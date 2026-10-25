@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"强密码生成","description":"crypto 安全随机源生成强密码，本机生成不上传","url":"https://toolhub.guyang1966.workers.dev/tools/password-gen/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"多长的密码才算安全？","acceptedAnswer":{"@type":"Answer","text":"一般账号 12 位以上，重要账号（邮箱、云服务、金融）建议 16-20 位并使用完整字符集。"}},{"@type":"Question","name":"生成过程会把密码发到服务器吗？","acceptedAnswer":{"@type":"Answer","text":"不会。全部在浏览器内用 crypto.getRandomValues 生成，没有任何网络请求。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用强密码生成","description":"crypto 安全随机源生成强密码，本机生成不上传","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"强密码生成"}],"step":[{"@type":"HowToStep","position":1,"name":"选择长度（建议 12 位起，重要账号 16-20 位）","text":"选择长度（建议 12 位起，重要账号 16-20 位）","url":"https://toolhub.guyang1966.workers.dev/tools/password-gen/#step1"},{"@type":"HowToStep","position":2,"name":"勾选字符集：大写、小写、数字、符号，避开易混字符（0/O、1/l）","text":"勾选字符集：大写、小写、数字、符号，避开易混字符（0/O、1/l）","url":"https://toolhub.guyang1966.workers.dev/tools/password-gen/#step2"},{"@type":"HowToStep","position":3,"name":"需要多个时设置批量数量，一次性生成备用","text":"需要多个时设置批量数量，一次性生成备用","url":"https://toolhub.guyang1966.workers.dev/tools/password-gen/#step3"},{"@type":"HowToStep","position":4,"name":"复制后立即存入密码管理器，不要在记事本里过渡","text":"复制后立即存入密码管理器，不要在记事本里过渡","url":"https://toolhub.guyang1966.workers.dev/tools/password-gen/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>强密码生成</h1><p>crypto 安全随机源生成强密码，本机生成不上传</p><h2>关于强密码生成</h2><p>强密码的核心是足够长的随机性，而不是把生日、单词加点符号。人脑很难产生真正的随机序列，所以密码生成器应该使用操作系统的密码学随机源（crypto），而不是 Math.random 这类可预测的伪随机数。长度是最有效的强度杠杆：每多一位，暴力破解的搜索空间就扩大数十倍。</p><h2>使用步骤</h2><ol><li>选择长度（建议 12 位起，重要账号 16-20 位）</li><li>勾选字符集：大写、小写、数字、符号，避开易混字符（0/O、1/l）</li><li>需要多个时设置批量数量，一次性生成备用</li><li>复制后立即存入密码管理器，不要在记事本里过渡</li></ol><h2>常见错误</h2><h3>生成完靠记忆保管</h3><p>强密码的设计目的就是不可记忆。唯一正解是密码管理器，写在便利贴或微信文件传输助手里等于没设防。</p><h3>只换复杂度不换长度</h3><p>8 位带符号的密码远不如 16 位纯小写字母抗穷举。长度比花样重要得多。</p><h3>批量生成后重复使用</h3><p>给每个站点用独立密码，一次泄露不会连环失守。批量生成的用途是“备用池”，不是“通用密码”。</p><h2>常见问题</h2><h3>多长的密码才算安全？</h3><p>一般账号 12 位以上，重要账号（邮箱、云服务、金融）建议 16-20 位并使用完整字符集。</p><h3>生成过程会把密码发到服务器吗？</h3><p>不会。全部在浏览器内用 crypto.getRandomValues 生成，没有任何网络请求。</p><p>来源：内置实现 (WebCrypto) · License: MIT · 分类：<a href="/?cat=%E6%95%88%E7%8E%87">效率</a></p><h2>相关阅读</h2><ul><li><a href="/tools/timestamp/">时间戳转换</a> —— Unix 时间戳与可读时间互转，多时区支持</li><li><a href="/tools/tax-calc/">个税计算器</a> —— 工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测</li><li><a href="/tools/unit-convert/">单位换算</a> —— 长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转</li><li><a href="/tools/pairdrop/">PairDrop</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/localsend/">LocalSend</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/work-efficiency/">职场效率工具包</a> —— 专题工具包</li><li><a href="/topics/privacy-security/">隐私与安全工具箱</a> —— 专题工具包</li><li><a href="/evaluations/password-tools/">密码工具横评：生成器只是起点，管理才是终点</a> —— 横评对比</li><li><a href="/?cat=%E6%95%88%E7%8E%87">全部效率类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

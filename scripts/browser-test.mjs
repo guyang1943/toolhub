@@ -140,6 +140,16 @@ async function waitText(selector, substr, timeout = 20000) {
   return false;
 }
 
+async function waitForFocus(id, timeout = 8000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    const cur = await evaluate(`document.activeElement && document.activeElement.id`).catch(() => '');
+    if (cur === id) return true;
+    await sleep(150);
+  }
+  return false;
+}
+
 async function fill(map) {
   await evaluate(`(() => {
     const vals = ${JSON.stringify(map)};
@@ -156,6 +166,14 @@ async function fill(map) {
 
 async function clickRun() {
   await evaluate(`document.getElementById('run-btn').click()`);
+}
+
+// 真实按键：走 CDP 输入管线，和用户敲键盘等价（不是页面内 dispatch 假事件）
+async function pressKey(key, { code = '', vk = 0, text = '', modifiers = 0 } = {}) {
+  const base = { key, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk, modifiers };
+  await cdp.send('Input.dispatchKeyEvent', { ...base, type: text ? 'keyDown' : 'rawKeyDown', text: text || undefined });
+  await cdp.send('Input.dispatchKeyEvent', { ...base, type: 'keyUp' });
+  await sleep(160);
 }
 
 async function shot(name) {
@@ -216,6 +234,18 @@ async function feedFile(selector, dataUrl, name, type) {
 
   // ---- 1. 首页 ----
   await goto('/');
+  // 先摘掉 Service Worker 与它留下的 Cache：否则改过的 index.html 会被旧缓存顶回来，
+  // 出现「文件明明改了但页面还是老的」这种假失败（v2.6 A4 踩过一次）。
+  const swDropped = await evaluate(`(async () => {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map(r => r.unregister()));
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+    return regs.length;
+  })()`).catch(() => 0);
+  await cdp.send('Page.reload');
+  await sleep(900);
+  if (swDropped) console.log('   （已清掉 ' + swDropped + ' 个旧 Service Worker 注册）');
   const cards = await evaluate(`document.querySelectorAll('#grid [data-id]').length`);
   check('首页渲染工具卡片', cards >= 30, cards + ' 张');
   check('首页无控制台错误', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '));
@@ -420,7 +450,68 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('排序状态写入 URL', sortQs.includes('sort=used'), sortQs);
   await goto('/');
 
-  // ---- 9.6 结果统一出口（v2.6 A3）----
+  // ---- 9.7 键盘全流程（v2.6 A4）----
+  const KEY_J = { code: 'KeyJ', vk: 74, text: 'j' };
+  const KEY_K = { code: 'KeyK', vk: 75, text: 'k' };
+  const cardIds = await evaluate(`[...document.querySelectorAll('#grid > [data-id]')].map(e => e.dataset.id)`);
+  await pressKey('j', KEY_J);
+  const kb0 = await evaluate(
+    `[...document.querySelectorAll('#grid > [data-id]')].findIndex(e => e.classList.contains('kb-focus'))`
+  );
+  check('j 选中第一张卡', kb0 === 0, `index ${kb0}`);
+  await pressKey('j', KEY_J);
+  await pressKey('j', KEY_J);
+  const kb2 = await evaluate(
+    `[...document.querySelectorAll('#grid > [data-id]')].findIndex(e => e.classList.contains('kb-focus'))`
+  );
+  check('连按 j 逐张下移', kb2 === 2, `index ${kb2}`);
+  const kbFocused = await evaluate(`document.activeElement === document.querySelector('#grid .kb-focus')`);
+  check('当前卡获得真实焦点', kbFocused === true);
+  await pressKey('k', KEY_K);
+  const kb1 = await evaluate(
+    `[...document.querySelectorAll('#grid > [data-id]')].findIndex(e => e.classList.contains('kb-focus'))`
+  );
+  check('k 往回上移', kb1 === 1, `index ${kb1}`);
+  await pressKey('Enter', { code: 'Enter', vk: 13 });
+  await sleep(700);
+  const opened = await evaluate(`location.pathname`);
+  check('Enter 打开选中的工具', opened === '/tools/' + cardIds[1] + '/', opened);
+
+  // 结果出现后焦点自动落到结果区
+  await goto('/tools/uuid-gen/');
+  await clickRun();
+  const resFocus = await waitForFocus('tool-result', 8000);
+  check('运行后焦点移到结果区', resFocus === true);
+  const flash = await evaluate(`document.getElementById('tool-result').classList.contains('result-flash')`);
+  check('结果区有出现提示动画', flash === true);
+
+  // ? 打开快捷键帮助，Esc 关闭
+  await pressKey('?', { code: 'Slash', vk: 191, text: '?', modifiers: 8 });
+  const helpOpen = await evaluate(
+    `document.getElementById('kbd-help').classList.contains('show') && document.getElementById('kbd-help').getAttribute('aria-hidden') === 'false'`
+  );
+  check('? 打开快捷键帮助', helpOpen === true);
+  const helpRows = await evaluate(`document.querySelectorAll('#kbd-help .kbd-table tr').length`);
+  check('帮助面板列出 9 条快捷键', helpRows === 9, helpRows + ' 条');
+  const helpFocus = await evaluate(`document.activeElement.id`);
+  check('帮助面板焦点落在关闭键', helpFocus === 'kbd-close', String(helpFocus));
+  await pressKey('Escape', { code: 'Escape', vk: 27 });
+  const helpClosed = await evaluate(`document.getElementById('kbd-help').getAttribute('aria-hidden')`);
+  check('Esc 关闭帮助面板', helpClosed === 'true', String(helpClosed));
+
+  // t 切主题
+  const themeBefore = await evaluate(`document.documentElement.dataset.theme`);
+  await pressKey('t', { code: 'KeyT', vk: 84, text: 't' });
+  const themeAfter = await evaluate(`document.documentElement.dataset.theme`);
+  check('t 切换主题', themeBefore !== themeAfter, `${themeBefore} → ${themeAfter}`);
+  await pressKey('t', { code: 'KeyT', vk: 84, text: 't' });
+
+  // 页脚入口存在（不靠记忆也能找到快捷键）
+  await goto('/');
+  const kbdBtn = await evaluate(`!!document.getElementById('kbd-btn')`);
+  check('页脚有快捷键入口', kbdBtn === true);
+
+  // ---- 9.8 结果统一出口（v2.6 A3）----
   await goto('/tools/uuid-gen/?run=1');
   const raCopy = await waitText('#tool-result', '复制结果', 8000);
   check('文本类结果出现统一操作条', raCopy);
@@ -453,7 +544,15 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     }
     const p1 = await evaluate(`location.pathname`);
     check('点接力按钮进入目标工具', p1 === '/tools/img-to-pdf/', p1);
-    const fed = await evaluate(`(() => { const el = document.getElementById('f-files'); return el && el.files ? el.files.length : -1; })()`);
+    // 目标页 run.js 是动态 import，表单渲染晚于路由切换，这里轮询等文件注入
+    let fed = -1;
+    for (let i = 0; i < 25; i++) {
+      fed = await evaluate(
+        `(() => { const el = document.getElementById('f-files'); return el && el.files ? el.files.length : -1; })()`
+      ).catch(() => -1);
+      if (fed >= 1) break;
+      await sleep(160);
+    }
     check('接力把上一步产物填进文件输入', fed >= 1, fed + ' 个文件');
     check('接力后显示来源提示', (await evaluate(`!!document.querySelector('.pipe-note')`)) === true);
     await clickRun();
@@ -461,6 +560,20 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     const pdfTxt = await evaluate(`(document.getElementById('tool-result').textContent || '').slice(0, 120)`);
     check('接力后直接产出 PDF', pdfDone, pdfTxt.replace(/\s+/g, ' '));
   }
+
+  // ---- 9.9 目录工具页正文（v2.7 B1）----
+  await goto('/tools/excalidraw/');
+  const docReady = await waitText('#tool-body', '它解决什么问题', 8000);
+  check('目录工具页渲染正文', docReady === true);
+  const docLen = await evaluate(
+    `(() => { const el = document.querySelector('#tool-body .doc-body'); return el ? el.textContent.replace(/\\s+/g, '').length : 0; })()`
+  );
+  check('正文长度 ≥400 字', docLen >= 400, docLen + ' 字');
+  const docLinks = await evaluate(`document.querySelectorAll('#tool-body .doc-body a[href^="/tools/"]').length`);
+  check('正文含站内工具内链', docLinks >= 1, docLinks + ' 条');
+  const docFaq = await evaluate(`document.querySelectorAll('#tool-body .doc-body h3').length`);
+  check('正文含常见问题', docFaq >= 2, docFaq + ' 条');
+  await shot('06-directory-doc');
 
   // ---- 10. 刷新深链 + 返回按钮 ----
   await goto('/tools/mortgage-calc/');

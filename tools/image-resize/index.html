@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片缩放","description":"按最大边长等比缩放图片，生成头像/封面尺寸","url":"https://toolhub.guyang1966.workers.dev/tools/image-resize/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"缩小后再放大能恢复清晰度吗？","acceptedAnswer":{"@type":"Answer","text":"不能。缩小过程丢弃了像素信息，放大只会插值出模糊的近似值，无法还原细节。"}},{"@type":"Question","name":"为什么转成 JPEG 后透明背景变成白色？","acceptedAnswer":{"@type":"Answer","text":"JPEG 不支持透明通道。需要透明请保留 PNG 或使用 WebP。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用图片缩放","description":"按最大边长等比缩放图片，生成头像/封面尺寸","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"图片缩放"}],"step":[{"@type":"HowToStep","position":1,"name":"选择图片，输入目标尺寸或选择预设（头像 / 封面 / 缩略图）","text":"选择图片，输入目标尺寸或选择预设（头像 / 封面 / 缩略图）","url":"https://toolhub.guyang1966.workers.dev/tools/image-resize/#step1"},{"@type":"HowToStep","position":2,"name":"勾选“锁定比例”，只改最长边，避免变形","text":"勾选“锁定比例”，只改最长边，避免变形","url":"https://toolhub.guyang1966.workers.dev/tools/image-resize/#step2"},{"@type":"HowToStep","position":3,"name":"需要透明背景时输出格式保持 PNG 或 WebP","text":"需要透明背景时输出格式保持 PNG 或 WebP","url":"https://toolhub.guyang1966.workers.dev/tools/image-resize/#step3"},{"@type":"HowToStep","position":4,"name":"下载后核对实际像素尺寸，再上传到平台","text":"下载后核对实际像素尺寸，再上传到平台","url":"https://toolhub.guyang1966.workers.dev/tools/image-resize/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片缩放</h1><p>按最大边长等比缩放图片，生成头像/封面尺寸</p><h2>关于图片缩放</h2><p>图片缩放改变的是像素尺寸，压缩改变的是编码质量，两者解决的问题不同：前者用于满足平台尺寸要求（头像 512、封面 1200×630），后者用于减小传输体积。等比缩放时只约束最长边，短边按比例计算，这样能保证画面不变形——直接指定宽高很容易把人物拉扁。</p><h2>使用步骤</h2><ol><li>选择图片，输入目标尺寸或选择预设（头像 / 封面 / 缩略图）</li><li>勾选“锁定比例”，只改最长边，避免变形</li><li>需要透明背景时输出格式保持 PNG 或 WebP</li><li>下载后核对实际像素尺寸，再上传到平台</li></ol><h2>常见错误</h2><h3>宽高都指定导致变形</h3><p>平台要求“不小于 200×200”时，正确的做法是按短边等比放大到 200，而不是强行拉伸到 200×200。</p><h3>小图放大当高清用</h3><p>把 100px 图标放大到 500px 只会得到模糊位图。矢量场景请用 SVG，放大不失真。</p><h3>只改尺寸不改体积</h3><p>缩小尺寸通常会降体积，但高分辨率截图缩完仍可能超标。尺寸和压缩两个工具配合使用。</p><h2>常见问题</h2><h3>缩小后再放大能恢复清晰度吗？</h3><p>不能。缩小过程丢弃了像素信息，放大只会插值出模糊的近似值，无法还原细节。</p><h3>为什么转成 JPEG 后透明背景变成白色？</h3><p>JPEG 不支持透明通道。需要透明请保留 PNG 或使用 WebP。</p><p>来源：内置实现 (Canvas API) · License: MIT · 分类：<a href="/?cat=%E5%9B%BE%E7%89%87">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-compress/">图片压缩</a> —— 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</li><li><a href="/tools/image-base64/">图片转 Base64</a> —— 图片与 Data URI / Base64 双向转换</li><li><a href="/tools/image-convert/">图片格式转换</a> —— PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/?cat=%E5%9B%BE%E7%89%87">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

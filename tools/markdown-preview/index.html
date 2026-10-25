@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Markdown 预览","description":"实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS","url":"https://toolhub.guyang1966.workers.dev/tools/markdown-preview/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"预览里能正常显示，发到平台上却乱掉？","acceptedAnswer":{"@type":"Answer","text":"不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。"}},{"@type":"Question","name":"粘贴的 HTML 会被执行吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用Markdown 预览","description":"实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"Markdown 预览"}],"step":[{"@type":"HowToStep","position":1,"name":"在左侧编辑器输入或粘贴 Markdown 文本","text":"在左侧编辑器输入或粘贴 Markdown 文本","url":"https://toolhub.guyang1966.workers.dev/tools/markdown-preview/#step1"},{"@type":"HowToStep","position":2,"name":"右侧实时渲染，滚动位置左右同步","text":"右侧实时渲染，滚动位置左右同步","url":"https://toolhub.guyang1966.workers.dev/tools/markdown-preview/#step2"},{"@type":"HowToStep","position":3,"name":"需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码","text":"需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码","url":"https://toolhub.guyang1966.workers.dev/tools/markdown-preview/#step3"},{"@type":"HowToStep","position":4,"name":"发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍","text":"发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍","url":"https://toolhub.guyang1966.workers.dev/tools/markdown-preview/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Markdown 预览</h1><p>实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</p><h2>关于Markdown 预览</h2><p>Markdown 用少量符号描述文档结构（# 标题、- 列表、``` 代码块），渲染后生成 HTML 页面。它在 README、技术文档、Issue 中被广泛使用，但不同渲染器对表格、脚注、HTML 混排的支持不一致，所以发布前在实际渲染器里预览一遍很有必要。</p><h2>使用步骤</h2><ol><li>在左侧编辑器输入或粘贴 Markdown 文本</li><li>右侧实时渲染，滚动位置左右同步</li><li>需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码</li><li>发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍</li></ol><h2>常见错误</h2><h3>表格少了分隔行</h3><p>Markdown 表格第二行必须是 |---| 形式的分隔行，漏掉它整段会被当成普通文本。分隔行前后各留一个空行更稳。</p><h3>代码块不标语言</h3><p>``` 后面不写语言就没有语法高亮，某些平台还会按纯文本处理。标上 js、python、bash 体验差别很大。</p><h3>依赖平台方言</h3><p>任务列表、@提及、折叠块都是扩展语法，换个渲染器就失效。对外发布的文档坚持用标准语法最安全。</p><h2>常见问题</h2><h3>预览里能正常显示，发到平台上却乱掉？</h3><p>不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。</p><h3>粘贴的 HTML 会被执行吗？</h3><p>不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。</p><p>来源：基于开源 marked (MIT) + DOMPurify (Apache-2.0) · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/evaluations/markdown-editors/">Markdown 编辑器横评：四款主流在线编辑器怎么选</a> —— 横评对比</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

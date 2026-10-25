@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PDF 合并拆分","description":"多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传","url":"https://toolhub.guyang1966.workers.dev/tools/pdf-merge/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"合并会改变原文件的内容吗？","acceptedAnswer":{"@type":"Answer","text":"不会。合并只是把各文件的页面按顺序复制到一个新文档中，页面内容、尺寸、方向保持不变。需要注意 pdf-lib 的限制：书签、表单域、部分批注和附件不会带入新文件，只保留可见的页面内容。"}},{"@type":"Question","name":"加密的 PDF 能处理吗？","acceptedAnswer":{"@type":"Answer","text":"不能。带打开密码的 PDF 需要先解密（用阅读器打开后另存为无加密文件），带权限限制但能打开的 PDF 通常可以直接处理。工具遇到加密文件会给出明确提示。"}},{"@type":"Question","name":"支持多大的文件？","acceptedAnswer":{"@type":"Answer","text":"取决于本机内存。日常几十兆的文档没有问题；超过几百兆的扫描件建议分批处理。所有解析和生成都在本机进行，没有服务端的体积限制，但浏览器标签页的内存上限是真实存在的。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用PDF 合并拆分","description":"多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"PDF 合并拆分"}],"step":[{"@type":"HowToStep","position":1,"name":"选择操作模式：合并、提取页面或拆分","text":"选择操作模式：合并、提取页面或拆分","url":"https://toolhub.guyang1966.workers.dev/tools/pdf-merge/#step1"},{"@type":"HowToStep","position":2,"name":"合并模式：按住 Ctrl / ⌘ 多选若干 PDF，选择顺序就是合并后的顺序","text":"合并模式：按住 Ctrl / ⌘ 多选若干 PDF，选择顺序就是合并后的顺序","url":"https://toolhub.guyang1966.workers.dev/tools/pdf-merge/#step2"},{"@type":"HowToStep","position":3,"name":"提取模式：单选一个 PDF，填写页码范围（1,3,5-8 这种格式，留空表示…","text":"提取模式：单选一个 PDF，填写页码范围（1,3,5-8 这种格式，留空表示全部页面）","url":"https://toolhub.guyang1966.workers.dev/tools/pdf-merge/#step3"},{"@type":"HowToStep","position":4,"name":"拆分模式：单选一个 PDF，设置每份页数（填 1 即逐页拆分）","text":"拆分模式：单选一个 PDF，设置每份页数（填 1 即逐页拆分）","url":"https://toolhub.guyang1966.workers.dev/tools/pdf-merge/#step4"},{"@type":"HowToStep","position":5,"name":"点击「开始处理」，完成后点对应的下载按钮保存结果","text":"点击「开始处理」，完成后点对应的下载按钮保存结果","url":"https://toolhub.guyang1966.workers.dev/tools/pdf-merge/#step5"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>PDF 合并拆分</h1><p>多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</p><h2>关于PDF 合并拆分</h2><p>PDF 合并拆分是把多个文档按需要重新组织的日常操作：三份报告合成一份发送、从长篇合同里抽出签字页、把扫描册子按页分发。这些处理的共性是——文件内容敏感，不值得为了两页 PDF 上传到陌生网站。本工具基于开源 pdf-lib 在浏览器内完成全部操作：合并按选择顺序拼接多个文件；提取按页码范围（如 1,3,5-8）抽出若干页生成新文件；拆分按固定页数把一个文件切成多份。原文件不会离开你的设备，也没有页数、大小或文件次数的限制（受本机内存约束）。</p><h2>使用步骤</h2><ol><li>选择操作模式：合并、提取页面或拆分</li><li>合并模式：按住 Ctrl / ⌘ 多选若干 PDF，选择顺序就是合并后的顺序</li><li>提取模式：单选一个 PDF，填写页码范围（1,3,5-8 这种格式，留空表示全部页面）</li><li>拆分模式：单选一个 PDF，设置每份页数（填 1 即逐页拆分）</li><li>点击「开始处理」，完成后点对应的下载按钮保存结果</li></ol><h2>常见错误</h2><h3>页码范围从 0 开始数</h3><p>人类数页码从 1 开始，但程序里从 0 开始。本工具已按人类习惯处理——输入 1 就是第一页。如果结果比预期少了首页，检查是不是把「1」误写成了「0」。</p><h3>合并顺序按文件名排</h3><p>多选文件的顺序以选择时的点击顺序为准，不是文件名排序。想按 1、2、3 合并，就按这个顺序点选；选乱了可以删除后重来，无需重新打开页面。</p><h3>期望保留书签和目录</h3><p>pdf-lib 复制的是页面内容，原文档的书签大纲不会带入新文件。合并长篇文档后需要目录的话，建议在合并后用支持书签的工具补建，或合并前与原文档一并归档。</p><h3>扫描件文字无法搜索</h3><p>本工具只做页面级的合并与拆分，不做 OCR。扫描件合并后仍然是图片型 PDF，无法搜索文字；需要可搜索版本请先用 OCR 工具（如 tesseract）处理再合并。</p><h2>常见问题</h2><h3>合并会改变原文件的内容吗？</h3><p>不会。合并只是把各文件的页面按顺序复制到一个新文档中，页面内容、尺寸、方向保持不变。需要注意 pdf-lib 的限制：书签、表单域、部分批注和附件不会带入新文件，只保留可见的页面内容。</p><h3>加密的 PDF 能处理吗？</h3><p>不能。带打开密码的 PDF 需要先解密（用阅读器打开后另存为无加密文件），带权限限制但能打开的 PDF 通常可以直接处理。工具遇到加密文件会给出明确提示。</p><h3>支持多大的文件？</h3><p>取决于本机内存。日常几十兆的文档没有问题；超过几百兆的扫描件建议分批处理。所有解析和生成都在本机进行，没有服务端的体积限制，但浏览器标签页的内存上限是真实存在的。</p><p>来源：内置实现 (pdf-lib) · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%A1%A3">文档</a></p><h2>相关阅读</h2><ul><li><a href="/tools/img-to-pdf/">图片转 PDF</a> —— 多张图片合成一个 PDF，A4 或适应图片，本地生成不上传</li><li><a href="/tools/bentopdf/">BentoPDF</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/stirlingpdf/">Stirling-PDF</a> —— 同类第三方工具（官方在线版）</li><li><a href="/?cat=%E6%96%87%E6%A1%A3">全部文档类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

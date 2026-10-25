@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"正则测试器","description":"实时高亮正则匹配结果，列出分组与位置","url":"https://toolhub.guyang1966.workers.dev/tools/regex-tester/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么在工具里能匹配，代码里却不行？","acceptedAnswer":{"@type":"Answer","text":"常见原因是修饰符不一致（尤其 g 标志会影响 lastIndex 与重复调用结果），或代码里对反斜杠做了额外转义。测试与实现要保持同一份模式字符串。"}},{"@type":"Question","name":"贪婪和非贪婪有什么区别？","acceptedAnswer":{"@type":"Answer","text":".* 会尽可能多地匹配，.*? 尽可能少。做标签提取这类任务时，非贪婪通常更符合直觉。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用正则测试器","description":"实时高亮正则匹配结果，列出分组与位置","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"正则测试器"}],"step":[{"@type":"HowToStep","position":1,"name":"输入正则表达式，选择语言（JavaScript / Python / PCRE）","text":"输入正则表达式，选择语言（JavaScript / Python / PCRE）","url":"https://toolhub.guyang1966.workers.dev/tools/regex-tester/#step1"},{"@type":"HowToStep","position":2,"name":"按需勾选修饰符：i 忽略大小写、g 全局、m 多行、s 点匹配换行","text":"按需勾选修饰符：i 忽略大小写、g 全局、m 多行、s 点匹配换行","url":"https://toolhub.guyang1966.workers.dev/tools/regex-tester/#step2"},{"@type":"HowToStep","position":3,"name":"在测试文本区粘贴样本，实时高亮每个匹配与分组","text":"在测试文本区粘贴样本，实时高亮每个匹配与分组","url":"https://toolhub.guyang1966.workers.dev/tools/regex-tester/#step3"},{"@type":"HowToStep","position":4,"name":"确认边界情况（空串、超长串、特殊字符）后，再搬进代码","text":"确认边界情况（空串、超长串、特殊字符）后，再搬进代码","url":"https://toolhub.guyang1966.workers.dev/tools/regex-tester/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>正则测试器</h1><p>实时高亮正则匹配结果，列出分组与位置</p><h2>关于正则测试器</h2><p>正则表达式用一套元字符描述文本模式，是提取、校验、替换文本的通用工具。难点不在语法而在调试——同一个模式在不同修饰符下行为差别很大，贪婪匹配又容易吃掉过多内容。可视化高亮匹配范围、列出分组结果，是最有效的排查方式。</p><h2>使用步骤</h2><ol><li>输入正则表达式，选择语言（JavaScript / Python / PCRE）</li><li>按需勾选修饰符：i 忽略大小写、g 全局、m 多行、s 点匹配换行</li><li>在测试文本区粘贴样本，实时高亮每个匹配与分组</li><li>确认边界情况（空串、超长串、特殊字符）后，再搬进代码</li></ol><h2>常见错误</h2><h3>测试与实现的转义不一致</h3><p>字符串里的正则要多写一层反斜杠。在工具里验证过的模式，抄进代码时逐个核对 \d、\w 是否变成\\d。</p><h3>g 标志的 lastIndex 陷阱</h3><p>JS 里带 g 的正则复用时 lastIndex 会延续，同一对象连续 test 会漏匹配。每次用新建正则或重置 lastIndex。</p><h3>用正则解析 HTML/JSON</h3><p>嵌套结构用正则必然脆弱。解析 HTML 用 DOM，解析 JSON 用 JSON.parse，正则只做简单的模式提取。</p><h2>常见问题</h2><h3>为什么在工具里能匹配，代码里却不行？</h3><p>常见原因是修饰符不一致（尤其 g 标志会影响 lastIndex 与重复调用结果），或代码里对反斜杠做了额外转义。测试与实现要保持同一份模式字符串。</p><h3>贪婪和非贪婪有什么区别？</h3><p>.* 会尽可能多地匹配，.*? 尽可能少。做标签提取这类任务时，非贪婪通常更符合直觉。</p><p>来源：内置实现 (RegExp) · License: MIT · 分类：<a href="/?cat=%E5%BC%80%E5%8F%91">开发</a></p><h2>相关阅读</h2><ul><li><a href="/tools/qrcode/">二维码生成</a> —— 把文本/网址变成二维码，可下载 PNG</li><li><a href="/tools/sha256-hash/">哈希计算</a> —— SHA-256/384/512 哈希，基于 WebCrypto 安全实现</li><li><a href="/tools/uuid-gen/">UUID / ULID 生成</a> —— UUID v4、ULID、Nano ID 批量生成，可作数据库主键</li><li><a href="/tools/devdocs/">DevDocs</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/prettier/">Prettier Playground</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/api-debug/">接口联调试探</a> —— 专题工具包</li><li><a href="/topics/dev-quickref/">开发者速查手册</a> —— 专题工具包</li><li><a href="/?cat=%E5%BC%80%E5%8F%91">全部开发类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

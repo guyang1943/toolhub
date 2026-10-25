@@ -85,6 +85,20 @@ function applyStaticText() {
     '🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片',
     'footerNote'
   );
+  applyBilingual();
+}
+
+// 纯静态区块（快捷键帮助等）走 data-zh / data-en 双写，切语言时批量替换
+function applyBilingual() {
+  const en = LANG === 'en';
+  document.querySelectorAll('[data-zh]').forEach((el) => {
+    const v = en ? el.dataset.en : el.dataset.zh;
+    if (v) el.textContent = v;
+  });
+  document.querySelectorAll('[data-zh-aria]').forEach((el) => {
+    const v = en ? el.dataset.enAria : el.dataset.zhAria;
+    if (v) el.setAttribute('aria-label', v);
+  });
 }
 $('#lang-btn') && $('#lang-btn').addEventListener('click', switchLang);
 if (LANG === 'en') {
@@ -128,6 +142,11 @@ $('#theme-btn') && $('#theme-btn').addEventListener('click', () => {
   applyTheme(next);
   localStorage.setItem('toolhub:theme', next);
 });
+function toggleTheme() {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('toolhub:theme', next);
+}
 initTheme();
 initAnalytics();
 
@@ -145,9 +164,17 @@ function toggleFav(id, btn) {
 }
 
 /* ---------- 注册表 ---------- */
-// 静态页面里为爬虫准备的正文，脚本接管后移除
+// 静态页面里为爬虫准备的正文：取出「它解决什么问题 … 常见问题」这一段留给 SPA 复用，
+// 目录工具页正文较长，删掉可惜；其余（来源、官网地址、返回链接）交给 SPA 自己渲染。
+let SEO_BODY = '';
 const seoStatic = document.getElementById('seo-static');
-if (seoStatic) seoStatic.remove();
+if (seoStatic) {
+  const html = seoStatic.innerHTML;
+  const from = html.indexOf('<h2>它解决什么问题</h2>');
+  const to = html.indexOf('<h2>相关阅读</h2>');
+  if (from >= 0) SEO_BODY = html.slice(from, to > from ? to : undefined);
+  seoStatic.remove();
+}
 
 async function loadRegistry() {
   if (REGISTRY) return REGISTRY;
@@ -307,6 +334,37 @@ function bindCards(container) {
       toggleFav(btn.dataset.fav, btn);
     };
   });
+  if (container.id === 'grid') KB.idx = -1; // 列表重绘后选中项作废
+}
+
+/* ---------- 键盘选卡（j / k + Enter） ---------- */
+// 只在首页网格可用：每次移动都聚焦目标卡片，让 Tab 顺序也跟上，读屏能念出卡片名。
+const KB = { idx: -1 };
+function kbCards() {
+  return Array.from(document.querySelectorAll('#grid > [data-id]'));
+}
+function kbMove(delta) {
+  const cards = kbCards();
+  if (!cards.length) return false;
+  let next = KB.idx + delta;
+  if (KB.idx < 0) next = delta > 0 ? 0 : cards.length - 1;
+  next = Math.max(0, Math.min(cards.length - 1, next));
+  cards.forEach((c) => c.classList.remove('kb-focus'));
+  const el = cards[next];
+  KB.idx = next;
+  el.classList.add('kb-focus');
+  el.focus({ preventScroll: true });
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  return true;
+}
+function kbClear() {
+  KB.idx = -1;
+  document.querySelectorAll('#grid > .kb-focus').forEach((c) => c.classList.remove('kb-focus'));
+}
+function kbOpen() {
+  const cards = kbCards();
+  const el = cards[KB.idx];
+  if (el && el.dataset.id) navigate('/tools/' + el.dataset.id + '/');
 }
 
 /* ---------- 站内搜索：权重评分 ---------- */
@@ -616,6 +674,49 @@ function buildPaletteItems(reg, res, evals) {
   return items;
 }
 
+/* ---------- 浮层兜底 ----------
+   /tools/<id>/ 这类静态页是构建产物，构建滞后时会缺刚加的弹层（命令面板、快捷键帮助）。
+   这里按需补齐，避免「首页有、工具页没有」这种半残状态。 */
+const OVERLAY_HTML = {
+  palette: `<div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>`,
+  kbd: `<div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table"><tbody>
+        <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+        <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+        <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+        <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+        <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+        <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+        <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+      </tbody></table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>`,
+};
+function ensureOverlays() {
+  const add = (id, html) => {
+    if (document.getElementById(id)) return;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    document.body.appendChild(wrap.firstElementChild);
+  };
+  add('palette', OVERLAY_HTML.palette);
+  add('kbd-help', OVERLAY_HTML.kbd);
+}
+
 function openPalette() {
   const el = document.getElementById('palette');
   if (!el) return;
@@ -710,6 +811,106 @@ function initPalette() {
     if (e.target === el) closePalette();
   });
 }
+
+/* ---------- 快捷键帮助面板 ---------- */
+let KBD_OPEN = false;
+let kbdReturnFocus = null;
+function openKbdHelp() {
+  const el = $('#kbd-help');
+  if (!el) return;
+  kbdReturnFocus = document.activeElement;
+  el.classList.add('show');
+  el.setAttribute('aria-hidden', 'false');
+  KBD_OPEN = true;
+  const close = el.querySelector('#kbd-close');
+  if (close) close.focus();
+}
+function closeKbdHelp() {
+  const el = $('#kbd-help');
+  if (!el) return;
+  el.classList.remove('show');
+  el.setAttribute('aria-hidden', 'true');
+  KBD_OPEN = false;
+  if (kbdReturnFocus && kbdReturnFocus.focus) kbdReturnFocus.focus();
+  kbdReturnFocus = null;
+}
+function initKbdHelp() {
+  const el = $('#kbd-help');
+  if (!el) return;
+  const closeBtn = el.querySelector('#kbd-close');
+  if (closeBtn) closeBtn.onclick = closeKbdHelp;
+  el.onclick = (e) => {
+    if (e.target === el) closeKbdHelp();
+  };
+  const btn = $('#kbd-btn');
+  if (btn) btn.onclick = openKbdHelp;
+}
+
+/* ---------- 全局快捷键：j/k 选卡、Enter 打开、t 主题、g h 回首页、? 帮助 ---------- */
+// 输入状态下一律不拦截，避免抢走打字；弹层打开时只放行 Esc。
+function isTyping(el) {
+  if (!el) return false;
+  const tag = el.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable === true;
+}
+let gPending = 0;
+document.addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+  if (KBD_OPEN) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeKbdHelp();
+    }
+    return;
+  }
+  if (PALETTE.open || isTyping(e.target)) return;
+
+  if (e.key === '?') {
+    e.preventDefault();
+    openKbdHelp();
+    return;
+  }
+  if (e.key === 't') {
+    e.preventDefault();
+    toggleTheme();
+    return;
+  }
+
+  const onHome = $('#view-home') && $('#view-home').style.display !== 'none';
+  if (!onHome) return;
+
+  if (e.key === 'j' || e.key === 'k') {
+    // 网格未渲染（工具页/静态页）时不拦截，保留浏览器默认滚动
+    if (!kbCards().length) return;
+    e.preventDefault();
+    kbMove(e.key === 'j' ? 1 : -1);
+    return;
+  }
+  if (e.key === 'Enter' && KB.idx >= 0 && document.activeElement) {
+    const cur = document.activeElement;
+    if (cur.dataset && cur.dataset.id) {
+      e.preventDefault();
+      kbOpen();
+    }
+    return;
+  }
+  if (e.key === 'Escape' && KB.idx >= 0) {
+    kbClear();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    return;
+  }
+  if (e.key === 'g') {
+    gPending = Date.now();
+    return;
+  }
+  if (e.key === 'h' && gPending && Date.now() - gPending < 1200) {
+    gPending = 0;
+    e.preventDefault();
+    if (location.pathname !== '/') navigate('/');
+    else window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
 
 /* ---------- 专题合集 ---------- */
 let TOPICS = null;
@@ -1524,6 +1725,11 @@ async function openTool(id) {
                  .join('')}
              </div>`
           : ''
+      }
+      ${
+        SEO_BODY
+          ? `<div class="panel doc-body" style="margin-top:18px">${SEO_BODY}</div>`
+          : ''
       }`;
     $('#tool-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {
       kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
@@ -1734,11 +1940,29 @@ async function openTool(id) {
       renderResultActions(out, box, meta.id, manifest);
       if (out.after) out.after(box);
       pushUsage(meta.id); // 仅本机计数
+      focusResult(box);
     } catch (e) {
       box.innerHTML = `<div class="msg-err">${t('出错了：', 'errorPrefix')}${esc(e.message)}</div>`;
+      focusResult(box);
     } finally {
       setProgressHandler(null);
     }
+  }
+
+  // 结果出现后把焦点送到结果区：键盘用户不必再猜结果在哪，读屏也会朗读内容。
+  // 用 tabindex=-1 让它可编程聚焦但不进 Tab 序列。
+  function focusResult(box) {
+    if (!box || box.style.display === 'none') return;
+    if (!box.hasAttribute('tabindex')) box.setAttribute('tabindex', '-1');
+    try {
+      box.focus({ preventScroll: false });
+    } catch {
+      /* 老浏览器不支持 options 参数 */
+      box.focus();
+    }
+    box.classList.remove('result-flash');
+    void box.offsetWidth; // 强制重排，保证动画能重放
+    box.classList.add('result-flash');
   }
 
   // Ctrl/⌘ + Enter 快捷执行（textarea 内）
@@ -2039,7 +2263,9 @@ if (new URLSearchParams(location.search).get('embed') === '1') {
 }
 
 // 命令面板与 hero 搜索
+ensureOverlays();
 initPalette();
+initKbdHelp();
 
 // 占位文案按视口宽度取舍：窄屏放不下长提示，会被截成半个括号
 // 顶部搜索框的文案由 applyStaticText() 负责（要跟语言切换联动），这里只处理首页大搜索框

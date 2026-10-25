@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Markdown 编辑器横评：四款主流在线编辑器怎么选</h1><p>StackEdit、Dillinger、CryptPad 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。</p><p><b>结论：</b>内容只在本机、不想登录：用本站 Markdown 预览；要存云端多端同步：StackEdit；多人一起改且在乎隐私：CryptPad；要导出各种格式：Dillinger。</p><h2>对比项</h2><ul><li><b>本站 · Markdown 预览</b>（纯本地 · 隐私：完全本地）</li><li><b>StackEdit</b>（云同步 · 隐私：可配置）</li><li><b>Dillinger</b>（导出型 · 隐私：部分上传）</li><li><b>CryptPad</b>（协作 · 隐私：端到端加密）</li></ul><h2>详细解读</h2><p>在线 Markdown 编辑器的分野从来不在渲染效果——大家用的解析库大同小异——而在「你的内容存在哪」。这决定了四款工具各自适合谁，也决定了数据风险的量级。</p><p>本站的 Markdown 预览是最「轻」的一个：打开就能写，渲染走 marked，输出前过一遍 DOMPurify。这个细节值得说一句——很多在线渲染器直接把用户粘贴的 HTML 塞进页面，意味着恶意 Markdown 可以携带脚本；加一层消毒后，粘贴来源不明的内容也不用担心 XSS。代价是它只管预览，编辑和导出都不是强项。</p><p>要云同步选 StackEdit。它的设计是本地存储优先，你可以完全不用云端，也可以绑定 GitHub 当个人笔记仓库——对开发者来说这是杀手级组合：Markdown 存在自己的 repo 里，版本历史免费送。Dillinger 相反，它的亮点全在导出侧，但导出走第三方服务，等于内容要出一趟设备，敏感内容别用它导。</p><p>团队协作看 CryptPad。它是这一组里唯一把「协作」和「隐私」同时做到的：多人同时编辑、评论、版本历史都有，但内容在浏览器里用密钥加密后才发到服务器，服务器只存密文，连管理员也看不到你写了什么。代价是链接本身就是密钥——发给别人的同时也把访问权发出去了，链接丢了文档就找不回来，这一点和传统网盘式协作的直觉相反，用之前要先适应。</p><p>一句话收尾：先问自己「内容存哪」，再选编辑器。本机 > StackEdit（本地优先）/ CryptPad（协作且加密）；要导出格式 > Dillinger。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +124,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +155,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

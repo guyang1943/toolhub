@@ -352,6 +352,75 @@ check('结果出口契约（text / files）', () => {
   return `${covered.length}/${localDirs.length} 工具走标准出口`;
 });
 
+check('目录工具正文（v2.7 B1）', () => {
+  const dirPath = join(root, 'content', 'directory-copy.json');
+  assert(existsSync(dirPath), '缺 content/directory-copy.json');
+  const copy = JSON.parse(readFileSync(dirPath, 'utf8'));
+  const dirs = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
+  const local = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
+  const names = new Set([...local.map((x) => x.id), ...dirs.map((x) => x.id)]);
+  const bad = [];
+  for (const t of dirs) {
+    const c = copy[t.id];
+    if (!c) {
+      bad.push(t.id + '(缺正文)');
+      continue;
+    }
+    const chars = (c.intro + c.caveat + (c.scenes || []).join('')).length;
+    if (chars < 220) bad.push(t.id + `(${chars}字偏少)`);
+    if (!Array.isArray(c.scenes) || c.scenes.length < 3) bad.push(t.id + '(场景不足3)');
+    if (!Array.isArray(c.pairs) || c.pairs.length < 1) bad.push(t.id + '(缺配合工具)');
+    for (const pr of c.pairs || []) if (!names.has(pr.id)) bad.push(t.id + '→' + pr.id + '(指向不存在的工具)');
+  }
+  assert(!bad.length, bad.slice(0, 8).join('; '));
+  return `${dirs.length} 个目录工具全部有人工正文`;
+});
+
+check('内链与结构化数据（v2.7 B2/B3）', () => {
+  const dirs = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
+  const missing = dirs.filter((t) => !existsSync(join(root, 'tools', t.id, 'index.html')));
+  assert(!missing.length, '未构建的目录页: ' + missing.map((x) => x.id).join(','));
+  const bad = [];
+  let minChars = 1e9;
+  let minId = '';
+  for (const t of dirs) {
+    const html = readFileSync(join(root, 'tools', t.id, 'index.html'), 'utf8');
+    const i = html.indexOf('seo-static');
+    const seg = i >= 0 ? html.slice(i, i + 20000) : '';
+    const text = seg.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, '');
+    if (text.length < 400) bad.push(t.id + `(${text.length}字)`);
+    if (text.length < minChars) {
+      minChars = text.length;
+      minId = t.id;
+    }
+    const links = (seg.match(/href="\/(?:tools|topics|evaluations)\//g) || []).length;
+    if (links < 3) bad.push(t.id + `(内链${links})`);
+    if (!/FAQPage/.test(html)) bad.push(t.id + '(缺 FAQPage)');
+    if (!/SoftwareApplication/.test(html)) bad.push(t.id + '(缺 SoftwareApplication)');
+  }
+  assert(!bad.length, bad.slice(0, 8).join('; '));
+  return `全部 ≥400 字，最短 ${minId} ${minChars} 字`;
+});
+
+check('本地工具页相关阅读（v2.7 B3）', () => {
+  const local = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
+  const bad = [];
+  let howTo = 0;
+  for (const t of local) {
+    const f = join(root, 'tools', t.id, 'index.html');
+    if (!existsSync(f)) continue;
+    const html = readFileSync(f, 'utf8');
+    const i = html.indexOf('seo-static');
+    const seg = i >= 0 ? html.slice(i, i + 20000) : '';
+    if (!/相关阅读/.test(seg)) bad.push(t.id + '(缺相关阅读)');
+    const links = (seg.match(/href="\/tools\//g) || []).length;
+    if (links < 2) bad.push(t.id + `(内链${links})`);
+    if (/HowTo/.test(html)) howTo++;
+  }
+  assert(!bad.length, bad.slice(0, 8).join('; '));
+  return `${local.length} 个本地工具页有相关阅读，${howTo} 个带 HowTo`;
+});
+
 // ---------- 输出 ----------
 console.log('\n🔍 ToolHub 全量校验\n');
 for (const r of results) {

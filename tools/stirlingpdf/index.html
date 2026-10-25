@@ -40,6 +40,7 @@
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Stirling-PDF","description":"功能最全的开源 PDF 工具箱（官方演示站）","url":"https://toolhub.guyang1966.workers.dev/tools/stirlingpdf/","sameAs":"https://stirlingpdf.com","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Stirling-PDF 是免费的吗？","acceptedAnswer":{"@type":"Answer","text":"Stirling-PDF 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。"}},{"@type":"Question","name":"Stirling-PDF 适合什么场景？","acceptedAnswer":{"@type":"Answer","text":"最常见的是这几种：需要给 PDF 做 OCR 让扫描件可搜索，本地部署后批量处理；按规则给一批 PDF 加公司页眉页脚、统一页面尺寸；把 PDF 转成图片或 Office 格式做二次编辑。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。"}},{"@type":"Question","name":"它和 ToolHub 的本地工具有什么区别？","acceptedAnswer":{"@type":"Answer","text":"ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；Stirling-PDF 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。"}},{"@type":"Question","name":"用 Stirling-PDF 有什么限制？","acceptedAnswer":{"@type":"Answer","text":"官方演示站会把文件上传到服务器，敏感文件不要用；网页版功能全部开放，但大文件（>100MB）处理会超时。"}}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -61,7 +62,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Stirling-PDF · 官方在线版</h1><p>功能最全的开源 PDF 工具箱（官方演示站）</p><h2>它解决什么问题</h2><p>Stirling-PDF 是目前功能最全的开源 PDF 工具箱：40 多项操作，包括 OCR、签名、脱敏、格式转换、页面重排、PDF/A 转换。官方演示站可以直接试用，但它的正确用法是 Docker 自建——这样文件永远不出你的服务器，适合有合规要求的团队。</p><h2>三个典型使用场景</h2><ol><li>需要给 PDF 做 OCR 让扫描件可搜索，本地部署后批量处理</li><li>按规则给一批 PDF 加公司页眉页脚、统一页面尺寸</li><li>把 PDF 转成图片或 Office 格式做二次编辑</li></ol><h2>和 ToolHub 本地工具怎么配合</h2><p><b><a href="/tools/pdf-merge/">PDF 合并拆分</a></b>：只是合并或拆页这种轻量操作，用站内工具比启动一个 Docker 服务快得多（本地工具，文件不上传）</p><p><b><a href="/tools/img-to-pdf/">图片转 PDF</a></b>：反方向的需求（图片转 PDF）站内直接支持，支持 A4 排版（本地工具，文件不上传）</p><h2>同类可替代方案</h2><ul><li><a href="/tools/bentopdf/">BentoPDF</a> —— PDF 合并/拆分/压缩，全部本地处理</li><li><a href="/tools/pdfjs/">PDF.js Viewer</a> —— Mozilla 官方 PDF 阅读器在线演示</li><li><a href="/tools/stackedit/">StackEdit</a> —— 浏览器内 Markdown 编辑器，支持云同步</li></ul><h2>使用时要注意什么</h2><p>官方演示站会把文件上传到服务器，敏感文件不要用；网页版功能全部开放，但大文件（>100MB）处理会超时。</p><h2>常见问题</h2><h3>Stirling-PDF 是免费的吗？</h3><p>Stirling-PDF 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。</p><h3>Stirling-PDF 适合什么场景？</h3><p>最常见的是这几种：需要给 PDF 做 OCR 让扫描件可搜索，本地部署后批量处理；按规则给一批 PDF 加公司页眉页脚、统一页面尺寸；把 PDF 转成图片或 Office 格式做二次编辑。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。</p><h3>它和 ToolHub 的本地工具有什么区别？</h3><p>ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；Stirling-PDF 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。</p><h3>用 Stirling-PDF 有什么限制？</h3><p>官方演示站会把文件上传到服务器，敏感文件不要用；网页版功能全部开放，但大文件（>100MB）处理会超时。</p><h2>相关阅读</h2><ul><ul><li><a href="/tools/pdf-merge/">PDF 合并拆分</a> —— 多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传（在浏览器内执行，不联网也能用）</li><li><a href="/tools/img-to-pdf/">图片转 PDF</a> —— 多张图片合成一个 PDF，A4 或适应图片，本地生成不上传（在浏览器内执行，不联网也能用）</li></ul><li><a href="/?cat=%E6%96%87%E6%A1%A3">全部文档类工具</a> —— 按分类筛选，含本地执行与目录直达</li><li><a href="/tools/bentopdf/">BentoPDF</a> —— 同类别另一个选择</li></ul><p>项目来源：github.com/Stirling-Tools/Stirling-PDF · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%A1%A3">文档</a></p><p>官网地址：<a href="https://stirlingpdf.com" target="_blank" rel="noopener">https://stirlingpdf.com</a>（新标签页打开 stirlingpdf.com）</p><p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +125,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +156,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

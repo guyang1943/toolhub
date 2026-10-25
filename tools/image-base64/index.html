@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片转 Base64","description":"图片与 Data URI / Base64 双向转换","url":"https://toolhub.guyang1966.workers.dev/tools/image-base64/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"多大的图片适合内联？","acceptedAnswer":{"@type":"Answer","text":"经验值是 5KB 以下。超过这个量级，单独的图片文件配合缓存反而是更优选择。"}},{"@type":"Question","name":"Data URI 在 CSS 里怎么用？","acceptedAnswer":{"@type":"Answer","text":"写成 background-image: url(\"data:image/png;base64,...\")，注意引号包裹，且不要在中间换行。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用图片转 Base64","description":"图片与 Data URI / Base64 双向转换","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"图片转 Base64"}],"step":[{"@type":"HowToStep","position":1,"name":"选择图片，自动生成 Data URI（含 MIME 类型前缀）","text":"选择图片，自动生成 Data URI（含 MIME 类型前缀）","url":"https://toolhub.guyang1966.workers.dev/tools/image-base64/#step1"},{"@type":"HowToStep","position":2,"name":"复制结果，直接粘进 CSS 的 url() 或 HTML 的 src","text":"复制结果，直接粘进 CSS 的 url() 或 HTML 的 src","url":"https://toolhub.guyang1966.workers.dev/tools/image-base64/#step2"},{"@type":"HowToStep","position":3,"name":"反向模式：粘贴 Data URI 或纯 Base64 串，还原并下载图片","text":"反向模式：粘贴 Data URI 或纯 Base64 串，还原并下载图片","url":"https://toolhub.guyang1966.workers.dev/tools/image-base64/#step3"},{"@type":"HowToStep","position":4,"name":"核对体积变化，超过 5KB 的图改用外链更划算","text":"核对体积变化，超过 5KB 的图改用外链更划算","url":"https://toolhub.guyang1966.workers.dev/tools/image-base64/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片转 Base64</h1><p>图片与 Data URI / Base64 双向转换</p><h2>关于图片转 Base64</h2><p>Base64 把图片二进制编码成文本，从而能直接嵌进 HTML、CSS 或 JSON，省掉一次请求。代价是体积增加约 33%，因此只适合小图标；大图内联会拖慢首屏，得不偿失。反向操作（Data URI 还原成图片）在调试接口和邮件素材时同样常用。</p><h2>使用步骤</h2><ol><li>选择图片，自动生成 Data URI（含 MIME 类型前缀）</li><li>复制结果，直接粘进 CSS 的 url() 或 HTML 的 src</li><li>反向模式：粘贴 Data URI 或纯 Base64 串，还原并下载图片</li><li>核对体积变化，超过 5KB 的图改用外链更划算</li></ol><h2>常见错误</h2><h3>大图内联</h3><p>1MB 的图编码后约 1.33MB 全量进 HTML/CSS，首屏直接被拖慢。头像、banner 这类图老老实实走外链。</p><h3>Data URI 中间换行</h3><p>为了可读性手动折行会破坏编码，浏览器直接解析失败。要么不换行，要么用构建工具处理。</p><h3>丢了 MIME 前缀</h3><p>只有 Base64 串没有 data:image/png;base64, 前缀时，浏览器不知道按什么类型渲染，容易变成乱码或下载。</p><h2>常见问题</h2><h3>多大的图片适合内联？</h3><p>经验值是 5KB 以下。超过这个量级，单独的图片文件配合缓存反而是更优选择。</p><h3>Data URI 在 CSS 里怎么用？</h3><p>写成 background-image: url("data:image/png;base64,...")，注意引号包裹，且不要在中间换行。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E5%9B%BE%E7%89%87">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-compress/">图片压缩</a> —— 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</li><li><a href="/tools/image-resize/">图片缩放</a> —— 按最大边长等比缩放图片，生成头像/封面尺寸</li><li><a href="/tools/image-convert/">图片格式转换</a> —— PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/topics/design-color/">设计与配色</a> —— 专题工具包</li><li><a href="/?cat=%E5%9B%BE%E7%89%87">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

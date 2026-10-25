@@ -16,6 +16,9 @@ const evaluations = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf
 const resources = JSON.parse(readFileSync(join(root, 'resources.json'), 'utf8'));
 const topics = JSON.parse(readFileSync(join(root, 'topics.json'), 'utf8'));
 const changelog = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8'));
+// 目录工具正文（人工撰写，每篇 ≥400 字）：与目录数据分离，改文案不用碰代码
+const dirCopyPath = join(root, 'content', 'directory-copy.json');
+const DIR_COPY = existsSync(dirCopyPath) ? JSON.parse(readFileSync(dirCopyPath, 'utf8')) : {};
 // 计数归一：模板里的工具数/资源数一律由数据推导，避免每加一个工具就要手改多处 meta
 const TOTAL_TOOLS = tools.length + dirTools.length;
 const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
@@ -112,14 +115,54 @@ for (const tool of tools) {
     jsonld,
   });
   if (faqLd) html = html.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(faqLd)}</script>\n</head>`);
+  // B2：有操作步骤的教程页补 HowTo，让「怎么做 X」类查询能进富结果
+  if (article && article.steps && article.steps.length) {
+    const howTo = {
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: `怎么用${tool.name}`,
+      description: tool.desc,
+      totalTime: 'PT3M',
+      tool: [{ '@type': 'HowToTool', name: tool.name }],
+      step: article.steps.map((st, i) => ({
+        '@type': 'HowToStep',
+        position: i + 1,
+        name: st.length > 40 ? st.slice(0, 38) + '…' : st,
+        text: st,
+        url: `${url}#step${i + 1}`,
+      })),
+    };
+    html = html.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(howTo)}</script>\n</head>`);
+  }
+
+  // B3：本地工具页的相关阅读——同类本地工具 + 同类目录工具 + 收录它的专题/评测
+  const kinLocal = tools.filter((x) => x.id !== tool.id && x.category === tool.category).slice(0, 3);
+  const kinDir = dirTools.filter((x) => x.category === tool.category).slice(0, 2);
+  const kinTopics = (topics.topics || []).filter((tp) => (tp.tools || []).includes(tool.id));
+  const kinEvals = (evaluations.evaluations || []).filter((ev) =>
+    (ev.items || []).some((it) => (it.url || '').includes(`/tools/${tool.id}/`))
+  );
+  const related =
+    `<h2>相关阅读</h2><ul>` +
+    kinLocal.map((x) => `<li><a href="/tools/${x.id}/">${x.name}</a> —— ${x.desc}</li>`).join('') +
+    kinDir.map((x) => `<li><a href="/tools/${x.id}/">${x.name}</a> —— 同类第三方工具（官方在线版）</li>`).join('') +
+    kinTopics.map((tp) => `<li><a href="/topics/${tp.slug}/">${tp.title}</a> —— 专题工具包</li>`).join('') +
+    kinEvals.map((ev) => `<li><a href="/evaluations/${ev.slug}/">${ev.title}</a> —— 横评对比</li>`).join('') +
+    `<li><a href="/?cat=${encodeURIComponent(tool.category)}">全部${tool.category}类工具</a> —— 按分类浏览</li>` +
+    `</ul>`;
 
   html = html.replace(
-    /<main class="container">/,
-    `<main class="container">${seoBlock({
+    /<main class="container"[^>]*>/,
+    `<main class="container" id="main-content" tabindex="-1">${seoBlock({
       h1: tool.name,
       desc: tool.desc,
       article: article || null,
-      extra: `<p>来源：${tool.source} · License: ${tool.license} · 分类：${tool.category}</p><p><a href="/">← 返回 ToolHub 全部工具</a></p>`,
+      extra:
+        `<p>来源：${tool.source} · License: ${tool.license} · 分类：<a href="/?cat=${encodeURIComponent(
+          tool.category
+        )}">${tool.category}</a></p>` +
+        related +
+        `<p><a href="/">← 返回 ToolHub 全部工具</a></p>`,
     })}`
   );
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
@@ -127,6 +170,35 @@ for (const tool of tools) {
 }
 
 // 2) 目录工具页（第三方开源项目的官方在线版说明页）
+// B1 正文：content/directory-copy.json 里每个工具一段人工撰写的 intro / 场景 / 配合 / 局限
+// B2 结构化数据：SoftwareApplication + FAQPage
+// B3 内链图谱：配合的本地工具 + 同类目录工具 + 收录该工具的专题与评测
+const localById = new Map(tools.map((t) => [t.id, t]));
+const dirById = new Map(dirTools.map((t) => [t.id, t]));
+const nameOf = (id) => (localById.get(id) || dirById.get(id) || {}).name || id;
+const linkTo = (id, label) =>
+  localById.has(id) || dirById.has(id) ? `<a href="/tools/${id}/">${label || nameOf(id)}</a>` : label || id;
+// 专题/评测里提到过这个工具的，直接算成「相关阅读」，不用手维护
+const topicsByTool = new Map();
+for (const tp of topics.topics || []) {
+  for (const id of tp.tools || []) {
+    if (!topicsByTool.has(id)) topicsByTool.set(id, []);
+    topicsByTool.get(id).push({ href: `/topics/${tp.slug}/`, label: tp.title });
+  }
+}
+const evalsByTool = new Map();
+for (const ev of evaluations.evaluations || []) {
+  for (const it of ev.items || []) {
+    const m = /\/tools\/([^/]+)\//.exec(it.url || '');
+    if (!m) continue;
+    if (!evalsByTool.has(m[1])) evalsByTool.set(m[1], []);
+    evalsByTool.get(m[1]).push({ href: `/evaluations/${ev.slug}/`, label: ev.title });
+  }
+}
+const CAT_QUERY = (c) => `/?cat=${encodeURIComponent(c)}`;
+const plain = (h) => h.replace(/<[^>]+>/g, '');
+const shortCopy = [];
+
 for (const tool of dirTools) {
   const dir = join(root, 'tools', tool.id);
   mkdirSync(dir, { recursive: true });
@@ -138,6 +210,94 @@ for (const tool of dirTools) {
   try {
     host = new URL(tool.url).hostname;
   } catch {}
+
+  const copy = DIR_COPY[tool.id] || {
+    intro: tool.desc,
+    scenes: [],
+    pairs: [],
+    caveat: '使用前请确认项目的许可证与数据政策，重要数据建议先备份。',
+  };
+
+  // 同分类的兄弟工具（目录内），最多 3 个
+  const siblings = dirTools.filter((x) => x.id !== tool.id && x.category === tool.category).slice(0, 3);
+  // 同分类的本地工具（能在浏览器里直接跑），最多 3 个
+  const localKin = tools.filter((x) => x.category === tool.category).slice(0, 3);
+  const topicLinks = topicsByTool.get(tool.id) || [];
+  const evalLinks = evalsByTool.get(tool.id) || [];
+
+  const sceneList = copy.scenes.length
+    ? `<ol>${copy.scenes.map((x) => `<li>${x}</li>`).join('')}</ol>`
+    : '';
+  const pairParas = copy.pairs
+    .map(
+      (pr) =>
+        `<p><b>${linkTo(pr.id)}</b>：${pr.why}${
+          localById.has(pr.id) ? '（本地工具，文件不上传）' : ''
+        }</p>`
+    )
+    .join('');
+  const sibList = siblings.length
+    ? `<ul>${siblings.map((x) => `<li>${linkTo(x.id)} —— ${x.desc}</li>`).join('')}</ul>`
+    : '';
+  const kinList = localKin.length
+    ? `<ul>${localKin
+        .map((x) => `<li>${linkTo(x.id)} —— ${x.desc}（在浏览器内执行，不联网也能用）</li>`)
+        .join('')}</ul>`
+    : '';
+
+  // FAQ 只从上面已经写定的事实里取，避免编造未经验证的功能
+  const faq = [
+    {
+      q: `${tool.name} 是免费的吗？`,
+      a: `${tool.name} 是开源项目，采用 ${tool.license} 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。`,
+    },
+    {
+      q: `${tool.name} 适合什么场景？`,
+      a: copy.scenes.length
+        ? `最常见的是这几种：${copy.scenes.join('；')}。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。`
+        : `${tool.desc}。适合临时处理、不想安装桌面软件的场景。`,
+    },
+    {
+      q: `它和 ToolHub 的本地工具有什么区别？`,
+      a: `ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；${
+        tool.name
+      } 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。`,
+    },
+    {
+      q: `用 ${tool.name} 有什么限制？`,
+      a: copy.caveat,
+    },
+  ];
+
+  const body =
+    `<h2>它解决什么问题</h2><p>${copy.intro}</p>` +
+    (tool.blurb ? `<p>${tool.blurb}</p>` : '') +
+    (sceneList ? `<h2>三个典型使用场景</h2>${sceneList}` : '') +
+    (pairParas ? `<h2>和 ToolHub 本地工具怎么配合</h2>${pairParas}` : '') +
+    (sibList ? `<h2>同类可替代方案</h2>${sibList}` : '') +
+    `<h2>使用时要注意什么</h2><p>${copy.caveat}</p>` +
+    `<h2>常见问题</h2>${faq.map((f) => `<h3>${f.q}</h3><p>${f.a}</p>`).join('')}` +
+    `<h2>相关阅读</h2><ul>` +
+    `${
+      kinList ||
+      `<li><a href="/">ToolHub 全部 93 个工具</a> —— 33 个在浏览器本地执行，数据不上传</li>`
+    }` +
+    `<li><a href="${CAT_QUERY(tool.category)}">全部${tool.category}类工具</a> —— 按分类筛选，含本地执行与目录直达</li>` +
+    `${topicLinks.map((l) => `<li><a href="${l.href}">${l.label}</a> —— 专题工具包</li>`).join('')}` +
+    `${evalLinks.map((l) => `<li><a href="${l.href}">${l.label}</a> —— 横评对比</li>`).join('')}` +
+    `${siblings.length ? `<li><a href="/tools/${siblings[0].id}/">${siblings[0].name}</a> —— 同类别另一个选择</li>` : ''}` +
+    `</ul>`;
+
+  const extra =
+    body +
+    `<p>项目来源：${tool.source} · License: ${tool.license} · 分类：${linkTo(tool.id) === tool.id ? tool.category : `<a href="${CAT_QUERY(tool.category)}">${tool.category}</a>`}</p>` +
+    `<p>官网地址：<a href="${tool.url}" target="_blank" rel="noopener">${tool.url}</a>（新标签页打开 ${host}）</p>` +
+    `<p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p>` +
+    `<p><a href="/">← 返回 ToolHub 全部工具</a></p>`;
+
+  // 正文长度守卫：低于 400 字说明文案没写够，直接让构建报出来
+  const words = plain(body).replace(/\s+/g, '').length;
+  if (words < 400) shortCopy.push(`${tool.id}(${words})`);
 
   const jsonld = {
     '@context': 'https://schema.org',
@@ -151,6 +311,15 @@ for (const tool of dirTools) {
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'CNY' },
     license: tool.license,
   };
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
 
   let html = fillMeta(tpl, {
     title,
@@ -159,21 +328,20 @@ for (const tool of dirTools) {
     botInject: `window.__TOOL__=${JSON.stringify(tool.id)};`,
     jsonld,
   });
+  html = html.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(faqLd)}</script>\n</head>`);
   html = html.replace(
-    /<main class="container">/,
-    `<main class="container">${seoBlock({
+    /<main class="container"[^>]*>/,
+    `<main class="container" id="main-content" tabindex="-1">${seoBlock({
       h1: `${tool.name} · 官方在线版`,
       desc: tool.desc,
-      extra:
-        (tool.blurb ? `<h2>编辑推荐</h2><p>${tool.blurb}</p>` : '') +
-        `<p>项目来源：${tool.source} · License: ${tool.license} · 分类：${tool.category}</p>` +
-        `<p>官网地址：<a href="${tool.url}" target="_blank" rel="noopener">${tool.url}</a>（新标签页打开）</p>` +
-        `<p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p>` +
-        `<p><a href="/">← 返回 ToolHub 全部工具</a></p>`,
+      extra,
     })}`
   );
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
   count++;
+}
+if (shortCopy.length) {
+  console.log(`   ⚠️ 目录工具正文不足 400 字：${shortCopy.join('、')}`);
 }
 
 // 3) 静态页
@@ -228,8 +396,8 @@ for (const p of staticPages) {
     jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: p.title, description: p.desc, url },
   });
   html = html.replace(
-    /<main class="container">/,
-    `<main class="container">${seoBlock({ h1: p.h1, desc: p.desc, extra: p.content })}`
+    /<main class="container"[^>]*>/,
+    `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: p.h1, desc: p.desc, extra: p.content })}`
   );
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
   count++;
@@ -251,8 +419,8 @@ for (const p of staticPages) {
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ToolHub 资源库', description: '免费可用的设计素材与开发资源合集', url },
   });
   html = html.replace(
-    /<main class="container">/,
-    `<main class="container">${seoBlock({ h1: '资源库', desc: '精选免费可用的资源：图标库、免费商用字体、配色方案。与工具的区别是——工具用来做事，资源用来拿来用。', extra: list + `<p>${resources.policy}</p><p><a href="/">← 返回 ToolHub 全部工具</a></p>` })}`
+    /<main class="container"[^>]*>/,
+    `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '资源库', desc: '精选免费可用的资源：图标库、免费商用字体、配色方案。与工具的区别是——工具用来做事，资源用来拿来用。', extra: list + `<p>${resources.policy}</p><p><a href="/">← 返回 ToolHub 全部工具</a></p>` })}`
   );
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
   count++;
@@ -285,8 +453,8 @@ for (const p of staticPages) {
       },
     });
     chtml = chtml.replace(
-      /<main class="container">/,
-      `<main class="container">${seoBlock({
+      /<main class="container"[^>]*>/,
+      `<main class="container" id="main-content" tabindex="-1">${seoBlock({
         h1: `${c.title}`,
         desc: c.desc,
         extra:
@@ -316,7 +484,7 @@ for (const p of staticPages) {
     botInject: `window.__PAGE__='topics';`,
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ToolHub 专题合集', url },
   });
-  html = html.replace(/<main class="container">/, `<main class="container">${seoBlock({ h1: '专题合集', desc: '按场景打包好的工具组合，不用自己从一堆工具里挑。', extra: list + '<p><a href="/">← 返回首页</a></p>' })}`);
+  html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '专题合集', desc: '按场景打包好的工具组合，不用自己从一堆工具里挑。', extra: list + '<p><a href="/">← 返回首页</a></p>' })}`);
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
   count++;
 
@@ -332,7 +500,7 @@ for (const p of staticPages) {
       botInject: `window.__TOPIC__=${JSON.stringify(t.slug)};`,
       jsonld: { '@context': 'https://schema.org', '@type': 'ItemList', name: t.title, description: t.desc, url: turl, numberOfItems: toolNames.length },
     });
-    thtml = thtml.replace(/<main class="container">/, `<main class="container">${seoBlock({
+    thtml = thtml.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({
       h1: t.title,
       desc: t.desc,
       extra:
@@ -365,8 +533,8 @@ for (const p of staticPages) {
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ToolHub 工具评测', url },
   });
   html = html.replace(
-    /<main class="container">/,
-    `<main class="container">${seoBlock({
+    /<main class="container"[^>]*>/,
+    `<main class="container" id="main-content" tabindex="-1">${seoBlock({
       h1: '工具评测',
       desc: '同类工具横向实测：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚。',
       extra: list + '<p><a href="/">← 返回首页</a></p>',
@@ -395,8 +563,8 @@ for (const p of staticPages) {
       },
     });
     ehtml = ehtml.replace(
-      /<main class="container">/,
-      `<main class="container">${seoBlock({
+      /<main class="container"[^>]*>/,
+      `<main class="container" id="main-content" tabindex="-1">${seoBlock({
         h1: ev.title,
         desc: ev.summary,
         extra:
@@ -426,7 +594,7 @@ for (const p of staticPages) {
     botInject: `window.__PAGE__='changelog';`,
     jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'ToolHub 更新日志', url },
   });
-  html = html.replace(/<main class="container">/, `<main class="container">${seoBlock({ h1: '更新日志', desc: '这个平台在持续迭代，每次改动都记录在这里。', extra: body })}`);
+  html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '更新日志', desc: '这个平台在持续迭代，每次改动都记录在这里。', extra: body })}`);
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
   count++;
 }

@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"数值统计","description":"用 Python statistics 计算均值/中位数/标准差/四分位","url":"https://toolhub.guyang1966.workers.dev/tools/py-stats/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"PSF-2.0"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"标准差用样本还是总体公式？","acceptedAnswer":{"@type":"Answer","text":"本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。"}},{"@type":"Question","name":"四分位数为什么和 Excel 算的略有差异？","acceptedAnswer":{"@type":"Answer","text":"插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用数值统计","description":"用 Python statistics 计算均值/中位数/标准差/四分位","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"数值统计"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴数值（空格、逗号或换行分隔，工具自动切分）","text":"粘贴数值（空格、逗号或换行分隔，工具自动切分）","url":"https://toolhub.guyang1966.workers.dev/tools/py-stats/#step1"},{"@type":"HowToStep","position":2,"name":"查看均值、中位数、标准差、四分位数等统计量","text":"查看均值、中位数、标准差、四分位数等统计量","url":"https://toolhub.guyang1966.workers.dev/tools/py-stats/#step2"},{"@type":"HowToStep","position":3,"name":"结合分布形态判断：均值与中位数差得远说明有极端值","text":"结合分布形态判断：均值与中位数差得远说明有极端值","url":"https://toolhub.guyang1966.workers.dev/tools/py-stats/#step3"},{"@type":"HowToStep","position":4,"name":"把结果写进报告，注明用的是样本标准差口径","text":"把结果写进报告，注明用的是样本标准差口径","url":"https://toolhub.guyang1966.workers.dev/tools/py-stats/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>数值统计</h1><p>用 Python statistics 计算均值/中位数/标准差/四分位</p><h2>关于数值统计</h2><p>描述一组数据最常用的几个量：均值反映集中趋势，中位数抗异常值，标准差反映离散程度，四分位数刻画分布形状。当数据里存在极端值时，中位数和四分位距比均值更能代表真实水平——这也是“平均工资”经常让人困惑的原因。</p><h2>使用步骤</h2><ol><li>粘贴数值（空格、逗号或换行分隔，工具自动切分）</li><li>查看均值、中位数、标准差、四分位数等统计量</li><li>结合分布形态判断：均值与中位数差得远说明有极端值</li><li>把结果写进报告，注明用的是样本标准差口径</li></ol><h2>常见错误</h2><h3>数据没清洗就统计</h3><p>混入文字、空值或千分位逗号会让整列解析失败。先用 CSV 数据体检确认列类型干净。</p><h3>均值代表一切</h3><p>收入、房价这类长尾分布的数据，均值会被少数极端值拉高。同时给出中位数和分位数才有说服力。</p><h3>样本总体口径混用</h3><p>报告里写“标准差”要说明除以 n 还是 n-1，两种口径数值不同，评审时容易被问住。</p><h2>常见问题</h2><h3>标准差用样本还是总体公式？</h3><p>本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。</p><h3>四分位数为什么和 Excel 算的略有差异？</h3><p>插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。</p><p>来源：Python 标准库 statistics (Pyodide) · License: PSF-2.0 · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/csv-json/">CSV ↔ JSON</a> —— CSV 与 JSON 数组互转，正确处理引号与换行</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

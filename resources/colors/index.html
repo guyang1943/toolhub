@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>配色方案与调色板</h1><p>成套配色系统、数据可视化色板与配色灵感</p><h2>合集导语</h2><p>配色最难的不是「挑一个好看的颜色」，而是「让一组颜色在一起有秩序、可访问、能扩展」。成套的配色系统（Radix、Tailwind、Open Color）解决的是这个问题：每个色相提供 9-12 个色阶，明暗过渡经过校准，直接取用就能撑起一个界面。数据可视化则另有讲究——分类色要能区分、色盲用户也能分辨，这正是 ColorBrewer 这类学术工具的价值。</p><h2>怎么选</h2><ul><li>做产品界面：Radix Colors（每色 12 阶，语义清晰）或 Tailwind 调色板</li><li>做数据图表 / 地图：ColorBrewer（色盲友好、学术标准）</li><li>要现代感知均匀配色：oklch.com（亮度一致的调色体验）</li><li>找灵感：Color Hunt 与 Huemint（后者可用 AI 生成配色）</li></ul><h2>全部来源</h2><h3>Radix Colors</h3><p>为界面设计的 12 阶色板，每一阶都有明确用途（背景/边框/悬浮/实心/文字），还提供深色模式对应值，是产品配色最省心的方案。</p><p>授权：MIT · 来源：github.com/radix-ui/colors · <a href="https://www.radix-ui.com/colors" target="_blank" rel="noopener">访问 ↗</a></p><h3>Open Color</h3><p>13 个色相 × 10 个色阶，克制耐看，适合不想引入复杂体系的中小项目，直接复制 HEX 就能用。</p><p>授权：MIT · 来源：github.com/yeun/open-color · <a href="https://yeun.github.io/open-color/" target="_blank" rel="noopener">访问 ↗</a></p><h3>ColorBrewer</h3><p>数据可视化的学术标准色板，明确标注是否色盲友好、是否适合打印、适合分类还是渐变，做图表时优先考虑。</p><p>授权：Apache-2.0 · 来源：github.com/axismaps/colorbrewer · <a href="https://colorbrewer2.org" target="_blank" rel="noopener">访问 ↗</a></p><h3>OKLCH Color Picker</h3><p>基于 OKLCH 色彩空间选色，调亮度时不会像 HSL 那样让颜色「变脏」，适合做现代 CSS 配色。</p><p>授权：MIT · 来源：github.com/evilmartians/oklch-picker · <a href="https://oklch.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>Tailwind 调色板</h3><p>22 个色相各 11 阶，命名体系（50-950）已经被大量项目接受，即使不用 Tailwind 也可以直接抄数值。</p><p>授权：MIT · 来源：github.com/tailwindlabs/tailwindcss · <a href="https://tailwindcss.com/docs/customizing-colors" target="_blank" rel="noopener">访问 ↗</a></p><h3>UI Colors</h3><p>输入一个品牌色，自动生成 50-900 全套色阶，还能直接看按钮/卡片的实际效果，快速定主色时很好用。</p><p>授权：免费使用（站点闭源） · 来源：uicolors.app · <a href="https://uicolors.app" target="_blank" rel="noopener">访问 ↗</a></p><h3>Color Hunt</h3><p>四色配色灵感库，按热门/最新排序，适合做海报、Banner 时找组合；注意它是灵感参考而非授权素材库。</p><p>授权：免费浏览（配色可参考） · 来源：colorhunt.co · <a href="https://colorhunt.co" target="_blank" rel="noopener">访问 ↗</a></p><h3>Huemint</h3><p>用 ML 生成品牌配色，可以直接套在网页布局预览里看效果，适合快速探索不同配色方向。</p><p>授权：免费使用（站点闭源） · 来源：huemint.com · <a href="https://huemint.com" target="_blank" rel="noopener">访问 ↗</a></p><p>本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。</p><p><a href="/resources/">← 返回资源库</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -124,6 +124,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -132,7 +155,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>

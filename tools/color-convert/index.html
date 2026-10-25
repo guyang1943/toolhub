@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"颜色格式转换","description":"HEX / RGB / HSL 互转，附色块预览与 CSS 变量","url":"https://toolhub.guyang1966.workers.dev/tools/color-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么同一个颜色在 RGB 和 HSL 里数值完全不同？","acceptedAnswer":{"@type":"Answer","text":"这是两套坐标系的换算结果。RGB 描述三原色强度，HSL 描述色相角度与明暗饱和度，指的都是同一个颜色。"}},{"@type":"Question","name":"如何保证文字可读性？","acceptedAnswer":{"@type":"Answer","text":"粗略标准：文字与背景的 HSL 亮度差大于 40% 基本可读；严格场景应该用 WCAG 对比度工具，正文要求 4.5:1 以上。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用颜色格式转换","description":"HEX / RGB / HSL 互转，附色块预览与 CSS 变量","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"颜色格式转换"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴任意格式的颜色值（HEX / RGB / HSL）或取色器选取","text":"粘贴任意格式的颜色值（HEX / RGB / HSL）或取色器选取","url":"https://toolhub.guyang1966.workers.dev/tools/color-convert/#step1"},{"@type":"HowToStep","position":2,"name":"查看其余格式的换算结果与实时色块预览","text":"查看其余格式的换算结果与实时色块预览","url":"https://toolhub.guyang1966.workers.dev/tools/color-convert/#step2"},{"@type":"HowToStep","position":3,"name":"复制目标格式，直接粘进 CSS、设计稿或配置","text":"复制目标格式，直接粘进 CSS、设计稿或配置","url":"https://toolhub.guyang1966.workers.dev/tools/color-convert/#step3"},{"@type":"HowToStep","position":4,"name":"调色时优先在 HSL 空间微调，改完再转回 HEX","text":"调色时优先在 HSL 空间微调，改完再转回 HEX","url":"https://toolhub.guyang1966.workers.dev/tools/color-convert/#step4"}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -62,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>颜色格式转换</h1><p>HEX / RGB / HSL 互转，附色块预览与 CSS 变量</p><h2>关于颜色格式转换</h2><p>颜色在不同场景下用不同模型表示：HEX 是设计稿和 CSS 最常用的写法，RGB 贴近显示器的工作原理，HSL 用色相/饱和度/亮度描述颜色，更符合人的直觉——想调深浅就改 L，想调鲜艳度就改 S。做配色方案时，HSL 比 RGB 好用得多。</p><h2>使用步骤</h2><ol><li>粘贴任意格式的颜色值（HEX / RGB / HSL）或取色器选取</li><li>查看其余格式的换算结果与实时色块预览</li><li>复制目标格式，直接粘进 CSS、设计稿或配置</li><li>调色时优先在 HSL 空间微调，改完再转回 HEX</li></ol><h2>常见错误</h2><h3>换算后直接信任数值精度</h3><p>HSL 转 HEX 会做四舍五入，极端值下可能有一位数偏差，交付设计规范时以最终 HEX 为准。</p><h3>用 HSL 亮度判断可读性</h3><p>HSL 的 L 不是感知亮度，黄色和蓝色的 L 相同但明暗感受天差地别。判断可读性必须用 WCAG 相对亮度公式。</p><h3>忽略透明通道</h3><p>HEX 只有 6 位时不带透明度，需要半透明效果要用 8 位 HEX 或 rgba()，别用另加 opacity 的方式破坏层级。</p><h2>常见问题</h2><h3>为什么同一个颜色在 RGB 和 HSL 里数值完全不同？</h3><p>这是两套坐标系的换算结果。RGB 描述三原色强度，HSL 描述色相角度与明暗饱和度，指的都是同一个颜色。</p><h3>如何保证文字可读性？</h3><p>粗略标准：文字与背景的 HSL 亮度差大于 40% 基本可读；严格场景应该用 WCAG 对比度工具，正文要求 4.5:1 以上。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E8%AE%BE%E8%AE%A1">设计</a></p><h2>相关阅读</h2><ul><li><a href="/tools/color-contrast/">颜色对比度检查</a> —— 按 WCAG 标准检查文字与背景的对比度是否达标</li><li><a href="/tools/excalidraw/">Excalidraw</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/tldraw/">tldraw</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/topics/design-color/">设计与配色</a> —— 专题工具包</li><li><a href="/?cat=%E8%AE%BE%E8%AE%A1">全部设计类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -125,6 +126,29 @@
     </div>
   </div>
 
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
   <div id="cmp-bar" class="cmp-bar"></div>
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
@@ -133,7 +157,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a></div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/about/">关于</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
   </footer>
 
   <script src="/assets/vendor/qrcode.min.js"></script>
