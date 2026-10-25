@@ -156,6 +156,17 @@ async function waitText(selector, substr, timeout = 20000) {
   return false;
 }
 
+// 等某个元素出现（工具表单是懒渲染的，靠文本等待容易在表单还没画出来时就往下走）
+async function waitEl(selector, timeout = 15000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    const hit = await evaluate(`!!document.querySelector(${JSON.stringify(selector)})`).catch(() => false);
+    if (hit) return true;
+    await sleep(150);
+  }
+  return false;
+}
+
 async function waitForFocus(id, timeout = 8000) {
   const start = Date.now();
   while (Date.now() - start < timeout) {
@@ -743,6 +754,137 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   })()`);
   check('可在本机关闭统计', toggled === '1', 'localStorage=' + toggled);
   await evaluate(`localStorage.removeItem('toolhub:no-analytics')`);
+
+  // ---- 15. v3.0：加密分享 / 批量 / 意图 / 离线包 ----
+  // 15a. 结果区多出「加密分享」，且只有多文件时才出现「打包下载」
+  {
+    await goto('/tools/json-format/');
+    await waitEl('#f-json');
+    await fill({ 'f-json': '{"a":1}' });
+    await clickRun();
+    await waitText('#tool-result', 'a', 8000);
+    const shareBtn = await evaluate(`!!document.querySelector('#tool-result [data-act="share-enc"]')`);
+    check('结果区有「加密分享」入口', shareBtn === true);
+    const zipBtn = await evaluate(`!!document.querySelector('#tool-result [data-act="download-zip"]')`);
+    check('单结果时不显示打包下载', zipBtn === false);
+  }
+
+  // 15b. 收到加密链接 → 自动解密回填 → 直接出结果（片段不随请求发送，所以只能由页面自己处理）
+  {
+    const env = await evaluate(`(async () => {
+      const m = await import('/assets/lib/secure-share.js');
+      return await m.createShare({ id: 'json-format', values: { json: '{"secret":42}' } }, 'pw123');
+    })()`);
+    await goto('/tools/json-format/');
+    // 把密文放进片段再刷新，模拟「别人把链接发给你」
+    await evaluate(`location.hash = ${JSON.stringify('#' + env)}`);
+    await cdp.send('Page.reload');
+    const modal = await waitText('.enc-modal', '加密', 8000);
+    check('带口令的链接弹出领取口令', modal === true);
+    await evaluate(`(() => { document.getElementById('enc-pass').value = 'pw123'; document.getElementById('enc-ok').click(); })()`);
+    const okNote = await waitText('.enc-note-ok', '已解密', 10000);
+    check('口令正确后解密并提示', okNote === true);
+    const restored = await evaluate(`document.getElementById('f-json') ? document.getElementById('f-json').value : ''`);
+    check('解密内容回填到表单', /secret/.test(String(restored)), String(restored).slice(0, 40));
+    const hashCleared = await evaluate(`location.hash`);
+    check('解密后清掉地址栏密文', hashCleared === '', 'hash=' + hashCleared);
+    const autoRan = await waitText('#tool-result', 'secret', 8000);
+    check('解密后自动出结果（不用再点运行）', autoRan === true);
+  }
+
+  // 15c. 口令错误必须失败，而不是给出一份错内容
+  {
+    const env = await evaluate(`(async () => {
+      const m = await import('/assets/lib/secure-share.js');
+      return await m.createShare({ id: 'json-format', values: { json: '{"x":1}' } }, 'right-pass');
+    })()`);
+    // 先清掉本机草稿：否则解密失败后会回落到上一次的草稿，让「有没有回填」这件事测不准
+    await evaluate(`localStorage.removeItem('toolhub:draft:json-format')`);
+    await goto('/tools/json-format/');
+    await evaluate(`location.hash = ${JSON.stringify('#' + env)}`);
+    await cdp.send('Page.reload');
+    await waitText('.enc-modal', '加密', 8000);
+    await evaluate(`(() => { document.getElementById('enc-pass').value = 'wrong-pass'; document.getElementById('enc-ok').click(); })()`);
+    const badNote = await waitText('.enc-note-bad', '口令', 8000);
+    check('口令错误时明确报错', badNote === true);
+    const noFill = await evaluate(`document.getElementById('f-json') ? document.getElementById('f-json').value : 'EMPTY'`);
+    // 关键是不能出现这条链接的明文（"x"），空着或回落到本机草稿都算合理
+    check('口令错误时不泄露链接内容', !/"x"/.test(String(noFill)), 'field=' + String(noFill).slice(0, 30));
+  }
+
+  // 15d. 命令面板：一句中文直接给出工具并带上参数
+  {
+    await goto('/');
+    await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
+    await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'k', code: 'KeyK', windowsVirtualKeyCode: 75, modifiers: 2 });
+    await sleep(400);
+    await evaluate(`(() => { const i = document.getElementById('palette-input'); i.value = '帮我把这张图压到 200KB'; i.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+    const intentReady = await waitText('#palette-results', '也许你要', 8000);
+    check('命令面板识别自然语言', intentReady === true);
+    const firstItem = await evaluate(`(() => { const el = document.querySelector('#palette-results .pal-item'); return el ? el.textContent.replace(/\\s+/g, ' ') : ''; })()`);
+    check('意图项排在第一位且带参数', /图片压缩/.test(firstItem) && /quality=60/.test(firstItem), firstItem.slice(0, 50));
+    // 回车直接进工具，且参数已预填
+    await evaluate(`(() => { const i = document.getElementById('palette-input'); i.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); })()`);
+    const landed = await waitEl('#f-quality', 12000);
+    check('回车跳转到意图指向的工具', landed === true);
+    const q = await evaluate(`document.getElementById('f-quality') ? document.getElementById('f-quality').value : ''`);
+    check('跳转后参数已预填', String(q) === '60', 'quality=' + q);
+  }
+
+  // 15e. 批量处理页与离线页在真浏览器里挂载成功
+  {
+    await goto('/batch/');
+    const dropZone = await waitText('#batch-app', '拖', 12000);
+    check('批量页挂载拖拽区', dropZone === true);
+    const batchBtns = await evaluate(`document.querySelectorAll('#batch-app select, #batch-app input[type="range"]').length`);
+    check('批量页有格式与质量参数', batchBtns >= 2, batchBtns + ' 个控件');
+
+    await goto('/offline/');
+    const offCards = await evaluate(`document.querySelectorAll('#offline-app .off-card').length`);
+    check('离线页挂载三张状态卡', offCards >= 3, offCards + ' 张');
+    const metaShown = await evaluate(`(document.querySelector('#offline-app') || {}).textContent || ''`);
+    check('离线页显示离线包规模', /\d+ 个地址/.test(metaShown), (metaShown.match(/\d+ 个地址[^。]*/) || [''])[0]);
+    await shot('07-offline');
+  }
+
+  // 15f. 真断网：下载离线包 → 断网 → 工具仍可打开并出结果（这是 E1 的全部意义）
+  {
+    await goto('/offline/');
+    await sleep(600);
+    const ctl = await evaluate(`navigator.serviceWorker.controller ? 'yes' : 'no'`);
+    // 首次访问可能还没有 controller，刷新一次让它接管
+    if (ctl !== 'yes') {
+      await cdp.send('Page.reload');
+      await sleep(1200);
+    }
+    const started = await evaluate(`(() => {
+      const b = document.getElementById('off-download');
+      if (!b) return 'no-btn';
+      b.click();
+      return 'ok';
+    })()`);
+    check('离线页可触发下载离线包', started === 'ok', String(started));
+    const done = await waitText('#off-progress', '离线包已就绪', 90000);
+    const progText = await evaluate(`(document.getElementById('off-progress') || {}).textContent || ''`);
+    check('离线包下载完成', done === true, progText.slice(0, 60));
+    const cached = await evaluate(`(async () => { const k = await caches.keys(); if (!k.length) return 0; const c = await caches.open(k[0]); return (await c.keys()).length; })()`);
+    check('缓存里真的有整包', cached >= 90, cached + ' 个文件');
+
+    // 断网：本地工具页必须来自缓存，run.js 必须还能执行
+    await cdp.send('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+    await cdp.send('Page.navigate', { url: BASE + '/tools/json-format/' });
+    await sleep(1500);
+    const offForm = await waitEl('#run-btn', 10000);
+    check('断网后本地工具页仍能打开', offForm === true);
+    if (offForm) {
+      await fill({ 'f-json': '{"offline":true}' });
+      await clickRun();
+      const offResult = await waitText('#tool-result', 'offline', 10000);
+      check('断网后工具仍能出结果', offResult === true);
+    }
+    await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+    check('断网期间无 CSP 违规', cspViolations.length === 0, cspViolations[0] || '干净');
+  }
 
   // ---- 汇总 ----
   const bad = results.filter((r) => !r.ok);

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
+import { buildSw } from './gen-sw.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').replace(/\/$/, '');
@@ -371,6 +372,31 @@ const staticPages = [
       '<h2>与普通在线工具站的区别</h2><p>普通工具站把你的数据传到它的服务器；ToolHub 的本地工具在浏览器内用 WebAssembly 执行，服务端全程不接触你的输入。</p>',
   },
   {
+    path: 'batch',
+    title: '批量处理图片 · 限制边长、统一格式、打包下载 · ToolHub',
+    desc: '一次拖入多张图片，统一限制最大边长、转 WebP/JPEG、压缩质量，最后打包成一个 zip。全部在浏览器内完成，图片不上传。',
+    h1: '批量处理图片',
+    content:
+      '<h2>它解决什么问题</h2><p>单张处理十几张截图是重复劳动：打开工具、选一张、下载、再来一张。批量模式把这些合成一步——先统一边长与格式，再按统一质量编码，最后打包成一个压缩包下载。</p>' +
+      '<h2>与站内单图工具的关系</h2><p>批量页用的是同一套浏览器 canvas 编码管线，与「图片压缩」「图片改尺寸」「图片格式转换」一致；区别是一次处理多个文件并直接打包，适合成批的截图、相机照片与素材整理。</p>' +
+      '<h2>隐私</h2><p>所有图片在浏览器内存中解码与编码，不上传、不写入本地磁盘，处理完即随页面释放。断网也可使用（缓存过离线包之后）。</p>' +
+      '<h2>已知边界</h2><p>PNG 是无损格式，质量参数对它无效；转 JPEG 会丢失透明背景；一次处理几十张大图会占用较多内存，建议分批。</p>',
+  },
+  {
+    path: 'offline',
+    title: '离线包与安装 · 断网也能用的在线工具 · ToolHub',
+    desc: '把 ToolHub 的本地工具全部缓存到浏览器：断网、飞行模式、内网隔离环境都能继续用，也可以安装到桌面像本地应用一样打开。',
+    h1: '离线包与安装',
+    // 真实数字要等 sw.js 生成后才知道（它要统计刚写出的 /offline/ 页），先占位、末尾回填
+    offlineMeta: true,
+    content:
+      '<h2>为什么需要离线包</h2><p>「本地执行」已经保证输入不上传，但页面本身还要从服务器取。离线包把全部本地工具页与执行脚本缓存进浏览器，于是断网、飞行模式、隔离内网里都能照常打开并运算——此时它才真正等同于一个装在电脑上的工具。</p>' +
+      '<h2>两个概念别混淆</h2><p>安装成应用（PWA）只解决「从桌面图标直接打开」；离线包解决「没有网络也能打开」。两者独立：不安装也能离线，装了应用但没缓存离线包，断网时仍然打不开具体工具页。</p>' +
+      '<h2>包含与不包含</h2><p>包含首页、全部分类页、全部本地工具页与其执行脚本、界面样式与脚本、工具注册表与多语言文件。不包含第三方官网（目录工具属于他人站点），也不包含 Python 运行时——它 13MB 起、还有可选的数据科学包，会在第一次使用 Python 工具时单独下载并缓存，不拖慢装包。</p>' +
+      '<h2>更新机制</h2><p>页面导航采用「缓存优先 + 后台更新」：先给你秒开的旧版本，同时在后台取新版本存入缓存，下次打开即为新版。注册表与界面脚本采用「网络优先」，因此新增工具、调整文案在部署后立即生效，不需要等缓存过期。</p>' +
+      '<h2>如何验证真的离线可用</h2><p>点「下载离线包」等进度走完，然后在开发者工具 Network 面板切成 Offline（或直接关掉 Wi-Fi）刷新页面，本地工具应照常打开与计算；此时 Network 面板不应出现任何失败的上传请求——因为本来就没有上传接口。</p>',
+  },
+  {
     path: 'privacy',
     title: '隐私说明 · 你的输入不会离开这台设备 · ToolHub',
     desc: 'ToolHub 的数据流向逐条说明：本地工具在浏览器内执行、不上传输入、无后端数据库；浏览器里存了什么、如何清除、访问统计口径与关闭方式。',
@@ -422,7 +448,9 @@ for (const p of staticPages) {
     title: p.title,
     desc: p.desc,
     url,
-    botInject: `window.__PAGE__=${JSON.stringify(p.path)};`,
+    botInject:
+      `window.__PAGE__=${JSON.stringify(p.path)};` +
+      (p.offlineMeta ? 'window.__OFFLINE_META__={"version":"__SW_VERSION__","files":__SW_FILES__,"bytes":__SW_BYTES__};' : ''),
     jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: p.title, description: p.desc, url },
   });
   html = html.replace(
@@ -837,6 +865,25 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
 
   writeFileSync(join(root, 'index.html'), html, 'utf8');
   console.log(`   ↻ 首页静态化：${featuredIds.length} 个推荐 / ${cats.length} 个分类 / ${resources.collections.length} 个合集（CLS 由 0.25 → ~0）`);
+}
+
+// 7) 生成 Service Worker（v3.0 E1），并把离线包的真实规模回填到 /offline/ 页。
+//    顺序不能提前：/offline/ 页必须先落盘，否则它自己不在预缓存清单里，
+//    会出现「装了应用、点离线下载全绿，但离线时打不开这个说明页」的怪事。
+{
+  const info = buildSw();
+  const offFile = join(root, 'offline', 'index.html');
+  if (existsSync(offFile)) {
+    const h = readFileSync(offFile, 'utf8')
+      .replace('"__SW_VERSION__"', JSON.stringify(info.version))
+      .replace('__SW_FILES__', String(info.files.length))
+      .replace('__SW_BYTES__', String(info.bytes));
+    writeFileSync(offFile, h, 'utf8');
+    if (!h.includes('__SW_')) console.log(`   ↻ /offline/ 统计已回填：${info.files.length} 个地址 · ${(info.bytes / 1048576).toFixed(1)} MB`);
+    else console.log('   ⚠️ /offline/ 统计回填失败，页面仍显示占位符');
+  } else {
+    console.log('   ⚠️ 找不到 offline/index.html，离线包统计未回填');
+  }
 }
 
 if (tpl !== rawTpl) console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);

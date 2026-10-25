@@ -561,6 +561,96 @@ console.log('\n🕵 照片元数据剥离（EXIF）');
   check('非 JPEG 友好报错', err.includes('JPEG'), err);
 }
 
+// ---------- 6. ZIP 打包（v3.0 E3）----------
+// 不信任「看起来像 zip」：这里直接按字节解析中央目录，验签名、条数、CRC 与文件名编码
+console.log('\n🗜  ZIP 打包（STORE + CRC32）');
+{
+  const { zipBlob } = await import('file://' + join(root, 'assets/lib/zip.js').replace(/\\/g, '/'));
+  const entries = [
+    { name: 'a.txt', data: 'hello' },
+    { name: '中文名.txt', data: '你好' },
+    { name: 'a.txt', data: 'duplicate' }, // 同名必须自动去重，否则解压时后者覆盖前者
+  ];
+  const blob = await zipBlob(entries);
+  const buf = Buffer.from(await blob.arrayBuffer());
+
+  check('产出非空 Blob', blob.size > 100, `${blob.size} 字节`);
+  check('本地文件头签名 PK\\x03\\x04', buf.readUInt32LE(0) === 0x04034b50);
+  const eocdAt = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  check('中央目录结束记录 EOCD', eocdAt > 0, `偏移 ${eocdAt}`);
+  check('条目数 = 3', buf.readUInt16LE(eocdAt + 10) === 3, `${buf.readUInt16LE(eocdAt + 10)} 条`);
+
+  // 文件名带 UTF-8 标记位（0x0800），否则 Windows 资源管理器解出来是乱码
+  const flag = buf.readUInt16LE(6);
+  check('通用标志位含 UTF-8 (0x0800)', (flag & 0x0800) !== 0, '0x' + flag.toString(16));
+  check('压缩方式为 STORE(0)', buf.readUInt16LE(8) === 0);
+
+  // 从本地文件头逐条读出文件名，验证去重与中文编码
+  const names = [];
+  let p = 0;
+  while (buf.readUInt32LE(p) === 0x04034b50) {
+    const nameLen = buf.readUInt16LE(p + 26);
+    const extraLen = buf.readUInt16LE(p + 28);
+    const size = buf.readUInt32LE(p + 18);
+    names.push(buf.slice(p + 30, p + 30 + nameLen).toString('utf8'));
+    p += 30 + nameLen + extraLen + size;
+  }
+  check('同名自动去重', new Set(names).size === names.length && names.includes('a.txt') && names.some((n) => /a-2\.txt$/.test(n)), names.join(', '));
+  check('中文文件名按 UTF-8 存储', names.includes('中文名.txt'), names.join(', '));
+
+  // CRC32 必须与实际内容一致，否则解压报「文件已损坏」
+  const table = [];
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    table[i] = c >>> 0;
+  }
+  const crc32 = (b) => {
+    let c = 0xffffffff;
+    for (const x of b) c = table[(c ^ x) & 0xff] ^ (c >>> 8);
+    return (c ^ 0xffffffff) >>> 0;
+  };
+  const storedCrc = buf.readUInt32LE(14);
+  check('CRC32 与内容一致', storedCrc === crc32(Buffer.from('hello')), '0x' + storedCrc.toString(16));
+
+  // 空列表也要产出合法空包，而不是抛错（批量处理里用户可能一张都没成功）
+  const empty = Buffer.from(await (await zipBlob([])).arrayBuffer());
+  check('空输入产出合法空包', empty.readUInt32LE(empty.length - 22) === 0x06054b50);
+}
+
+// ---------- 7. 加密分享（v3.0 E2）----------
+// 关键断言是「口令不对时必须失败」——否则「可加密分享」只是个装饰
+console.log('\n🔐 加密分享（AES-GCM + PBKDF2）');
+{
+  const ss = await import('file://' + join(root, 'assets/lib/secure-share.js').replace(/\\/g, '/'));
+  const data = { url: '/tools/json-format/?x=1', values: { a: '1' }, title: '测试' };
+  const withPw = '#' + (await ss.createShare(data, 'pw123'));
+  const noPw = '#' + (await ss.createShare(data, ''));
+  const meta = ss.peekShare(withPw);
+
+  check('WebCrypto 可用', ss.canEncrypt() === true);
+  check('密文在 # 片段里（不会进服务器日志）', withPw.startsWith('#enc='));
+  check('信封声明需要口令', meta && meta.pass === true);
+  // 不设口令时密钥随链接一起在片段里（链接本身就是秘密），所以 pass 标记缺省、k 存在
+  const plainMeta = ss.peekShare(noPw);
+  check('无口令信封自带密钥', !plainMeta.pass && !!plainMeta.k);
+  check('明文字段不出现在链接里', !withPw.includes('json-format'));
+
+  const ok = await ss.openShare(withPw, 'pw123');
+  check('正确口令可还原', ok.ok === true && JSON.stringify(ok.data) === JSON.stringify(data));
+  const bad = await ss.openShare(withPw, 'wrong');
+  check('口令错误必须失败', bad.ok === false, bad.error);
+  const tampered = await ss.openShare(withPw.slice(0, -6) + 'AAAAAA', 'pw123');
+  check('密文被改动必须失败', tampered.ok === false, tampered.error);
+  const broken = await ss.openShare('#enc=@@@', '');
+  check('格式非法给出友好提示', broken.ok === false && /格式/.test(broken.error), broken.error);
+  check('非加密链接不误判', ss.peekShare('#other=1') === null);
+
+  // 每次加密的 IV 必须不同（同明文同口令也不能产出同密文）
+  const again = await ss.createShare(data, 'pw123');
+  check('每次加密 IV 不同', again !== withPw.slice(1), '同明文两次结果应不同');
+}
+
 // 清理临时文件
 for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {

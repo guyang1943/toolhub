@@ -9,91 +9,10 @@
 // 所以"这里没报错"就等于"node scripts/lint-tools.mjs 不会报错"（字段层面）。
 
 import { validate, deref } from './lib/json-schema.js';
+import { zipBlob } from './lib/zip.js';
 
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-
-/* ---------------- 极简 ZIP（STORE，不压缩） ---------------- */
-
-const CRC_TABLE = (() => {
-  const t = new Uint32Array(256);
-  for (let n = 0; n < 256; n++) {
-    let c = n;
-    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    t[n] = c >>> 0;
-  }
-  return t;
-})();
-
-function crc32(bytes) {
-  let c = 0xffffffff;
-  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
-  return (c ^ 0xffffffff) >>> 0;
-}
-
-/** files: [{name, text}] → Blob(zip) */
-function zip(files) {
-  const enc = new TextEncoder();
-  const chunks = [];
-  const central = [];
-  let offset = 0;
-  // 固定一个合法的时间戳，避免每次生成的文件 hash 不同
-  const dosTime = (12 << 11) | (0 << 5) | 0;
-  const dosDate = ((2026 - 1980) << 9) | (1 << 5) | 1;
-
-  for (const f of files) {
-    const nameBytes = enc.encode(f.name);
-    const data = enc.encode(f.text);
-    const crc = crc32(data);
-
-    const local = new Uint8Array(30 + nameBytes.length);
-    const lv = new DataView(local.buffer);
-    lv.setUint32(0, 0x04034b50, true); // 本地文件头签名
-    lv.setUint16(4, 20, true); // 需要的版本
-    lv.setUint16(6, 0x0800, true); // UTF-8 文件名标记
-    lv.setUint16(8, 0, true); // STORE
-    lv.setUint16(10, dosTime, true);
-    lv.setUint16(12, dosDate, true);
-    lv.setUint32(14, crc, true);
-    lv.setUint32(18, data.length, true);
-    lv.setUint32(22, data.length, true);
-    lv.setUint16(26, nameBytes.length, true);
-    lv.setUint16(28, 0, true);
-    local.set(nameBytes, 30);
-
-    chunks.push(local, data);
-
-    const cen = new Uint8Array(46 + nameBytes.length);
-    const cv = new DataView(cen.buffer);
-    cv.setUint32(0, 0x02014b50, true); // 中央目录签名
-    cv.setUint16(4, 20, true);
-    cv.setUint16(6, 20, true);
-    cv.setUint16(8, 0x0800, true);
-    cv.setUint16(10, 0, true);
-    cv.setUint16(12, dosTime, true);
-    cv.setUint16(14, dosDate, true);
-    cv.setUint32(16, crc, true);
-    cv.setUint32(20, data.length, true);
-    cv.setUint32(24, data.length, true);
-    cv.setUint16(28, nameBytes.length, true);
-    cv.setUint32(42, offset, true);
-    cen.set(nameBytes, 46);
-    central.push(cen);
-
-    offset += local.length + data.length;
-  }
-
-  const cenSize = central.reduce((n, c) => n + c.length, 0);
-  const end = new Uint8Array(22);
-  const ev = new DataView(end.buffer);
-  ev.setUint32(0, 0x06054b50, true); // 目录结束签名
-  ev.setUint16(8, files.length, true);
-  ev.setUint16(10, files.length, true);
-  ev.setUint32(12, cenSize, true);
-  ev.setUint32(16, offset, true);
-
-  return new Blob([...chunks, ...central, end], { type: 'application/zip' });
-}
 
 /* ---------------- 代码生成 ---------------- */
 
@@ -390,7 +309,7 @@ export async function mountToolBuilder(box) {
       <details><summary>查看生成的 tool.json</summary><pre class="builder-pre">${esc(files[0].text)}</pre></details>`;
 
     if (alsoDownload) {
-      const blob = zip(files);
+      const blob = await zipBlob(files.map((f) => ({ name: f.name, data: f.text })));
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

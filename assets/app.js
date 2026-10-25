@@ -753,6 +753,18 @@ function ensureOverlays() {
   add('kbd-help', OVERLAY_HTML.kbd);
 }
 
+/* 意图解析模块按需加载：只有真的打开命令面板 / 在搜索框回车时才拉 6KB 规则表 */
+let INTENT_MOD = null;
+let INTENT_PROMISE = null;
+let INTENT_RETRY_DONE = false;
+function ensureIntent() {
+  if (!INTENT_PROMISE)
+    INTENT_PROMISE = import('/assets/lib/intent.js')
+      .then((m) => (INTENT_MOD = m))
+      .catch(() => null);
+  return INTENT_PROMISE;
+}
+
 function openPalette() {
   const el = document.getElementById('palette');
   if (!el) return;
@@ -763,6 +775,7 @@ function openPalette() {
   input.value = '';
   PALETTE.idx = 0;
   renderPaletteResults('');
+  ensureIntent().then(() => renderPaletteResults(input.value)); // 规则表就绪后补一次
   setTimeout(() => input.focus(), 30);
 }
 
@@ -791,6 +804,36 @@ function renderPaletteResults(q) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 12)
     .map(([x]) => x);
+
+  // 自然语言意图（v3.0 E4）：像句子的输入优先给一条「也许你要」
+  let intentItem = null;
+  const sentence = kw.length >= 4 && /[\u4e00-\u9fa5]/.test(kw);
+  if (!INTENT_MOD && sentence && !INTENT_RETRY_DONE) {
+    // 规则表还在路上（首次打开面板时才开始下载）：先给普通结果，到货后自动补上「也许你要」。
+    // 用一次性开关避免加载失败时反复自我触发。
+    INTENT_RETRY_DONE = true;
+    ensureIntent().then(() => renderPaletteResults(q));
+  }
+  if (INTENT_MOD && sentence) {
+    const hit = INTENT_MOD.parseIntent(kw);
+    if (hit) {
+      const reg = REGISTRY && REGISTRY.tools.find((x) => x.id === hit.id);
+      // 只推荐确实存在的本地工具，避免规则表与工具列表脱节
+      if (reg && reg.runtime !== 'link') {
+        const p = Object.entries(hit.params || {})
+          .map(([k, v]) => `${k}=${v}`)
+          .join(' · ');
+        intentItem = {
+          type: '💡 也许你要',
+          name: toolMeta(reg).name,
+          desc: (p ? p + ' · ' : '') + '识别自「' + hit.matched.slice(0, 18) + '」',
+          url: INTENT_MOD.intentUrl(hit),
+        };
+      }
+    }
+  }
+  if (intentItem) list.unshift(intentItem);
+
   PALETTE.filtered = list;
   PALETTE.idx = Math.min(PALETTE.idx, Math.max(0, list.length - 1));
   const box = document.getElementById('palette-results');
@@ -1641,11 +1684,16 @@ function renderResultActions(out, box, id, manifest) {
   const parts = [];
   if (hasText) parts.push(`<button type="button" class="btn ghost" data-act="copy">${t('📋 复制结果', 'copyResult')}</button>`);
   if (files.length === 1) parts.push(`<a class="btn ghost" data-act="download" href="${files[0].url}" download="${esc(files[0].name)}">${t('⬇ 下载', 'download')} ${esc(files[0].name)}</a>`);
-  if (files.length > 1) parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 全部下载', 'downloadAll')}（${files.length}）</button>`);
+  if (files.length > 1) {
+    parts.push(`<button type="button" class="btn ghost" data-act="download-zip">${t('📦 打包下载 zip', 'downloadZip')}（${files.length}）</button>`);
+    parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 逐个下载', 'downloadAll')}</button>`);
+  }
   // 工具链：把这次产出直接交给下游工具，不用先下载再上传
   const chains = (CHAINS && typeof CHAINS === 'object' && CHAINS[id]) || [];
   for (const c of chains) parts.push(`<button type="button" class="btn ghost" data-go="${c.to}">→ ${esc(c.label)}</button>`);
   parts.push(`<button type="button" class="btn ghost" data-act="share">${t('🔗 分享此结果', 'shareResult')}</button>`);
+  // 加密分享：内容走 URL 片段，服务器与 CDN 日志里看不到明文（v3.0 E2）
+  parts.push(`<button type="button" class="btn ghost" data-act="share-enc">${t('🔒 加密分享', 'shareEnc')}</button>`);
   parts.push(`<span class="ra-note">${t('全程在本机完成，文件不会上传', 'localNote')}</span>`);
   bar.innerHTML = parts.join('');
 
@@ -1655,6 +1703,60 @@ function renderResultActions(out, box, id, manifest) {
   if (allBtn) allBtn.onclick = () => files.forEach((f, i) => setTimeout(() => triggerDownload(f.url, f.name), i * 350));
   const shareBtn = bar.querySelector('[data-act="share"]');
   if (shareBtn) shareBtn.onclick = () => copyWithFeedback(shareUrlOf(id, manifest), shareBtn, t('✓ 链接已复制', 'linkCopied'));
+
+  const zipBtn = bar.querySelector('[data-act="download-zip"]');
+  if (zipBtn)
+    zipBtn.onclick = async () => {
+      zipBtn.disabled = true;
+      const label = zipBtn.textContent;
+      zipBtn.textContent = t('打包中…', 'zipping');
+      try {
+        const { zipBlob } = await import('/assets/lib/zip.js');
+        const entries = [];
+        for (const f of files) {
+          let blob = f.blob;
+          if (!blob) {
+            try {
+              blob = await (await fetch(f.url)).blob();
+            } catch {
+              continue;
+            }
+          }
+          entries.push({ name: f.name, data: blob });
+        }
+        const zip = await zipBlob(entries);
+        triggerDownload(URL.createObjectURL(zip), `${id}-${entries.length}files.zip`);
+        setTimeout(() => URL.revokeObjectURL(zip), 4000);
+        zipBtn.textContent = t('✓ 已打包', 'zipDone');
+      } catch (e) {
+        zipBtn.textContent = t('打包失败', 'zipFail');
+        console.warn('打包失败：', e);
+      }
+      setTimeout(() => {
+        zipBtn.disabled = false;
+        zipBtn.textContent = label;
+      }, 1800);
+    };
+
+  const encBtn = bar.querySelector('[data-act="share-enc"]');
+  if (encBtn)
+    encBtn.onclick = async () => {
+      const pass = await askPassphrase(t('加密分享', 'shareEnc'), t('可以留空：密钥会放进链接。设置口令后，链接和口令需要分开发。', 'encHint'));
+      if (pass === null) return; // 取消
+      encBtn.disabled = true;
+      try {
+        const { createShare } = await import('/assets/lib/secure-share.js');
+        const frag = await createShare({ id, values: collectValues(manifest), ts: Date.now() }, pass);
+        const url = location.origin + '/tools/' + id + '/' + '#' + frag;
+        await copyWithFeedback(url, encBtn, t('✓ 加密链接已复制', 'encCopied'));
+      } catch (e) {
+        encBtn.textContent = t('加密失败', 'encFail');
+        console.warn('加密分享失败：', e);
+      }
+      setTimeout(() => {
+        encBtn.disabled = false;
+      }, 600);
+    };
   bar.querySelectorAll('[data-go]').forEach((btn) => {
     btn.onclick = async () => {
       btn.disabled = true;
@@ -1682,6 +1784,42 @@ function renderResultActions(out, box, id, manifest) {
   return bar;
 }
 
+/* ---------- 口令弹层（加密分享用） ----------
+   返回 Promise<string | null>：空字符串表示不设口令，null 表示取消。
+   不用 window.prompt：无法定制文案、会被部分浏览器拦截、样式也不受控。 */
+function askPassphrase(title, hint = '') {
+  return new Promise((resolve) => {
+    const mask = document.createElement('div');
+    mask.className = 'enc-mask';
+    mask.innerHTML = `
+      <div class="enc-modal" role="dialog" aria-modal="true" aria-labelledby="enc-title">
+        <h3 id="enc-title">${esc(title)}</h3>
+        <p>${esc(hint)}</p>
+        <input id="enc-pass" type="password" autocomplete="new-password" placeholder="${esc(t('口令（可留空）', 'encPlaceholder'))}" />
+        <div class="enc-row">
+          <button type="button" class="btn ghost" id="enc-cancel">${t('取消', 'cancel')}</button>
+          <button type="button" class="btn" id="enc-ok">${t('生成链接', 'encGenerate')}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(mask);
+    const input = mask.querySelector('#enc-pass');
+    const done = (v) => {
+      mask.remove();
+      resolve(v);
+    };
+    mask.querySelector('#enc-cancel').onclick = () => done(null);
+    mask.querySelector('#enc-ok').onclick = () => done(input.value.trim());
+    mask.addEventListener('click', (e) => {
+      if (e.target === mask) done(null);
+    });
+    mask.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') done(null);
+      if (e.key === 'Enter') done(input.value.trim());
+    });
+    setTimeout(() => input.focus(), 30);
+  });
+}
+
 function fieldHTML(inp) {
   const ph = inp.placeholder ? `placeholder="${esc(inp.placeholder)}"` : '';
   const dv = inp.default != null ? esc(inp.default) : '';
@@ -1701,6 +1839,51 @@ function fieldHTML(inp) {
     default:
       return `<input type="text" id="f-${inp.name}" value="${dv}" ${ph} />`;
   }
+}
+
+/* ---------- 接收加密分享（v3.0 E2） ----------
+   链接形如 /tools/tax-calc/#enc=xxx，片段不会发给服务器。
+   返回 true 表示已用分享内容填好表单，跳过 URL 参数与草稿恢复。 */
+async function applyEncryptedShare(meta, manifest, doRun) {
+  if (!location.hash.startsWith('#enc=')) return false;
+  let mod;
+  try {
+    mod = await import('/assets/lib/secure-share.js');
+  } catch {
+    return false;
+  }
+  const env = mod.peekShare();
+  if (!env) return false;
+
+  let pass = '';
+  if (env.pass) {
+    pass = await askPassphrase(t('这个分享链接已加密', 'encNeedPass'), t('输入分享者另发给你的口令', 'encNeedPassHint'));
+    if (pass === null) return false; // 用户取消：保持空白表单
+  }
+  const res = await mod.openShare(location.hash, pass);
+  if (!res.ok) {
+    const note = document.createElement('div');
+    note.className = 'pipe-note enc-note-bad';
+    note.textContent = '⚠️ ' + (res.error || t('解密失败', 'decFail'));
+    const box = document.getElementById('tool-fields');
+    if (box) box.insertBefore(note, box.firstChild);
+    return false;
+  }
+  const data = res.data || {};
+  if (data.id && data.id !== meta.id) {
+    // 链接指向别的工具：直接跳过去，避免用户对着错的表单发呆
+    navigate('/tools/' + data.id + '/', true);
+    return true;
+  }
+  const applied = applyValues(manifest, data.values || {});
+  history.replaceState(null, '', location.pathname + location.search); // 清掉片段，刷新不再重复解密
+  const note = document.createElement('div');
+  note.className = 'pipe-note enc-note-ok';
+  note.textContent = '🔓 ' + t('已解密分享内容（内容从未经过服务器，片段不随请求发送）', 'decOk');
+  const box = document.getElementById('tool-fields');
+  if (box) box.insertBefore(note, box.firstChild);
+  if (applied && !manifest.inputs.some((i) => i.type === 'file')) setTimeout(() => doRun(), 80);
+  return true;
 }
 
 async function openTool(id) {
@@ -1877,8 +2060,9 @@ async function openTool(id) {
     }
   }
 
-  // 输入回填：URL 参数优先（可分享「算好的结果」），其次恢复本机上次输入
-  (function restoreInputs() {
+  // 输入回填：加密分享 > URL 参数（可分享「算好的结果」）> 本机上次输入
+  (async function restoreInputs() {
+    if (await applyEncryptedShare(meta, manifest, doRun)) return;
     const params = new URLSearchParams(location.search);
     const fromUrl = {};
     for (const [k, v] of params) if (k !== 'embed' && k !== 'run') fromUrl[k] = v;
@@ -2128,6 +2312,27 @@ const PAGES = {
       <h2>✦ 开源与致谢</h2>
       <p>每个工具页均标注来源仓库与 License。已收录 ${REGISTRY ? REGISTRY.counts.local + REGISTRY.counts.dir : ''} 个工具，其中本地工具的开源依赖包括 qrcodejs、marked、DOMPurify、Pyodide，均以原始协议使用。</p>
     </div>`,
+  batch: () => `
+    <div class="page">
+      <h1>📦 批量处理图片</h1>
+      <p class="lead">一次拖入十几张截图，<b>限制边长 + 统一格式 + 压缩质量</b>一趟跑完，最后打包成一个 zip。全部在本机完成，图片不上传。</p>
+      <div id="batch-app" class="batch"></div>
+      <h2>✦ 适合什么场景</h2>
+      <ul>
+        <li>写文档要插十几张截图，每张都几百 KB —— 统一压到 1600px 宽，体积常常只剩三分之一</li>
+        <li>把一堆 PNG 截图转成 WebP，网页加载更快</li>
+        <li>相机直出的照片太大，发邮件前统一缩小</li>
+      </ul>
+      <h2>✦ 为什么不用在线批量工具</h2>
+      <p>多数在线批量压缩会把图片上传到它自己的服务器，处理完再给你下载链接。这里是浏览器内的 canvas 编码，图片从头到尾没离开你的设备，断网也能用（缓存过离线包之后）。</p>
+      <h2>✦ 注意事项</h2>
+      <ul>
+        <li>PNG 是无损格式，调「质量」对它没效果；要明显变小请选 WebP 或 JPEG</li>
+        <li>转 JPEG 会丢掉透明背景（变成白底），带透明的图请保持 PNG</li>
+        <li>处理在单线程里排队执行，几十张时请让页面留在前台</li>
+      </ul>
+      <p>只想处理单张、需要更细的参数？用 <a href="/tools/image-compress/">图片压缩</a>、<a href="/tools/image-resize/">图片改尺寸</a> 或 <a href="/tools/image-convert/">图片格式转换</a>。</p>
+    </div>`,
   privacy: () => {
     const off = analyticsOptedOut();
     return `
@@ -2175,6 +2380,44 @@ const PAGES = {
         <li>源码就在仓库里，统计与安全头的定义分别在 <code>analytics.json</code> 与 <code>assets/lib/security-headers.js</code></li>
       </ul>
       <p><a href="/about/">← 回关于页</a></p>
+    </div>`;
+  },
+  offline: () => {
+    // 静态页首访时由构建期注入；SPA 内部跳转时没有，交给 mountOffline 从 sw.js 现算
+    const meta = window.__OFFLINE_META__;
+    const size = meta ? `${meta.files} 个地址 · 约 ${(meta.bytes / 1048576).toFixed(1)} MB` : '全部本地工具页与执行脚本';
+    return `
+    <div class="page">
+      <h1>📴 离线包与安装</h1>
+      <p class="lead">把全部本地工具缓存进浏览器之后，<b>断网、飞行模式、隔离内网都能照常打开并运算</b>——这时它才真正等同于一个装在电脑上的工具。</p>
+      <div id="offline-app" class="offline"></div>
+
+      <h2>✦ 两个概念别混淆</h2>
+      <table class="cmp-table">
+        <tr><th></th><th>安装成应用（PWA）</th><th>下载离线包</th></tr>
+        <tr><td>解决什么</td><td>从桌面图标直接打开，有独立窗口</td><td>没有网络也能打开具体工具页</td></tr>
+        <tr><td>是否必需网络</td><td>首次安装要，之后打开仍需联网</td><td>下载完成后完全不需要</td></tr>
+        <tr><td>两者关系</td><td colspan="2">互相独立：不安装也能离线；装了应用但没下载离线包，断网时仍打不开工具页</td></tr>
+      </table>
+
+      <h2>✦ 包含与不包含</h2>
+      <ul>
+        <li><b>包含</b>：首页、全部分类页、全部本地工具页与其 <code>run.js</code>、界面样式与脚本、工具注册表与多语言文件（当前 ${size}）</li>
+        <li><b>不包含</b>：第三方官网（目录工具是别人的站点，本来就不可能离线）</li>
+        <li><b>不包含</b>：Python 运行时（13MB 起，还有可选的数据科学包）——第一次用 Python 工具时单独下载并缓存，不拖慢装包</li>
+      </ul>
+
+      <h2>✦ 更新机制</h2>
+      <p>页面导航走「缓存优先 + 后台更新」：先给你秒开的旧版本，同时在后台把新版本写进缓存，下次打开就是新版。工具注册表与界面脚本走「网络优先」，所以新增工具、改文案在部署后立即生效，不必等缓存过期。</p>
+
+      <h2>✦ 自己验证一下</h2>
+      <ol>
+        <li>点上面的「下载离线包」，等进度走到 100%</li>
+        <li>开发者工具 Network 面板勾上 Offline（或直接关 Wi-Fi）</li>
+        <li>刷新页面，随便打开一个本地工具——应该照常可用，且没有任何失败的上传请求（本来就没有上传接口）</li>
+      </ol>
+      <p class="muted-note">想彻底退回联网状态？点页面上的「清除缓存」，或清除本站站点数据。</p>
+      <p><a href="/privacy/">隐私说明</a> · <a href="/batch/">批量处理</a> · <a href="/about/">关于</a></p>
     </div>`;
   },
   submit: () => `
@@ -2250,7 +2493,7 @@ async function openPage(name) {
   $('#view-home').style.display = 'none';
   $('#view-tool').style.display = 'none';
   $('#view-page').style.display = '';
-  const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈', privacy: '隐私说明' };
+  const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : '<div class="empty">页面不存在</div>';
 
@@ -2282,6 +2525,28 @@ async function openPage(name) {
       optOut.dataset.off = next ? '1' : '0';
       optOut.textContent = next ? '恢复统计' : '在本机关闭统计';
     };
+  }
+
+  // 批量处理页：按需加载（不进首屏包）
+  const batchBox = document.getElementById('batch-app');
+  if (batchBox) {
+    try {
+      const { mountBatch } = await import('/assets/batch.js');
+      mountBatch(batchBox);
+    } catch (e) {
+      batchBox.innerHTML = `<div class="empty">批量模块加载失败：${esc(e.message)}</div>`;
+    }
+  }
+
+  // 离线包页：按需加载（不进首屏包）
+  const offBox = document.getElementById('offline-app');
+  if (offBox) {
+    try {
+      const { mountOffline } = await import('/assets/offline.js');
+      await mountOffline(offBox);
+    } catch (e) {
+      offBox.innerHTML = `<div class="empty">离线模块加载失败：${esc(e.message)}</div>`;
+    }
   }
 
   // 提交页的工具包生成器：按需加载（不进首屏包）
@@ -2331,7 +2596,7 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
-  const page = p.match(/^\/(about|submit|feedback|privacy)$/);
+  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline)$/);
   if (page) return openPage(page[1]);
   return renderHome();
 }
@@ -2413,8 +2678,19 @@ document.addEventListener('keydown', (e) => {
         renderGrid(REGISTRY.tools, v);
       }
     });
-    heroInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    heroInput.addEventListener('keydown', async (e) => {
+      if (e.key !== 'Enter') return;
+      // 像句子就按意图直达工具（参数已预填），否则回到列表继续浏览
+      const q = heroInput.value.trim();
+      if (q.length >= 4) {
+        const mod = await ensureIntent();
+        const hit = mod && mod.parseIntent(q);
+        if (hit) {
+          navigate(mod.intentUrl(hit));
+          return;
+        }
+      }
+      document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
 })();
@@ -2424,6 +2700,17 @@ const catParam = new URLSearchParams(location.search).get('cat');
 if (catParam) activeCategory = catParam;
 
 // 注册 Service Worker（离线可用 + 可安装为桌面应用）
+// 装成应用（PWA）：beforeinstallprompt 必须在页面极早期捕获，否则会被浏览器丢弃，
+// 存到全局量上，/offline/ 页的「安装到桌面」按钮直接消费它。
+window.__INSTALL_PROMPT__ = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.__INSTALL_PROMPT__ = e;
+});
+window.addEventListener('appinstalled', () => {
+  window.__INSTALL_PROMPT__ = null;
+});
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {

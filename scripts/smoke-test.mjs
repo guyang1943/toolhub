@@ -22,6 +22,17 @@ const paths = [
   '/about/',
   '/submit/',
   '/feedback/',
+  '/privacy/',
+  '/batch/',
+  '/offline/',
+  '/assets/batch.js',
+  '/assets/offline.js',
+  '/assets/lib/zip.js',
+  '/assets/lib/secure-share.js',
+  '/assets/lib/intent.js',
+  '/assets/icon-192.png',
+  '/assets/icon-512.png',
+  '/assets/icon-maskable-512.png',
   '/compare/',
   '/resources/',
   '/resources/icons/',
@@ -85,6 +96,51 @@ if (fails.length) {
   console.log('  3) 全部超时 → 网络到该域不可达（workers.dev 在国内不可直连），换代理或绑自定义域名');
 } else {
   console.log('\n✅ 全部关键路径正常，可以对外发布');
+}
+
+// ---- v3.0：离线包的可安装性只能在「真实 HTTP 响应」上验，静态检查测不出来 ----
+// 典型翻车：sw.js 的 MIME 不对 → 浏览器直接拒绝注册（离线包整条链路失效，但页面看起来正常）
+{
+  const bad = [];
+  const get = async (p) => {
+    const res = await fetch(BASE + p, { signal: AbortSignal.timeout(15000) });
+    return { res, body: await res.text() };
+  };
+  try {
+    const { res, body } = await get('/sw.js');
+    const ct = res.headers.get('content-type') || '';
+    if (!/javascript/.test(ct)) bad.push(`sw.js Content-Type = ${ct}（浏览器会拒绝注册）`);
+    if (!/const VERSION = "toolhub-v[\d.]+"/.test(body)) bad.push('sw.js 缺版本常量');
+    if (!/const FULL = \[/.test(body)) bad.push('sw.js 缺预缓存清单');
+    if (/Cache-Control: ?no-store/.test(res.headers.get('cache-control') || '')) bad.push('sw.js 不应 no-store，否则每次都重新下载');
+    const mf = JSON.parse((await get('/site.webmanifest')).body);
+    const icons = mf.icons.filter((i) => i.src.startsWith('/'));
+    if (!mf.icons.some((i) => i.purpose === 'maskable')) bad.push('manifest 缺 maskable 图标');
+    for (const i of icons) {
+      const r = await fetch(BASE + i.src, { method: 'HEAD', signal: AbortSignal.timeout(15000) });
+      if (r.status !== 200) bad.push(`图标 ${i.src} → ${r.status}`);
+    }
+    const off = (await get('/offline/')).body;
+    const meta = off.match(/__OFFLINE_META__=(\{[^<]+\})/);
+    if (!meta) bad.push('/offline/ 缺离线包统计注入（构建没跑完？）');
+    else {
+      const d = JSON.parse(meta[1]);
+      if (!(d.files > 50)) bad.push(`离线包只有 ${d.files} 个地址，像是生成器漏了工具页`);
+      if (!(d.bytes > 0)) bad.push('离线包体积为 0');
+    }
+    // 加密分享的密钥派生与加密都依赖 WebCrypto，只能跑在安全上下文里
+    const share = (await get('/assets/lib/secure-share.js')).body;
+    if (!/PBKDF2/.test(share) || !/AES-GCM/.test(share)) bad.push('加密分享实现不完整');
+  } catch (e) {
+    bad.push('抓取失败: ' + e.message);
+  }
+  console.log('\n📴 离线包与可安装性（v3.0）');
+  if (bad.length) {
+    console.log('   ❌ ' + bad.join('\n   ❌ '));
+    process.exitCode = 1;
+  } else {
+    console.log('   ✅ sw.js MIME 正确、清单非空、manifest 图标可访问、离线页统计已注入');
+  }
 }
 
 // ---- 内容抽查：v2.7 起，目录工具页必须有正文、内链与 FAQ 结构化数据 ----

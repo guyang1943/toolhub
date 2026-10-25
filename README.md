@@ -1,4 +1,4 @@
-# ToolHub — 开源项目工具化平台（v2.9）
+# ToolHub — 开源项目工具化平台（v3.0）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
@@ -17,6 +17,9 @@ toolhub/
 │   ├── style.css
 │   ├── app.js            # 注册表 / 搜索 / Manifest→表单渲染 / 路由 / 命令面板
 │   ├── pyodide-runtime.js  # Pyodide 共享运行时（多 Python 工具复用）
+│   ├── offline.js / batch.js  # 离线包页与批量处理的控制器（按需加载，不进首屏）
+│   ├── lib/              # 共享能力：zip 打包 / 加密分享 / 意图解析 / 安全头定义
+│   └── icon-*.png        # PWA 图标（192 / 512 / maskable）
 │   └── vendor/           # 本地化的开源库（qrcode / marked / purify / jsQR / pdf-lib / pyodide）
 ├── tools/
 │   ├── registry.json     # 分类 / 推荐位 / 排序（手写）
@@ -29,7 +32,8 @@ toolhub/
 ├── articles.json         # 34 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
 ├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
 ├── changelog.json        # 更新日志数据
-├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test / new-tools-test / browser-test
+├── sw.js                 # Service Worker（由 scripts/gen-sw.mjs 构建期生成，勿手改）
+├── scripts/              # build-pages / gen-sw / verify / smoke-test / health-check / spa-render-test / new-tools-test / browser-test / serve / perf-budget
 ├── topics/ evaluations/ resources/ tools/<id>/   # 构建生成的静态 SEO 页
 └── wrangler.toml         # Cloudflare Workers 静态资源部署配置
 ```
@@ -343,6 +347,33 @@ npx wrangler deploy --config wrangler.toml
 | 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 + 内容抽查 | 73 |
 | 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题、新工具端到端、提交页生成器、安全头/CLS/LCP/CSP 违规 | 85 |
 | 性能预算 | `node scripts/perf-budget.mjs` | 首屏 gzip 体积、请求数、禁止第三方库回流首屏 | 6 项预算 |
+
+### 测试矩阵（v3.0）
+
+| 套件 | 命令 | 覆盖 | 数量 |
+|---|---|---|---|
+| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、清单闸门、安全头/CSP、性能预算、隐私页，以及 v3.0 的离线包清单/PWA 图标/加密分享/ZIP/意图规则 | 44 |
+| SPA 渲染 | `node scripts/spa-render-test.mjs` | DOM 桩下的路由、搜索、表单联动、端到端、/offline/ 与 /batch/ 页、命令面板自然语言 | 49 |
+| 工具功能 | `node scripts/new-tools-test.mjs` | 个税/房贷数学、单位精度、真实 PDF、真实 QR、图片转码、EXIF 剥离、ZIP 字节结构、加密分享往返与失败分支 | 137 |
+| 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 + sw.js MIME/清单 + manifest 图标 + 内容抽查 | 84 |
+| 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、上传、剪贴板、视口、主题、安全头/CLS/LCP/CSP，以及加密链接解密、批量页、意图跳转、**断网后仍可用** | 108 |
+| 性能预算 | `node scripts/perf-budget.mjs` | 首屏 gzip 体积、请求数、禁止第三方库回流首屏 | 6 项预算 |
+
+## v3.0：差异化——断网也能用、一次处理一批、加密后再分享（2026-10-25）
+
+前九个版本都在把「在线工具」做得更规范。这一版回答一个不同的问题：**当别人也能提供同样的工具时，凭什么用这个**。
+
+- **完整离线包**：`sw.js` 改由构建期生成，预缓存清单从 `tools/tools.json` 派生——新增工具自动进包，不会出现「装到桌面后那个工具离线打不开」。清单只收录磁盘上真实存在的路径（`install` 的 `addAll` 是全有或全无，一个 404 会让整个装包失败）。
+- **下载与进度**：`/offline/` 页点「下载离线包」后，SW 逐个抓取并每 5 个回报一次进度；失败只记录不中断，可以再点一次补全。实测 97 个地址约 2.4 MB。
+- **可安装（PWA）**：补齐 192/512/maskable 图标与 manifest 快捷方式，`beforeinstallprompt` 在 `app.js` 里全局捕获后交给页面消费。页面明确区分两件事：**安装**解决「从桌面图标打开」，**离线包**解决「没有网络也能打开」，两者互不替代。
+- **刻意不把 Python 运行时塞进离线包**：核心 13MB、含 pandas 36MB，硬塞会让首次安装变成几分钟。改为第一次用 Python 工具时单独下载并缓存，但 **`pyodide-loader.js` 必须进包**——否则离线打开 Python 工具连报错都报不出来（校验里专门断言了这一点）。
+- **加密分享**：结果用 AES-GCM 256 在本地加密后放进链接的 `#` 片段。片段不随请求发送，所以服务器与 CDN 日志里没有明文；可选口令走 PBKDF2-SHA256 12 万次迭代。收到链接的人打开即自动解密回填（带口令时弹口令框），非文件类工具直接自动重跑。
+- **批量处理图片**：一次拖入多张，统一最大边长 + 输出格式 + 压缩质量，逐张显示状态与体积变化，结果打包成一个 zip 或逐个下载。全部在浏览器内完成。
+- **ZIP 抽成共享库**：`assets/lib/zip.js`（STORE + CRC32 + UTF-8 文件名标记）被批量页、结果区「打包下载」、工具包生成器三处复用。测试直接按字节解析中央目录，验签名、条数、CRC 与中文文件名，而不是「看起来像个 zip」。
+- **自然语言 → 工具**：命令面板与首页搜索框能听懂「把这张图压到 200KB」「帮我算下月薪两万的个税」，命中就在顶部给出「也许你要」并带预填参数跳转。规则表约 35 条，**完全在本地跑**——为了猜工具把用户输入发给大模型，等于把「输入不上传」这个立站之本换掉。
+- **两页新的说明**：`/offline/`（离线与安装的边界、包含与不包含、怎么自己验证）与 `/batch/`（批量与单图工具的关系），都有长尾正文，可被搜索引擎单独收录。
+
+**验收**：校验 44 / SPA 49 / 功能 137 / 冒烟 84 + 内容抽查 / 浏览器 108，五套全绿；真浏览器里跑通了「下载离线包 → 断网 → 打开工具 → 出结果」，缓存 97 个文件、LCP 88ms、CLS 0.000。
 
 ## v2.9：质量与运维——把「上线之后」也纳入版本纪律（2026-10-25）
 

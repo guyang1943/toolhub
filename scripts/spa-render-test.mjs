@@ -337,6 +337,50 @@ await waitFor(() => document.getElementById('grid').innerHTML.includes('时区�
 check('搜索 shiqu 命中时区转换', document.getElementById('grid').innerHTML.includes('时区转换'));
 search2.value = '';
 
+// 9) v3.0：两个新说明页 + 自然语言入口
+// 9a. /offline/ 页：说明文字必须把「安装」与「离线」的区别讲清楚，别让用户以为装了应用就能断网
+await go('/offline/');
+await sleep(300);
+{
+  const offHtml = document.getElementById('page-body').innerHTML;
+  check('/offline/ 页渲染', offHtml.includes('离线包与安装') && offHtml.includes('包含与不包含'), `#page-body ${offHtml.length} 字符`);
+  check('/offline/ 页区分安装与离线', offHtml.includes('两个概念别混淆') && offHtml.includes('缓存优先'));
+  check('/offline/ 页声明不含 Python 运行时', offHtml.includes('Python 运行时') && /不包含<\/b>：Python/.test(offHtml));
+  check('/offline/ 页有挂载点', offHtml.includes('id="offline-app"'));
+}
+
+// 9b. /batch/ 页
+await go('/batch/');
+await sleep(300);
+{
+  const batchHtml = document.getElementById('page-body').innerHTML;
+  check('/batch/ 页渲染', batchHtml.includes('批量处理图片') && batchHtml.includes('batch-app'), `#page-body ${batchHtml.length} 字符`);
+  check('/batch/ 页链接到单图工具', batchHtml.includes('/tools/image-compress/') && batchHtml.includes('/tools/image-resize/'));
+}
+
+// 9c. 命令面板：一句中文 → 「也许你要」+ 预填参数
+await go('/');
+searchEl.value = '';
+const palIn = document.getElementById('palette-input');
+palIn.value = '把这张图压到 200KB';
+fire(palIn, 'input');
+await waitFor(() => (document.getElementById('palette-results').innerHTML || '').includes('也许你要'), 20);
+{
+  const ip = document.getElementById('palette-results').innerHTML;
+  check('命令面板给出「也许你要」', ip.includes('也许你要') && ip.includes('图片压缩'), `${ip.length} 字符`);
+  check('意图项带出预填参数', ip.includes('quality=60'), '压到 200KB → 质量 60');
+  // 第一条必须是意图项，而不是被普通搜索结果淹没
+  check('意图项排在最前', ip.indexOf('也许你要') < (ip.indexOf('pal-name') || 1e9) || ip.indexOf('也许你要') < ip.indexOf('图片压缩'));
+}
+
+// 9d. 不像句子的输入不该硬套意图（避免每次搜索都多出一行噪音）
+palIn.value = 'json';
+fire(palIn, 'input');
+await sleep(150);
+check('短关键词不触发意图', !(document.getElementById('palette-results').innerHTML || '').includes('也许你要'));
+palIn.value = '';
+await go('/');
+
 // 汇总
 let pass = 0;
 for (const r of results) {

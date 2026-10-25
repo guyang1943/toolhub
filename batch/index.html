@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>批量处理图片 · 限制边长、统一格式、打包下载 · ToolHub</title>
+  <meta name="description" content="一次拖入多张图片，统一限制最大边长、转 WebP/JPEG、压缩质量，最后打包成一个 zip。全部在浏览器内完成，图片不上传。" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/batch/" />
+  <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/batch/" />
+  <meta property="og:title" content="批量处理图片 · 限制边长、统一格式、打包下载 · ToolHub" />
+  <meta property="og:description" content="一次拖入多张图片，统一限制最大边长、转 WebP/JPEG、压缩质量，最后打包成一个 zip。全部在浏览器内完成，图片不上传。" />
+  <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:description" content="精选 94 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"批量处理图片 · 限制边长、统一格式、打包下载 · ToolHub","description":"一次拖入多张图片，统一限制最大边长、转 WebP/JPEG、压缩质量，最后打包成一个 zip。全部在浏览器内完成，图片不上传。","url":"https://toolhub.guyang1966.workers.dev/batch/"}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/" data-nav="tools">工具</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>批量处理图片</h1><p>一次拖入多张图片，统一限制最大边长、转 WebP/JPEG、压缩质量，最后打包成一个 zip。全部在浏览器内完成，图片不上传。</p><h2>它解决什么问题</h2><p>单张处理十几张截图是重复劳动：打开工具、选一张、下载、再来一张。批量模式把这些合成一步——先统一边长与格式，再按统一质量编码，最后打包成一个压缩包下载。</p><h2>与站内单图工具的关系</h2><p>批量页用的是同一套浏览器 canvas 编码管线，与「图片压缩」「图片改尺寸」「图片格式转换」一致；区别是一次处理多个文件并直接打包，适合成批的截图、相机照片与素材整理。</p><h2>隐私</h2><p>所有图片在浏览器内存中解码与编码，不上传、不写入本地磁盘，处理完即随页面释放。断网也可使用（缓存过离线包之后）。</p><h2>已知边界</h2><p>PNG 是无损格式，质量参数对它无效；转 JPEG 会丢失透明背景；一次处理几十张大图会占用较多内存，建议分批。</p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          <div class="hero-search-hint">94 个工具 · 50 条资源 · 全部免费，无需注册</div>
+        </div>
+        <div class="hero-stats" id="hero-stats"><!--hs:hero-stats-->
+    <div class="stat"><b>94</b><span>精选工具</span></div>
+    <div class="stat"><b>34</b><span>本地执行</span></div>
+    <div class="stat"><b>9</b><span>分类</span></div>
+    <div class="stat"><b>0</b><span>数据上传</span></div>
+    <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button><!--/hs:hero-stats--></div>
+      </div>
+
+      <div class="route-cards" id="route-cards"><!--hs:route-cards-->
+    <a class="route-card" href="#tools-anchor" data-scroll="grid">
+      <span class="rc-icon">🧰</span>
+      <b>94 个工具</b>
+      <span>按任务或分类找工具，能本地跑的都在本地跑</span>
+      <em>浏览工具 →</em>
+    </a>
+    <a class="route-card" href="/resources/">
+      <span class="rc-icon">📚</span>
+      <b>6 个合集 · 50 条资源</b>
+      <span>图标、字体、配色、学习路线——拿来就能用</span>
+      <em>逛资源库 →</em>
+    </a>
+    <a class="route-card" href="/compare/">
+      <span class="rc-icon">⇄</span>
+      <b>工具对比</b>
+      <span>同类工具并排看：是否上传数据、能否离线、协议与来源</span>
+      <em>开始对比 →</em>
+    </a>
+    <a class="route-card" href="/evaluations/">
+      <span class="rc-icon">🔬</span>
+      <b>5 篇评测</b>
+      <span>同类工具横向实测：隐私、速度、功能边界一次讲清</span>
+      <em>读评测 →</em>
+    </a><!--/hs:route-cards--></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-grid" id="featured-grid"><!--hs:featured-grid--><div class="featured-card" data-id="json-format" data-link="">
+        <span class="rank">01</span>
+        <div class="f-body">
+          <div class="f-name">JSON 格式化</div>
+          <div class="f-desc">美化/压缩 JSON，自动校验语法错误</div>
+          <div class="f-meta">🔒 本地运行 · 文本</div>
+        </div>
+      </div><div class="featured-card" data-id="image-compress" data-link="">
+        <span class="rank">02</span>
+        <div class="f-body">
+          <div class="f-name">图片压缩</div>
+          <div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div>
+          <div class="f-meta">🔒 本地运行 · 图片</div>
+        </div>
+      </div><div class="featured-card" data-id="squoosh" data-link="">
+        <span class="rank">03</span>
+        <div class="f-body">
+          <div class="f-name">Squoosh</div>
+          <div class="f-desc">Google 出品的图片压缩，对比预览效果极佳</div>
+          <div class="f-meta">🔒 本地运行 · 图片</div>
+        </div>
+      </div><div class="featured-card" data-id="cyberchef" data-link="">
+        <span class="rank">04</span>
+        <div class="f-body">
+          <div class="f-name">CyberChef</div>
+          <div class="f-desc">GCHQ 出品的数据解码/加密/转换瑞士军刀</div>
+          <div class="f-meta">🔒 本地运行 · 数据</div>
+        </div>
+      </div><div class="featured-card" data-id="bentopdf" data-link="">
+        <span class="rank">05</span>
+        <div class="f-body">
+          <div class="f-name">BentoPDF</div>
+          <div class="f-desc">PDF 合并/拆分/压缩，全部本地处理</div>
+          <div class="f-meta">🔒 本地运行 · 文档</div>
+        </div>
+      </div><div class="featured-card" data-id="pairdrop" data-link="">
+        <span class="rank">06</span>
+        <div class="f-body">
+          <div class="f-name">PairDrop</div>
+          <div class="f-desc">同一网络设备间 P2P 互传文件，免安装</div>
+          <div class="f-meta">🔒 本地运行 · 效率</div>
+        </div>
+      </div><div class="featured-card" data-id="devdocs" data-link="">
+        <span class="rank">07</span>
+        <div class="f-body">
+          <div class="f-name">DevDocs</div>
+          <div class="f-desc">一站式 API 文档聚合（100+ 语言/框架）</div>
+          <div class="f-meta">🔒 本地运行 · 开发</div>
+        </div>
+      </div><div class="featured-card" data-id="python-run" data-link="">
+        <span class="rank">08</span>
+        <div class="f-body">
+          <div class="f-name">Python 运行器</div>
+          <div class="f-desc">浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机</div>
+          <div class="f-meta">🔒 本地运行 · 开发</div>
+        </div>
+      </div><div class="featured-card" data-id="tax-calc" data-link="">
+        <span class="rank">09</span>
+        <div class="f-body">
+          <div class="f-name">个税计算器</div>
+          <div class="f-desc">工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测</div>
+          <div class="f-meta">🔒 本地运行 · 效率</div>
+        </div>
+      </div><div class="featured-card" data-id="unit-convert" data-link="">
+        <span class="rank">10</span>
+        <div class="f-body">
+          <div class="f-name">单位换算</div>
+          <div class="f-desc">长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转</div>
+          <div class="f-meta">🔒 本地运行 · 效率</div>
+        </div>
+      </div><div class="featured-card" data-id="mortgage-calc" data-link="">
+        <span class="rank">11</span>
+        <div class="f-body">
+          <div class="f-name">房贷计算器</div>
+          <div class="f-desc">等额本息与等额本金月供、总利息对比，含逐年还款明细表</div>
+          <div class="f-meta">🔒 本地运行 · 效率</div>
+        </div>
+      </div><div class="featured-card" data-id="timezone-convert" data-link="">
+        <span class="rank">12</span>
+        <div class="f-body">
+          <div class="f-name">时区转换</div>
+          <div class="f-desc">一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时</div>
+          <div class="f-meta">🔒 本地运行 · 效率</div>
+        </div>
+      </div><div class="featured-card" data-id="img-to-pdf" data-link="">
+        <span class="rank">13</span>
+        <div class="f-body">
+          <div class="f-name">图片转 PDF</div>
+          <div class="f-desc">多张图片合成一个 PDF，A4 或适应图片，本地生成不上传</div>
+          <div class="f-meta">🔒 本地运行 · 文档</div>
+        </div>
+      </div><!--/hs:featured-grid--></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"><!--hs:res-preview-grid--><a class="res-preview-card" href="/resources/icons/">
+        <span class="rp-icon">🎨</span>
+        <span class="rp-title">免费图标库</span>
+        <span class="rp-desc">做界面最常用的图标来源，全部免费可用、授权清晰</span>
+        <span class="rp-count">10 个来源 →</span>
+      </a><a class="res-preview-card" href="/resources/fonts/">
+        <span class="rp-icon">🔤</span>
+        <span class="rp-title">免费商用字体</span>
+        <span class="rp-desc">中文与西文免费商用字体，附授权类型说明</span>
+        <span class="rp-count">8 个来源 →</span>
+      </a><a class="res-preview-card" href="/resources/colors/">
+        <span class="rp-icon">🎨</span>
+        <span class="rp-title">配色方案与调色板</span>
+        <span class="rp-desc">成套配色系统、数据可视化色板与配色灵感</span>
+        <span class="rp-count">8 个来源 →</span>
+      </a><!--/hs:res-preview-grid--></div>
+      </div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">显示 94 / 94</span><!--/hs:filterbar--></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__PAGE__="batch";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

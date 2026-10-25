@@ -244,12 +244,14 @@ check('sitemap 与页面一致', () => {
   return `${locs.length} 条 URL`;
 });
 
-check('静态页数（工具 + 关于/提交/反馈）', () => {
+check('静态页数（工具 + 说明页）', () => {
   const toolPages = readdirSync(join(root, 'tools')).filter((d) => existsSync(join(root, 'tools', d, 'index.html'))).length;
-  const extras = ['about', 'submit', 'feedback', 'compare', 'topics', 'changelog', 'evaluations'].filter((p) => existsSync(join(root, p, 'index.html'))).length;
+  // 说明页清单：漏建一个就等于导航里挂了个 404，所以逐个点名而不是数个数
+  const PAGES = ['about', 'submit', 'feedback', 'compare', 'topics', 'changelog', 'evaluations', 'privacy', 'batch', 'offline'];
+  const miss = PAGES.filter((p) => !existsSync(join(root, p, 'index.html')));
   assert(toolPages === all.length, `工具页 ${toolPages} ≠ 工具数 ${all.length}`);
-  assert(extras === 7, `静态页缺 ${7 - extras} 个`);
-  return `${toolPages} + ${extras}`;
+  assert(!miss.length, `静态页缺: ${miss.join(', ')}`);
+  return `${toolPages} + ${PAGES.length}`;
 });
 
 check('公开文案计数与数据一致', () => {
@@ -296,11 +298,14 @@ check('无占位/调试残留', () => {
   return '干净';
 });
 
-check('sw 版本号存在', () => {
+check('sw 版本号与 changelog 一致', () => {
   const sw = readFileSync(join(root, 'sw.js'), 'utf8');
-  const m = sw.match(/toolhub-v[\d.]+/);
-  assert(m, '未找到版本号');
-  return m[0];
+  const m = sw.match(/const VERSION = "([^"]+)"/);
+  assert(m, '未找到 VERSION 常量');
+  const latest = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8')).entries[0].version;
+  assert(m[1] === `toolhub-${latest}`, `sw 版本 ${m[1]} ≠ changelog 最新 ${latest}（忘了 npm run build？）`);
+  assert(/由 scripts\/gen-sw\.mjs 生成/.test(sw), 'sw.js 不是构建期生成的（会被手改覆盖）');
+  return m[1];
 });
 
 check('部署安全：不发布版本库与本地环境', () => {
@@ -461,7 +466,11 @@ check('接入闭环（v2.8 C3）', () => {
   else {
     if (!/from '\.\/lib\/json-schema\.js'/.test(builder)) bad.push('生成器没有复用共享校验器');
     if (!/\/tools\/schema\.json/.test(builder)) bad.push('生成器没有加载 tools/schema.json');
-    if (!/06054b50/.test(builder)) bad.push('生成器缺 zip 打包（目录结束签名）');
+    // zip 实现抽到了 assets/lib/zip.js（v3.0 E3 起结果区与批量页复用同一份）
+    if (!/from '\.\/lib\/zip\.js'/.test(builder)) bad.push('生成器没有复用共享 zip 库');
+    const zipLib = existsSync(join(root, 'assets', 'lib', 'zip.js')) ? readFileSync(join(root, 'assets', 'lib', 'zip.js'), 'utf8') : '';
+    if (!zipLib) bad.push('缺 assets/lib/zip.js');
+    else if (!/06054b50/.test(zipLib) || !/04034b50/.test(zipLib)) bad.push('zip 库缺目录结束/本地文件头签名');
   }
   // 脚手架模板必须自带契约要求的导出
   const cli = existsSync(join(root, 'scripts', 'new-tool.mjs')) ? readFileSync(join(root, 'scripts', 'new-tool.mjs'), 'utf8') : '';
@@ -561,6 +570,135 @@ check('隐私说明与统计口径（D3）', () => {
   const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
   assert(/ANALYTICS_OPT_OUT/.test(app), 'app.js 缺本机退出统计的实现');
   return '隐私页 + sitemap + 退出开关';
+});
+
+// ---------- v3.0 E1–E4 ----------
+check('离线包清单（E1）', () => {
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  const full = JSON.parse(sw.match(/const FULL = (\[[\s\S]*?\n\]);/)[1]);
+  const core = JSON.parse(sw.match(/const CORE = (\[[\s\S]*?\n\]);/)[1]);
+  const set = new Set(full);
+  const bad = [];
+  // 每个本地工具页与执行文件都必须在清单里——漏一个就是「装了应用，那个工具离线打不开」
+  for (const t of all.filter((x) => existsSync(join(root, 'tools', x.id, 'run.js')))) {
+    if (!set.has(`/tools/${t.id}/`)) bad.push(`${t.id} 页`);
+    if (!set.has(`/tools/${t.id}/run.js`)) bad.push(`${t.id} run.js`);
+  }
+  for (const p of ['/', '/offline/', '/site.webmanifest', '/assets/app.js', '/assets/style.css']) {
+    if (!set.has(p)) bad.push(p);
+  }
+  // SW 自己不能被自己缓存，否则永远拿不到新版本
+  assert(!set.has('/sw.js'), '预缓存清单不应包含 /sw.js');
+  assert(sw.includes("url.pathname === '/sw.js'"), 'fetch 事件没有跳过 /sw.js');
+  assert(core.length >= 10 && core.length < full.length, `首屏清单 ${core.length} 项不合理`);
+  // Pyodide 运行时不能进包（13MB 起），否则「安装」会变成几分钟；
+  // 但 pyodide-loader.js（几 KB 的加载器）要进，否则离线打开 Python 工具连报错都报不出来
+  assert(!full.some((u) => /pyodide-(runtime|wasm)|pyodide\.js|\.whl$/i.test(u)), '离线包不应包含 Pyodide 运行时');
+  assert(full.some((u) => /pyodide-loader\.js$/.test(u)), '离线包缺 pyodide-loader.js（离线时 Python 工具会静默失败）');
+  assert(!bad.length, '清单缺失: ' + bad.slice(0, 6).join(', '));
+  return `${full.length} 个地址 / 首屏 ${core.length} 项`;
+});
+
+check('PWA 可安装（E1）', () => {
+  const mf = JSON.parse(readFileSync(join(root, 'site.webmanifest'), 'utf8'));
+  const sizes = mf.icons.map((i) => i.sizes);
+  const bad = [];
+  if (!sizes.includes('192x192')) bad.push('缺 192 图标');
+  if (!sizes.includes('512x512')) bad.push('缺 512 图标');
+  if (!mf.icons.some((i) => i.purpose === 'maskable')) bad.push('缺 maskable 图标');
+  for (const i of mf.icons.filter((x) => x.src.startsWith('/'))) {
+    if (!existsSync(join(root, i.src.replace(/^\//, '')))) bad.push(`图标文件不存在 ${i.src}`);
+  }
+  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  if (!/beforeinstallprompt/.test(app)) bad.push('app.js 未捕获 beforeinstallprompt');
+  if (!/__OFFLINE_META__/.test(readFileSync(join(root, 'offline', 'index.html'), 'utf8'))) bad.push('/offline/ 页缺离线统计注入');
+  assert(!bad.length, bad.join('; '));
+  return `${mf.icons.length} 个图标 + 安装入口`;
+});
+
+check('加密分享实现（E2）', () => {
+  const src = readFileSync(join(root, 'assets', 'lib', 'secure-share.js'), 'utf8');
+  const bad = [];
+  if (!/AES-GCM/.test(src)) bad.push('未使用 AES-GCM');
+  if (!/256/.test(src)) bad.push('密钥长度不是 256');
+  if (!/PBKDF2/.test(src)) bad.push('口令派生未用 PBKDF2');
+  if (!/ENC_PREFIX = '#enc='/.test(src)) bad.push('片段前缀不是 #enc=（片段不随请求发送，是这套方案的前提）');
+  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  if (!/applyEncryptedShare/.test(app)) bad.push('app.js 未接入收链接自动解密');
+  if (!/share-enc/.test(app)) bad.push('结果区缺加密分享入口');
+  // 明文绝不能出现在 query string 里（那会进服务器日志）
+  if (/location\.search\s*=\s*[^;]*enc=/.test(app)) bad.push('密文被写进了 query string');
+  assert(!bad.length, bad.join('; '));
+  return 'AES-GCM 256 + PBKDF2 + # 片段';
+});
+
+check('批量处理与 ZIP（E3）', () => {
+  const zip = readFileSync(join(root, 'assets', 'lib', 'zip.js'), 'utf8');
+  const batch = readFileSync(join(root, 'assets', 'batch.js'), 'utf8');
+  const bad = [];
+  // 本地文件头 + 中央目录结束记录：两个签名都在，才说明真的产出了可解压的 zip
+  if (!zip.includes('04034b50')) bad.push('缺本地文件头签名');
+  if (!zip.includes('06054b50')) bad.push('缺中央目录结束签名');
+  if (!zip.includes('\\u0800') && !zip.includes('0x0800')) bad.push('缺 UTF-8 文件名标记（中文文件名会乱码）');
+  if (!/export (async )?function zipBlob/.test(zip)) bad.push('未导出 zipBlob');
+  // 三处复用同一份实现，不允许再出现第二份手写 zip
+  for (const f of ['assets/batch.js', 'assets/toolbuilder.js', 'assets/app.js']) {
+    if (!/lib\/zip\.js/.test(readFileSync(join(root, f), 'utf8'))) bad.push(`${f} 未复用 lib/zip.js`);
+  }
+  if (!/export (async )?function mountBatch/.test(batch)) bad.push('batch.js 未导出 mountBatch');
+  assert(!bad.length, bad.join('; '));
+  return 'STORE + CRC32 单一实现';
+});
+
+checkAsync('意图解析规则（E4）', async () => {
+  const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
+  const cases = [
+    ['把这张图压到 200KB', 'image-compress', { quality: 60 }],
+    ['帮我算下月薪 20000 的个税', 'tax-calc', { salary: 20000 }],
+    ['把 jpg 转成 webp', 'image-convert', {}],
+    ['缩到 800px', 'image-resize', { max: '1200' }],
+    ['生成一个二维码', 'qrcode', {}],
+    ['合并两个 pdf', 'pdf-merge', {}],
+  ];
+  const ids = new Set(all.map((t) => t.id));
+  const bad = [];
+  for (const [q, id, params] of cases) {
+    const r = mod.parseIntent(q);
+    if (!r) { bad.push(`「${q}」无命中`); continue; }
+    if (r.id !== id) bad.push(`「${q}」→ ${r.id}，期望 ${id}`);
+    if (!ids.has(r.id)) bad.push(`规则指向不存在的工具 ${r.id}`);
+    for (const [k, v] of Object.entries(params)) {
+      if (r.params[k] !== v) bad.push(`「${q}」参数 ${k}=${r.params[k]}，期望 ${v}`);
+    }
+  }
+  // 参数键必须真实存在于工具的 inputs，否则 applyValues 会静默丢弃——
+  // 用户会看到「跳对了工具，但参数一个也没填」。tools.json 是精简注册表、不带 inputs，
+  // 所以直接在 run.js 源码里找字段声明（零依赖，不需要解析 JS）。
+  for (const [q] of cases) {
+    const r = mod.parseIntent(q);
+    let src;
+    try {
+      src = readFileSync(join(root, 'tools', r.id, 'run.js'), 'utf8');
+    } catch {
+      bad.push(`${r.id} 没有 run.js，不能作为意图目标`);
+      continue;
+    }
+    for (const [k, v] of Object.entries(r.params || {})) {
+      const declared = new RegExp(`name:\\s*['"]${k}['"]`).test(src);
+      if (!declared) {
+        bad.push(`「${q}」参数键 ${k} 不是 ${r.id} 的字段`);
+        continue;
+      }
+      // select 的取值必须在选项中，否则填进去等于没填
+      if (typeof v === 'string' && !new RegExp(`value:\\s*['"]${v}['"]`).test(src)) {
+        bad.push(`「${q}」参数 ${k}=${v} 不在 ${r.id} 的选项中`);
+      }
+    }
+  }
+  // 站内没有汇率工具，这类句子不该硬凑一个答案
+  assert(mod.parseIntent('100 美元是多少人民币') === null, '不该为站内不存在的汇率能力给出结果');
+  assert(!bad.length, bad.join('; '));
+  return `${cases.length} 条用例 + 参数合法性`;
 });
 
 // ---------- 异步检查 ----------
