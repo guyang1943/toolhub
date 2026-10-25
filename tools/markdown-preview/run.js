@@ -13,8 +13,33 @@ export const manifest = {
   ],
 };
 
+// marked(35KB) + DOMPurify(21KB) 只在这个工具里用，按需加载
+let libsReady = null;
+function loadScript(src) {
+  return new Promise((ok, err) => {
+    const sc = document.createElement('script');
+    sc.src = src;
+    sc.onload = ok;
+    sc.onerror = () => err(new Error('渲染库加载失败：' + src));
+    document.head.appendChild(sc);
+  });
+}
+function ensureLibs() {
+  if (window.marked && window.DOMPurify) return Promise.resolve();
+  if (!libsReady) {
+    libsReady = (async () => {
+      if (!window.marked) await loadScript('/assets/vendor/marked.min.js');
+      if (!window.DOMPurify) await loadScript('/assets/vendor/purify.min.js');
+    })().catch((e) => {
+      libsReady = null;
+      throw e;
+    });
+  }
+  return libsReady;
+}
+
 export async function run({ md }) {
-  if (!window.marked) throw new Error('渲染库未加载，请刷新页面重试');
+  await ensureLibs();
   const raw = window.marked.parse(md);
   const clean = window.DOMPurify ? window.DOMPurify.sanitize(raw) : raw;
   return {

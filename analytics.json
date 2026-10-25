@@ -1,5 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
+  "provider": "none",
   "token": "",
-  "note": "填入 Cloudflare Web Analytics 的 token 即自动启用访问统计（免费、无 cookie、不跨站跟踪）。留空则完全不加载任何统计脚本。获取方式：Cloudflare 后台 → Web Analytics → Add a site → 填入站点域名 → 复制 beacon token。"
+  "domain": "",
+  "scriptUrl": "",
+  "honorDNT": true,
+  "note": "provider 可选 none / cloudflare / plausible / umami。none 时页面完全不加载任何统计脚本（零第三方请求）。cloudflare 需填 token；plausible 需填 domain；umami 需填 scriptUrl 与 token（website id）。honorDNT 为 true 时，浏览器发出 Do Not Track 就不加载。启用第三方统计前，需要在 assets/lib/security-headers.js 的 CSP 里放行对应域名，node scripts/verify.mjs 会检查这一步，漏了会直接报错。"
 }

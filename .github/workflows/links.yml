@@ -1,0 +1,51 @@
+name: 链接巡检
+
+# 每周一早上跑一遍全部外链（目录工具 + 资源合集），有死链自动开 issue。
+# 也可以手动触发：Actions → 链接巡检 → Run workflow
+on:
+  schedule:
+    - cron: '17 1 * * 1' # 每周一 09:17（北京时间），避开整点排队
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 拨测全部外链
+        # --fail-on-dead 在这里不打开：先出报告，再由下一步决定是否开 issue
+        run: node scripts/health-check.mjs --timeout 12000 --json health-report.json --report health-report.md
+
+      - name: 上传报告
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-report
+          path: health-report.*
+          retention-days: 30
+
+      - name: 有死链则开 issue（同一标题只保留一个）
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEAD=$(node -e "const r=require('./health-report.json');console.log(r.dead.length)")
+          echo "死链数：$DEAD"
+          if [ "$DEAD" = "0" ]; then
+            echo "✅ 无死链，跳过"
+            exit 0
+          fi
+          TITLE="🔗 链接巡检：$DEAD 个外链异常"
+          BODY=$(cat health-report.md)
+          EXIST=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXIST" ]; then
+            gh issue comment "$EXIST" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi

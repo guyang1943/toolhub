@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "note": "首屏预算（gzip 后字节）。index.html 从 11KB 涨到 19KB 是刻意的：首页内容改为构建期静态化，换来 CLS≈0 与可被抓取的首页文案。改大数字之前先想想能不能拆包。",
+  "budgets": {
+    "document": 16000,
+    "styles": 12000,
+    "scripts": 40000,
+    "bootData": 55000,
+    "total": 110000,
+    "requests": 10
+  },
+  "bootData": [
+    "i18n.json",
+    "tools/tools.json",
+    "tools/directory.json",
+    "resources.json",
+    "topics.json",
+    "evaluations.json"
+  ],
+  "rules": {
+    "forbiddenFirstScreen": [
+      "assets/vendor/"
+    ],
+    "why": "第三方库（qrcode / marked / DOMPurify / Pyodide loader）只在对应工具运行时按需注入，不参与首屏。"
+  }
+}

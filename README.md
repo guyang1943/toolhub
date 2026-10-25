@@ -1,4 +1,4 @@
-# ToolHub — 开源项目工具化平台（v2.8）
+# ToolHub — 开源项目工具化平台（v2.9）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
@@ -337,8 +337,24 @@ npx wrangler deploy --config wrangler.toml
 
 | 套件 | 命令 | 覆盖 | 数量 |
 |---|---|---|---|
-| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、meta 一致性、清单闸门、注册表同步、接入闭环、部署安全、无障碍 | 34 |
+| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、meta 一致性、清单闸门、注册表同步、接入闭环、安全头/CSP、性能预算、隐私页 | 39 |
 | SPA 渲染 | `node scripts/spa-render-test.mjs` | DOM 桩下的路由、搜索、表单联动、端到端 | 39 |
 | 工具功能 | `node scripts/new-tools-test.mjs` | 个税/房贷数学、单位精度、真实 PDF、真实 QR、图片转码、EXIF 解析与无损剥离 | 116 |
 | 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 + 内容抽查 | 73 |
-| 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题、新工具端到端、提交页生成器 | 74 |
+| 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题、新工具端到端、提交页生成器、安全头/CLS/LCP/CSP 违规 | 85 |
+| 性能预算 | `node scripts/perf-budget.mjs` | 首屏 gzip 体积、请求数、禁止第三方库回流首屏 | 6 项预算 |
+
+## v2.9：质量与运维——把「上线之后」也纳入版本纪律（2026-10-25）
+
+前面八个版本一直在加功能、加内容、加规范，这一版补的是另一半：**怎么知道线上没坏**。
+
+- **一条 CI 链路管到底**：`.github/workflows/ci.yml` 依次跑 清单漂移 → 清单闸门 → 构建 → 校验 → SPA → 功能 → 性能预算 → 冒烟 → 真浏览器 E2E。PR 不绿不合，main 自动部署。
+- **本地也能测 CSP**：新增 `scripts/serve.mjs`，按线上规则发安全响应头，和 Worker **共用同一份** `assets/lib/security-headers.js`。此前的本地静态服务器不带任何头，「本地没问题、线上被 CSP 拦掉」这类问题根本测不出来。
+- **安全头从 `_headers` 搬到 `_worker.js`**：`_headers` 只能按路径匹配，给不了「工具页允许被嵌入、其他页只允许同源」这种规则。顺带修掉一个躺了三版的矛盾——`X-Frame-Options: SAMEORIGIN` 让「复制嵌入代码」给出的 iframe 从来没生效过。
+- **性能从体感变成闸门**：`perf-budget.json` 卡首屏 gzip 与请求数；真浏览器里断言 LCP/CLS/CSP 违规数。查出两个真问题：
+  - 首屏一直加载着二维码、marked、DOMPurify、Pyodide loader 四个库（约 90KB 原始体积），而只有 3 个工具用得到 → 改为工具内按需加载；
+  - 首页的统计条、路线卡、推荐位、筛选栏全靠 JS 在首帧后插入，把下面的内容整体下推，**CLS 0.249** → 改为构建期静态化，**CLS 0.000**。
+- **统计可配置可退出**：`analytics.json` 支持 none / cloudflare / plausible / umami，默认 none（零第三方请求），尊重 DNT，`/privacy/` 页可一键退出。校验会检查「开了统计但 CSP 没放行」这种静默失败。
+- **巡检有节奏**：`health-check.mjs` 输出 JSON + Markdown，每周一自动跑，有死链开 issue。
+
+**验收**：校验 39 / SPA 39 / 功能 116 / 冒烟 73 + 内容抽查 / 浏览器 85，全绿；LCP 600ms、CLS 0.000、零 CSP 违规、零第三方请求。

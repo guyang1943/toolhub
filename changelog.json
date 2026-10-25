@@ -2,6 +2,24 @@
   "entries": [
     {
       "date": "2026-10-25",
+      "version": "v2.9",
+      "title": "质量与运维：把「上线之后」也纳入版本纪律",
+      "items": [
+        "CI 流水线：GitHub Actions 串起 清单闸门 → 构建 → 校验 → SPA → 功能 → 性能预算 → 冒烟 → 真浏览器 E2E，PR 不绿不合；main 分支自动部署",
+        "本地服务器 scripts/serve.mjs：按线上规则返回安全响应头，本地也能测 CSP——「本地能跑、线上被拦」这一类问题不再靠猜",
+        "安全头改由 _worker.js 统一注入：CSP 放行 wasm-unsafe-eval（Pyodide）与 blob:（文件下载），HSTS + nosniff + Permissions-Policy 全站生效",
+        "顺带修掉一个长期矛盾：X-Frame-Options 一直把所有页面锁死，「复制嵌入代码」给出的 iframe 从来没生效过；改用按路径计算的 CSP frame-ancestors，工具页恢复可嵌入",
+        "性能预算 scripts/perf-budget.mjs：首屏 gzip 体积与请求数写进 perf-budget.json，超了就构建失败；第三方库（二维码 / Markdown / Pyodide loader）改为工具内按需加载，首屏少 90KB 原始体积",
+        "首页静态化：hero 统计、路线卡、高频推荐、资源精选、分类芯片、筛选栏改由构建期写入 index.html，CLS 从 0.249 降到 0.000，首页文案同时可被爬虫读到",
+        "真浏览器里量 LCP / CLS / CSP 违规：LCP 600ms、CLS 0.000、零违规、零第三方请求，四个指标都进了断言，改坏了会直接失败",
+        "统计配置升级为多后端（none / cloudflare / plausible / umami），默认 none 即零第三方请求；尊重 Do Not Track；新增 /privacy/ 页写明数据流向与本机退出开关",
+        "校验会把统计配置与 CSP 对齐检查一遍：开了统计却忘了放行域名，会直接报错，而不是「看着有数据其实一条没有」",
+        "链接巡检升级：health-check.mjs 支持 --json / --report / --fail-on-dead，配每周定时任务，有死链自动开 issue",
+        "测试：校验 39 项 / SPA 39 项 / 功能 116 项 / 冒烟 73 项 + 内容抽查 / 浏览器 85 项，五套全绿"
+      ]
+    },
+    {
+      "date": "2026-10-25",
       "version": "v2.8",
       "title": "平台化：让第三方能往站里加工具，而且加不坏",
       "items": [

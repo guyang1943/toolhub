@@ -1,0 +1,22 @@
+{
+  "name": "toolhub",
+  "version": "3.0.0",
+  "private": true,
+  "description": "ToolHub · 把开源工具变成打开即用的在线工具（零依赖静态站）",
+  "scripts": {
+    "build": "node scripts/build-pages.mjs",
+    "lint": "node scripts/lint-tools.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test:spa": "node scripts/spa-render-test.mjs",
+    "test:func": "node scripts/new-tools-test.mjs",
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "test:browser": "node scripts/browser-test.mjs",
+    "serve": "node scripts/serve.mjs",
+    "perf": "node scripts/perf-budget.mjs",
+    "health": "node scripts/health-check.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "//": "没有 \"type\": \"module\" 是刻意的：assets/vendor 下的库是 UMD/传统脚本，Node 侧靠 22+ 的语法检测识别 ESM，两者互不干扰。"
+}

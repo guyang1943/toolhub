@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // 真浏览器端到端测试：驱动本机 Edge/Chrome 无头实例（CDP），
 // 验证真实 DOM 交互、控制台错误、资源 4xx、文件上传链路。
-// 用法：node scripts/browser-test.mjs [http://127.0.0.1:8766]
+// 用法：node scripts/serve.mjs & node scripts/browser-test.mjs [http://127.0.0.1:8788]
+// CI 可用 BROWSER_PATH 指定 Chromium 路径
 import { spawn, execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -12,17 +13,24 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // 工具总数从数据推导，新增工具时不必再改测试
 const LOCAL_TOOLS = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools.length;
 const TOTAL_TOOLS = LOCAL_TOOLS + JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools.length;
-const BASE = (process.argv[2] || 'http://127.0.0.1:8766').replace(/\/$/, '');
+const BASE = (process.argv[2] || process.env.BASE_URL || 'http://127.0.0.1:8788').replace(/\/$/, '');
 const PORT = 9333 + Math.floor(Math.random() * 200);
 const PROFILE = join(tmpdir(), 'toolhub-btest-' + Date.now());
 const SHOTS = join(root, '.tmp-shots');
 
 const CANDIDATES = [
+  process.env.BROWSER_PATH, // CI 里由 setup-chrome 之类注入
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
-];
+  // Linux（GitHub Actions / 容器）
+  '/usr/bin/google-chrome',
+  '/usr/bin/google-chrome-stable',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+  '/snap/bin/chromium',
+].filter(Boolean);
 const exe = CANDIDATES.find((p) => existsSync(p));
 if (!exe) {
   console.error('❌ 未找到 Edge / Chrome，跳过浏览器测试');
@@ -90,6 +98,8 @@ const browser = spawn(exe, [
   '--no-default-browser-check',
   '--disable-gpu',
   '--disable-extensions',
+  // 容器/CI 里没有 user namespace，沙箱起不来（仅测试进程，不加载不可信内容之外的页面）
+  ...(process.platform === 'linux' ? ['--no-sandbox', '--disable-dev-shm-usage'] : []),
   '--hide-scrollbars',
   '--window-size=1440,1000',
   'about:blank',
@@ -98,6 +108,8 @@ const browser = spawn(exe, [
 let cdp = null;
 let pageErrors = [];
 let netFails = [];
+let cspViolations = [];
+let netUrls = [];
 
 function cleanup() {
   try { browser.kill('SIGKILL'); } catch {}
@@ -122,6 +134,7 @@ async function evaluate(expression) {
 async function goto(pathname) {
   pageErrors = [];
   netFails = [];
+  netUrls = [];
   await cdp.send('Page.navigate', { url: BASE + pathname });
   await sleep(300);
   // 等 SPA 首屏渲染（最多 6s）
@@ -219,7 +232,16 @@ async function feedFile(selector, dataUrl, name, type) {
   await cdp.send('Runtime.enable');
   await cdp.send('Network.enable');
 
+  await cdp.send('Log.enable');
   cdp.on((msg) => {
+    // CSP 违规在控制台表现为 security 级别日志（"Refused to ..."），单独收集
+    if (msg.method === 'Log.entryAdded') {
+      const e = msg.params.entry;
+      if (e.source === 'security' || /Content Security Policy|Refused to/i.test(e.text || '')) {
+        cspViolations.push(e.text);
+      }
+    }
+    if (msg.method === 'Network.requestWillBeSent') netUrls.push(msg.params.request.url);
     if (msg.method === 'Runtime.consoleAPICalled' && msg.params.type === 'error') {
       pageErrors.push(msg.params.args.map((a) => a.value ?? a.description ?? a.type).join(' '));
     }
@@ -233,6 +255,23 @@ async function feedFile(selector, dataUrl, name, type) {
         netFails.push(`${status} ${url.replace(BASE, '')}`);
       }
     }
+  });
+
+  // 性能观测必须在页面脚本之前注册，否则 LCP/CLS 的早期数据就丢了
+  await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+    source: `window.__perf = { lcp: 0, cls: 0, shifts: [] };
+      try {
+        new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__perf.lcp = Math.max(window.__perf.lcp, e.startTime); })
+          .observe({ type: 'largest-contentful-paint', buffered: true });
+        new PerformanceObserver((l) => {
+          for (const e of l.getEntries()) {
+            if (e.hadRecentInput) continue;
+            window.__perf.cls += e.value;
+            window.__perf.shifts.push({ v: +e.value.toFixed(4), t: Math.round(e.startTime),
+              src: (e.sources || []).map((s) => s.node ? (s.node.tagName + (s.node.id ? '#' + s.node.id : '') + (typeof s.node.className === 'string' ? '.' + s.node.className.split(' ')[0] : '')) : '?') });
+          }
+        }).observe({ type: 'layout-shift', buffered: true });
+      } catch (e) {}`,
   });
 
   // ---- 1. 首页 ----
@@ -667,6 +706,43 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('深色主题完整生效', lum > 0 && /^rgb\(1[0-9],/.test(String(darkBg)), String(darkBg));
   await shot('05-dark');
   await evaluate(`localStorage.setItem('toolhub:theme', 'light')`);
+
+  // ---- 14. 安全头、CSP、性能与统计（v2.9 D）----
+  await goto('/');
+  const hdr = await evaluate(`(async () => {
+    const r = await fetch('/', { cache: 'no-store' });
+    const o = {};
+    for (const k of ['content-security-policy','strict-transport-security','x-content-type-options','referrer-policy','permissions-policy']) o[k] = r.headers.get(k) || '';
+    return o;
+  })()`);
+  check('首页返回 CSP', /wasm-unsafe-eval/.test(hdr['content-security-policy']) && /blob:/.test(hdr['content-security-policy']), hdr['content-security-policy'].slice(0, 60) + '…');
+  check('首页 frame-ancestors 限同源', /frame-ancestors 'self'/.test(hdr['content-security-policy']));
+  check('HSTS 与 nosniff 已下发', /max-age=31536000/.test(hdr['strict-transport-security']) && hdr['x-content-type-options'] === 'nosniff');
+  check('未发送 X-Frame-Options（避免锁死嵌入）', !('x-frame-options' in hdr));
+
+  const toolHdr = await evaluate(`(async () => {
+    const r = await fetch('/tools/json-format/', { cache: 'no-store' });
+    return r.headers.get('content-security-policy') || '';
+  })()`);
+  check('工具页允许被嵌入', /frame-ancestors \*/.test(toolHdr), toolHdr.split(';').pop().trim());
+
+  const perf = await evaluate(`window.__perf || { lcp: 0, cls: 0 }`);
+  check('LCP 在预算内', perf.lcp > 0 && perf.lcp < 2500, Math.round(perf.lcp) + 'ms');
+  check('CLS 在预算内', perf.cls < 0.1, perf.cls.toFixed(3) + (perf.shifts && perf.shifts.length ? ' ← ' + JSON.stringify(perf.shifts.slice(0, 3)) : ''));
+  check('无 CSP 违规', cspViolations.length === 0, cspViolations[0] || '干净');
+
+  const thirdParty = netUrls.filter((u) => !u.startsWith(BASE) && !u.startsWith('data:') && !u.startsWith('blob:'));
+  check('默认零第三方请求（统计关闭）', thirdParty.length === 0 && !(await evaluate(`window.__TOOLHUB_ANALYTICS__`)), thirdParty.slice(0, 2).join(', '));
+
+  await goto('/privacy/');
+  const pvText = await evaluate(`document.body.textContent`);
+  check('隐私页说明数据流向', pvText.includes('不会离开这台设备') && pvText.includes('AES-GCM'));
+  const toggled = await evaluate(`(() => {
+    document.getElementById('analytics-optout').click();
+    return localStorage.getItem('toolhub:no-analytics');
+  })()`);
+  check('可在本机关闭统计', toggled === '1', 'localStorage=' + toggled);
+  await evaluate(`localStorage.removeItem('toolhub:no-analytics')`);
 
   // ---- 汇总 ----
   const bad = results.filter((r) => !r.ok);

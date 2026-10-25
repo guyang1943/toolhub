@@ -2,7 +2,7 @@
 // 全量校验：数据完整性 / 覆盖率 / 静态页 / sitemap / 资源 / 可疑内容
 // 用法：node scripts/verify.mjs   （失败时退出码 1，可直接接 CI）
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
@@ -23,6 +23,11 @@ function check(name, fn) {
 const assert = (cond, msg) => {
   if (!cond) throw new Error(msg);
 };
+// 少量检查需要动态 import（安全头是 ESM 纯函数模块），统一收集后在打印前顺序执行
+const pending = [];
+function checkAsync(name, fn) {
+  pending.push({ name, fn });
+}
 
 // ---------- 1. 数据文件 ----------
 const local = read('tools/tools.json');
@@ -266,7 +271,9 @@ check('公开文案计数与数据一致', () => {
 // ---------- 4. 资源与可疑内容 ----------
 check('关键资源存在', () => {
   const files = [
-    'index.html', '404.html', 'robots.txt', 'sitemap.xml', 'site.webmanifest', 'sw.js', '_headers',
+    'index.html', '404.html', 'robots.txt', 'sitemap.xml', 'site.webmanifest', 'sw.js',
+    'package.json', 'analytics.json', 'perf-budget.json',
+    '_worker.js/index.js', 'assets/lib/security-headers.js',
     'assets/app.js', 'assets/style.css', 'assets/pyodide-runtime.js', 'assets/og.png',
     'assets/icon-512.png', 'assets/icon-180.png', 'i18n.json', 'i18n-detail.json',
   ];
@@ -471,6 +478,101 @@ check('接入闭环（v2.8 C3）', () => {
   assert(!bad.length, bad.join('; '));
   return '契约文档 + 脚手架 + 生成器 + 规范文件齐备';
 });
+
+// ---------- 7. 运维与合规（v2.9 D） ----------
+check('安全头定义一致（D5）', () => {
+  const secPath = join(root, 'assets', 'lib', 'security-headers.js');
+  assert(existsSync(secPath), '缺 assets/lib/security-headers.js');
+  const workerPath = join(root, '_worker.js', 'index.js');
+  assert(existsSync(workerPath), '缺 _worker.js/index.js（安全头靠它注入）');
+  const worker = readFileSync(workerPath, 'utf8');
+  assert(/securityHeaders/.test(worker), 'Worker 没有复用共享的安全头定义');
+  // 本地服务器必须用同一份，否则「本地能跑、线上被 CSP 拦」
+  const serve = readFileSync(join(root, 'scripts', 'serve.mjs'), 'utf8');
+  assert(/assets\/lib\/security-headers\.js/.test(serve), '本地服务器没有复用共享的安全头定义');
+  // _headers 无法按查询串区分，会与工具页的嵌入需求冲突，故已移除
+  assert(!existsSync(join(root, '_headers')), '_headers 仍存在，会与 Worker 的 CSP 叠加（frame-ancestors 取交集后嵌入失效）');
+  return 'Worker + 本地服务器共用一份定义';
+});
+
+checkAsync('CSP 与嵌入规则（D5）', async () => {
+  // 静态读一份即可：模块是纯函数，不依赖 DOM
+  const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'security-headers.js')).href);
+  const cspOf = (p) => mod.securityHeaders(p)['Content-Security-Policy'] || '';
+  const home = cspOf('/');
+  const tool = cspOf('/tools/json-format/');
+  const issues = [];
+  for (const token of ["'wasm-unsafe-eval'", 'blob:', "'self'", 'object-src', 'frame-ancestors']) {
+    if (!home.includes(token)) issues.push(`首页 CSP 缺 ${token}`);
+  }
+  if (!/frame-ancestors 'self'/.test(home)) issues.push("首页 frame-ancestors 应为 'self'");
+  // 工具页要能被第三方嵌入（?embed=1 的嵌入代码才有意义）
+  if (!/frame-ancestors \*/.test(tool)) issues.push('工具页 frame-ancestors 应为 *，否则复制出去的嵌入代码被浏览器拦掉');
+  // X-Frame-Options 无法按路径变化，会把工具页一起锁死
+  const all = Object.keys(mod.securityHeaders('/'));
+  if (all.includes('X-Frame-Options')) issues.push('不应再发 X-Frame-Options，改用 CSP frame-ancestors');
+  if (!all.includes('Strict-Transport-Security')) issues.push('缺 HSTS');
+  assert(!issues.length, issues.join('; '));
+  return 'CSP 放行 wasm/blob，工具页可嵌入，其余同源';
+});
+
+checkAsync('统计配置与 CSP 对齐（D3）', async () => {
+  const cfg = read('analytics.json');
+  const allowed = ['none', 'cloudflare', 'plausible', 'umami'];
+  assert(allowed.includes(cfg.provider), `provider=${cfg.provider} 不在 ${allowed.join('/')} 内`);
+  assert(typeof cfg.honorDNT === 'boolean', 'honorDNT 必须是布尔值');
+  if (cfg.provider === 'none') {
+    // 默认状态下必须零第三方脚本：CSP 里也不需要任何统计域名
+    const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+    assert(/provider === 'none'/.test(app) || /!provider \|\| provider === 'none'/.test(app), 'app.js 没有处理 provider=none 的分支');
+    return '默认关闭（零第三方请求）';
+  }
+  // 开启时：CSP 必须放行对应域名，否则脚本会被静默拦掉（用户以为有数据，其实一条都没有）
+  const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'security-headers.js')).href);
+  const csp = mod.securityHeaders('/')['Content-Security-Policy'];
+  const need = {
+    cloudflare: 'static.cloudflareinsights.com',
+    plausible: cfg.scriptUrl ? new URL(cfg.scriptUrl).host : 'plausible.io',
+    umami: cfg.scriptUrl ? new URL(cfg.scriptUrl).host : '',
+  }[cfg.provider];
+  assert(need, `${cfg.provider} 需要填写 scriptUrl`);
+  assert(csp.includes(need), `CSP 未放行 ${need}，统计脚本会被拦掉`);
+  return `${cfg.provider} 已放行 ${need}`;
+});
+
+check('首屏性能预算（D4）', () => {
+  const html = readFileSync(join(root, 'index.html'), 'utf8');
+  const srcs = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1]);
+  const vendor = srcs.filter((s) => s.includes('/assets/vendor/'));
+  assert(!vendor.length, `首屏又引入了第三方库：${vendor.join(', ')}（应在工具内按需加载）`);
+  assert(existsSync(join(root, 'perf-budget.json')), '缺 perf-budget.json');
+  assert(existsSync(join(root, 'scripts', 'perf-budget.mjs')), '缺 scripts/perf-budget.mjs');
+  return `${srcs.length} 个首屏脚本，无第三方库`;
+});
+
+check('隐私说明与统计口径（D3）', () => {
+  const page = join(root, 'privacy', 'index.html');
+  assert(existsSync(page), '缺 /privacy/ 静态页（构建后再校验）');
+  const body = readFileSync(page, 'utf8');
+  assert(/不上传/.test(body), '隐私页没有说明数据不上传');
+  assert(/analytics-optout|统计/.test(body), '隐私页没有提到统计与关闭方式');
+  const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
+  assert(/\/privacy\/<\/loc>/.test(sm), 'sitemap 缺 /privacy/');
+  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(/ANALYTICS_OPT_OUT/.test(app), 'app.js 缺本机退出统计的实现');
+  return '隐私页 + sitemap + 退出开关';
+});
+
+// ---------- 异步检查 ----------
+for (const p of pending) {
+  try {
+    const detail = await p.fn();
+    results.push({ ok: true, name: p.name, detail });
+  } catch (e) {
+    failed++;
+    results.push({ ok: false, name: p.name, detail: e.message });
+  }
+}
 
 // ---------- 输出 ----------
 console.log('\n🔍 ToolHub 全量校验\n');

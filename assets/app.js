@@ -108,19 +108,55 @@ if (LANG === 'en') {
 }
 
 /* ---------- 主题 ---------- */
-/* ---------- Cloudflare Web Analytics ---------- */
-// 统计开关：编辑根目录 analytics.json 填入 token 即启用；留空则零统计脚本
-async function initAnalytics() {
+/* ---------- 访问统计（v2.9 D3：多后端 + 可退出） ---------- */
+// 默认 provider=none，页面零第三方请求。开启后也只加载一个脚本，无 cookie、不跨站跟踪。
+const ANALYTICS_OPT_OUT = 'toolhub:no-analytics';
+
+function analyticsOptedOut() {
   try {
-    const cfg = await (await fetch('/analytics.json')).json();
-    if (!cfg || !cfg.token) return;
+    return localStorage.getItem(ANALYTICS_OPT_OUT) === '1';
+  } catch {
+    return false;
+  }
+}
+
+async function initAnalytics() {
+  // 断网 / 用户主动退出 / DNT：三种情况都直接返回，连配置都不读了
+  if (navigator.onLine === false || analyticsOptedOut()) return;
+  let cfg;
+  try {
+    cfg = await (await fetch('/analytics.json', { cache: 'no-store' })).json();
+  } catch {
+    return; // 配置缺失时静默跳过，不影响站点功能
+  }
+  const provider = cfg && cfg.provider;
+  if (!provider || provider === 'none') return;
+  if (cfg.honorDNT !== false && (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.msDoNotTrack === '1')) return;
+
+  const add = (src, attrs = {}) => {
     const s = document.createElement('script');
     s.defer = true;
-    s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-    s.setAttribute('data-cf-beacon', JSON.stringify({ token: cfg.token }));
+    s.src = src;
+    s.setAttribute('data-toolhub-analytics', provider);
+    for (const [k, v] of Object.entries(attrs)) s.setAttribute(k, v);
     document.head.appendChild(s);
+  };
+
+  try {
+    if (provider === 'cloudflare' && cfg.token) {
+      add('https://static.cloudflareinsights.com/beacon.min.js', {
+        'data-cf-beacon': JSON.stringify({ token: cfg.token }),
+      });
+    } else if (provider === 'plausible' && cfg.domain) {
+      add(cfg.scriptUrl || 'https://plausible.io/js/script.js', { 'data-domain': cfg.domain });
+    } else if (provider === 'umami' && cfg.scriptUrl && cfg.token) {
+      add(cfg.scriptUrl, { 'data-website-id': cfg.token });
+    } else {
+      return; // 配置不完整：宁可不统计，也不要发出半残请求
+    }
+    window.__TOOLHUB_ANALYTICS__ = provider;
   } catch {
-    /* 配置缺失时静默跳过，不影响站点功能 */
+    /* 统计失败绝不能影响工具本身 */
   }
 }
 
@@ -2087,11 +2123,60 @@ const PAGES = {
       <ul>
         <li>平台<b>没有后端数据库</b>，不收集你的输入内容</li>
         <li>「最近使用」「我的收藏」「本机使用次数」都只保存在你浏览器的 localStorage 中，可随时清除</li>
-        <li>站点若启用访问量统计（Cloudflare Web Analytics），仅统计页面访问次数，不使用 Cookie、不追踪个人身份</li>
+        <li>站点若启用访问量统计，仅统计页面访问次数，不使用 Cookie、不追踪个人身份；详细口径与关闭方式见 <a href="/privacy/">隐私说明</a></li>
       </ul>
       <h2>✦ 开源与致谢</h2>
       <p>每个工具页均标注来源仓库与 License。已收录 ${REGISTRY ? REGISTRY.counts.local + REGISTRY.counts.dir : ''} 个工具，其中本地工具的开源依赖包括 qrcodejs、marked、DOMPurify、Pyodide，均以原始协议使用。</p>
     </div>`,
+  privacy: () => {
+    const off = analyticsOptedOut();
+    return `
+    <div class="page">
+      <h1>🔒 隐私说明</h1>
+      <p class="lead">一句话：<b>你的输入不会离开这台设备</b>。这个页面把「数据到底去了哪」逐条写清楚，包括我们能看到的和看不到的。</p>
+
+      <h2>✦ 三类工具，三种数据流向</h2>
+      <table class="cmp-table">
+        <tr><th>类型</th><th>数据去了哪</th><th>谁能看到</th></tr>
+        <tr><td><b>本地执行</b>（占多数）</td><td>只在你浏览器的内存里</td><td class="yes">只有你</td></tr>
+        <tr><td><b>Python 工具</b></td><td>Pyodide 在你浏览器内跑 WASM，首次下载运行时</td><td class="yes">只有你</td></tr>
+        <tr><td><b>第三方官网</b>（目录工具）</td><td>点「打开官网」后进入对方站点，适用对方的隐私政策</td><td class="no">对方站点</td></tr>
+      </table>
+      <p>本站<b>没有后端数据库</b>，也没有上传接口——这不是承诺，是架构上就不存在：整站是静态文件，唯一的动态部分是 Cloudflare 的边缘缓存。</p>
+
+      <h2>✦ 浏览器里存了什么</h2>
+      <ul>
+        <li><code>toolhub:theme</code> — 深色/浅色偏好</li>
+        <li><code>toolhub:favs</code> — 你收藏的工具 id</li>
+        <li><code>toolhub:recent</code> — 最近打开过的工具</li>
+        <li><code>toolhub:usage</code> — 每个工具在本机用过几次（用于「最常用」排序）</li>
+        <li><code>toolhub:draft:&lt;工具id&gt;</code> — 上次填的输入，方便回头继续</li>
+        <li><code>${ANALYTICS_OPT_OUT}</code> — 你是否关闭了访问统计</li>
+        <li>Service Worker 缓存 — 离线包（可在 <a href="/offline/">离线说明</a> 里查看与清理）</li>
+      </ul>
+      <p>全部在你自己浏览器里，清除站点数据即可一次清空。换设备不会同步，我们也没有能力同步。</p>
+
+      <h2>✦ 访问统计</h2>
+      <p>本站默认<b>不加载任何统计脚本</b>。若站长启用了统计，也只会是聚合的访问量（哪个页面被打开多少次），不使用 Cookie、不采集输入内容、不跨站追踪。
+      当前状态：<b>${off ? '你已关闭统计' : '未关闭（若服务端未启用统计，也不会发出任何请求）'}</b>。</p>
+      <div class="row">
+        <button class="btn ghost" id="analytics-optout" data-off="${off ? '1' : '0'}">${off ? '恢复统计' : '在本机关闭统计'}</button>
+      </div>
+      <p class="muted-note">关闭后本机不再请求任何统计脚本；这个选择只存在本地，不会上传。浏览器开启 Do Not Track 时同样自动跳过。</p>
+
+      <h2>✦ 关于加密分享</h2>
+      <p>分享结果时可以选择加密：内容用 AES-GCM 在你的浏览器里加密后放进链接的 <code>#</code> 后面。<b>URL 片段（# 之后的部分）不会被发送到服务器</b>，所以服务器日志、CDN 访问日志里都不会出现明文。
+      如果设置了口令，拿到链接的人还需要口令才能解开。</p>
+
+      <h2>✦ 你可以自己验证</h2>
+      <ul>
+        <li>打开开发者工具的 Network 面板，随便跑一个本地工具——不会出现任何上传请求</li>
+        <li>断网后刷新页面，本地工具仍然可用（离线包缓存过之后）</li>
+        <li>源码就在仓库里，统计与安全头的定义分别在 <code>analytics.json</code> 与 <code>assets/lib/security-headers.js</code></li>
+      </ul>
+      <p><a href="/about/">← 回关于页</a></p>
+    </div>`;
+  },
   submit: () => `
     <div class="page">
       <h1>➕ 推荐一个工具</h1>
@@ -2165,7 +2250,7 @@ async function openPage(name) {
   $('#view-home').style.display = 'none';
   $('#view-tool').style.display = 'none';
   $('#view-page').style.display = '';
-  const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈' };
+  const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈', privacy: '隐私说明' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : '<div class="empty">页面不存在</div>';
 
@@ -2181,6 +2266,21 @@ async function openPage(name) {
       } catch {
         copyBtn.textContent = '复制失败，请手动选中复制';
       }
+    };
+  }
+
+  // 隐私页：本机统计开关（只写 localStorage，不上传）
+  const optOut = document.getElementById('analytics-optout');
+  if (optOut) {
+    optOut.onclick = () => {
+      const next = optOut.dataset.off !== '1';
+      try {
+        localStorage.setItem(ANALYTICS_OPT_OUT, next ? '1' : '0');
+      } catch {
+        /* 隐私模式禁写：按钮状态仍然反映本次意图 */
+      }
+      optOut.dataset.off = next ? '1' : '0';
+      optOut.textContent = next ? '恢复统计' : '在本机关闭统计';
     };
   }
 
@@ -2231,7 +2331,7 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
-  const page = p.match(/^\/(about|submit|feedback)$/);
+  const page = p.match(/^\/(about|submit|feedback|privacy)$/);
   if (page) return openPage(page[1]);
   return renderHome();
 }

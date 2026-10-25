@@ -47,11 +47,7 @@ const tpl = rawTpl
   .replace(/\d+(?= 个开源工具)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 个工具 ·)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 条资源)/g, TOTAL_RES);
-// 模板本身也回写（幂等），保证根页面直接访问时计数正确
-if (tpl !== rawTpl) {
-  writeFileSync(join(root, 'index.html'), tpl, 'utf8');
-  console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);
-}
+// 模板计数归一后暂不落盘：首页还要注入静态内容，统一在构建末尾写一次（见 6)）
 
 function fillMeta(html, { title, desc, url, botInject, jsonld }) {
   let out = html
@@ -373,6 +369,19 @@ const staticPages = [
     content:
       '<h2>为什么做这个平台</h2><p>GitHub 上有大量优秀的开源小工具，但要用起来得装环境、敲命令。ToolHub 把它们做成了打开网页就能用的形态。</p>' +
       '<h2>与普通在线工具站的区别</h2><p>普通工具站把你的数据传到它的服务器；ToolHub 的本地工具在浏览器内用 WebAssembly 执行，服务端全程不接触你的输入。</p>',
+  },
+  {
+    path: 'privacy',
+    title: '隐私说明 · 你的输入不会离开这台设备 · ToolHub',
+    desc: 'ToolHub 的数据流向逐条说明：本地工具在浏览器内执行、不上传输入、无后端数据库；浏览器里存了什么、如何清除、访问统计口径与关闭方式。',
+    h1: '隐私说明',
+    content:
+      '<h2>一句话结论</h2><p>本地工具的输入只存在于你浏览器的内存里，处理完即随页面释放；本站没有后端数据库，也没有上传接口，这不是承诺而是架构上就不存在。</p>' +
+      '<h2>三类工具，三种数据流向</h2><p>本地执行类工具（含 Pyodide 驱动的 Python 工具）全部在浏览器内完成，服务端不接触输入；目录类工具是第三方开源项目的官方在线版，点击「打开官网」后进入对方站点，适用对方的隐私政策。</p>' +
+      '<h2>浏览器里存了什么</h2><p>主题偏好、收藏、最近使用、本机使用次数、输入草稿与离线缓存，全部保存在 localStorage 与 Cache Storage 中，可随时通过清除站点数据一次清空。这些数据不会上传，也不会跨设备同步。</p>' +
+      '<h2>访问统计</h2><p>本站默认不加载任何统计脚本。若启用统计，只采集聚合访问量，不使用 Cookie、不记录输入内容、不跨站追踪；浏览器发出 Do Not Track 时自动跳过，也可在本页一键关闭。</p>' +
+      '<h2>加密分享</h2><p>分享结果时可选择加密：内容经 AES-GCM 在本地加密后放入链接的井号片段，该片段不会随请求发送到服务器，因此服务器与 CDN 日志中不会出现明文。设置口令时，拿到链接的人还需口令才能解开。</p>' +
+      '<h2>如何自行验证</h2><p>打开开发者工具的 Network 面板运行任意本地工具，不会出现上传请求；缓存过离线包后断网刷新，本地工具仍可使用。</p>',
   },
   {
     path: 'submit',
@@ -712,6 +721,125 @@ ${urls
 
 writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${BASE}/sitemap.xml\n`, 'utf8');
 
+
+// 6) 首页静态化（v3.0 E/D4）
+// 背景：首页内容一直由 JS 渲染，route-cards / featured / res-preview 在首帧后才插入，
+// 把它们下面的 trust-section 与 footer 整体下推，实测 CLS 0.249（预算 0.05）。
+// 做法：把这四块 + hero 统计 + 分类芯片 + 筛选栏在构建期直接写进 index.html。
+// 收益：首帧即最终布局（CLS≈0），首页对爬虫可见，且只有首页背这份体积（工具页仍用模板生成）。
+// 注意：这里的 HTML 必须与 assets/app.js 里对应渲染函数输出一致，否则 JS 重新渲染时又会位移一次。
+{
+  const registry = JSON.parse(readFileSync(join(root, 'tools', 'registry.json'), 'utf8'));
+  const cats = registry.categories || [];
+  const allTools = [...tools, ...dirTools];
+  const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
+
+  // --- 各区块 HTML（与 app.js 输出保持同构） ---
+  const heroStats = `
+    <div class="stat"><b>${TOTAL_TOOLS}</b><span>精选工具</span></div>
+    <div class="stat"><b>${tools.length}</b><span>本地执行</span></div>
+    <div class="stat"><b>${cats.length}</b><span>分类</span></div>
+    <div class="stat"><b>0</b><span>数据上传</span></div>
+    <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>`;
+
+  const routeCards = `
+    <a class="route-card" href="#tools-anchor" data-scroll="grid">
+      <span class="rc-icon">🧰</span>
+      <b>${TOTAL_TOOLS} 个工具</b>
+      <span>按任务或分类找工具，能本地跑的都在本地跑</span>
+      <em>浏览工具 →</em>
+    </a>
+    <a class="route-card" href="/resources/">
+      <span class="rc-icon">📚</span>
+      <b>${resources.collections.length} 个合集 · ${TOTAL_RES} 条资源</b>
+      <span>图标、字体、配色、学习路线——拿来就能用</span>
+      <em>逛资源库 →</em>
+    </a>
+    <a class="route-card" href="/compare/">
+      <span class="rc-icon">⇄</span>
+      <b>工具对比</b>
+      <span>同类工具并排看：是否上传数据、能否离线、协议与来源</span>
+      <em>开始对比 →</em>
+    </a>
+    <a class="route-card" href="/evaluations/">
+      <span class="rc-icon">🔬</span>
+      <b>${evaluations.evaluations.length} 篇评测</b>
+      <span>同类工具横向实测：隐私、速度、功能边界一次讲清</span>
+      <em>读评测 →</em>
+    </a>`;
+
+  const featuredIds = (registry.featured || []).filter((id) => allTools.some((x) => x.id === id));
+  const featuredHTML = featuredIds
+    .map((id, i) => {
+      const tool = allTools.find((x) => x.id === id);
+      const isLocal = tool.runtime !== 'link';
+      return `<div class="featured-card" data-id="${tool.id}" data-link="${isLocal ? '' : esc(tool.url)}">
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
+        <div class="f-body">
+          <div class="f-name">${esc(tool.name)}</div>
+          <div class="f-desc">${esc(tool.desc)}</div>
+          <div class="f-meta">${isLocal ? '🔒 本地运行' : '🌐 在线直达'} · ${tool.category}</div>
+        </div>
+      </div>`;
+    })
+    .join('');
+
+  const resPreview = resources.collections
+    .slice(0, 3)
+    .map(
+      (c) => `<a class="res-preview-card" href="/resources/${c.slug}/">
+        <span class="rp-icon">${c.icon || '📚'}</span>
+        <span class="rp-title">${esc(c.title)}</span>
+        <span class="rp-desc">${esc(c.desc)}</span>
+        <span class="rp-count">${c.items.length} 个来源 →</span>
+      </a>`
+    )
+    .join('');
+
+  const chips = [{ key: '全部', label: '全部' }, ...cats.map((c) => ({ key: c, label: c }))]
+    .map((c) => `<button class="chip ${c.key === '全部' ? 'active' : ''}" data-cat="${esc(c.key)}">${esc(c.label)}</button>`)
+    .join('');
+
+  const filterbar =
+    `<span class="fb-label">运行方式</span>` +
+    ['全部', '🔒 仅本机执行', '📴 断网也能用']
+      .map((x, i) => `<button type="button" class="chip ${i === 0 ? 'active' : ''}" data-rt="${['all', 'local', 'offline'][i]}">${x}</button>`)
+      .join('') +
+    `<span class="fb-sep"></span><span class="fb-label">排序</span>` +
+    ['默认', '🔥 最常用', '🆕 最近收录']
+      .map((x, i) => `<button type="button" class="chip ${i === 0 ? 'active' : ''}" data-sort="${['default', 'used', 'new'][i]}">${x}</button>`)
+      .join('') +
+    `<span class="fb-count" id="fb-count">显示 ${TOTAL_TOOLS} / ${TOTAL_TOOLS}</span>`;
+
+  // --- 注入 ---
+  let html = tpl;
+  // 先清掉上一次注入的内容，保证反复构建结果一致
+  html = html.replace(/<!--hs:[\w-]+-->[\s\S]*?<!--\/hs:[\w-]+-->/g, '');
+  // 两个默认隐藏的区块复位，避免上一次的 display:'' 残留
+  html = html.replace(/(<div class="featured-section" id="featured-section" style=")[^"]*(")/, '$1display:none$2');
+  html = html.replace(/(<div class="res-preview" id="res-preview" style=")[^"]*(")/, '$1display:none$2');
+
+  const put = (cls, id, tag, inner) => {
+    const from = `<${tag} class="${cls}" id="${id}"></${tag}>`;
+    if (!html.includes(from)) throw new Error(`首页静态化失败：找不到空容器 ${tag}#${id}`);
+    html = html.replace(from, `<${tag} class="${cls}" id="${id}"><!--hs:${id}-->${inner}<!--/hs:${id}--></${tag}>`);
+  };
+  put('hero-stats', 'hero-stats', 'div', heroStats);
+  put('route-cards', 'route-cards', 'div', routeCards);
+  put('featured-grid', 'featured-grid', 'div', featuredHTML);
+  put('res-preview-grid', 'res-preview-grid', 'div', resPreview);
+  put('chips', 'chips', 'div', chips);
+  put('filterbar', 'filterbar', 'div', filterbar);
+
+  if (featuredIds.length) html = html.replace(/(<div class="featured-section" id="featured-section" style=")[^"]*(")/, '$1$2');
+  html = html.replace(/(<div class="res-preview" id="res-preview" style=")[^"]*(")/, '$1$2');
+
+  writeFileSync(join(root, 'index.html'), html, 'utf8');
+  console.log(`   ↻ 首页静态化：${featuredIds.length} 个推荐 / ${cats.length} 个分类 / ${resources.collections.length} 个合集（CLS 由 0.25 → ~0）`);
+}
+
+if (tpl !== rawTpl) console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);
 console.log(`✅ 生成 ${count} 个静态页面、${urls.length} 条 sitemap 记录（含长尾正文与 JSON-LD）`);
 console.log(`   BASE_URL = ${BASE}`);
 console.log(`   域名绑定后请重新运行：node scripts/build-pages.mjs https://你的域名`);

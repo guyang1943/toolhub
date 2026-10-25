@@ -1,6 +1,6 @@
 # ToolHub 迭代路线图（v2.5 → v3.0）
 
-> 更新时间：2026-10-25 · 当前版本 v2.5
+> 更新时间：2026-10-25 · 当前版本 v2.9
 > 本文件是开发排期的唯一来源：新需求先落到这里，再动手。
 
 ---
@@ -150,6 +150,31 @@
 | D5 | 域名与合规 | 绑定 `sitool.eu.org`、HSTS、`_headers` 安全头（CSP、X-Content-Type-Options） | 线上 HTTPS 无告警，CSP 不破坏工具运行 |
 
 **注意**：D5 的 CSP 要放行 `wasm-unsafe-eval`（Pyodide）与 `blob:`（下载），否则会打断本地工具。
+
+> **v2.9 进度（2026-10-25）**：D1–D5 全部落地。
+>
+> **D1 CI**：`.github/workflows/ci.yml` 一条链路跑完 清单漂移 → 清单闸门 → 构建 → 校验 → SPA → 功能 →
+> 性能预算 → 冒烟 → 真浏览器；main 上用 `cloudflare/wrangler-action` 自动部署（`SITE_BASE_URL` 变量控制 canonical）。
+> 为了让 CI 能测真实响应头，新增 `scripts/serve.mjs`——按线上规则发安全头的静态服务器（与 Worker 共用同一份定义）。
+> 顺带把 browser-test 的浏览器查找改成 `BROWSER_PATH` + Linux 路径，容器里加 `--no-sandbox`。
+>
+> **D2 巡检**：`health-check.mjs` 支持 `--json` / `--report`（Markdown）/ `--fail-on-dead`，
+> `.github/workflows/links.yml` 每周一跑，有死链自动开 issue（同标题不重复开，改为评论）。
+>
+> **D3 数据**：`analytics.json` 升级为多后端（none/cloudflare/plausible/umami），默认 none = 零第三方请求；
+> 尊重 DNT、可在 `/privacy/` 一键退出。校验会把「统计配置」与「CSP 放行域名」对齐检查——
+> 开了统计却忘了放行，会直接构建失败，而不是安静地收不到数据。
+>
+> **D4 性能**：`perf-budget.json` + `perf-budget.mjs` 卡首屏 gzip 体积与请求数。
+> 最大的改动不是卡阈值，而是发现首屏一直背着 90KB 的第三方库：二维码、marked、DOMPurify、Pyodide loader
+> 只在对应工具里用，改为工具内按需加载。另一个大头是 index.html 的静态化（详见 v3.0）：
+> hero 统计 / 路线卡 / 高频推荐 / 资源精选 / 分类芯片 / 筛选栏改由构建期写入，
+> CLS 从 0.249 降到 0.000，LCP 600ms。
+>
+> **D5 合规**：`_headers` 换成 `_worker.js`（高级模式）+ `assets/lib/security-headers.js` 单一来源。
+> 原因：`_headers` 无法按查询串/精确路径给出不同 CSP，而工具页需要允许被第三方 iframe 嵌入——
+> 之前 `X-Frame-Options: SAMEORIGIN` 让「复制嵌入代码」这个功能从来没生效过。现在按路径算 `frame-ancestors`：
+> 工具页 `*`、其余 `'self'`。浏览器测试监听 `Log.entryAdded` 断言零 CSP 违规。
 
 ---
 

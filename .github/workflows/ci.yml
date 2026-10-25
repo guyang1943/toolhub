@@ -1,0 +1,86 @@
+name: CI
+
+# PR 不绿不合：这一串命令与本地手动跑的是同一套（没有 npm install，零依赖）
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: 五套测试 + 性能预算
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # 1) 派生文件是否漂移：改了 tool.json 却忘了 sync-tools 会在这里拦下
+      - name: 注册表漂移检查
+        run: node scripts/sync-tools.mjs --check
+
+      # 2) Manifest 闸门（与 build 内部的检查同源，单独跑一次是为了先失败、报错更集中）
+      - name: 清单合规
+        run: node scripts/lint-tools.mjs
+
+      - name: 构建静态页
+        run: node scripts/build-pages.mjs
+
+      - name: 结构与内容校验
+        run: node scripts/verify.mjs
+
+      - name: SPA 渲染
+        run: node scripts/spa-render-test.mjs
+
+      - name: 工具功能
+        run: node scripts/new-tools-test.mjs
+
+      - name: 性能预算
+        run: node scripts/perf-budget.mjs
+
+      - name: 安装 Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      # 3) 需要真实 HTTP + 真实浏览器：起本地服务器（带安全头），跑冒烟与 E2E
+      - name: 冒烟 + 真浏览器 E2E
+        env:
+          BROWSER_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: |
+          node scripts/serve.mjs --port 8788 &
+          SERVER_PID=$!
+          trap "kill $SERVER_PID 2>/dev/null || true" EXIT
+          for i in $(seq 1 60); do
+            curl -sf http://127.0.0.1:8788/ > /dev/null && break
+            sleep 0.25
+          done
+          node scripts/smoke-test.mjs http://127.0.0.1:8788
+          node scripts/browser-test.mjs http://127.0.0.1:8788
+
+  deploy:
+    name: 部署到 Cloudflare Workers
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      # canonical / sitemap 用正式域名：在仓库 Variables 里配 SITE_BASE_URL 即可整体切换
+      - name: 构建（使用正式域名）
+        run: node scripts/build-pages.mjs "${{ vars.SITE_BASE_URL || 'https://toolhub.guyang1966.workers.dev' }}"
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.toml

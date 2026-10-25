@@ -2,6 +2,8 @@
 scripts/
 content/
 docs/
+.github/
+perf-budget.json
 README.md
 ROADMAP.md
 wrangler.toml

@@ -15,11 +15,30 @@ export const manifest = {
   ],
 };
 
+// 只有真正用到二维码时才加载 20KB 的库：首屏不再为一个工具背着它
+let qrReady = null;
+function ensureQRCode() {
+  if (window.QRCode) return Promise.resolve();
+  if (!qrReady) {
+    qrReady = new Promise((ok, err) => {
+      const sc = document.createElement('script');
+      sc.src = '/assets/vendor/qrcode.min.js';
+      sc.onload = ok;
+      sc.onerror = () => {
+        qrReady = null;
+        err(new Error('二维码库加载失败，请检查网络后重试'));
+      };
+      document.head.appendChild(sc);
+    });
+  }
+  return qrReady;
+}
+
 export async function run({ text, size }) {
   if (!text.trim()) throw new Error('请输入要生成的内容');
+  await ensureQRCode();
   const s = Number(size);
   const holder = document.createElement('div');
-  // qrcodejs 全局库已在页面引入
   new window.QRCode(holder, { text, width: s, height: s, correctLevel: window.QRCode.CorrectLevel.M });
   const img = holder.querySelector('img') || holder.querySelector('canvas');
   const canvas = holder.querySelector('canvas');
