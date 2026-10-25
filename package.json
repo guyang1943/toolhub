@@ -1,6 +1,6 @@
 {
   "name": "toolhub",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": true,
   "description": "ToolHub · 把开源工具变成打开即用的在线工具（零依赖静态站）",
   "scripts": {
@@ -13,7 +13,8 @@
     "test:browser": "node scripts/browser-test.mjs",
     "serve": "node scripts/serve.mjs",
     "perf": "node scripts/perf-budget.mjs",
-    "health": "node scripts/health-check.mjs"
+    "health": "node scripts/health-check.mjs",
+    "audit": "node scripts/audit.mjs"
   },
   "engines": {
     "node": ">=22"

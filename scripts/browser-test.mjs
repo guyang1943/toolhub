@@ -840,7 +840,14 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('批量页有格式与质量参数', batchBtns >= 2, batchBtns + ' 个控件');
 
     await goto('/offline/');
-    const offCards = await evaluate(`document.querySelectorAll('#offline-app .off-card').length`);
+    // 离线页的卡片是 mountOffline() 动态挂载的（要先 import /assets/offline.js），
+    // 直接取值会在 import 还没回来时数到 0——那是等待不足，不是功能坏了
+    let offCards = 0;
+    for (let i = 0; i < 50; i++) {
+      offCards = await evaluate(`document.querySelectorAll('#offline-app .off-card').length`).catch(() => 0);
+      if (offCards >= 3) break;
+      await sleep(150);
+    }
     check('离线页挂载三张状态卡', offCards >= 3, offCards + ' 张');
     const metaShown = await evaluate(`(document.querySelector('#offline-app') || {}).textContent || ''`);
     check('离线页显示离线包规模', /\d+ 个地址/.test(metaShown), (metaShown.match(/\d+ 个地址[^。]*/) || [''])[0]);
