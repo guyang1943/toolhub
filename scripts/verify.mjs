@@ -278,6 +278,16 @@ check('sw 版本号存在', () => {
   return m[0];
 });
 
+check('部署安全：不发布版本库与本地环境', () => {
+  const ig = readFileSync(join(root, '.assetsignore'), 'utf8');
+  const must = ['.git/', '.wrangler/', 'node_modules/'];
+  const bad = must.filter((x) => !ig.split('\n').map((l) => l.trim()).includes(x));
+  assert(!bad.length, '缺排除项: ' + bad.join(', '));
+  // .git 若被发布，任何人都能下载完整提交历史
+  assert(existsSync(join(root, '.git')), '.git 不存在，检查失去意义');
+  return '.git / .wrangler / node_modules 已排除';
+});
+
 // ---------- 5. 无障碍基础 ----------
 check('无障碍基础（skip link / 地标 / aria）', () => {
   const home = readFileSync(join(root, 'index.html'), 'utf8');

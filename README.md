@@ -1,8 +1,8 @@
-# ToolHub — 开源项目工具化平台（v2.2）
+# ToolHub — 开源项目工具化平台（v2.3）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
-**当前收录 84 个工具**：24 个本地执行（浏览器内完成，数据不上传）+ 60 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评。
+**当前收录 88 个工具**：28 个本地执行（浏览器内完成，数据不上传）+ 60 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、28 篇使用教程。
 
 ## 架构（可扩展核心）
 
@@ -17,25 +17,26 @@ toolhub/
 │   ├── style.css
 │   ├── app.js            # 注册表 / 搜索 / Manifest→表单渲染 / 路由 / 命令面板
 │   ├── pyodide-runtime.js  # Pyodide 共享运行时（多 Python 工具复用）
-│   └── vendor/           # 本地化的开源库（qrcode / marked / purify）
+│   └── vendor/           # 本地化的开源库（qrcode / marked / purify / jsQR / pdf-lib / pyodide）
 ├── tools/
-│   ├── tools.json        # 本地工具注册表（Manifest 元信息，24 个）
+│   ├── tools.json        # 本地工具注册表（Manifest 元信息，28 个）
 │   ├── directory.json    # 在线目录：60 个开源项目官网（URL 已验证）
 │   └── <工具id>/run.js   # 每个工具一个目录
 ├── topics.json           # 10 个专题（按场景打包工具 + 资源 + FAQ）
 ├── evaluations.json      # 5 篇工具横评（隐私/速度/功能取舍）
-├── articles.json         # 24 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
+├── articles.json         # 28 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
 ├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
 ├── changelog.json        # 更新日志数据
-├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test
+├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test / new-tools-test
 ├── topics/ evaluations/ resources/ tools/<id>/   # 构建生成的静态 SEO 页
 └── wrangler.toml         # Cloudflare Workers 静态资源部署配置
 ```
 
-## Manifest 字段（MVP 版）
+## Manifest 字段
 
-输入类型：`text` / `textarea` / `number` / `select` / `range` / `file`
-运行时：`browser`（MVP 仅支持；服务端沙箱为二期）
+输入类型：`text` / `textarea` / `number` / `select` / `range` / `file`（`multiple: true` 支持多选）
+工具可选导出 `onForm(form)`：表单渲染后做联动（如单位换算的「类型 → 单位」下拉、PDF 工具的按模式显隐字段）
+运行时：`browser` / `pyodide`（浏览器内 Python）
 
 ## 本地运行
 
@@ -252,3 +253,18 @@ npx wrangler deploy --config wrangler.toml
 - 校验加强：步骤 <3 或常见错误 <2 无法通过构建
 - 静态页 113 个 / sitemap 114 条 / 校验 24 项 / 冒烟 59 条 / SPA 渲染测试 17 项
 - 部署：wrangler v `f4140c68`
+
+## v2.3：4 个高频刚需本地工具 + 坏链修复 + 无障碍基础（2026-10-25）
+- **新增 4 个本地工具**（本地 24 → 28，全站 84 → 88）：
+  - **个税计算器** `tax-calc`：工资薪金按累计预扣法逐月计算，含子女教育/婴幼儿照护/赡养老人/住房/继续教育五项专项附加扣除，输出当月个税、税后到手与全年 12 个月预测表（合计 = 年度应纳税额）
+  - **单位换算** `unit-convert`：长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度 12 类 70+ 单位；温度走线性公式而非系数；附带同类单位全量对照表
+  - **二维码解析** `qr-decode`：jsQR 本地解码，图片不上传；识别网址/WiFi/vCard 等内容类型，在原图上红框标注识别位置，支持反色码
+  - **PDF 合并拆分** `pdf-merge`：pdf-lib 本地处理，支持多文件合并（按选择顺序）、按页码提取（`1,3,5-8`）、按固定页数拆分；加密文件友好报错
+- **平台能力**：`file` 输入支持 `multiple`；新增 `onForm` 渲染后联动钩子；jsQR（257KB）与 pdf-lib（525KB）按需注入，不给每个页面增加负担
+- **测试**：新增 `scripts/new-tools-test.mjs` 41 项功能测试——个税数学手工核算（含高税率档、起征点以下）、单位换算精度（含绝对零度/2 进制容量）、真实 pdf-lib 合并/提取/拆分（含越界与非法片段）、真实 jsQR 解码（Python 生成二维码 + 反色 + 噪声图）
+- **坏链**：巡检 110 条（104 正常 / 3 反爬 / 3 异常）。`playground.prettier.io` → `prettier.io/playground/`；CyberChef 镜像 → 官方 `cyberchef.org`；HackMD（国内不可达）→ **CryptPad**（端到端加密协作，AGPL），同步更新横评与 i18n
+- **无障碍**：skip link + main landmark、导航/搜索/按钮/命令面板 aria-label、结果区 `aria-live`、`:focus-visible` 焦点样式、`prefers-reduced-motion`；工具卡片由 `div+onclick` 升级为 `role=link + tabindex + Enter/Space`（原先键盘完全无法打开）
+- 静态页 117 个 / sitemap 118 条 / 校验 25 项 / 冒烟 61 条 / SPA 渲染 34 项 / 功能测试 41 项
+- `sw.js` VERSION → toolhub-v2.3
+- **部署**：wrangler v `766b484a`。首次部署发现 `.git/` 被当作静态资产上传（1044 个资产，公网可下载完整提交历史），已在 `.assetsignore` 补 `.git/ .wrangler/ node_modules/` 并重新部署（189 个资产），verify 增加第 26 项「部署安全」守卫
+- 本机网络无法直连 `*.workers.dev`（DNS 污染）与代理白名单限制，`smoke-test.mjs` 需在可访问网络或绑定 `sitool.eu.org` 后执行

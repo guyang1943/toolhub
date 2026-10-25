@@ -11,84 +11,84 @@
       <link>https://toolhub.guyang1966.workers.dev/tools/pdf-merge/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/pdf-merge/</guid>
       <description>多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>二维码解析</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/qr-decode/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/qr-decode/</guid>
       <description>上传图片本地识别二维码内容，图片不上传，标注识别位置</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>单位换算</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/unit-convert/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/unit-convert/</guid>
       <description>长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>个税计算器</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/tax-calc/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/tax-calc/</guid>
       <description>工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>颜色对比度检查</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/color-contrast/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/color-contrast/</guid>
       <description>按 WCAG 标准检查文字与背景的对比度是否达标</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>图片转 Base64</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/image-base64/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/image-base64/</guid>
       <description>图片与 Data URI / Base64 双向转换</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>字数统计</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/word-count/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/word-count/</guid>
       <description>中英文字数、字符、段落与阅读时长统计</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>文本去重排序</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/text-dedupe/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/text-dedupe/</guid>
       <description>按行去重、排序、去空行，适合清洗名单与日志</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>命名风格转换</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/case-convert/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/case-convert/</guid>
       <description>camelCase / snake_case / kebab-case 等命名互转</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>正则测试器</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/regex-tester/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/regex-tester/</guid>
       <description>实时高亮正则匹配结果，列出分组与位置</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>CSV 数据体检</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/pandas-csv/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/pandas-csv/</guid>
       <description>pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
     <item>
       <title>数值统计</title>
       <link>https://toolhub.guyang1966.workers.dev/tools/py-stats/</link>
       <guid>https://toolhub.guyang1966.workers.dev/tools/py-stats/</guid>
       <description>用 Python statistics 计算均值/中位数/标准差/四分位</description>
-      <pubDate>Sun, 25 Oct 2026 01:16:26 GMT</pubDate>
+      <pubDate>Sun, 25 Oct 2026 01:21:14 GMT</pubDate>
     </item>
   </channel>
 </rss>

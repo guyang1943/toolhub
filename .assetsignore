@@ -4,3 +4,14 @@ README.md
 wrangler.toml
 release.bat
 .assetsignore
+
+# 版本库与本地环境：绝不可发布（.git 会暴露全部提交历史与历史密钥）
+.git/
+.gitignore
+.gitattributes
+.wrangler/
+node_modules/
+package-lock.json
+.tmp-*
+*.log
+*.zip
