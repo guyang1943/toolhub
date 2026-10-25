@@ -1,0 +1,23 @@
+{
+  "id": "mortgage-calc",
+  "name": "房贷计算器",
+  "desc": "等额本息与等额本金月供、总利息对比，含逐年还款明细表",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "房贷",
+    "月供",
+    "等额本息",
+    "等额本金"
+  ],
+  "hot": true,
+  "aliases": [
+    "fangdaijisuanqi",
+    "fdjsq",
+    "mortgage calculator",
+    "mortgage",
+    "calculator"
+  ]
+}

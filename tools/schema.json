@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://toolhub.guyang1966.workers.dev/tools/schema.json",
+  "title": "ToolHub 工具清单规范 / tool manifest",
+  "description": "第三方往 ToolHub 加工具时，必须让 tools/<id>/tool.json 与 tools/<id>/run.js 里的 manifest 满足本规范。构建期（scripts/lint-tools.mjs）会按此校验，不合规直接构建失败。只允许本文件列出的字段，多写不生效的字段会被判为错误。",
+
+  "$defs": {
+    "option": {
+      "title": "select 的选项",
+      "type": "object",
+      "required": ["value", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "description": "提交给 run() 的值（字符串或数字），同一次下拉内不可重复",
+          "type": ["string", "number"]
+        },
+        "label": {
+          "description": "给用户看的文案",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        }
+      }
+    },
+
+    "input": {
+      "title": "表单字段",
+      "type": "object",
+      "required": ["name", "label", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "字段名，也是 run() 收到的键名；小驼峰",
+          "type": "string",
+          "pattern": "^[a-z][a-zA-Z0-9]{0,23}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "type": {
+          "enum": ["text", "textarea", "number", "range", "select", "file"]
+        },
+        "placeholder": { "type": "string", "maxLength": 80 },
+        "default": {
+          "description": "默认值，类型必须与 type 匹配；select 的默认值必须在 options 里",
+          "type": ["string", "number", "boolean"]
+        },
+        "options": {
+          "description": "仅 select 允许；至少 1 项",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 60,
+          "items": { "$ref": "#/$defs/option" }
+        },
+        "accept": {
+          "description": "仅 file 允许，如 image/*,.pdf",
+          "type": "string",
+          "maxLength": 120
+        },
+        "multiple": {
+          "description": "仅 file 允许，是否多选",
+          "type": "boolean"
+        },
+        "min": { "description": "仅 range / number 允许", "type": "number" },
+        "max": { "description": "仅 range / number 允许", "type": "number" }
+      }
+    },
+
+    "scenario": {
+      "title": "使用场景",
+      "type": "object",
+      "required": ["scene", "how", "result"],
+      "additionalProperties": false,
+      "properties": {
+        "scene": { "type": "string", "minLength": 4, "maxLength": 60 },
+        "how": { "type": "string", "minLength": 4, "maxLength": 120 },
+        "result": { "type": "string", "minLength": 4, "maxLength": 120 }
+      }
+    },
+
+    "manifest": {
+      "title": "run.js 里的 manifest",
+      "description": "必须写成对象字面量并在 run.js 里 `export const manifest = {...}`，平台据此渲染表单。",
+      "type": "object",
+      "required": ["inputs", "runLabel"],
+      "additionalProperties": false,
+      "properties": {
+        "inputs": {
+          "description": "表单字段。超过 6 个字段就该考虑拆成两个工具，10 是硬上限",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": { "$ref": "#/$defs/input" }
+        },
+        "runLabel": {
+          "description": "运行按钮文案，动词，≤6 个汉字",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "usage": {
+          "description": "一句话说明这个工具怎么用",
+          "type": "string",
+          "maxLength": 300
+        },
+        "tips": {
+          "type": "array",
+          "maxItems": 8,
+          "items": { "type": "string", "minLength": 4, "maxLength": 140 }
+        },
+        "scenarios": {
+          "type": "array",
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/scenario" }
+        },
+        "example": {
+          "description": "「示例」按钮填入的一组值，键必须是已声明的 input name",
+          "type": "object"
+        }
+      }
+    },
+
+    "toolMeta": {
+      "title": "tools/<id>/tool.json",
+      "description": "工具的身份与收录信息。id 必须与所在目录名一致。",
+      "type": "object",
+      "required": ["id", "name", "desc", "category", "source", "license"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "URL 与目录名，小写字母/数字/连字符，2-32 位",
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{1,31}$"
+        },
+        "name": { "type": "string", "minLength": 2, "maxLength": 24 },
+        "desc": {
+          "description": "一句话介绍，出现在卡片与搜索结果里",
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 60
+        },
+        "category": {
+          "enum": ["文本", "图片", "文档", "数据", "开发", "设计", "音视频", "效率", "网络"]
+        },
+        "source": {
+          "description": "实现来源，如「内置实现」或仓库地址",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "license": { "type": "string", "minLength": 2, "maxLength": 40 },
+        "runtime": {
+          "description": "browser = 纯前端 JS；pyodide = 需要先加载 Python WASM（首次联网）；link = 外链目录工具",
+          "enum": ["browser", "pyodide", "link"]
+        },
+        "tags": {
+          "type": "array",
+          "maxItems": 6,
+          "items": { "type": "string", "minLength": 1, "maxLength": 12 }
+        },
+        "hot": { "type": "boolean" },
+        "aliases": {
+          "description": "搜索别名（拼音/英文），由 scripts/gen-search-aliases.mjs 生成，不必手写",
+          "type": "array",
+          "maxItems": 24,
+          "items": { "type": "string", "minLength": 2, "maxLength": 40 }
+        },
+        "author": {
+          "description": "社区贡献者署名（GitHub 用户名或昵称）",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "homepage": {
+          "description": "贡献者的仓库或主页，用于溯源",
+          "type": "string",
+          "pattern": "^https://[^\\s]+$"
+        },
+        "since": {
+          "description": "首次收录版本，如 v2.8",
+          "type": "string",
+          "pattern": "^v\\d+\\.\\d+$"
+        }
+      }
+    }
+  },
+
+  "oneOf": [{ "$ref": "#/$defs/manifest" }, { "$ref": "#/$defs/toolMeta" }]
+}

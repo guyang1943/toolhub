@@ -1,0 +1,24 @@
+{
+  "id": "timezone-convert",
+  "name": "时区转换",
+  "desc": "一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "时区",
+    "时间",
+    "时差",
+    "夏令时"
+  ],
+  "hot": true,
+  "aliases": [
+    "shiquzhuanhuan",
+    "sqzh",
+    "time zone converter",
+    "time",
+    "zone",
+    "converter"
+  ]
+}

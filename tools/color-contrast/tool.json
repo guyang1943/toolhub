@@ -1,0 +1,21 @@
+{
+  "id": "color-contrast",
+  "name": "颜色对比度检查",
+  "desc": "按 WCAG 标准检查文字与背景的对比度是否达标",
+  "category": "设计",
+  "source": "内置实现 (WCAG 2.1)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "对比度",
+    "无障碍",
+    "wcag"
+  ],
+  "aliases": [
+    "yanseduibidujiancha",
+    "ysdbdjc",
+    "contrast checker",
+    "contrast",
+    "checker"
+  ]
+}

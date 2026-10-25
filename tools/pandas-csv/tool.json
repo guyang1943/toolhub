@@ -1,0 +1,23 @@
+{
+  "id": "pandas-csv",
+  "name": "CSV 数据体检",
+  "desc": "pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要",
+  "category": "数据",
+  "source": "基于 pandas (BSD-3-Clause) + Pyodide",
+  "license": "BSD-3-Clause",
+  "runtime": "pyodide",
+  "tags": [
+    "csv",
+    "pandas",
+    "数据分析"
+  ],
+  "hot": true,
+  "aliases": [
+    "shujutijian",
+    "sjtj",
+    "csv health check",
+    "csv",
+    "health",
+    "check"
+  ]
+}

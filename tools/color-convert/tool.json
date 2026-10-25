@@ -1,0 +1,22 @@
+{
+  "id": "color-convert",
+  "name": "颜色格式转换",
+  "desc": "HEX / RGB / HSL 互转，附色块预览与 CSS 变量",
+  "category": "设计",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "颜色",
+    "hex",
+    "rgb",
+    "css"
+  ],
+  "aliases": [
+    "yansegeshizhuanhuan",
+    "ysgszh",
+    "color converter",
+    "color",
+    "converter"
+  ]
+}

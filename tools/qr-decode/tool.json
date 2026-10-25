@@ -1,0 +1,23 @@
+{
+  "id": "qr-decode",
+  "name": "二维码解析",
+  "desc": "上传图片本地识别二维码内容，图片不上传，标注识别位置",
+  "category": "效率",
+  "source": "内置实现 (jsQR)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "二维码",
+    "qr",
+    "解码"
+  ],
+  "hot": true,
+  "aliases": [
+    "erweimajiexi",
+    "ewmjx",
+    "qr code reader",
+    "qr",
+    "code",
+    "reader"
+  ]
+}

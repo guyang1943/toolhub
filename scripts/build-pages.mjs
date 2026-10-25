@@ -4,9 +4,28 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { lintAll } from './lib/tool-lint.mjs';
+import { buildToolsJson } from './sync-tools.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').replace(/\/$/, '');
+
+// 0) 构建闸门（v2.8 C1）：先由分片派生 tools/tools.json，再校验所有 manifest。
+//    清单不合规就直接失败——不能等到用户打开页面才看到"工具缺少 manifest 或 run 定义"。
+{
+  const { payload } = buildToolsJson();
+  writeFileSync(join(root, 'tools', 'tools.json'), JSON.stringify(payload, null, 2), 'utf8');
+  const schema = JSON.parse(readFileSync(join(root, 'tools', 'schema.json'), 'utf8'));
+  const reg = JSON.parse(readFileSync(join(root, 'tools', 'registry.json'), 'utf8'));
+  const { errors, ids } = lintAll(root, schema, reg.categories || []);
+  if (errors.length) {
+    console.error(`\n❌ 工具清单校验失败（${errors.length} 个问题），构建中止：\n`);
+    for (const e of errors) console.error(`   ${e.file}:${e.line}  [${e.path}] ${e.message}`);
+    console.error('\n   规范见 tools/schema.json，自查：node scripts/lint-tools.mjs <id>\n');
+    process.exit(1);
+  }
+  console.log(`✅ 清单闸门：${ids.length} 个工具通过 schema + 语义校验`);
+}
 
 const tools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
 const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
@@ -357,12 +376,14 @@ const staticPages = [
   },
   {
     path: 'submit',
-    title: '推荐一个开源工具 · ToolHub',
-    desc: '向 ToolHub 推荐好用的开源项目：收录标准、推荐模板与不收录清单。',
-    h1: '推荐一个开源工具',
+    title: '开发并通过提交页发布一个工具 · ToolHub',
+    desc: '两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。',
+    h1: '推荐开源项目，或自己造一个工具',
     content:
-      '<h2>收录标准</h2><p>开源且有明确 License，优先 MIT/Apache/BSD；能在浏览器中使用或可被工具化；站点长期可访问。</p>' +
-      '<h2>不收录</h2><p>需要注册账号才能使用的服务、含广告与追踪脚本的服务、无法稳定访问的站点。</p>',
+      '<h2>方式一：推荐现成的开源项目</h2><p>开源且有明确 License，优先 MIT/Apache/BSD；能在浏览器中使用或可被工具化；站点长期可访问。需要注册才能用、含广告追踪、无法稳定访问的站点不收录。</p>' +
+      '<h2>方式二：写一个本地工具</h2><p>ToolHub 的工具由 Manifest 驱动，新增一个工具只需要三样东西：<code>tool.json</code>（身份与收录信息）、<code>run.js</code>（表单清单 + 执行函数）、以及一份长尾正文。页面上的生成器会把这些骨架直接生成为可下载的压缩包，同时用与构建期相同的规范做校验。</p>' +
+      '<h2>接入约定</h2><p>执行函数返回 <code>{ html, text, files }</code>；<b>禁止任何网络请求</b>（fetch / XHR / WebSocket / sendBeacon），本地工具必须断网可跑；单个体积不超过 200KB。违反约定的清单会在构建阶段被拒绝，不会流到线上。</p>' +
+      '<h2>本地验收</h2><p>把工具目录放进仓库后，依次运行 <code>node scripts/lint-tools.mjs &lt;id&gt;</code>、<code>node scripts/build-pages.mjs</code>、<code>node scripts/verify.mjs</code>，三条都通过就可以提交 PR。</p>',
   },
   {
     path: 'compare',

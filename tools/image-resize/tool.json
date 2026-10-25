@@ -1,0 +1,21 @@
+{
+  "id": "image-resize",
+  "name": "图片缩放",
+  "desc": "按最大边长等比缩放图片，生成头像/封面尺寸",
+  "category": "图片",
+  "source": "内置实现 (Canvas API)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "图片",
+    "缩放",
+    "尺寸"
+  ],
+  "aliases": [
+    "tupiansuofang",
+    "tpsf",
+    "image resizer",
+    "image",
+    "resizer"
+  ]
+}

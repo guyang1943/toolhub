@@ -1,0 +1,25 @@
+{
+  "id": "exif-strip",
+  "name": "照片元数据剥离",
+  "desc": "查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码",
+  "category": "图片",
+  "source": "社区贡献 · 纯浏览器实现（无第三方依赖）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "exif",
+    "隐私",
+    "图片",
+    "gps"
+  ],
+  "author": "ToolHub 贡献流程示范",
+  "since": "v2.8",
+  "aliases": [
+    "zhaopianyuanshujuboli",
+    "zpysjbl",
+    "photo metadata stripper",
+    "photo",
+    "metadata",
+    "stripper"
+  ]
+}

@@ -31,7 +31,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 93 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 94 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -63,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片缩放</h1><p>按最大边长等比缩放图片，生成头像/封面尺寸</p><h2>关于图片缩放</h2><p>图片缩放改变的是像素尺寸，压缩改变的是编码质量，两者解决的问题不同：前者用于满足平台尺寸要求（头像 512、封面 1200×630），后者用于减小传输体积。等比缩放时只约束最长边，短边按比例计算，这样能保证画面不变形——直接指定宽高很容易把人物拉扁。</p><h2>使用步骤</h2><ol><li>选择图片，输入目标尺寸或选择预设（头像 / 封面 / 缩略图）</li><li>勾选“锁定比例”，只改最长边，避免变形</li><li>需要透明背景时输出格式保持 PNG 或 WebP</li><li>下载后核对实际像素尺寸，再上传到平台</li></ol><h2>常见错误</h2><h3>宽高都指定导致变形</h3><p>平台要求“不小于 200×200”时，正确的做法是按短边等比放大到 200，而不是强行拉伸到 200×200。</p><h3>小图放大当高清用</h3><p>把 100px 图标放大到 500px 只会得到模糊位图。矢量场景请用 SVG，放大不失真。</p><h3>只改尺寸不改体积</h3><p>缩小尺寸通常会降体积，但高分辨率截图缩完仍可能超标。尺寸和压缩两个工具配合使用。</p><h2>常见问题</h2><h3>缩小后再放大能恢复清晰度吗？</h3><p>不能。缩小过程丢弃了像素信息，放大只会插值出模糊的近似值，无法还原细节。</p><h3>为什么转成 JPEG 后透明背景变成白色？</h3><p>JPEG 不支持透明通道。需要透明请保留 PNG 或使用 WebP。</p><p>来源：内置实现 (Canvas API) · License: MIT · 分类：<a href="/?cat=%E5%9B%BE%E7%89%87">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-compress/">图片压缩</a> —— 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</li><li><a href="/tools/image-base64/">图片转 Base64</a> —— 图片与 Data URI / Base64 双向转换</li><li><a href="/tools/image-convert/">图片格式转换</a> —— PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/?cat=%E5%9B%BE%E7%89%87">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片缩放</h1><p>按最大边长等比缩放图片，生成头像/封面尺寸</p><h2>关于图片缩放</h2><p>图片缩放改变的是像素尺寸，压缩改变的是编码质量，两者解决的问题不同：前者用于满足平台尺寸要求（头像 512、封面 1200×630），后者用于减小传输体积。等比缩放时只约束最长边，短边按比例计算，这样能保证画面不变形——直接指定宽高很容易把人物拉扁。</p><h2>使用步骤</h2><ol><li>选择图片，输入目标尺寸或选择预设（头像 / 封面 / 缩略图）</li><li>勾选“锁定比例”，只改最长边，避免变形</li><li>需要透明背景时输出格式保持 PNG 或 WebP</li><li>下载后核对实际像素尺寸，再上传到平台</li></ol><h2>常见错误</h2><h3>宽高都指定导致变形</h3><p>平台要求“不小于 200×200”时，正确的做法是按短边等比放大到 200，而不是强行拉伸到 200×200。</p><h3>小图放大当高清用</h3><p>把 100px 图标放大到 500px 只会得到模糊位图。矢量场景请用 SVG，放大不失真。</p><h3>只改尺寸不改体积</h3><p>缩小尺寸通常会降体积，但高分辨率截图缩完仍可能超标。尺寸和压缩两个工具配合使用。</p><h2>常见问题</h2><h3>缩小后再放大能恢复清晰度吗？</h3><p>不能。缩小过程丢弃了像素信息，放大只会插值出模糊的近似值，无法还原细节。</p><h3>为什么转成 JPEG 后透明背景变成白色？</h3><p>JPEG 不支持透明通道。需要透明请保留 PNG 或使用 WebP。</p><p>来源：内置实现 (Canvas API) · License: MIT · 分类：<a href="/?cat=%E5%9B%BE%E7%89%87">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-compress/">图片压缩</a> —— 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</li><li><a href="/tools/image-base64/">图片转 Base64</a> —— 图片与 Data URI / Base64 双向转换</li><li><a href="/tools/exif-strip/">照片元数据剥离</a> —— 查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/?cat=%E5%9B%BE%E7%89%87">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -72,7 +72,7 @@
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
           <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
-          <div class="hero-search-hint">93 个工具 · 50 条资源 · 全部免费，无需注册</div>
+          <div class="hero-search-hint">94 个工具 · 50 条资源 · 全部免费，无需注册</div>
         </div>
         <div class="hero-stats" id="hero-stats"></div>
       </div>

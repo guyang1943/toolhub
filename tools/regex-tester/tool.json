@@ -1,0 +1,22 @@
+{
+  "id": "regex-tester",
+  "name": "正则测试器",
+  "desc": "实时高亮正则匹配结果，列出分组与位置",
+  "category": "开发",
+  "source": "内置实现 (RegExp)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "正则",
+    "regex",
+    "调试"
+  ],
+  "hot": true,
+  "aliases": [
+    "zhengzeceshiqi",
+    "zzcsq",
+    "regex tester",
+    "regex",
+    "tester"
+  ]
+}

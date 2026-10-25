@@ -497,6 +497,70 @@ console.log('\n🔄 图片格式转换（Canvas 桩）');
   check('HEIC 解码失败友好报错', err.includes('HEIC'), err);
 }
 
+// ---------- 6. 照片元数据剥离（v2.8 社区贡献工具，按公开契约实现） ----------
+console.log('\n🕵 照片元数据剥离（EXIF）');
+{
+  const exif = await import('file://' + join(root, 'tools/exif-strip/run.js').replace(/\\/g, '/'));
+  const { makeJpeg, asFile } = await import('file://' + join(root, 'scripts/lib/jpeg-fixture.mjs').replace(/\\/g, '/'));
+  const shot = makeJpeg({ gps: true, xmp: true });
+
+  const look = await exif.run({ files: [asFile(shot)], mode: 'inspect' });
+  check('识别相机品牌与型号', look.text.includes('TestCam') && look.text.includes('Model X'), look.text.slice(0, 60));
+  check('识别镜头', look.text.includes('Test 35mm F2'));
+  check('曝光换算成 1/250 秒', look.text.includes('1/250 秒'));
+  check('光圈 f/2.8', look.text.includes('f/2.8'));
+  check('ISO 200', look.text.includes('ISO 200'));
+  check('GPS 换算成十进制度', look.text.includes('31.230000°N') && look.text.includes('121.470000°E'), '31°13′48″N 121°28′12″E');
+  check('海拔 42 m', look.text.includes('海拔 42 m'));
+  check('只看模式不产出文件', !look.files || look.files.length === 0);
+  check('含 GPS 时页面给出警告', /msg-warn/.test(look.html) && look.html.includes('公开拍摄地点'));
+
+  // 大端 TIFF（佳能等机型的写法）
+  const be = await exif.run({ files: [asFile(makeJpeg({ little: false }), 'be.jpg')], mode: 'inspect' });
+  check('大端 EXIF 同样能读', be.text.includes('TestCam') && be.text.includes('31.230000°N'));
+
+  // 无 GPS 的照片不该报出坐标
+  const noGps = await exif.run({ files: [asFile(makeJpeg({ gps: false }), 'nogps.jpg')], mode: 'inspect' });
+  check('无 GPS 时不误报坐标', !noGps.text.includes('GPS 定位') && noGps.html.includes('未发现 GPS 定位'));
+
+  const strip = await exif.run({ files: [asFile(shot)], mode: 'strip' });
+  const clean = Buffer.from(await strip.files[0].blob.arrayBuffer());
+  check('产出 1 个文件且标记为图片', strip.files?.length === 1 && strip.files[0].kind === 'image');
+  check('文件名加 -clean', strip.files[0].name === 'IMG_0001-clean.jpg', strip.files[0].name);
+  check('输出不含 Exif 段', !clean.includes(Buffer.from('Exif')));
+  check('输出不含 XMP 段', !clean.includes(Buffer.from('xmpmeta')));
+  check('剥离后体积变小', clean.length < shot.length, `${shot.length} → ${clean.length} 字节`);
+  check('保留 JFIF/APP0（不影响解码）', clean.includes(Buffer.from('JFIF')));
+  check('SOI / EOI 完整', clean[0] === 0xff && clean[1] === 0xd8 && clean[clean.length - 1] === 0xd9);
+  check('像素数据原样保留', clean.includes(Buffer.from([0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc])));
+  check('文本摘要含体积变化', /→/.test(strip.text) && strip.text.includes('-clean.jpg'));
+
+  // 已经干净的文件：不产出新文件，只给提示
+  const already = await exif.run({ files: [asFile(clean, 'clean.jpg')], mode: 'strip' });
+  check('无元数据时不产出空文件', !already.files || already.files.length === 0);
+  check('无元数据时给出说明', already.text === '' || already.html.includes('已是干净文件'));
+
+  // 批量
+  const batch = await exif.run({ files: [asFile(shot, 'a.jpg'), asFile(makeJpeg({ gps: false }), 'b.jpg')], mode: 'strip' });
+  check('批量处理逐张产出', batch.files.length === 2, batch.files.map((f) => f.name).join(','));
+
+  // 错误处理
+  let err = '';
+  try {
+    await exif.run({ files: [], mode: 'strip' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('未选文件时报错', err.includes('至少一张'), err);
+  err = '';
+  try {
+    await exif.run({ files: [asFile(Buffer.from('89504e470d0a1a0a', 'hex'), 'x.png')], mode: 'inspect' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('非 JPEG 友好报错', err.includes('JPEG'), err);
+}
+
 // 清理临时文件
 for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {

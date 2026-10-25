@@ -461,6 +461,10 @@
       "id-validate": {
         "name": "ID & Card Validator",
         "desc": "Batch-check Chinese ID checksums and bank card Luhn digits, with region and birthdate parsing"
+      },
+      "exif-strip": {
+        "name": "Photo Metadata Stripper",
+        "desc": "Inspect and strip GPS, camera model and timestamps from photos — lossless, no re-encoding"
       }
     }
   }

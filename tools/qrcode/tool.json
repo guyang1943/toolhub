@@ -1,0 +1,22 @@
+{
+  "id": "qrcode",
+  "name": "二维码生成",
+  "desc": "把文本/网址变成二维码，可下载 PNG",
+  "category": "开发",
+  "source": "基于开源 qrcodejs (MIT)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "二维码",
+    "qr"
+  ],
+  "hot": true,
+  "aliases": [
+    "erweimashengcheng",
+    "ewmsc",
+    "qr code generator",
+    "qr",
+    "code",
+    "generator"
+  ]
+}

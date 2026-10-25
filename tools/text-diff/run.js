@@ -1,7 +1,7 @@
 // 工具：文本对比（行级 diff，LCS 算法，纯浏览器执行）
 export const manifest = {
   usage: '在左右两侧分别粘贴原文本和新文本，点击对比后：绿色 = 新增行，红色 = 删除行。适合对比配置文件、代码片段、日志的差异。',
-  example: { 左侧: 'apple\nbanana\ncherry', 右侧: 'apple\nblueberry\ncherry\ndate' },
+  example: { a: 'apple\nbanana\ncherry', b: 'apple\nblueberry\ncherry\ndate' },
   inputs: [
     { name: 'a', label: '原文本（A）', type: 'textarea', placeholder: '粘贴原始文本…' },
     { name: 'b', label: '新文本（B）', type: 'textarea', placeholder: '粘贴修改后的文本…' },

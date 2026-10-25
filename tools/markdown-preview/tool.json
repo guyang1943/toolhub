@@ -1,0 +1,20 @@
+{
+  "id": "markdown-preview",
+  "name": "Markdown 预览",
+  "desc": "实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS",
+  "category": "文本",
+  "source": "基于开源 marked (MIT) + DOMPurify (Apache-2.0)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "markdown",
+    "预览"
+  ],
+  "aliases": [
+    "yulan",
+    "yl",
+    "markdown preview",
+    "markdown",
+    "preview"
+  ]
+}

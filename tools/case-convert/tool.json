@@ -1,0 +1,21 @@
+{
+  "id": "case-convert",
+  "name": "命名风格转换",
+  "desc": "camelCase / snake_case / kebab-case 等命名互转",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "命名",
+    "camel",
+    "snake"
+  ],
+  "aliases": [
+    "mingmingfenggezhuanhuan",
+    "mmfgzh",
+    "case converter",
+    "case",
+    "converter"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "word-count",
+  "name": "字数统计",
+  "desc": "中英文字数、字符、段落与阅读时长统计",
+  "category": "文本",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "字数",
+    "统计",
+    "写作"
+  ],
+  "hot": true,
+  "aliases": [
+    "zishutongji",
+    "zstj",
+    "word count",
+    "word",
+    "count"
+  ]
+}

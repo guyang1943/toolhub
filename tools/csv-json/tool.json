@@ -1,0 +1,20 @@
+{
+  "id": "csv-json",
+  "name": "CSV ↔ JSON",
+  "desc": "CSV 与 JSON 数组互转，正确处理引号与换行",
+  "category": "数据",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "csv",
+    "json",
+    "表格"
+  ],
+  "aliases": [
+    "csv to json",
+    "csv",
+    "to",
+    "json"
+  ]
+}

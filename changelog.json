@@ -2,6 +2,24 @@
   "entries": [
     {
       "date": "2026-10-25",
+      "version": "v2.8",
+      "title": "平台化：让第三方能往站里加工具，而且加不坏",
+      "items": [
+        "Manifest 规范落地：tools/schema.json 定义 manifest 与 tool.json 的字段、类型、默认值规则，配套零依赖校验器（构建期与浏览器提交页共用同一份代码）",
+        "构建期闸门：清单不合规直接构建失败，错误精确到 file:line（例：tools/x/run.js:11 [inputs[0].options] select 必须提供 options），不再等用户打开页面才发现「工具缺少 manifest」",
+        "注册表拆分：每个工具自带 tool.json，tools/tools.json 变成派生产物，两个人同时加工具不再改同一个文件、不再冲突",
+        "语义校验补上 Schema 管不了的规则：字段名唯一、select 默认值必须在选项内、range 必须有 min/max、只有 select 能带 options、只有 file 能带 accept",
+        "接入契约硬约束：禁止 fetch / XHR / WebSocket / sendBeacon（本地执行是本站的信任基础）、单工具体积 ≤ 200KB，违反即构建失败",
+        "新工具「照片元数据剥离」：按公开契约实现，读 EXIF 与 GPS 坐标，剥离时直接裁掉 APP1/APP13/COM 段而不重编码——画质一位不变，ICC 色彩配置保留",
+        "提交闭环：提交页内嵌工具包生成器，填表单即生成 tool.json + run.js + README 并打包 zip 下载，校验规则与构建期完全一致",
+        "脚手架命令 node scripts/new-tool.mjs <id>：一条命令生成可运行的工具目录并自动登记排序、立刻跑一遍清单校验",
+        "契约文档 docs/TOOL-CONTRACT.md：三条硬规则、字段表、返回结构、常见拒绝原因，第三方照着自己就能提交",
+        "顺带修掉校验发现的真问题：text-diff 的示例数据用了中文键导致「示例」按钮填不进任何字段；tax-calc 的两个下拉选项 value 重复；三处 number 字段默认值类型不一致",
+        "测试：校验 34 项 / SPA 39 项 / 功能 116 项 / 冒烟 73 项 + 内容抽查 / 浏览器 71 项，五套全绿"
+      ]
+    },
+    {
+      "date": "2026-10-25",
       "version": "v2.7",
       "title": "内容与内链：60 个目录工具补齐正文，全站加相关阅读与结构化数据",
       "items": [

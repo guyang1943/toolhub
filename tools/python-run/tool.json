@@ -1,0 +1,22 @@
+{
+  "id": "python-run",
+  "name": "Python 运行器",
+  "desc": "浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机",
+  "category": "开发",
+  "source": "基于开源 Pyodide (MPL-2.0)",
+  "license": "MPL-2.0",
+  "runtime": "pyodide",
+  "tags": [
+    "python",
+    "沙箱",
+    "wasm"
+  ],
+  "hot": true,
+  "aliases": [
+    "yunxingqi",
+    "yxq",
+    "python runner",
+    "python",
+    "runner"
+  ]
+}

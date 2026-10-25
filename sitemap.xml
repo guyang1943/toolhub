@@ -193,6 +193,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://toolhub.guyang1966.workers.dev/tools/exif-strip/</loc>
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://toolhub.guyang1966.workers.dev/tools/image-convert/</loc>
     <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>

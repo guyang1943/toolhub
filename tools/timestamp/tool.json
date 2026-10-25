@@ -1,0 +1,21 @@
+{
+  "id": "timestamp",
+  "name": "时间戳转换",
+  "desc": "Unix 时间戳与可读时间互转，多时区支持",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "时间戳",
+    "unix",
+    "时区"
+  ],
+  "aliases": [
+    "shijianchuozhuanhuan",
+    "sjczh",
+    "timestamp converter",
+    "timestamp",
+    "converter"
+  ]
+}

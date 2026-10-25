@@ -1,0 +1,22 @@
+{
+  "id": "py-stats",
+  "name": "数值统计",
+  "desc": "用 Python statistics 计算均值/中位数/标准差/四分位",
+  "category": "数据",
+  "source": "Python 标准库 statistics (Pyodide)",
+  "license": "PSF-2.0",
+  "runtime": "pyodide",
+  "tags": [
+    "统计",
+    "python",
+    "数据"
+  ],
+  "hot": true,
+  "aliases": [
+    "shuzhitongji",
+    "sztj",
+    "number stats",
+    "number",
+    "stats"
+  ]
+}

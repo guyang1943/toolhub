@@ -31,7 +31,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 93 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 94 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -63,7 +63,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩</h1><p>在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</p><h2>关于图片压缩</h2><p>图片压缩是在肉眼几乎看不出差别的前提下，降低图片文件体积的处理。常见做法是降低量化精度（有损压缩）或优化编码参数（无损压缩）。有损压缩对照片类图片效果最好，通常质量 70-80 就能把体积减半；无损压缩更适合图标、线条图和需要保留像素精度的截图。</p><h2>使用步骤</h2><ol><li>选择或拖入要压缩的图片（JPG / PNG / WebP）</li><li>拖动质量滑杆，右侧实时显示压缩后体积与预估画质</li><li>需要统一尺寸时先配合缩放工具处理，再压缩</li><li>点击下载，直接得到压缩后的文件</li></ol><h2>常见错误</h2><h3>二次压缩反而变大</h3><p>已经被微信、QQ 或图床压过的图，内部编码已接近极限，再次有损压缩会重新量化，体积可能不降反升。</p><h3>质量拉太低去追小体积</h3><p>质量低于 40 后文字边缘会出现振铃和色块，压缩率提升却有限。截图类建议 60-70，照片类 75-80 是平衡点。</p><h3>忽略格式选择的差异</h3><p>需要透明的图不要转成 JPEG；要兼容旧浏览器时 WebP 不是万能解，准备一份 PNG 兜底。</p><h2>常见问题</h2><h3>压缩后图片会不会上传到服务器？</h3><p>不会。本站使用浏览器 Canvas API 在本机完成编码，图片数据从头到尾都没有离开你的设备，可以放心处理含客户信息的截图。</p><h3>为什么 PNG 压缩后体积几乎没变？</h3><p>PNG 是无损格式，质量参数对它无效。要明显减小体积，应该转成 JPEG 或 WebP，或者先用调色板量化。</p><p>来源：内置实现 (Canvas API) · License: MIT · 分类：<a href="/?cat=%E5%9B%BE%E7%89%87">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-resize/">图片缩放</a> —— 按最大边长等比缩放图片，生成头像/封面尺寸</li><li><a href="/tools/image-base64/">图片转 Base64</a> —— 图片与 Data URI / Base64 双向转换</li><li><a href="/tools/image-convert/">图片格式转换</a> —— PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/evaluations/image-compress-shootout/">图片压缩工具横评：本地派 vs 上传派</a> —— 横评对比</li><li><a href="/?cat=%E5%9B%BE%E7%89%87">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩</h1><p>在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</p><h2>关于图片压缩</h2><p>图片压缩是在肉眼几乎看不出差别的前提下，降低图片文件体积的处理。常见做法是降低量化精度（有损压缩）或优化编码参数（无损压缩）。有损压缩对照片类图片效果最好，通常质量 70-80 就能把体积减半；无损压缩更适合图标、线条图和需要保留像素精度的截图。</p><h2>使用步骤</h2><ol><li>选择或拖入要压缩的图片（JPG / PNG / WebP）</li><li>拖动质量滑杆，右侧实时显示压缩后体积与预估画质</li><li>需要统一尺寸时先配合缩放工具处理，再压缩</li><li>点击下载，直接得到压缩后的文件</li></ol><h2>常见错误</h2><h3>二次压缩反而变大</h3><p>已经被微信、QQ 或图床压过的图，内部编码已接近极限，再次有损压缩会重新量化，体积可能不降反升。</p><h3>质量拉太低去追小体积</h3><p>质量低于 40 后文字边缘会出现振铃和色块，压缩率提升却有限。截图类建议 60-70，照片类 75-80 是平衡点。</p><h3>忽略格式选择的差异</h3><p>需要透明的图不要转成 JPEG；要兼容旧浏览器时 WebP 不是万能解，准备一份 PNG 兜底。</p><h2>常见问题</h2><h3>压缩后图片会不会上传到服务器？</h3><p>不会。本站使用浏览器 Canvas API 在本机完成编码，图片数据从头到尾都没有离开你的设备，可以放心处理含客户信息的截图。</p><h3>为什么 PNG 压缩后体积几乎没变？</h3><p>PNG 是无损格式，质量参数对它无效。要明显减小体积，应该转成 JPEG 或 WebP，或者先用调色板量化。</p><p>来源：内置实现 (Canvas API) · License: MIT · 分类：<a href="/?cat=%E5%9B%BE%E7%89%87">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-resize/">图片缩放</a> —— 按最大边长等比缩放图片，生成头像/封面尺寸</li><li><a href="/tools/image-base64/">图片转 Base64</a> —— 图片与 Data URI / Base64 双向转换</li><li><a href="/tools/exif-strip/">照片元数据剥离</a> —— 查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/image-workflow/">图片处理全流程</a> —— 专题工具包</li><li><a href="/evaluations/image-compress-shootout/">图片压缩工具横评：本地派 vs 上传派</a> —— 横评对比</li><li><a href="/?cat=%E5%9B%BE%E7%89%87">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -72,7 +72,7 @@
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
           <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
-          <div class="hero-search-hint">93 个工具 · 50 条资源 · 全部免费，无需注册</div>
+          <div class="hero-search-hint">94 个工具 · 50 条资源 · 全部免费，无需注册</div>
         </div>
         <div class="hero-stats" id="hero-stats"></div>
       </div>

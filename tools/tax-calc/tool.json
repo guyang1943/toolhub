@@ -1,0 +1,23 @@
+{
+  "id": "tax-calc",
+  "name": "个税计算器",
+  "desc": "工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "个税",
+    "工资",
+    "累计预扣"
+  ],
+  "hot": true,
+  "aliases": [
+    "geshuijisuanqi",
+    "gsjsq",
+    "income tax calculator",
+    "income",
+    "tax",
+    "calculator"
+  ]
+}

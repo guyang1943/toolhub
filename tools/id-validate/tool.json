@@ -1,0 +1,27 @@
+{
+  "id": "id-validate",
+  "name": "身份证 / 银行卡校验",
+  "desc": "批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "身份证",
+    "银行卡",
+    "校验",
+    "luhn"
+  ],
+  "hot": true,
+  "aliases": [
+    "shenfenzheng",
+    "sfz",
+    "yinxingkaxiaoyan",
+    "yxkxy",
+    "sfzyxkxy",
+    "id & card validator",
+    "id",
+    "card",
+    "validator"
+  ]
+}

@@ -105,6 +105,38 @@
 
 **风险**：C4 与 C2 有耦合，先 C1→C3，C4 可延后到有真实第三方提交时再做。
 
+> **v2.8 进度（2026-10-25）**：C1 / C2 / C3 完成，C4 延后（理由见下）。
+>
+> **C1 规范与闸门**：`tools/schema.json` 用 JSON Schema 把 manifest 与 `tool.json` 的形状写死
+> （字段白名单、类型、长度、枚举、默认值与选项的对应关系），配套 `assets/lib/json-schema.js`
+> 是一个 200 行、零依赖的校验器——**构建期和浏览器提交页共用同一份**，所以「页面里通过」等价于「构建不拦」。
+> Schema 管不到的部分（字段名唯一、select 默认值必须在选项里、range 必须给 min/max、
+> 只有 select 能带 options、只有 file 能带 accept）由 `scripts/lib/tool-lint.mjs` 补，
+> 错误统一输出成 `file:line [path] 消息`，`tools/x/run.js:11` 这种可以直接点进编辑器。
+> 构建脚本开头先跑闸门，不合规就 `exit 1`，不会再出现「用户打开页面看到工具缺少 manifest」。
+>
+> **C2 分片与契约**：元数据从中心文件 `tools/tools.json` 拆到每个工具目录的 `tool.json`，
+> `tools/tools.json` 降级为派生产物（`scripts/sync-tools.mjs` 生成，`--check` 用于 CI 查漂移）。
+> 两个人同时加工具不再改同一个文件。契约的三条硬规则变成构建期检查：
+> 禁止 `fetch` / `XMLHttpRequest` / `WebSocket` / `EventSource` / `sendBeacon`（本地执行是本站的信任基础）、
+> 单工具体积 ≤ 200KB、manifest 必须是对象字面量（否则无法定位行号）。
+> 示范工具 **照片元数据剥离（exif-strip）**：只按公开契约实现，读 EXIF + GPS，
+> 剥离时直接裁掉 APP1/APP13/COM 段而**不重编码**——画质一位不变，ICC 色彩配置保留。
+> 校验顺带抓出四个真问题：`text-diff` 的示例数据用了中文键（「示例」按钮其实一直填不进任何字段）、
+> `tax-calc` 两个下拉选项 value 重复、三处 number 字段默认值类型不一致。
+>
+> **C3 提交闭环**：`docs/TOOL-CONTRACT.md` 是与 Schema 对应的人话版；
+> `node scripts/new-tool.mjs <id>` 一条命令生成可跑目录并自动登记、立刻自检；
+> 提交页内嵌生成器（`assets/toolbuilder.js`，按需动态加载，不进首屏包），
+> 填表单 → 用同一套 Schema 校验 → 生成 `tool.json` + `run.js` + `README.md` → **本地打包 zip 下载**
+> （自写 STORE 模式 ZIP + CRC32，不引第三方库）。
+>
+> **C4 不做（本期）**：iframe + postMessage 隔离会让工具失去统一的 `manifest` 表单渲染、
+> 结果操作条与工具链接力——等于把 v2.6 的成果在隔离层重做一遍。
+> 现阶段所有工具都进仓库经过 review，禁止联网 + 体积上限 + 构建闸门已经覆盖了主要风险。
+> 等真的出现「不想读代码就上架」的第三方提交，再上 iframe 隔离。
+
+
 ---
 
 ### 阶段 D · 质量与运维（贯穿，每版都做）

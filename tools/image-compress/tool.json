@@ -1,0 +1,22 @@
+{
+  "id": "image-compress",
+  "name": "图片压缩",
+  "desc": "在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器",
+  "category": "图片",
+  "source": "内置实现 (Canvas API)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "图片",
+    "压缩",
+    "canvas"
+  ],
+  "hot": true,
+  "aliases": [
+    "tupianyasuo",
+    "tpys",
+    "image compressor",
+    "image",
+    "compressor"
+  ]
+}

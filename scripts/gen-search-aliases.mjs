@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// 搜索别名词条生成：为每个工具计算拼音全拼/首字母/英文关键词，写入 tools.json 与 directory.json 的 aliases 字段
+// 搜索别名词条生成：为每个工具计算拼音全拼/首字母/英文关键词，写入 tools/<id>/tool.json 与 directory.json 的 aliases 字段
 // 用法：node scripts/gen-search-aliases.mjs
 // 说明：构建期一次性生成，运行时零依赖；新增/改名工具后重跑即可。多音字只取一个默认读音，
 //       高频多音字在下方 EXTRA 里手工补常见读音。
-import { readFileSync, writeFileSync } from 'node:fs';
+//       v2.8 起本地工具元数据按分片存放，别名写回分片；tools/tools.json 由 sync-tools.mjs 派生。
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -39,22 +40,53 @@ function zhAliases(name) {
 const i18n = JSON.parse(readFileSync(join(root, 'i18n.json'), 'utf8'));
 const enTools = (i18n.en && i18n.en.tools) || {};
 
-for (const file of ['tools/tools.json', 'tools/directory.json']) {
-  const p = join(root, file);
+/** 给单个工具算别名，返回去重后的数组（顺序稳定，便于增量 diff） */
+function aliasesFor(t) {
+  const alias = new Set(zhAliases(t.name));
+  (EXTRA[t.name] || []).forEach((a) => alias.add(a));
+  const enName = enTools[t.id] && enTools[t.id].name;
+  if (enName) {
+    alias.add(enName.toLowerCase());
+    enName
+      .split(/[\s/·\-—]+/)
+      .filter((w) => w.length > 1)
+      .forEach((w) => alias.add(w.toLowerCase()));
+  }
+  return [...alias].filter(Boolean);
+}
+
+// 本地工具：逐分片写回
+{
+  const reg = JSON.parse(readFileSync(join(root, 'tools/registry.json'), 'utf8'));
+  const known = new Set(reg.order || []);
+  let count = 0;
+  let total = 0;
+  for (const name of readdirSync(join(root, 'tools'), { withFileTypes: true })) {
+    if (!name.isDirectory()) continue;
+    const p = join(root, 'tools', name.name, 'tool.json');
+    if (!existsSync(p)) continue;
+    total++;
+    const meta = JSON.parse(readFileSync(p, 'utf8'));
+    if (!known.has(meta.id)) console.log(`  ⚠ ${meta.id} 未登记在 registry.order，会被追加到列表末尾`);
+    const arr = aliasesFor(meta);
+    if (arr.length) {
+      meta.aliases = arr;
+      count++;
+    } else {
+      delete meta.aliases;
+    }
+    writeFileSync(p, JSON.stringify(meta, null, 2) + '\n');
+  }
+  console.log(`tools/<id>/tool.json: ${count}/${total} 个工具生成别名`);
+}
+
+// 目录工具：仍是单文件
+{
+  const p = join(root, 'tools/directory.json');
   const data = JSON.parse(readFileSync(p, 'utf8'));
   let count = 0;
   for (const t of data.tools) {
-    const alias = new Set(zhAliases(t.name));
-    (EXTRA[t.name] || []).forEach((a) => alias.add(a));
-    const enName = enTools[t.id] && enTools[t.id].name;
-    if (enName) {
-      alias.add(enName.toLowerCase());
-      enName
-        .split(/[\s/·\-—]+/)
-        .filter((w) => w.length > 1)
-        .forEach((w) => alias.add(w.toLowerCase()));
-    }
-    const arr = [...alias].filter(Boolean);
+    const arr = aliasesFor(t);
     if (arr.length) {
       t.aliases = arr;
       count++;
@@ -63,6 +95,7 @@ for (const file of ['tools/tools.json', 'tools/directory.json']) {
     }
   }
   writeFileSync(p, JSON.stringify(data, null, 2) + '\n');
-  console.log(`${file}: ${count}/${data.tools.length} 个工具生成别名`);
+  console.log(`tools/directory.json: ${count}/${data.tools.length} 个工具生成别名`);
 }
+
 console.log('完成。搜索匹配逻辑见 assets/app.js 的 toolScore()。');

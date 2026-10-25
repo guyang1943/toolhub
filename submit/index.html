@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>推荐一个开源工具 · ToolHub</title>
-  <meta name="description" content="向 ToolHub 推荐好用的开源项目：收录标准、推荐模板与不收录清单。" />
+  <title>开发并通过提交页发布一个工具 · ToolHub</title>
+  <meta name="description" content="两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,14 +24,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/submit/" />
   <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/submit/" />
-  <meta property="og:title" content="推荐一个开源工具 · ToolHub" />
-  <meta property="og:description" content="向 ToolHub 推荐好用的开源项目：收录标准、推荐模板与不收录清单。" />
+  <meta property="og:title" content="开发并通过提交页发布一个工具 · ToolHub" />
+  <meta property="og:description" content="两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。" />
   <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 93 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 94 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -39,7 +39,7 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"推荐一个开源工具 · ToolHub","description":"向 ToolHub 推荐好用的开源项目：收录标准、推荐模板与不收录清单。","url":"https://toolhub.guyang1966.workers.dev/submit/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"开发并通过提交页发布一个工具 · ToolHub","description":"两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。","url":"https://toolhub.guyang1966.workers.dev/submit/"}</script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -61,7 +61,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>推荐一个开源工具</h1><p>向 ToolHub 推荐好用的开源项目：收录标准、推荐模板与不收录清单。</p><h2>收录标准</h2><p>开源且有明确 License，优先 MIT/Apache/BSD；能在浏览器中使用或可被工具化；站点长期可访问。</p><h2>不收录</h2><p>需要注册账号才能使用的服务、含广告与追踪脚本的服务、无法稳定访问的站点。</p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>推荐开源项目，或自己造一个工具</h1><p>两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。</p><h2>方式一：推荐现成的开源项目</h2><p>开源且有明确 License，优先 MIT/Apache/BSD；能在浏览器中使用或可被工具化；站点长期可访问。需要注册才能用、含广告追踪、无法稳定访问的站点不收录。</p><h2>方式二：写一个本地工具</h2><p>ToolHub 的工具由 Manifest 驱动，新增一个工具只需要三样东西：<code>tool.json</code>（身份与收录信息）、<code>run.js</code>（表单清单 + 执行函数）、以及一份长尾正文。页面上的生成器会把这些骨架直接生成为可下载的压缩包，同时用与构建期相同的规范做校验。</p><h2>接入约定</h2><p>执行函数返回 <code>{ html, text, files }</code>；<b>禁止任何网络请求</b>（fetch / XHR / WebSocket / sendBeacon），本地工具必须断网可跑；单个体积不超过 200KB。违反约定的清单会在构建阶段被拒绝，不会流到线上。</p><h2>本地验收</h2><p>把工具目录放进仓库后，依次运行 <code>node scripts/lint-tools.mjs &lt;id&gt;</code>、<code>node scripts/build-pages.mjs</code>、<code>node scripts/verify.mjs</code>，三条都通过就可以提交 PR。</p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -70,7 +70,7 @@
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
           <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
-          <div class="hero-search-hint">93 个工具 · 50 条资源 · 全部免费，无需注册</div>
+          <div class="hero-search-hint">94 个工具 · 50 条资源 · 全部免费，无需注册</div>
         </div>
         <div class="hero-stats" id="hero-stats"></div>
       </div>

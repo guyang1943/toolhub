@@ -1,8 +1,8 @@
-# ToolHub — 开源项目工具化平台（v2.5）
+# ToolHub — 开源项目工具化平台（v2.8）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
-**当前收录 93 个工具**：33 个本地执行（浏览器内完成，数据不上传）+ 60 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、33 篇使用教程。
+**当前收录 94 个工具**：34 个本地执行（浏览器内完成，数据不上传）+ 60 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、34 篇使用教程。
 
 ## 架构（可扩展核心）
 
@@ -19,18 +19,36 @@ toolhub/
 │   ├── pyodide-runtime.js  # Pyodide 共享运行时（多 Python 工具复用）
 │   └── vendor/           # 本地化的开源库（qrcode / marked / purify / jsQR / pdf-lib / pyodide）
 ├── tools/
-│   ├── tools.json        # 本地工具注册表（Manifest 元信息，33 个）
+│   ├── registry.json     # 分类 / 推荐位 / 排序（手写）
+│   ├── tools.json        # 本地工具注册表（由各工具 tool.json 派生的产物）
+│   ├── schema.json       # Manifest 与 tool.json 的 JSON Schema（构建期闸门）
 │   ├── directory.json    # 在线目录：60 个开源项目官网（URL 已验证）
-│   └── <工具id>/run.js   # 每个工具一个目录
+│   └── <工具id>/         # tool.json（身份）+ run.js（manifest + run）
 ├── topics.json           # 10 个专题（按场景打包工具 + 资源 + FAQ）
 ├── evaluations.json      # 5 篇工具横评（隐私/速度/功能取舍）
-├── articles.json         # 33 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
+├── articles.json         # 34 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
 ├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
 ├── changelog.json        # 更新日志数据
 ├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test / new-tools-test / browser-test
 ├── topics/ evaluations/ resources/ tools/<id>/   # 构建生成的静态 SEO 页
 └── wrangler.toml         # Cloudflare Workers 静态资源部署配置
 ```
+
+## 加一个工具（第三方接入）
+
+三条硬规则：**不发起任何网络请求**、**单工具体积 ≤ 200KB**、**manifest 必须是对象字面量**。
+违反任一条，构建阶段就会失败（不会流到线上）。
+
+```bash
+node scripts/new-tool.mjs my-tool --name "我的工具" --cat 文本   # 生成可跑目录并自动登记
+node scripts/lint-tools.mjs my-tool        # 清单合规（秒级，错误精确到 file:line）
+node scripts/build-pages.mjs               # 生成静态页（开头会再跑一次闸门）
+node scripts/verify.mjs                    # 全量校验
+```
+
+也可以直接在站内 `/submit/` 填表单：生成器会产出 `tool.json` + `run.js` + `README.md` 并打包下载，
+校验规则与构建期完全一致（同一份 `assets/lib/json-schema.js` + `tools/schema.json`）。
+完整约定见 [`docs/TOOL-CONTRACT.md`](docs/TOOL-CONTRACT.md)。
 
 ## Manifest 字段
 
@@ -301,3 +319,26 @@ npx wrangler deploy --config wrangler.toml
 | 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题 | 32 |
 
 `browser-test.mjs` 会自动查找本机 Edge / Chrome，用独立临时 profile 起无头实例，不需要额外依赖。
+
+## v2.8：平台化——让别人也能加工具，而且加不坏（2026-10-25）
+
+这一版没做用户可见的新功能（除了一个新工具），重点是把「加工具」这件事从口头约定变成构建期约束。
+
+- **Manifest 规范**：`tools/schema.json` 用 JSON Schema 写死 shape（字段白名单、类型、长度、枚举、默认值与选项的对应关系）。配套 `assets/lib/json-schema.js` 是 200 行零依赖校验器，**构建期与浏览器提交页共用同一份代码**——页面里过了，构建就不会拦。
+- **构建期闸门**：`build-pages.mjs` 第一件事就是校验全部清单，不合规 `exit 1`。错误长这样：`tools/x/run.js:11  [inputs[0].options] select 必须提供 options`，行号来自一个专门写的定位解析器（纯数据字面量给精确行，`ZONES.map(...)` 这类表达式退化成字段起始行，不误导）。
+- **注册表拆分**：元数据从中心的 `tools/tools.json` 拆到每个工具的 `tool.json`，中心文件降级为派生产物（`scripts/sync-tools.mjs --check` 查漂移）。两个人同时加工具不再冲突。
+- **接入契约变成硬约束**：禁止 `fetch`/`XHR`/`WebSocket`/`EventSource`/`sendBeacon`（本地执行是本站唯一的差异化承诺）、单工具体积 ≤ 200KB、manifest 必须是对象字面量。违反即构建失败。
+- **新工具「照片元数据剥离」**：只按公开契约实现，读 EXIF + GPS 坐标；剥离时直接裁掉 APP1/APP13/COM 段而**不重编码**，画质一位不变，ICC 色彩配置保留（删掉它苹果设备拍的 P3 照片会偏色）。
+- **提交闭环**：`/submit/` 内嵌生成器（按需动态加载），填表单 → 同一套 Schema 校验 → 生成 `tool.json` + `run.js` + `README.md` → 本地打包 zip（自写 STORE 模式 ZIP + CRC32）。另有 `scripts/new-tool.mjs` 一条命令生成目录并自动登记、立刻自检。
+- **校验顺带抓出的真 bug**：`text-diff` 的示例数据用了中文键（「示例」按钮其实一直填不进任何字段）、`tax-calc` 两个下拉选项 value 重复、三处 `number` 字段默认值类型不一致。
+- **C4（iframe 隔离）不做**：会让工具失去统一的表单渲染、结果操作条与工具链接力，等于把 v2.6 重做一遍；现阶段禁止联网 + 体积上限 + 构建闸门已覆盖主要风险。
+
+### 测试矩阵（v2.8）
+
+| 套件 | 命令 | 覆盖 | 数量 |
+|---|---|---|---|
+| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、meta 一致性、清单闸门、注册表同步、接入闭环、部署安全、无障碍 | 34 |
+| SPA 渲染 | `node scripts/spa-render-test.mjs` | DOM 桩下的路由、搜索、表单联动、端到端 | 39 |
+| 工具功能 | `node scripts/new-tools-test.mjs` | 个税/房贷数学、单位精度、真实 PDF、真实 QR、图片转码、EXIF 解析与无损剥离 | 116 |
+| 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 + 内容抽查 | 73 |
+| 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题、新工具端到端、提交页生成器 | 74 |

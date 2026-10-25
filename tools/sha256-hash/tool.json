@@ -1,0 +1,21 @@
+{
+  "id": "sha256-hash",
+  "name": "哈希计算",
+  "desc": "SHA-256/384/512 哈希，基于 WebCrypto 安全实现",
+  "category": "开发",
+  "source": "内置实现 (WebCrypto)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "hash",
+    "sha256",
+    "校验"
+  ],
+  "aliases": [
+    "haxijisuan",
+    "hxjs",
+    "hash calculator",
+    "hash",
+    "calculator"
+  ]
+}

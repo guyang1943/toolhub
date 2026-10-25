@@ -1,0 +1,22 @@
+{
+  "id": "image-base64",
+  "name": "图片转 Base64",
+  "desc": "图片与 Data URI / Base64 双向转换",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "base64",
+    "图片",
+    "datauri"
+  ],
+  "aliases": [
+    "tupianzhuan",
+    "tpz",
+    "image to base64",
+    "image",
+    "to",
+    "base64"
+  ]
+}

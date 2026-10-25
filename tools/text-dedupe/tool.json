@@ -1,0 +1,22 @@
+{
+  "id": "text-dedupe",
+  "name": "文本去重排序",
+  "desc": "按行去重、排序、去空行，适合清洗名单与日志",
+  "category": "文本",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "去重",
+    "排序",
+    "清洗"
+  ],
+  "aliases": [
+    "wenbenquzhongpaixu",
+    "wbqzpx",
+    "dedupe & sort lines",
+    "dedupe",
+    "sort",
+    "lines"
+  ]
+}

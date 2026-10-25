@@ -1,0 +1,22 @@
+{
+  "id": "jwt-decode",
+  "name": "JWT 解码",
+  "desc": "解码 JWT 的 Header/Payload，标注过期时间，本地不上传",
+  "category": "开发",
+  "source": "内置实现 (Base64URL)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "jwt",
+    "token",
+    "调试"
+  ],
+  "hot": true,
+  "aliases": [
+    "jiema",
+    "jm",
+    "jwt decoder",
+    "jwt",
+    "decoder"
+  ]
+}

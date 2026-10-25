@@ -1,0 +1,21 @@
+{
+  "id": "text-diff",
+  "name": "文本对比",
+  "desc": "两段文本行级差异对比，新增/删除一目了然",
+  "category": "文本",
+  "source": "内置实现 (LCS 算法)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "diff",
+    "对比"
+  ],
+  "hot": true,
+  "aliases": [
+    "wenbenduibi",
+    "wbdb",
+    "text diff",
+    "text",
+    "diff"
+  ]
+}

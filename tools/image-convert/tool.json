@@ -1,0 +1,22 @@
+{
+  "id": "image-convert",
+  "name": "图片格式转换",
+  "desc": "PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "图片",
+    "webp",
+    "格式转换"
+  ],
+  "hot": true,
+  "aliases": [
+    "tupiangeshizhuanhuan",
+    "tpgszh",
+    "image converter",
+    "image",
+    "converter"
+  ]
+}

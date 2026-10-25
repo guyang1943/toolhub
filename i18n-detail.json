@@ -1010,6 +1010,37 @@
       "labels": {
         "list": "ID or card numbers (one per line, up to 200)"
       }
+    },
+    "exif-strip": {
+      "usage": "Pick one or more JPGs shot on a phone to see what is embedded (camera, timestamp, GPS coordinates, editing software). Switch to \"strip\" to remove those blocks from the file — pixels and image quality stay exactly the same.",
+      "tips": [
+        "Phone photos embed GPS by default: sending the original is sending your location",
+        "Stripping deletes whole metadata blocks without re-encoding, so quality is untouched",
+        "ICC colour profiles are preserved, so Display P3 photos keep their colours",
+        "Images forwarded through chat apps usually arrive already stripped"
+      ],
+      "scenarios": [
+        {
+          "scene": "Posting photos of your home on a marketplace",
+          "how": "Pick the photo → strip and download",
+          "result": "GPS, camera and timestamp removed, the picture looks identical"
+        },
+        {
+          "scene": "Finding out where a received photo was taken",
+          "how": "Pick the photo → inspect only",
+          "result": "Coordinates and camera shown locally, nothing uploaded"
+        },
+        {
+          "scene": "Delivering photos to a client",
+          "how": "Select many files → strip and download",
+          "result": "Every file cleaned in one pass"
+        }
+      ],
+      "labels": {
+        "files": "Choose photos (JPG, multiple allowed)",
+        "mode": "Action"
+      },
+      "runLabel": "Process"
     }
   }
 }

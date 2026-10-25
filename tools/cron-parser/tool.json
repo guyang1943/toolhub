@@ -1,0 +1,22 @@
+{
+  "id": "cron-parser",
+  "name": "Cron 解析",
+  "desc": "用人话解释 cron 表达式，并算出接下来 5 次执行时间",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "cron",
+    "定时任务",
+    "运维"
+  ],
+  "hot": true,
+  "aliases": [
+    "jiexi",
+    "jx",
+    "cron parser",
+    "cron",
+    "parser"
+  ]
+}

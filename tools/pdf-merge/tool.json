@@ -1,0 +1,23 @@
+{
+  "id": "pdf-merge",
+  "name": "PDF 合并拆分",
+  "desc": "多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传",
+  "category": "文档",
+  "source": "内置实现 (pdf-lib)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "pdf",
+    "合并",
+    "拆分"
+  ],
+  "hot": true,
+  "aliases": [
+    "hebingchaifen",
+    "hbcf",
+    "pdf merge & split",
+    "pdf",
+    "merge",
+    "split"
+  ]
+}

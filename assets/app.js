@@ -2095,27 +2095,34 @@ const PAGES = {
   submit: () => `
     <div class="page">
       <h1>➕ 推荐一个工具</h1>
-      <p class="lead">发现了好用的开源项目？欢迎推荐给我们，审核后会加入 ToolHub。</p>
-      <h2>✦ 收录标准</h2>
+      <p class="lead">两条路：推荐一个现成的开源项目加入目录，或者用下面的生成器直接造一个能在浏览器本地跑的新工具。</p>
+      <h2>✦ 方式一：推荐开源项目</h2>
       <ul>
         <li>开源项目（有明确 License），优先 MIT / Apache / BSD</li>
         <li>能在浏览器中使用，或可被工具化为网页形态</li>
         <li>有实际使用价值、站点可正常访问</li>
+        <li>需要注册才能用、含广告追踪、站点不稳的，不收录</li>
       </ul>
-      <h2>✦ 推荐模板</h2>
-      <p>请把下面内容发送到项目维护者邮箱（或提交 Issue）：</p>
+      <p>推荐模板：</p>
       <pre>项目名称：
 GitHub 仓库：
 官网/在线地址：
 一句话介绍：
 License：
 推荐理由（它解决什么问题）：</pre>
-      <h2>✦ 目前不收录</h2>
+      <h2>✦ 方式二：自己写一个本地工具</h2>
+      <p>ToolHub 的工具由 Manifest 驱动：新增一个工具 = 一份 <code>tool.json</code> + 一个 <code>run.js</code>，平台代码零改动。
+      下面的生成器把这两份文件（含表单清单与执行骨架）直接生成成压缩包，并用<b>与构建期完全相同</b>的规范做校验——这里通过，构建就不会拦你。</p>
+      <div id="tool-builder"></div>
+      <h2>✦ 接入约定（必读）</h2>
       <ul>
-        <li>需要注册账号才能使用的服务</li>
-        <li>含明显广告、追踪脚本或闭源的服务</li>
-        <li>无法长期稳定访问的站点</li>
+        <li><code>run()</code> 返回 <code>{ html, text?, files? }</code>，<code>files</code> 为 <code>[{ name, blob, kind }]</code></li>
+        <li><b>禁止任何网络请求</b>（fetch / XMLHttpRequest / WebSocket / sendBeacon），本地工具必须断网可跑</li>
+        <li>单工具体积 ≤ 200KB，不引入远程脚本</li>
+        <li>本地验收：<code>lint-tools.mjs</code> → <code>build-pages.mjs</code> → <code>verify.mjs</code> 全绿再提 PR</li>
       </ul>
+      <h2>✦ 完整规范</h2>
+      <p>字段定义、默认值与选项规则、常见拒绝原因，见 <a href="/tools/schema.json" target="_blank" rel="noopener">tools/schema.json</a>（机器可读）与仓库里的 <code>docs/TOOL-CONTRACT.md</code>（人话版）。</p>
     </div>`,
   feedback: () => {
     const tpl = `【ToolHub 反馈】
@@ -2175,6 +2182,17 @@ async function openPage(name) {
         copyBtn.textContent = '复制失败，请手动选中复制';
       }
     };
+  }
+
+  // 提交页的工具包生成器：按需加载（不进首屏包）
+  const builderBox = document.getElementById('tool-builder');
+  if (builderBox) {
+    try {
+      const { mountToolBuilder } = await import('/assets/toolbuilder.js');
+      await mountToolBuilder(builderBox);
+    } catch (e) {
+      builderBox.innerHTML = `<div class="empty">生成器加载失败：${esc(e.message)}。可直接参考仓库里的 docs/TOOL-CONTRACT.md 手写。</div>`;
+    }
   }
 }
 

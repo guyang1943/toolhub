@@ -4,6 +4,8 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { lintAll } from './lib/tool-lint.mjs';
+import { buildToolsJson } from './sync-tools.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -419,6 +421,55 @@ check('本地工具页相关阅读（v2.7 B3）', () => {
   }
   assert(!bad.length, bad.slice(0, 8).join('; '));
   return `${local.length} 个本地工具页有相关阅读，${howTo} 个带 HowTo`;
+});
+
+check('工具清单合规（v2.8 C1）', () => {
+  const schema = read('tools/schema.json');
+  const reg = read('tools/registry.json');
+  const { errors, ids } = lintAll(root, schema, reg.categories || []);
+  if (errors.length) {
+    throw new Error(
+      `${errors.length} 个问题：` + errors.slice(0, 4).map((e) => `${e.file}:${e.line} ${e.message}`).join('; ')
+    );
+  }
+  return `${ids.length} 个 manifest 通过 schema + 语义校验`;
+});
+
+check('注册表与工具分片同步（v2.8 C2）', () => {
+  const { payload, unknown } = buildToolsJson();
+  const cur = readFileSync(join(root, 'tools', 'tools.json'), 'utf8').trim();
+  assert(cur === JSON.stringify(payload, null, 2).trim(), 'tools/tools.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
+  assert(!unknown.length, `未登记在 registry.order：${unknown.join(', ')}`);
+  return `${payload.tools.length} 个工具 / 排序已登记`;
+});
+
+check('接入闭环（v2.8 C3）', () => {
+  const bad = [];
+  if (!existsSync(join(root, 'docs', 'TOOL-CONTRACT.md'))) bad.push('缺 docs/TOOL-CONTRACT.md');
+  if (!existsSync(join(root, 'scripts', 'new-tool.mjs'))) bad.push('缺脚手架 scripts/new-tool.mjs');
+  if (!existsSync(join(root, 'scripts', 'sync-tools.mjs'))) bad.push('缺注册表同步脚本');
+  // 生成器必须复用构建期的校验器与规范，否则「页面通过、构建失败」
+  const builder = existsSync(join(root, 'assets', 'toolbuilder.js')) ? readFileSync(join(root, 'assets', 'toolbuilder.js'), 'utf8') : '';
+  if (!builder) bad.push('缺提交页生成器 assets/toolbuilder.js');
+  else {
+    if (!/from '\.\/lib\/json-schema\.js'/.test(builder)) bad.push('生成器没有复用共享校验器');
+    if (!/\/tools\/schema\.json/.test(builder)) bad.push('生成器没有加载 tools/schema.json');
+    if (!/06054b50/.test(builder)) bad.push('生成器缺 zip 打包（目录结束签名）');
+  }
+  // 脚手架模板必须自带契约要求的导出
+  const cli = existsSync(join(root, 'scripts', 'new-tool.mjs')) ? readFileSync(join(root, 'scripts', 'new-tool.mjs'), 'utf8') : '';
+  if (cli && !/export const manifest/.test(cli)) bad.push('脚手架模板缺 export const manifest');
+  if (cli && !/export async function run/.test(cli)) bad.push('脚手架模板缺 export async function run');
+  // 规范文件必须同时覆盖 manifest 与 toolMeta
+  const schema = read('tools/schema.json');
+  for (const k of ['manifest', 'toolMeta', 'input', 'scenario', 'option']) {
+    if (!schema.$defs || !schema.$defs[k]) bad.push(`schema.json 缺 $defs.${k}`);
+  }
+  // 对外可见的契约：schema 已进发布包（爬虫与提交者都能直接取）
+  const ig = readFileSync(join(root, '.assetsignore'), 'utf8');
+  if (/^tools\/$/m.test(ig)) bad.push('tools/ 被整体排除，schema.json 会 404');
+  assert(!bad.length, bad.join('; '));
+  return '契约文档 + 脚手架 + 生成器 + 规范文件齐备';
 });
 
 // ---------- 输出 ----------

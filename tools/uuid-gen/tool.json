@@ -1,0 +1,22 @@
+{
+  "id": "uuid-gen",
+  "name": "UUID / ULID 生成",
+  "desc": "UUID v4、ULID、Nano ID 批量生成，可作数据库主键",
+  "category": "开发",
+  "source": "内置实现 (WebCrypto)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "uuid",
+    "ulid",
+    "id"
+  ],
+  "aliases": [
+    "shengcheng",
+    "sc",
+    "uuid / ulid generator",
+    "uuid",
+    "ulid",
+    "generator"
+  ]
+}

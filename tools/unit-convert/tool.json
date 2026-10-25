@@ -1,0 +1,22 @@
+{
+  "id": "unit-convert",
+  "name": "单位换算",
+  "desc": "长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "单位",
+    "换算",
+    "度量衡"
+  ],
+  "hot": true,
+  "aliases": [
+    "danweihuansuan",
+    "dwhs",
+    "unit converter",
+    "unit",
+    "converter"
+  ]
+}

@@ -9,6 +9,9 @@ import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+// 工具总数从数据推导，新增工具时不必再改测试
+const LOCAL_TOOLS = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools.length;
+const TOTAL_TOOLS = LOCAL_TOOLS + JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools.length;
 const BASE = (process.argv[2] || 'http://127.0.0.1:8766').replace(/\/$/, '');
 const PORT = 9333 + Math.floor(Math.random() * 200);
 const PROFILE = join(tmpdir(), 'toolhub-btest-' + Date.now());
@@ -251,7 +254,7 @@ async function feedFile(selector, dataUrl, name, type) {
   check('首页无控制台错误', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '));
   check('首页无 4xx 资源', netFails.length === 0, netFails.slice(0, 2).join(' | '));
   const heroText = await evaluate(`(document.querySelector('.hero-search-hint') || {}).textContent || ''`);
-  check('首页计数文案正确', heroText.includes('93 个工具'), heroText.trim());
+  check('首页计数文案正确', heroText.includes(`${TOTAL_TOOLS} 个工具`), heroText.trim());
   await shot('01-home');
 
   // ---- 2. 键盘操作（真实键盘事件）----
@@ -430,7 +433,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   await evaluate(`document.querySelector('#filterbar [data-rt="local"]').click()`);
   await sleep(500);
   const localNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
-  check('仅本机执行筛出 33 个', localNum === 33, `${localNum} / 全部 ${allNum}`);
+  check(`仅本机执行筛出 ${LOCAL_TOOLS} 个`, localNum === LOCAL_TOOLS, `${localNum} / 全部 ${allNum}`);
   const qs = await evaluate(`location.search`);
   check('筛选状态写入 URL', qs.includes('runtime=local'), qs);
   await evaluate(`document.querySelector('#filterbar [data-rt="offline"]').click()`);
@@ -574,6 +577,57 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const docFaq = await evaluate(`document.querySelectorAll('#tool-body .doc-body h3').length`);
   check('正文含常见问题', docFaq >= 2, docFaq + ' 条');
   await shot('06-directory-doc');
+
+  // ---- 9.10 新工具端到端：照片元数据剥离（v2.8）----
+  {
+    const { makeJpeg } = await import('file://' + join(root, 'scripts/lib/jpeg-fixture.mjs').replace(/\\/g, '/'));
+    const jpgDataUrl = 'data:image/jpeg;base64,' + makeJpeg({ gps: true, xmp: true }).toString('base64');
+    await goto('/tools/exif-strip/');
+    await waitText('#tool-body', '照片', 12000);
+    await feedFile('#f-files', jpgDataUrl, 'IMG_0001.jpg', 'image/jpeg');
+    await clickRun();
+    const exifTxt = await waitText('#tool-result', 'GPS', 15000);
+    check('新工具在真浏览器里读出了 GPS', exifTxt === true);
+    const exifWarn = await evaluate(`!!document.querySelector('#tool-result .msg-warn')`);
+    check('含定位时给出风险提示', exifWarn === true);
+    // 切到剥离模式，应当产出可下载的干净文件
+    await evaluate(`(() => { const s = document.getElementById('f-mode'); s.value = 'strip'; s.dispatchEvent(new Event('change', {bubbles:true})); })()`);
+    await clickRun();
+    const stripDone = await waitText('#tool-result', '已删除', 15000);
+    check('剥离模式产出结果', stripDone === true);
+    const dlName = await evaluate(`(() => { const a = document.querySelector('#tool-result .result-actions a[download]'); return a ? a.getAttribute('download') : ''; })()`);
+    check('剥离结果给出干净文件下载', /-clean\.jpg$/.test(String(dlName)), String(dlName));
+  }
+
+  // ---- 9.11 提交页工具包生成器（v2.8 C3）----
+  {
+    await goto('/submit/');
+    const mounted = await waitText('#tool-builder', '生成一个工具包', 12000);
+    check('提交页加载出工具包生成器', mounted === true);
+    // 先提交一份不合规的（id 含大写、介绍太短），必须被拦下
+    await evaluate(`(() => {
+      document.getElementById('b-id').value = 'Bad Id';
+      document.getElementById('b-name').value = '演示工具';
+      document.getElementById('b-desc').value = '太短';
+      document.getElementById('b-check').click();
+    })()`);
+    const errText = await waitText('#b-out', '需要先修', 8000);
+    check('不合规的清单被拦下并列出原因', errText === true);
+    const errCount = await evaluate(`document.querySelectorAll('#b-out .builder-errs li').length`);
+    check('错误逐条列出（含 id 与介绍长度）', errCount >= 2, errCount + ' 条');
+    // 改成合规内容后应通过，并生成 run.js 预览
+    await evaluate(`(() => {
+      document.getElementById('b-id').value = 'csv-to-md';
+      document.getElementById('b-name').value = 'CSV 转 Markdown';
+      document.getElementById('b-desc').value = '把 CSV 粘贴进来，直接得到可粘贴到文档的 Markdown 表格';
+      document.getElementById('b-check').click();
+    })()`);
+    const okText = await waitText('#b-out', '校验通过', 8000);
+    const outText = await evaluate(`(document.getElementById('b-out').textContent || '').replace(/\\s+/g, ' ').slice(0, 160)`);
+    check('合规清单通过校验', okText === true, okText ? '' : outText);
+    const genRun = await evaluate(`(() => { const p = document.querySelector('#b-out .builder-pre'); return p ? p.textContent.slice(0, 1500) : ''; })()`);
+    check('生成 run.js 且含 manifest/run 导出', /export const manifest/.test(genRun) && /export async function run/.test(genRun), genRun.slice(0, 40).replace(/\s+/g, ' '));
+  }
 
   // ---- 10. 刷新深链 + 返回按钮 ----
   await goto('/tools/mortgage-calc/');
