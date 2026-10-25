@@ -335,7 +335,9 @@ check('无障碍基础（skip link / 地标 / aria）', () => {
   }).map((t) => t.id);
   if (miss.length) bad.push('工具页缺: ' + miss.join(','));
   // 结果区 aria-live
-  const appSrc = readFileSync(join(root, 'assets/app.js'), 'utf8');
+  // v3.3：工具页（结果区 aria-live 等）已拆到 assets/tool-page.js，源码断言要读合并后的两份
+  const appSrc =
+    readFileSync(join(root, 'assets', 'app.js'), 'utf8') + '\n' + readFileSync(join(root, 'assets', 'tool-page.js'), 'utf8');
   if (!/id="tool-result"[^>]+aria-live="polite"/.test(appSrc)) bad.push('结果区缺 aria-live');
   // 卡片键盘可达（div 卡片需要 tabindex + role + Enter/Space）
   if (!/function kbLink\(/.test(appSrc)) bad.push('缺 kbLink 辅助函数');
@@ -357,9 +359,10 @@ check('结果出口契约（text / files）', () => {
   // 不允许回退成工具自绘复制按钮或下载链接（否则无法统一回收 objectURL）
   const legacy = localDirs.filter((d) => /id="copy-btn"/.test(src(d)));
   if (legacy.length) bad.push('自绘复制按钮: ' + legacy.join(','));
-  const appSrc2 = readFileSync(join(root, 'assets/app.js'), 'utf8');
-  if (!/function renderResultActions\(/.test(appSrc2)) bad.push('app.js 缺统一结果出口');
-  if (!/releaseResultUrls\(\)/.test(appSrc2)) bad.push('app.js 缺 objectURL 回收');
+  const appSrc2 =
+    readFileSync(join(root, 'assets', 'app.js'), 'utf8') + '\n' + readFileSync(join(root, 'assets', 'tool-page.js'), 'utf8');
+  if (!/function renderResultActions\(/.test(appSrc2)) bad.push('缺统一结果出口');
+  if (!/releaseResultUrls\(\)/.test(appSrc2)) bad.push('缺 objectURL 回收');
   const css2 = readFileSync(join(root, 'assets/style.css'), 'utf8');
   if (!/\.result-actions\s*\{/.test(css2)) bad.push('缺 .result-actions 样式');
   assert(!bad.length, bad.join('; '));
@@ -642,8 +645,9 @@ check('加密分享实现（E2）', () => {
   if (!/256/.test(src)) bad.push('密钥长度不是 256');
   if (!/PBKDF2/.test(src)) bad.push('口令派生未用 PBKDF2');
   if (!/ENC_PREFIX = '#enc='/.test(src)) bad.push('片段前缀不是 #enc=（片段不随请求发送，是这套方案的前提）');
-  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
-  if (!/applyEncryptedShare/.test(app)) bad.push('app.js 未接入收链接自动解密');
+  const app =
+    readFileSync(join(root, 'assets', 'app.js'), 'utf8') + '\n' + readFileSync(join(root, 'assets', 'tool-page.js'), 'utf8');
+  if (!/applyEncryptedShare/.test(app)) bad.push('未接入收链接自动解密');
   if (!/share-enc/.test(app)) bad.push('结果区缺加密分享入口');
   // 明文绝不能出现在 query string 里（那会进服务器日志）
   if (/location\.search\s*=\s*[^;]*enc=/.test(app)) bad.push('密文被写进了 query string');
@@ -661,7 +665,7 @@ check('批量处理与 ZIP（E3）', () => {
   if (!zip.includes('\\u0800') && !zip.includes('0x0800')) bad.push('缺 UTF-8 文件名标记（中文文件名会乱码）');
   if (!/export (async )?function zipBlob/.test(zip)) bad.push('未导出 zipBlob');
   // 三处复用同一份实现，不允许再出现第二份手写 zip
-  for (const f of ['assets/batch.js', 'assets/toolbuilder.js', 'assets/app.js']) {
+  for (const f of ['assets/batch.js', 'assets/toolbuilder.js', 'assets/tool-page.js']) {
     if (!/lib\/zip\.js/.test(readFileSync(join(root, f), 'utf8'))) bad.push(`${f} 未复用 lib/zip.js`);
   }
   if (!/export (async )?function mountBatch/.test(batch)) bad.push('batch.js 未导出 mountBatch');

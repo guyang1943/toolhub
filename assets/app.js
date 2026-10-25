@@ -22,6 +22,22 @@ const SITE = 'ToolHub · 开源工具，打开即用';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+/* ---------- 统一状态块（v3.3）----------
+   空态 / 加载态 / 错误态以前各写各的（div.empty、div.msg-err 混用），
+   留白、字重、语义都不一致。这里收敛成一个函数，工具页、页面不存在、
+   模块加载失败都调用它，视觉与语义由 .state 一套 CSS 决定。 */
+function stateHTML(kind, { title = '', detail = '', icon = '', inline = false } = {}) {
+  const ic = icon || (kind === 'error' ? '⚠️' : kind === 'loading' ? '' : '📭');
+  const head =
+    kind === 'loading'
+      ? '<span class="state-spinner" aria-hidden="true"></span>'
+      : `<span class="state-icon" aria-hidden="true">${ic}</span>`;
+  const t = title ? `<div class="state-title">${esc(title)}</div>` : '';
+  const d = detail ? `<div class="state-detail">${esc(detail)}</div>` : '';
+  const cls = 'state' + (kind === 'error' ? ' state--error' : '') + (inline ? ' state--inline' : '');
+  return `<div class="${cls}" role="${kind === 'error' ? 'alert' : 'status'}">${head}${t}${d}</div>`;
+}
+
 /* ---------- i18n ---------- */
 async function loadI18n() {
   if (LANG !== 'en') return;
@@ -1536,968 +1552,62 @@ function renderHeroStats(reg) {
   };
 }
 
-/* ---------- 工具页 ---------- */
-/* ---------- 工具输入：URL 参数 / 草稿 / 分享链接 ---------- */
-const DRAFT_PREFIX = 'toolhub:draft:';
-
-// 收集当前表单值（文件类不参与序列化）
-function collectValues(manifest) {
-  const values = {};
-  for (const inp of manifest.inputs) {
-    const el = document.getElementById('f-' + inp.name);
-    if (!el) continue;
-    values[inp.name] =
-      inp.type === 'file' ? (inp.multiple ? Array.from(el.files || []) : el.files[0]) : el.value;
-  }
-  return values;
-}
-
-// 把一组值写回表单；按 manifest 顺序写，顺带触发 change 以便联动字段先就位
-function applyValues(manifest, data) {
-  let applied = 0;
-  for (const inp of manifest.inputs) {
-    if (inp.type === 'file' || !(inp.name in data)) continue;
-    const el = document.getElementById('f-' + inp.name);
-    if (!el) continue;
-    const v = String(data[inp.name]).slice(0, 500);
-    if (el.tagName === 'SELECT' && !Array.from(el.options).some((o) => o.value === v)) continue;
-    el.value = v;
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
-    applied++;
-  }
-  return applied;
-}
-
-function saveDraft(id, values) {
-  try {
-    const plain = {};
-    for (const [k, v] of Object.entries(values)) if (typeof v === 'string' && v !== '') plain[k] = v;
-    if (!Object.keys(plain).length) return;
-    const s = JSON.stringify(plain);
-    if (s.length > 4000) return;
-    localStorage.setItem(DRAFT_PREFIX + id, s);
-  } catch {}
-}
-
-function loadDraft(id) {
-  try {
-    const s = localStorage.getItem(DRAFT_PREFIX + id);
-    return s ? JSON.parse(s) : null;
-  } catch {
-    return null;
-  }
-}
-
-// 把当前输入编码进 URL，便于把「算好的结果」直接发人
-function shareUrlOf(id, manifest) {
-  const url = new URL(location.origin + '/tools/' + id + '/');
-  const hasFile = manifest.inputs.some((i) => i.type === 'file');
-  for (const [k, v] of Object.entries(collectValues(manifest))) {
-    if (typeof v !== 'string' || v === '') continue;
-    if (v.length > 500) continue;
-    url.searchParams.set(k, v);
-  }
-  if (!hasFile) url.searchParams.set('run', '1'); // 收到链接即自动算一遍
-  return url.toString();
-}
-
-/* ---------- 统一结果出口：复制文本 / 下载文件 / 分享链接 ----------
-   run() 返回 { html, text?, files?: [{ name, blob?, url? }] }
-   平台据此渲染统一操作条，工具内不再自绘复制/下载按钮。 */
-let RESULT_URLS = [];
-function releaseResultUrls() {
-  for (const u of RESULT_URLS) {
-    try {
-      URL.revokeObjectURL(u);
-    } catch {
-      /* 已被浏览器回收 */
-    }
-  }
-  RESULT_URLS = [];
-}
-function blobUrlOf(f) {
-  if (f.url) return f.url;
-  if (!f.blob) return null;
-  const u = URL.createObjectURL(f.blob);
-  RESULT_URLS.push(u);
-  return u;
-}
-function legacyCopy(str) {
-  const ta = document.createElement('textarea');
-  ta.value = str;
-  ta.setAttribute('readonly', '');
-  ta.style.cssText = 'position:fixed;top:-1000px;left:0;opacity:0';
-  document.body.appendChild(ta);
-  ta.select();
-  let ok = false;
-  try {
-    ok = document.execCommand('copy');
-  } catch {
-    ok = false;
-  }
-  ta.remove();
-  return ok;
-}
-async function copyWithFeedback(str, btn, okText) {
-  const label = btn.dataset.label || btn.textContent;
-  btn.dataset.label = label;
-  let ok = true;
-  try {
-    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(str);
-    else ok = legacyCopy(str);
-  } catch {
-    ok = legacyCopy(str);
-  }
-  btn.textContent = ok ? okText : t('复制失败，请手动选中', 'copyFail');
-  setTimeout(() => (btn.textContent = label), 1600);
-}
-function triggerDownload(url, name) {
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = name || 'download';
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => a.remove(), 120);
-}
-function renderResultActions(out, box, id, manifest) {
-  const files = (Array.isArray(out.files) ? out.files : [])
-    .map((f) => ({ name: f.name || 'output', kind: f.kind || '', blob: f.blob || null, url: blobUrlOf(f) }))
-    .filter((f) => f.url);
-  const hasText = typeof out.text === 'string' && out.text.length > 0;
-  if (!files.length && !hasText) return null;
-
-  // 图片产物：预览也走平台，工具不再自建 objectURL（否则无法统一回收）
-  const imgs = files.filter((f) => f.kind === 'image');
-  if (imgs.length) {
-    const wrap = document.createElement('div');
-    wrap.className = 'result-preview';
-    wrap.innerHTML = imgs.map((f) => `<img src="${f.url}" alt="${esc(t('生成结果预览', 'previewAlt'))}" loading="lazy">`).join('');
-    box.appendChild(wrap);
-  }
-
-  const bar = document.createElement('div');
-  bar.className = 'result-actions';
-  bar.setAttribute('role', 'group');
-  bar.setAttribute('aria-label', t('结果操作', 'resultActions'));
-  const parts = [];
-  if (hasText) parts.push(`<button type="button" class="btn ghost" data-act="copy">${t('📋 复制结果', 'copyResult')}</button>`);
-  if (files.length === 1) parts.push(`<a class="btn ghost" data-act="download" href="${files[0].url}" download="${esc(files[0].name)}">${t('⬇ 下载', 'download')} ${esc(files[0].name)}</a>`);
-  if (files.length > 1) {
-    parts.push(`<button type="button" class="btn ghost" data-act="download-zip">${t('📦 打包下载 zip', 'downloadZip')}（${files.length}）</button>`);
-    parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 逐个下载', 'downloadAll')}</button>`);
-  }
-  // 工具链：把这次产出直接交给下游工具，不用先下载再上传
-  const chains = (CHAINS && typeof CHAINS === 'object' && CHAINS[id]) || [];
-  for (const c of chains) parts.push(`<button type="button" class="btn ghost" data-go="${c.to}">→ ${esc(c.label)}</button>`);
-  parts.push(`<button type="button" class="btn ghost" data-act="share">${t('🔗 分享此结果', 'shareResult')}</button>`);
-  // 加密分享：内容走 URL 片段，服务器与 CDN 日志里看不到明文（v3.0 E2）
-  parts.push(`<button type="button" class="btn ghost" data-act="share-enc">${t('🔒 加密分享', 'shareEnc')}</button>`);
-  parts.push(`<span class="ra-note">${t('全程在本机完成，文件不会上传', 'localNote')}</span>`);
-  bar.innerHTML = parts.join('');
-
-  const copyBtn = bar.querySelector('[data-act="copy"]');
-  if (copyBtn) copyBtn.onclick = () => copyWithFeedback(out.text, copyBtn, t('✓ 已复制', 'copied'));
-  const allBtn = bar.querySelector('[data-act="download-all"]');
-  if (allBtn) allBtn.onclick = () => files.forEach((f, i) => setTimeout(() => triggerDownload(f.url, f.name), i * 350));
-  const shareBtn = bar.querySelector('[data-act="share"]');
-  if (shareBtn) shareBtn.onclick = () => copyWithFeedback(shareUrlOf(id, manifest), shareBtn, t('✓ 链接已复制', 'linkCopied'));
-
-  const zipBtn = bar.querySelector('[data-act="download-zip"]');
-  if (zipBtn)
-    zipBtn.onclick = async () => {
-      zipBtn.disabled = true;
-      const label = zipBtn.textContent;
-      zipBtn.textContent = t('打包中…', 'zipping');
-      try {
-        const { zipBlob } = await import('/assets/lib/zip.js');
-        const entries = [];
-        for (const f of files) {
-          let blob = f.blob;
-          if (!blob) {
-            try {
-              blob = await (await fetch(f.url)).blob();
-            } catch {
-              continue;
-            }
-          }
-          entries.push({ name: f.name, data: blob });
-        }
-        const zip = await zipBlob(entries);
-        triggerDownload(URL.createObjectURL(zip), `${id}-${entries.length}files.zip`);
-        setTimeout(() => URL.revokeObjectURL(zip), 4000);
-        zipBtn.textContent = t('✓ 已打包', 'zipDone');
-      } catch (e) {
-        zipBtn.textContent = t('打包失败', 'zipFail');
-        console.warn('打包失败：', e);
-      }
-      setTimeout(() => {
-        zipBtn.disabled = false;
-        zipBtn.textContent = label;
-      }, 1800);
-    };
-
-  const encBtn = bar.querySelector('[data-act="share-enc"]');
-  if (encBtn)
-    encBtn.onclick = async () => {
-      const pass = await askPassphrase(t('加密分享', 'shareEnc'), t('可以留空：密钥会放进链接。设置口令后，链接和口令需要分开发。', 'encHint'));
-      if (pass === null) return; // 取消
-      encBtn.disabled = true;
-      try {
-        const { createShare } = await import('/assets/lib/secure-share.js');
-        const frag = await createShare({ id, values: collectValues(manifest), ts: Date.now() }, pass);
-        const url = location.origin + '/tools/' + id + '/' + '#' + frag;
-        await copyWithFeedback(url, encBtn, t('✓ 加密链接已复制', 'encCopied'));
-      } catch (e) {
-        encBtn.textContent = t('加密失败', 'encFail');
-        console.warn('加密分享失败：', e);
-      }
-      setTimeout(() => {
-        encBtn.disabled = false;
-      }, 600);
-    };
-  bar.querySelectorAll('[data-go]').forEach((btn) => {
-    btn.onclick = async () => {
-      btn.disabled = true;
-      const payload = { from: id, files: [], text: out.text || '' };
-      for (const f of files) {
-        let blob = f.blob;
-        if (!blob) {
-          try {
-            blob = await (await fetch(f.url)).blob();
-          } catch {
-            continue;
-          }
-        }
-        payload.files.push({ name: f.name, blob });
-      }
-      if (!payload.files.length && !payload.text) {
-        btn.disabled = false;
-        return;
-      }
-      setHandoff(payload);
-      navigate('/tools/' + btn.dataset.go + '/');
-    };
-  });
-  box.appendChild(bar);
-  return bar;
-}
-
-/* ---------- 口令弹层（加密分享用） ----------
-   返回 Promise<string | null>：空字符串表示不设口令，null 表示取消。
-   不用 window.prompt：无法定制文案、会被部分浏览器拦截、样式也不受控。 */
-function askPassphrase(title, hint = '') {
-  return new Promise((resolve) => {
-    const mask = document.createElement('div');
-    mask.className = 'enc-mask';
-    mask.innerHTML = `
-      <div class="enc-modal" role="dialog" aria-modal="true" aria-labelledby="enc-title">
-        <h3 id="enc-title">${esc(title)}</h3>
-        <p>${esc(hint)}</p>
-        <input id="enc-pass" type="password" autocomplete="new-password" placeholder="${esc(t('口令（可留空）', 'encPlaceholder'))}" />
-        <div class="enc-row">
-          <button type="button" class="btn ghost" id="enc-cancel">${t('取消', 'cancel')}</button>
-          <button type="button" class="btn" id="enc-ok">${t('生成链接', 'encGenerate')}</button>
-        </div>
-      </div>`;
-    document.body.appendChild(mask);
-    const input = mask.querySelector('#enc-pass');
-    const done = (v) => {
-      mask.remove();
-      resolve(v);
-    };
-    mask.querySelector('#enc-cancel').onclick = () => done(null);
-    mask.querySelector('#enc-ok').onclick = () => done(input.value.trim());
-    mask.addEventListener('click', (e) => {
-      if (e.target === mask) done(null);
-    });
-    mask.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') done(null);
-      if (e.key === 'Enter') done(input.value.trim());
-    });
-    setTimeout(() => input.focus(), 30);
-  });
-}
-
-function fieldHTML(inp) {
-  const ph = inp.placeholder ? `placeholder="${esc(inp.placeholder)}"` : '';
-  const dv = inp.default != null ? esc(inp.default) : '';
-  switch (inp.type) {
-    case 'textarea':
-      return `<textarea id="f-${inp.name}" ${ph}>${dv}</textarea>`;
-    case 'select':
-      return `<select id="f-${inp.name}">${inp.options
-        .map((o) => `<option value="${esc(o.value)}" ${o.value === inp.default ? 'selected' : ''}>${esc(o.label)}</option>`)
-        .join('')}</select>`;
-    case 'range':
-      return `<input type="range" id="f-${inp.name}" min="${inp.min}" max="${inp.max}" value="${dv || 75}" style="width:100%">`;
-    case 'file':
-      return `<input type="file" id="f-${inp.name}" accept="${esc(inp.accept || '*')}"${inp.multiple ? ' multiple' : ''} />`;
-    case 'number':
-      return `<input type="number" id="f-${inp.name}" value="${dv}" ${ph} />`;
-    default:
-      return `<input type="text" id="f-${inp.name}" value="${dv}" ${ph} />`;
-  }
-}
-
-/* ---------- 接收加密分享（v3.0 E2） ----------
-   链接形如 /tools/tax-calc/#enc=xxx，片段不会发给服务器。
-   返回 true 表示已用分享内容填好表单，跳过 URL 参数与草稿恢复。 */
-async function applyEncryptedShare(meta, manifest, doRun) {
-  if (!location.hash.startsWith('#enc=')) return false;
-  let mod;
-  try {
-    mod = await import('/assets/lib/secure-share.js');
-  } catch {
-    return false;
-  }
-  const env = mod.peekShare();
-  if (!env) return false;
-
-  let pass = '';
-  if (env.pass) {
-    pass = await askPassphrase(t('这个分享链接已加密', 'encNeedPass'), t('输入分享者另发给你的口令', 'encNeedPassHint'));
-    if (pass === null) return false; // 用户取消：保持空白表单
-  }
-  const res = await mod.openShare(location.hash, pass);
-  if (!res.ok) {
-    const note = document.createElement('div');
-    note.className = 'pipe-note enc-note-bad';
-    note.textContent = '⚠️ ' + (res.error || t('解密失败', 'decFail'));
-    const box = document.getElementById('tool-fields');
-    if (box) box.insertBefore(note, box.firstChild);
-    return false;
-  }
-  const data = res.data || {};
-  if (data.id && data.id !== meta.id) {
-    // 链接指向别的工具：直接跳过去，避免用户对着错的表单发呆
-    navigate('/tools/' + data.id + '/', true);
-    return true;
-  }
-  const applied = applyValues(manifest, data.values || {});
-  history.replaceState(null, '', location.pathname + location.search); // 清掉片段，刷新不再重复解密
-  const note = document.createElement('div');
-  note.className = 'pipe-note enc-note-ok';
-  note.textContent = '🔓 ' + t('已解密分享内容（内容从未经过服务器，片段不随请求发送）', 'decOk');
-  const box = document.getElementById('tool-fields');
-  if (box) box.insertBefore(note, box.firstChild);
-  if (applied && !manifest.inputs.some((i) => i.type === 'file')) setTimeout(() => doRun(), 80);
-  return true;
-}
-
+/* ---------- 工具页（v3.3 拆为独立模块，按需加载） ----------
+   工具页含表单渲染、结果区、分享/草稿/加密分享，只有 /tools/* 用到。
+   拆出去后首页不为它付字节；依赖由这里注入，避免主模块与子模块循环引用。 */
 async function openTool(id) {
-  const reg = await loadRegistry();
-  await loadI18n();
-  const meta = reg.tools.find((tool) => tool.id === id);
-  $('#view-home').style.display = 'none';
-  $('#view-page').style.display = 'none';
-  $('#view-tool').style.display = '';
-  if (!meta) {
-    $('#tool-body').innerHTML = '<div class="empty">工具不存在，可能已下线</div>';
-    return;
-  }
-  document.title = LANG === 'en' ? `${toolMeta(meta).name} · ToolHub` : `${meta.name} · ${SITE}`;
-  renderNavActive('/');
-
-  // 目录工具：站内详情页 + 跳转官网（页面本身可用于搜索引擎收录）
-  if (meta.runtime === 'link') {
-    const m = toolMeta(meta);
-    const icon2 = CAT_ICONS[meta.category] || '🧰';
-    const relLocal = REGISTRY.tools.filter((x) => x.runtime !== 'link' && x.category === meta.category).slice(0, 4);
-    const relDir = REGISTRY.tools.filter((x) => x.runtime === 'link' && x.id !== meta.id && x.category === meta.category).slice(0, 4);
-    $('#tool-body').innerHTML = `
-      <div class="panel">
-        <div class="tool-head">
-          <h1><span class="h-icon">${icon2}</span>${m.name}<button class="share-btn" id="share-btn" title="复制链接">🔗</button></h1>
-          <p class="desc">${m.desc}</p>
-          <p class="src">✦ ${t('来源', 'sourceLabel')}：${esc(meta.source)} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}</p>
-        </div>
-        <div class="dir-cta">
-          <div class="dir-cta-text">
-            <b>${t('官方在线版', '') || '官方在线版'}</b>
-            <div style="font-size:13px;color:var(--muted);margin-top:4px">
-              这是第三方开源项目的官方在线版，点击将在新标签页打开 <code>${esc(new URL(meta.url).hostname)}</code>
-            </div>
-          </div>
-          <a class="btn" href="${esc(meta.url)}" target="_blank" rel="noopener">打开官网 ↗</a>
-        </div>
-        <div class="panel usage" style="margin-top:16px">
-          📘 <b>说明</b>　本页是 ToolHub 对该开源项目的整理与推荐，工具本体由项目作者维护，版权与数据均归原作者所有。
-          如果官网无法访问，可能是临时故障或网络限制，可稍后重试或在项目仓库反馈。
-        </div>
-        ${
-          meta.blurb
-            ? `<div class="panel tips" style="margin-top:12px">✍️ <b>编辑推荐</b>　${meta.blurb}</div>`
-            : ''
-        }
-      </div>
-      ${
-        relLocal.length || relDir.length
-          ? `<div class="section-title" style="margin-top:22px">🔗 <span>${t('相关工具', 'relatedLocal')}</span></div>
-             <div class="related-row">
-               ${relLocal
-                 .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
-                 .join('')}
-               ${relDir
-                 .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
-                 .join('')}
-             </div>`
-          : ''
-      }
-      ${
-        SEO_BODY
-          ? `<div class="panel doc-body" style="margin-top:18px">${SEO_BODY}</div>`
-          : ''
-      }`;
-    $('#tool-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {
-      kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
-    });
-    const sb2 = $('#share-btn');
-    if (sb2) {
-      sb2.onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(location.href);
-          sb2.textContent = '✅';
-          setTimeout(() => (sb2.textContent = '🔗'), 1600);
-        } catch {
-          sb2.textContent = '❌';
-          setTimeout(() => (sb2.textContent = '🔗'), 1600);
-        }
-      };
-    }
-    return;
-  }
-
-  pushRecent(meta.id);
-  $('#tool-body').innerHTML = `
-    <div class="panel" id="tool-form"></div>
-    <div class="panel result" id="tool-result" style="display:none" role="region" aria-live="polite" aria-label="运行结果"></div>
-    <div id="tool-docs"></div>
-    <div id="related-panel"></div>`;
-
-  let mod;
+  let m;
   try {
-    mod = await import(`/tools/${id}/run.js`);
+    m = await import('/assets/tool-page.js');
   } catch (e) {
-    $('#tool-body').innerHTML = `<div class="empty">工具加载失败：${esc(e.message)}</div>`;
+    $('#tool-body').innerHTML = stateHTML('error', { title: '工具模块加载失败', detail: e.message });
     return;
   }
-  if (!mod.manifest || !mod.run) {
-    $('#tool-body').innerHTML = '<div class="empty">该工具缺少 manifest 或 run 定义</div>';
-    return;
-  }
-  const manifest = mod.manifest;
-  const icon = CAT_ICONS[meta.category] || '🧰';
-  const used = usageMap()[meta.id] || 0;
-  const usedNote = used
-    ? LANG === 'en'
-      ? ` · ${used} ${t('次', 'usedLocal')}`
-      : ` · 本机用过 ${used} 次`
-    : '';
-  // 英译覆盖（缺失时回退中文）
-  const d = LANG === 'en' && D18N ? D18N[meta.id] : null;
-  const usageText = (d && d.usage) || manifest.usage;
-  const tipList = (d && d.tips) || manifest.tips;
-  const scenarioList = (d && d.scenarios) || manifest.scenarios;
-  const labelOf = (inp) => (d && d.labels && d.labels[inp.name]) || inp.label;
-  const runLabel = (d && d.runLabel) || manifest.runLabel || t('运行', 'runDefault');
-
-  let blocks = '';
-  if (usageText) blocks += `<div class="panel usage">📘 <b>${t('使用说明', 'detailUsage')}</b>　${usageText}</div>`;
-  if (scenarioList && scenarioList.length) {
-    blocks += `<details class="panel scenarios" open>
-      <summary>📖 ${t('使用场景', 'detailScenarios')}（${scenarioList.length}）</summary>
-      <div class="scenario-list">${scenarioList
-        .map(
-          (s, i) => `<div class="scenario-item">
-            <div class="sc-title"><span class="sc-num">${i + 1}</span>${s.scene}</div>
-            <div class="sc-flow">${t('做法', 'how')}：${s.how}</div>
-            <div class="sc-result">${t('结果', 'result')}：${s.result}</div>
-          </div>`
-        )
-        .join('')}</div>
-    </details>`;
-  }
-  if (tipList && tipList.length)
-    blocks += `<div class="panel tips">💡 <b>${t('小贴士', 'detailTips')}</b><ul>${tipList.map((x) => `<li>${x}</li>`).join('')}</ul></div>`;
-
-  // 长尾教程（步骤 + 常见错误，中文模式展示；英文详情见 i18n-detail）
-  const article = (await loadArticles())[meta.id];
-  if (article && LANG !== 'en') {
-    if (article.steps && article.steps.length)
-      blocks += `<div class="panel tutorial"><b>📝 使用步骤</b><ol class="tut-steps">${article.steps.map((s) => `<li>${s}</li>`).join('')}</ol></div>`;
-    if (article.pitfalls && article.pitfalls.length)
-      blocks += `<div class="panel tutorial"><b>⚠️ 常见错误</b><div class="pitfall-list">${article.pitfalls
-        .map((p) => `<div class="pitfall-item"><b>${p.title}</b><span>${p.body}</span></div>`)
-        .join('')}</div></div>`;
-  }
-
-  $('#tool-form').innerHTML =
-    `<div class="tool-head">
-      <h1><span class="h-icon">${icon}</span>${toolMeta(meta).name}<button class="share-btn" id="share-btn" title="复制带当前输入的链接">🔗</button><button class="share-btn" id="cmp-btn" title="加入对比">⇄ 加入对比</button><button class="share-btn" id="eg-btn" title="填入示例数据">⌨ 示例</button><button class="share-btn" id="embed-btn" title="复制嵌入代码">&lt;/&gt; 嵌入</button></h1>
-      <p class="desc">${toolMeta(meta).desc}</p>
-      <p class="src">✦ ${t('来源', 'sourceLabel')}：${meta.source} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}${usedNote}</p>
-      ${LANG === 'en' && !d ? '<p class="src" style="color:#c2570a">⚠️ Detailed instructions are currently available in Chinese only.</p>' : ''}
-    </div>
-    <div class="panel" id="tool-fields">${manifest.inputs.map((inp) => `<div class="field"><label>${labelOf(inp)}</label>${fieldHTML(inp)}</div>`).join('')}
-      <div class="row"><button class="btn" id="run-btn">${runLabel}</button></div></div>`;
-
-  // 教程正文放在结果之后：先让用户能用，再解释怎么用
-  const docs = $('#tool-docs');
-  if (docs) docs.innerHTML = blocks;
-
-  $('#run-btn').onclick = async () => {
-    await doRun();
-  };
-
-  // 工具可选钩子：表单渲染完成后做联动（如单位换算的「类型 → 单位」下拉联动）
-  if (typeof mod.onForm === 'function') {
-    try {
-      mod.onForm($('#tool-form'));
-    } catch (e) {
-      console.warn('onForm 钩子执行失败：', e);
-    }
-  }
-
-  // 输入回填：加密分享 > URL 参数（可分享「算好的结果」）> 本机上次输入
-  (async function restoreInputs() {
-    if (await applyEncryptedShare(meta, manifest, doRun)) return;
-    const params = new URLSearchParams(location.search);
-    const fromUrl = {};
-    for (const [k, v] of params) if (k !== 'embed' && k !== 'run') fromUrl[k] = v;
-    // run=1 时收到链接即自动算一遍（文件类工具无法自动跑）
-    const wantRun = params.get('run') === '1' && !manifest.inputs.some((i) => i.type === 'file');
-    if (Object.keys(fromUrl).length && applyValues(manifest, fromUrl)) {
-      if (wantRun) setTimeout(() => doRun(), 60);
-      return;
-    }
-    // 只带 run=1（无字段参数）：按默认值直接运行
-    if (wantRun) {
-      setTimeout(() => doRun(), 60);
-      return;
-    }
-    const draft = loadDraft(meta.id);
-    if (!draft) return;
-    if (!applyValues(manifest, draft)) return;
-    const bar = document.createElement('div');
-    bar.className = 'draft-note';
-    bar.innerHTML = `${t('已恢复上次输入', 'draftRestored')} <button type="button" id="draft-clear">${t('清空', 'draftClear')}</button>`;
-    const fields = document.getElementById('tool-fields');
-    if (fields) fields.insertBefore(bar, fields.firstChild);
-    document.getElementById('draft-clear').onclick = () => {
-      localStorage.removeItem(DRAFT_PREFIX + meta.id);
-      bar.remove();
-      renderTool(meta.id);
-    };
-  })();
-
-  // 工具链接力：把上一步的产出直接填进本次表单（同一次会话内，不上传）
-  (function applyPipelineHandoff() {
-    const h = takeHandoff();
-    if (!h) return;
-    const inputs = manifest.inputs || [];
-    const fileInp = inputs.find((i) => i.type === 'file');
-    const fileEl = fileInp ? document.getElementById('f-' + fileInp.name) : null;
-    let injected = 0;
-    if (fileEl && h.files && h.files.length) {
-      try {
-        const dt = new DataTransfer();
-        h.files.forEach((f) => dt.items.add(new File([f.blob], f.name, { type: f.blob.type || 'application/octet-stream' })));
-        fileEl.files = dt.files;
-        injected = h.files.length;
-      } catch {
-        injected = 0; // 老浏览器不支持构造 FileList，退回手动选择
-      }
-    }
-    if (!injected && h.text) {
-      const txtInp = inputs.find((i) => i.type === 'textarea') || inputs.find((i) => i.type === 'text');
-      const txtEl = txtInp ? document.getElementById('f-' + txtInp.name) : null;
-      if (txtEl && !txtEl.value) {
-        txtEl.value = h.text;
-        injected = 1;
-      }
-    }
-    if (!injected) return;
-    const note = document.createElement('div');
-    note.className = 'pipe-note';
-    // 来源不同，说法要不同：拖进来的文件说「上一步的结果」会让人以为是工具链接力
-    const lead = h.from === 'drop' ? t('已放入你拖进来的文件', 'dropLoaded') : t('已带入上一步的结果', 'handoffNote');
-    note.innerHTML = `↪ ${lead}${
-      injected > 1 ? `（${injected} ${t('个文件', 'filesUnit')}）` : ''
-    }，${t('确认参数后点运行即可', 'handoffHint')}`;
-    const fields = document.getElementById('tool-fields');
-    if (fields) fields.insertBefore(note, fields.firstChild);
-  })();
-
-  async function doRun() {
-    const values = collectValues(manifest);
-    saveDraft(meta.id, values);
-    const box = $('#tool-result');
-    box.style.display = '';
-    if (meta.runtime === 'pyodide') {
-      // Python 工具：首次需下载自托管运行时，展示确定性进度条
-      box.innerHTML = `<div class="py-load"><div class="py-load-bar"><div class="py-load-fill" id="py-fill"></div></div><div class="py-load-txt" id="py-txt">正在准备 Python 运行时…</div></div>`;
-      setProgressHandler((loaded, total, phase) => {
-        const fill = document.getElementById('py-fill');
-        const txt = document.getElementById('py-txt');
-        if (!fill || !txt) return;
-        const mb = (n) => (n / 1048576).toFixed(1);
-        if (phase === 'init') {
-          fill.style.width = '100%';
-          txt.textContent = '正在初始化 Python 环境…';
-          return;
-        }
-        fill.style.width = (total ? Math.min(100, Math.round((loaded / total) * 100)) : 0) + '%';
-        const label = total > 20000000 ? 'pandas 数据处理库' : 'Python 运行时';
-        txt.textContent = `正在下载${label} ${mb(loaded)} / ${mb(total)} MB（仅首次，之后可离线使用）`;
-      });
-    } else {
-      box.innerHTML = `<div class="empty">${t('处理中…', 'processing')}</div>`;
-    }
-    try {
-      const out = await mod.run(values);
-      releaseResultUrls();
-      box.innerHTML = out.html;
-      renderResultActions(out, box, meta.id, manifest);
-      if (out.after) out.after(box);
-      pushUsage(meta.id); // 仅本机计数
-      focusResult(box);
-    } catch (e) {
-      box.innerHTML = `<div class="msg-err">${t('出错了：', 'errorPrefix')}${esc(e.message)}</div>`;
-      focusResult(box);
-    } finally {
-      setProgressHandler(null);
-    }
-  }
-
-  // 结果出现后把焦点送到结果区：键盘用户不必再猜结果在哪，读屏也会朗读内容。
-  // 用 tabindex=-1 让它可编程聚焦但不进 Tab 序列。
-  function focusResult(box) {
-    if (!box || box.style.display === 'none') return;
-    if (!box.hasAttribute('tabindex')) box.setAttribute('tabindex', '-1');
-    try {
-      box.focus({ preventScroll: false });
-    } catch {
-      /* 老浏览器不支持 options 参数 */
-      box.focus();
-    }
-    box.classList.remove('result-flash');
-    void box.offsetWidth; // 强制重排，保证动画能重放
-    box.classList.add('result-flash');
-  }
-
-  // Ctrl/⌘ + Enter 快捷执行（textarea 内）
-  $('#tool-form').addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && e.target.tagName === 'TEXTAREA') {
-      e.preventDefault();
-      doRun();
-    }
+  m.bindToolPage({
+    $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles,
+    kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive,
+    getRegistry: () => REGISTRY,
+    getLang: () => LANG,
+    getD18N: () => D18N,
+    getSeoBody: () => SEO_BODY,
+    stateHTML,
+    CHAINS, setHandoff, takeHandoff, setProgressHandler,
   });
-
-  // 填入示例数据
-  const eg = $('#eg-btn');
-  if (eg) {
-    eg.onclick = () => {
-      for (const inp of manifest.inputs) {
-        const el = document.getElementById('f-' + inp.name);
-        if (!el || inp.type === 'file') continue;
-        const v = (manifest.example && manifest.example[inp.name] !== undefined) ? manifest.example[inp.name] : inp.default;
-        if (v !== undefined && v !== null && v !== '') el.value = v;
-      }
-      eg.textContent = '✓ 已填入';
-      setTimeout(() => (eg.textContent = '⌨ 示例'), 1500);
-    };
-  }
-
-  // 复制嵌入代码
-  const eb = $('#embed-btn');
-  if (eb) {
-    eb.onclick = async () => {
-      const code = `<iframe src="${location.origin}/tools/${meta.id}/?embed=1" width="100%" height="680" style="border:1px solid #e3e6ea;border-radius:12px" title="${meta.name} · ToolHub" loading="lazy"></iframe>`;
-      try {
-        await navigator.clipboard.writeText(code);
-        eb.textContent = '✓ 已复制';
-        setTimeout(() => (eb.textContent = '</> 嵌入'), 1600);
-      } catch {
-        eb.textContent = '复制失败';
-        setTimeout(() => (eb.textContent = '</> 嵌入'), 1600);
-      }
-    };
-  }
-
-  // 加入对比
-  const cb = $('#cmp-btn');
-  if (cb) {
-    const on = cmpList().includes(meta.id);
-    cb.textContent = on ? '✓ 已加入对比' : '⇄ 加入对比';
-    cb.classList.toggle('on', on);
-    cb.dataset.cmpId = meta.id;
-    cb.onclick = () => toggleCompare(meta.id);
-  }
-
-  // 复制分享链接
-  const sb = $('#share-btn');
-  if (sb) {
-    sb.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(shareUrlOf(meta.id, manifest));
-        sb.textContent = '✅';
-        setTimeout(() => (sb.textContent = '🔗'), 1600);
-      } catch {
-        sb.textContent = '❌';
-        setTimeout(() => (sb.textContent = '🔗'), 1600);
-      }
-    };
-  }
-
-  const related = REGISTRY.tools
-    .filter((t) => t.id !== meta.id && (t.category === meta.category || t.hot) && t.runtime !== 'link')
-    .slice(0, 4);
-  const relatedDir = REGISTRY.tools
-    .filter((t) => t.id !== meta.id && t.runtime === 'link' && t.category === meta.category)
-    .slice(0, 4);
-  const rp = $('#related-panel');
-  let relHTML = '';
-  if (related.length) {
-    relHTML += `<div class="section-title">🔗 <span>${t('相关工具', 'relatedLocal')}</span></div>
-      <div class="related-row">${related
-        .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
-        .join('')}</div>`;
-  }
-  if (relatedDir.length) {
-    relHTML += `<div class="section-title">🌐 <span>${t('同类在线工具', 'relatedDir')}</span><em>${t('第三方开源项目官网', 'relatedDirSub')}</em></div>
-      <div class="related-row">${relatedDir
-        .map(
-          (x) =>
-            `<a class="related-chip" href="${esc(x.url)}" target="_blank" rel="noopener">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name} ↗</a>`
-        )
-        .join('')}</div>`;
-  }
-  rp.innerHTML = relHTML;
-  rp.querySelectorAll('.related-chip[data-id]').forEach((el) => {
-    kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
-  });
+  return m.openTool(id);
 }
 
-/* ---------- 静态内容页 ---------- */
-const PAGES = {
-  about: () => `
-    <div class="page">
-      <h1>ℹ️ 关于 ToolHub</h1>
-      <p class="lead">把 GitHub 上好用的开源工具，变成"打开网页就能用"的形态——不用装环境、不用敲命令、不用注册。</p>
-      <h2>✦ 两种工具类型</h2>
-      <ul>
-        <li><b>🔒 本地运行</b>：直接在浏览器里计算（JS / WebAssembly），数据<b>不会离开你的设备</b>，可放心处理敏感内容。</li>
-        <li><b>🌐 在线直达</b>：精选知名开源项目的官方在线版，点击跳转。版权与内容归各项目所有。</li>
-      </ul>
-      <h2>✦ 技术架构</h2>
-      <ul>
-        <li>纯静态站点 + 无构建步骤，托管于 Cloudflare 全球网络</li>
-        <li>工具由 <b>Manifest 规范</b>驱动：新增工具 = 写一份清单 + 一个执行文件，平台代码零改动</li>
-        <li>Python 工具通过 Pyodide（WASM）在浏览器内沙箱执行</li>
-      </ul>
-      <h2>✦ 为什么本地执行更放心</h2>
-      <table class="cmp-table">
-        <tr><th></th><th>ToolHub 本地工具</th><th>普通在线工具站</th><th>自己装环境</th></tr>
-        <tr><td>数据是否上传</td><td class="yes">不上传</td><td class="no">上传到对方服务器</td><td class="yes">不上传</td></tr>
-        <tr><td>是否需要注册</td><td class="yes">不需要</td><td class="no">常常需要</td><td class="yes">不需要</td></tr>
-        <tr><td>上手成本</td><td class="yes">打开即用</td><td>打开即用</td><td class="no">装依赖、配环境</td></tr>
-        <tr><td>能否离线</td><td class="yes">可以（PWA）</td><td class="no">不行</td><td>可以</td></tr>
-      </table>
-      <h2>✦ 数据与隐私</h2>
-      <ul>
-        <li>平台<b>没有后端数据库</b>，不收集你的输入内容</li>
-        <li>「最近使用」「我的收藏」「本机使用次数」都只保存在你浏览器的 localStorage 中，可随时清除</li>
-        <li>站点若启用访问量统计，仅统计页面访问次数，不使用 Cookie、不追踪个人身份；详细口径与关闭方式见 <a href="/privacy/">隐私说明</a></li>
-      </ul>
-      <h2>✦ 开源与致谢</h2>
-      <p>每个工具页均标注来源仓库与 License。已收录 ${REGISTRY ? REGISTRY.counts.local + REGISTRY.counts.dir : ''} 个工具，其中本地工具的开源依赖包括 qrcodejs、marked、DOMPurify、Pyodide，均以原始协议使用。</p>
-    </div>`,
-  batch: () => `
-    <div class="page">
-      <h1>📦 批量处理图片</h1>
-      <p class="lead">一次拖入十几张截图，<b>限制边长 + 统一格式 + 压缩质量</b>一趟跑完，最后打包成一个 zip。全部在本机完成，图片不上传。</p>
-      <div id="batch-app" class="batch"></div>
-      <h2>✦ 适合什么场景</h2>
-      <ul>
-        <li>写文档要插十几张截图，每张都几百 KB —— 统一压到 1600px 宽，体积常常只剩三分之一</li>
-        <li>把一堆 PNG 截图转成 WebP，网页加载更快</li>
-        <li>相机直出的照片太大，发邮件前统一缩小</li>
-      </ul>
-      <h2>✦ 为什么不用在线批量工具</h2>
-      <p>多数在线批量压缩会把图片上传到它自己的服务器，处理完再给你下载链接。这里是浏览器内的 canvas 编码，图片从头到尾没离开你的设备，断网也能用（缓存过离线包之后）。</p>
-      <h2>✦ 注意事项</h2>
-      <ul>
-        <li>PNG 是无损格式，调「质量」对它没效果；要明显变小请选 WebP 或 JPEG</li>
-        <li>转 JPEG 会丢掉透明背景（变成白底），带透明的图请保持 PNG</li>
-        <li>处理在单线程里排队执行，几十张时请让页面留在前台</li>
-      </ul>
-      <p>只想处理单张、需要更细的参数？用 <a href="/tools/image-compress/">图片压缩</a>、<a href="/tools/image-resize/">图片改尺寸</a> 或 <a href="/tools/image-convert/">图片格式转换</a>。</p>
-    </div>`,
-  privacy: () => {
-    const off = analyticsOptedOut();
-    return `
-    <div class="page">
-      <h1>🔒 隐私说明</h1>
-      <p class="lead">一句话：<b>你的输入不会离开这台设备</b>。这个页面把「数据到底去了哪」逐条写清楚，包括我们能看到的和看不到的。</p>
-
-      <h2>✦ 三类工具，三种数据流向</h2>
-      <table class="cmp-table">
-        <tr><th>类型</th><th>数据去了哪</th><th>谁能看到</th></tr>
-        <tr><td><b>本地执行</b>（占多数）</td><td>只在你浏览器的内存里</td><td class="yes">只有你</td></tr>
-        <tr><td><b>Python 工具</b></td><td>Pyodide 在你浏览器内跑 WASM，首次下载运行时</td><td class="yes">只有你</td></tr>
-        <tr><td><b>第三方官网</b>（目录工具）</td><td>点「打开官网」后进入对方站点，适用对方的隐私政策</td><td class="no">对方站点</td></tr>
-      </table>
-      <p>本站<b>没有后端数据库</b>，也没有上传接口——这不是承诺，是架构上就不存在：整站是静态文件，唯一的动态部分是 Cloudflare 的边缘缓存。</p>
-
-      <h2>✦ 浏览器里存了什么</h2>
-      <ul>
-        <li><code>toolhub:theme</code> — 深色/浅色偏好</li>
-        <li><code>toolhub:favs</code> — 你收藏的工具 id</li>
-        <li><code>toolhub:recent</code> — 最近打开过的工具</li>
-        <li><code>toolhub:usage</code> — 每个工具在本机用过几次（用于「最常用」排序）</li>
-        <li><code>toolhub:draft:&lt;工具id&gt;</code> — 上次填的输入，方便回头继续</li>
-        <li><code>${ANALYTICS_OPT_OUT}</code> — 你是否关闭了访问统计</li>
-        <li>Service Worker 缓存 — 离线包（可在 <a href="/offline/">离线说明</a> 里查看与清理）</li>
-      </ul>
-      <p>全部在你自己浏览器里，清除站点数据即可一次清空。换设备不会同步，我们也没有能力同步。</p>
-
-      <h2>✦ 访问统计</h2>
-      <p>本站默认<b>不加载任何统计脚本</b>。若站长启用了统计，也只会是聚合的访问量（哪个页面被打开多少次），不使用 Cookie、不采集输入内容、不跨站追踪。
-      当前状态：<b>${off ? '你已关闭统计' : '未关闭（若服务端未启用统计，也不会发出任何请求）'}</b>。</p>
-      <div class="row">
-        <button class="btn ghost" id="analytics-optout" data-off="${off ? '1' : '0'}">${off ? '恢复统计' : '在本机关闭统计'}</button>
-      </div>
-      <p class="muted-note">关闭后本机不再请求任何统计脚本；这个选择只存在本地，不会上传。浏览器开启 Do Not Track 时同样自动跳过。</p>
-
-      <h2>✦ 关于加密分享</h2>
-      <p>分享结果时可以选择加密：内容用 AES-GCM 在你的浏览器里加密后放进链接的 <code>#</code> 后面。<b>URL 片段（# 之后的部分）不会被发送到服务器</b>，所以服务器日志、CDN 访问日志里都不会出现明文。
-      如果设置了口令，拿到链接的人还需要口令才能解开。</p>
-
-      <h2>✦ 你可以自己验证</h2>
-      <ul>
-        <li>打开开发者工具的 Network 面板，随便跑一个本地工具——不会出现任何上传请求</li>
-        <li>断网后刷新页面，本地工具仍然可用（离线包缓存过之后）</li>
-        <li>源码就在仓库里，统计与安全头的定义分别在 <code>analytics.json</code> 与 <code>assets/lib/security-headers.js</code></li>
-      </ul>
-      <p><a href="/about/">← 回关于页</a></p>
-    </div>`;
-  },
-  offline: () => {
-    // 静态页首访时由构建期注入；SPA 内部跳转时没有，交给 mountOffline 从 sw.js 现算
-    const meta = window.__OFFLINE_META__;
-    const size = meta ? `${meta.files} 个地址 · 约 ${(meta.bytes / 1048576).toFixed(1)} MB` : '全部本地工具页与执行脚本';
-    return `
-    <div class="page">
-      <h1>📴 离线包与安装</h1>
-      <p class="lead">把全部本地工具缓存进浏览器之后，<b>断网、飞行模式、隔离内网都能照常打开并运算</b>——这时它才真正等同于一个装在电脑上的工具。</p>
-      <div id="offline-app" class="offline"></div>
-
-      <h2>✦ 两个概念别混淆</h2>
-      <table class="cmp-table">
-        <tr><th></th><th>安装成应用（PWA）</th><th>下载离线包</th></tr>
-        <tr><td>解决什么</td><td>从桌面图标直接打开，有独立窗口</td><td>没有网络也能打开具体工具页</td></tr>
-        <tr><td>是否必需网络</td><td>首次安装要，之后打开仍需联网</td><td>下载完成后完全不需要</td></tr>
-        <tr><td>两者关系</td><td colspan="2">互相独立：不安装也能离线；装了应用但没下载离线包，断网时仍打不开工具页</td></tr>
-      </table>
-
-      <h2>✦ 包含与不包含</h2>
-      <ul>
-        <li><b>包含</b>：首页、全部分类页、全部本地工具页与其 <code>run.js</code>、界面样式与脚本、工具注册表与多语言文件（当前 ${size}）</li>
-        <li><b>不包含</b>：第三方官网（目录工具是别人的站点，本来就不可能离线）</li>
-        <li><b>不包含</b>：Python 运行时（13MB 起，还有可选的数据科学包）——第一次用 Python 工具时单独下载并缓存，不拖慢装包</li>
-      </ul>
-
-      <h2>✦ 更新机制</h2>
-      <p>页面导航走「缓存优先 + 后台更新」：先给你秒开的旧版本，同时在后台把新版本写进缓存，下次打开就是新版。工具注册表与界面脚本走「网络优先」，所以新增工具、改文案在部署后立即生效，不必等缓存过期。</p>
-
-      <h2>✦ 自己验证一下</h2>
-      <ol>
-        <li>点上面的「下载离线包」，等进度走到 100%</li>
-        <li>开发者工具 Network 面板勾上 Offline（或直接关 Wi-Fi）</li>
-        <li>刷新页面，随便打开一个本地工具——应该照常可用，且没有任何失败的上传请求（本来就没有上传接口）</li>
-      </ol>
-      <p class="muted-note">想彻底退回联网状态？点页面上的「清除缓存」，或清除本站站点数据。</p>
-      <p><a href="/privacy/">隐私说明</a> · <a href="/batch/">批量处理</a> · <a href="/about/">关于</a></p>
-    </div>`;
-  },
-  submit: () => `
-    <div class="page">
-      <h1>➕ 推荐一个工具</h1>
-      <p class="lead">两条路：推荐一个现成的开源项目加入目录，或者用下面的生成器直接造一个能在浏览器本地跑的新工具。</p>
-      <h2>✦ 方式一：推荐开源项目</h2>
-      <ul>
-        <li>开源项目（有明确 License），优先 MIT / Apache / BSD</li>
-        <li>能在浏览器中使用，或可被工具化为网页形态</li>
-        <li>有实际使用价值、站点可正常访问</li>
-        <li>需要注册才能用、含广告追踪、站点不稳的，不收录</li>
-      </ul>
-      <p>推荐模板：</p>
-      <pre>项目名称：
-GitHub 仓库：
-官网/在线地址：
-一句话介绍：
-License：
-推荐理由（它解决什么问题）：</pre>
-      <h2>✦ 方式二：自己写一个本地工具</h2>
-      <p>ToolHub 的工具由 Manifest 驱动：新增一个工具 = 一份 <code>tool.json</code> + 一个 <code>run.js</code>，平台代码零改动。
-      下面的生成器把这两份文件（含表单清单与执行骨架）直接生成成压缩包，并用<b>与构建期完全相同</b>的规范做校验——这里通过，构建就不会拦你。</p>
-      <div id="tool-builder"></div>
-      <h2>✦ 接入约定（必读）</h2>
-      <ul>
-        <li><code>run()</code> 返回 <code>{ html, text?, files? }</code>，<code>files</code> 为 <code>[{ name, blob, kind }]</code></li>
-        <li><b>禁止任何网络请求</b>（fetch / XMLHttpRequest / WebSocket / sendBeacon），本地工具必须断网可跑</li>
-        <li>单工具体积 ≤ 200KB，不引入远程脚本</li>
-        <li>本地验收：<code>lint-tools.mjs</code> → <code>build-pages.mjs</code> → <code>verify.mjs</code> 全绿再提 PR</li>
-      </ul>
-      <h2>✦ 完整规范</h2>
-      <p>字段定义、默认值与选项规则、常见拒绝原因，见 <a href="/tools/schema.json" target="_blank" rel="noopener">tools/schema.json</a>（机器可读）与仓库里的 <code>docs/TOOL-CONTRACT.md</code>（人话版）。</p>
-    </div>`,
-  feedback: () => {
-    const tpl = `【ToolHub 反馈】
-类型：报错 / 需求 / 收录推荐（三选一）
-工具名或页面：
-具体描述：
-复现步骤（如为报错）：
-浏览器与系统：`;
-    return `
-    <div class="page">
-      <h1>💬 意见反馈与工具需求</h1>
-      <p class="lead">这个平台没有后端数据库，所以我们用最朴素也最透明的方式收集反馈：复制模板发给我们。高频需求会排进开发计划。</p>
-      <h2>✦ 可以反馈什么</h2>
-      <ul>
-        <li>某个工具报错、结果不对、加载失败</li>
-        <li>希望新增的工具（尤其是你在 GitHub 上看到的好项目）</li>
-        <li>界面、文案、翻译问题</li>
-        <li>想收录某个开源项目的官方在线版</li>
-      </ul>
-      <h2>✦ 反馈模板（复制后发送）</h2>
-      <pre id="fb-tpl">${tpl}</pre>
-      <div class="row">
-        <button class="btn" id="fb-copy">复制模板</button>
-        <a class="btn ghost" id="fb-mail" href="mailto:guyang1966@hotmail.com?subject=${encodeURIComponent('【ToolHub 反馈】')}&body=${encodeURIComponent(tpl)}">用邮件发送</a>
-      </div>
-      <h2>✦ 我们怎么处理</h2>
-      <ul>
-        <li>报错类问题优先修，会在版本更新说明里注明</li>
-        <li>工具需求按被提到的次数排序，不承诺时间但会公开排期</li>
-        <li>不收集你的任何使用数据——反馈内容只来自你主动发送的部分</li>
-      </ul>
-    </div>`;
-  },
+/* ---------- 页面分片 CSS（v3.3） ----------
+   批量 / 离线 / 提交三页的样式已从 style.css 拆出。静态页自带 <link>；
+   SPA 内跳转到这些页时由这里补一份，避免「路由过来了但样式没加载」。 */
+const LOADED_CSS = new Set();
+function ensureCss(href) {
+  if (LOADED_CSS.has(href) || document.querySelector(`link[rel="stylesheet"][href="${href}"]`)) return;
+  LOADED_CSS.add(href);
+  const l = document.createElement('link');
+  l.rel = 'stylesheet';
+  l.href = href;
+  document.head.appendChild(l);
+}
+const PAGE_CSS = {
+  batch: '/assets/style.batch.css',
+  offline: '/assets/style.offline.css',
+  submit: '/assets/style.submit.css',
 };
 
 async function openPage(name) {
   const reg = await loadRegistry();
   await loadI18n();
+  const { makePages } = await import('/assets/lib/pages.js');
+  // 隐私页需要知道「本机是否已关闭统计」以及那个 localStorage 键名，随调用注入
+  const PAGES = makePages(reg, { analyticsOptedOut, ANALYTICS_OPT_OUT });
+  if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   $('#view-home').style.display = 'none';
   $('#view-tool').style.display = 'none';
   $('#view-page').style.display = '';
   const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
-  $('#page-body').innerHTML = fn ? fn() : '<div class="empty">页面不存在</div>';
+  $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
 
   // 反馈页的复制模板
   const copyBtn = document.getElementById('fb-copy');
@@ -2536,7 +1646,7 @@ async function openPage(name) {
       const { mountBatch } = await import('/assets/batch.js');
       mountBatch(batchBox);
     } catch (e) {
-      batchBox.innerHTML = `<div class="empty">批量模块加载失败：${esc(e.message)}</div>`;
+      batchBox.innerHTML = stateHTML('error', { title: '批量模块加载失败', detail: e.message });
     }
   }
 
@@ -2547,7 +1657,7 @@ async function openPage(name) {
       const { mountOffline } = await import('/assets/offline.js');
       await mountOffline(offBox);
     } catch (e) {
-      offBox.innerHTML = `<div class="empty">离线模块加载失败：${esc(e.message)}</div>`;
+      offBox.innerHTML = stateHTML('error', { title: '离线模块加载失败', detail: e.message });
     }
   }
 
@@ -2558,7 +1668,10 @@ async function openPage(name) {
       const { mountToolBuilder } = await import('/assets/toolbuilder.js');
       await mountToolBuilder(builderBox);
     } catch (e) {
-      builderBox.innerHTML = `<div class="empty">生成器加载失败：${esc(e.message)}。可直接参考仓库里的 docs/TOOL-CONTRACT.md 手写。</div>`;
+      builderBox.innerHTML = stateHTML('error', {
+        title: '生成器加载失败',
+        detail: `${e.message}。可直接参考仓库里的 docs/TOOL-CONTRACT.md 手写。`,
+      });
     }
   }
 }
@@ -2802,3 +1915,4 @@ if ('serviceWorker' in navigator) {
 }
 
 route();
+

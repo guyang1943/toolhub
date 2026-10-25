@@ -376,6 +376,7 @@ const staticPages = [
     title: '批量处理图片 · 限制边长、统一格式、打包下载 · ToolHub',
     desc: '一次拖入多张图片，统一限制最大边长、转 WebP/JPEG、压缩质量，最后打包成一个 zip。全部在浏览器内完成，图片不上传。',
     h1: '批量处理图片',
+    extraCss: '/assets/style.batch.css',
     content:
       '<h2>它解决什么问题</h2><p>单张处理十几张截图是重复劳动：打开工具、选一张、下载、再来一张。批量模式把这些合成一步——先统一边长与格式，再按统一质量编码，最后打包成一个压缩包下载。</p>' +
       '<h2>与站内单图工具的关系</h2><p>批量页用的是同一套浏览器 canvas 编码管线，与「图片压缩」「图片改尺寸」「图片格式转换」一致；区别是一次处理多个文件并直接打包，适合成批的截图、相机照片与素材整理。</p>' +
@@ -387,6 +388,7 @@ const staticPages = [
     title: '离线包与安装 · 断网也能用的在线工具 · ToolHub',
     desc: '把 ToolHub 的本地工具全部缓存到浏览器：断网、飞行模式、内网隔离环境都能继续用，也可以安装到桌面像本地应用一样打开。',
     h1: '离线包与安装',
+    extraCss: '/assets/style.offline.css',
     // 真实数字要等 sw.js 生成后才知道（它要统计刚写出的 /offline/ 页），先占位、末尾回填
     offlineMeta: true,
     content:
@@ -414,6 +416,7 @@ const staticPages = [
     title: '开发并通过提交页发布一个工具 · ToolHub',
     desc: '两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。',
     h1: '推荐开源项目，或自己造一个工具',
+    extraCss: '/assets/style.submit.css',
     content:
       '<h2>方式一：推荐现成的开源项目</h2><p>开源且有明确 License，优先 MIT/Apache/BSD；能在浏览器中使用或可被工具化；站点长期可访问。需要注册才能用、含广告追踪、无法稳定访问的站点不收录。</p>' +
       '<h2>方式二：写一个本地工具</h2><p>ToolHub 的工具由 Manifest 驱动，新增一个工具只需要三样东西：<code>tool.json</code>（身份与收录信息）、<code>run.js</code>（表单清单 + 执行函数）、以及一份长尾正文。页面上的生成器会把这些骨架直接生成为可下载的压缩包，同时用与构建期相同的规范做校验。</p>' +
@@ -453,6 +456,8 @@ for (const p of staticPages) {
       (p.offlineMeta ? 'window.__OFFLINE_META__={"version":"__SW_VERSION__","files":__SW_FILES__,"bytes":__SW_BYTES__};' : ''),
     jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: p.title, description: p.desc, url },
   });
+  // 页面分片 CSS：批量 / 离线 / 提交三页各自带一份，首页不为它们付样式体积
+  if (p.extraCss) html = html.replace('</head>', `  <link rel="stylesheet" href="${p.extraCss}" />\n</head>`);
   html = html.replace(
     /<main class="container"[^>]*>/,
     `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: p.h1, desc: p.desc, extra: p.content })}`

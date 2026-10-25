@@ -63,6 +63,7 @@ function makeEl(id) {
 const document = {
   documentElement: { dataset: {}, lang: '' },
   body: makeEl('body'),
+  head: makeEl('head'),
   title: '',
   getElementById: (id) => {
     if (!elements.has(id)) elements.set(id, makeEl(id));
@@ -83,6 +84,18 @@ const window = {
 };
 const localStorage = { getItem: () => null, setItem() {}, removeItem() {} };
 const navigator = { language: 'zh-CN', serviceWorker: { register: () => Promise.resolve() } };
+
+// v3.3：app.js 把工具页拆到独立模块，动态 import 的模块访问的是 globalThis，
+// 不再是 new Function 的形参。把同一批桩挂到全局，二者共享同一份 DOM 桩。
+// 用 defineProperty 而不是直接赋值：Node 里 navigator / localStorage 可能是只读 getter。
+for (const [k, v] of Object.entries({ document, window, location, localStorage, navigator })) {
+  try {
+    Object.defineProperty(globalThis, k, { value: v, configurable: true, writable: true });
+  } catch {}
+}
+try {
+  Object.defineProperty(globalThis, 'history', { value: { pushState() {}, replaceState() {} }, configurable: true, writable: true });
+} catch {}
 
 // 注入全局并加载 app.js
 const rawSrc = await (await import('node:fs')).readFileSync(new URL('../assets/app.js', import.meta.url), 'utf8');

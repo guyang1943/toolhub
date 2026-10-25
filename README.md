@@ -1,4 +1,4 @@
-# ToolHub — 开源项目工具化平台（v3.2）
+# ToolHub — 开源项目工具化平台（v3.3）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
@@ -348,6 +348,20 @@ npx wrangler deploy --config wrangler.toml
 | 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题、新工具端到端、提交页生成器、安全头/CLS/LCP/CSP 违规 | 85 |
 | 性能预算 | `node scripts/perf-budget.mjs` | 首屏 gzip 体积、请求数、禁止第三方库回流首屏 | 6 项预算 |
 
+### 测试矩阵（v3.3）
+
+v3.3 没有新增测试条目，而是把既有断言搬到拆分后的正确文件、并补上「按需渲染」的等待：
+
+| 套件 | 命令 | 覆盖 | 数量 |
+|---|---|---|---|
+| 结构与内容校验 | `node scripts/verify.mjs` | 原有 44 项；结果区 / 加密分享 / ZIP 复用等源码断言改为同时读 `app.js` 与 `tool-page.js` | 44 |
+| SPA 渲染 | `node scripts/spa-render-test.mjs` | 原有 49 项；DOM 桩挂到 `globalThis`，供动态 `import()` 的工具页模块共用同一份 DOM | 49 |
+| 工具功能 | `node scripts/new-tools-test.mjs` | 不变（直接测 run.js，与平台拆分解耦） | 161 |
+| 冒烟 | `node scripts/smoke-test.mjs <base>` | 不变 | 84 |
+| 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | 原有 122 项；隐私页断言改为等待 `#page-body` 渲染完成 | 122 |
+| 性能预算 | `node scripts/perf-budget.mjs` | 首屏 gzip、请求数、禁止第三方库回流首屏 | 6 项预算 |
+| 全站体检 | `node scripts/audit.mjs <base>` | 52 页 × 3 视口；v3.3 起进入 CI，并上传 `audit-report.json` | 156 次页面检查 |
+
 ### 测试矩阵（v3.2）
 
 | 套件 | 命令 | 覆盖 | 数量 |
@@ -361,6 +375,46 @@ npx wrangler deploy --config wrangler.toml
 | 全站体检 | `node scripts/audit.mjs <base>` | 52 页 × 桌面/平板/手机三视口：横向溢出、控制台报错、CSP 违规、资源 4xx、工具表单未渲染、深色模式对比度、点击区尺寸 | 156 次页面检查 |
 
 前五套是「功能对不对」，最后两套是「页面立不立得住」：`browser-test` 点一下有没有反应，`audit` 查有没有横向溢出、深色下字看不清、按钮小到点不准——这类问题测试全绿但用户会骂。
+
+## v3.3：瘦身与一致——把首屏用不到的代码拆出去（2026-10-26）
+
+这一版不加工具、不加功能，只做三件事：**CSS 分片、`app.js` 拆模块、统一空/加载/错误态**。目标很直接——首屏别再背着「只有某些页面才用到」的代码。
+
+### 1. CSS 分片：批量 / 离线 / 提交
+
+`style.css` 里三套只在特定页面出现的样式拆成独立文件：`style.batch.css`、`style.offline.css`、`style.submit.css`。难点不在拆，而在**两条访问路径都得覆盖**：
+
+- 直接访问 `/batch/` 这类静态页 → 构建期在 `<head>` 注入对应 `<link>`；
+- 从首页 SPA 内跳到这些页 → `app.js` 的 `ensureCss()` 按需补一个 `<link>`。
+
+只做其中一条，就会出现「直接打开有样式、站内跳过去没样式」的半残状态。`sw.js` 也改为扫描 `assets/*.css`，离线包自动带上分片样式。
+
+顺带修掉一个老 bug：提交页的 `.builder` 用了 `var(--line)`，而全站只定义了 `var(--border)`——边框一直退化成文字色，深色下尤其明显。
+
+### 2. `app.js` 拆模块：工具页 + 内容页
+
+`app.js` 从 2804 行降到 1892 行，拆出两个按需加载的模块：
+
+| 模块 | 内容 | 何时加载 |
+|---|---|---|
+| `assets/tool-page.js` | 工具页：表单渲染、结果区、分享/草稿/加密分享（约 740 行） | 打开任意 `/tools/*` |
+| `assets/lib/pages.js` | 内容页模板：关于/提交/反馈/隐私/批量/离线 | 打开这些页面 |
+
+依赖不用循环 `import`，而是 `bindToolPage(ctx)` 注入 app.js 的同一批函数——迁移过去的代码几乎保持原样，Node 测试与浏览器跑的还是同一份实现。
+
+### 3. 统一空/加载/错误态
+
+新增 `.state` 一套样式与语义：`loading` / `empty` 用 `role="status"`，`error` 用 `role="alert"`。工具加载失败、结果出错、处理中、工具不存在、页面不存在、批量与离线模块加载失败，六类状态收敛到同一套视觉。`prefers-reduced-motion` 下加载圈停转，而不是变成高速闪烁。
+
+### 过程中修掉的三个真 bug
+
+| bug | 表现 | 修法 |
+|---|---|---|
+| `REGISTRY` 快照早于加载 | 拆分后首次进工具页直接抛 `reading 'tools'` | 快照移到 `await loadRegistry()` / `await loadI18n()` 之后 |
+| 隐私页模板丢作用域 | 拆到 `pages.js` 后 `analyticsOptedOut is not defined`，整页白 | 改为 `makePages(reg, ctx)` 显式注入 |
+| 草稿「清空」调错函数 | 点了调用不存在的 `renderTool`，抛 `ReferenceError` | 改为重新打开当前工具 `openTool` |
+
+**验收**：五套 44 / 49 / 161 / 84 / 122 + 体检 156 项 0 问题；首屏 **94.3 → 80.1 KB / 9 请求**，脚本 37.5 → 23.7 KB，样式 11.5 → 11.1 KB。体检已接入 CI，并上传 `audit-report.json`。
 
 ## v3.2：体检——把「测试没覆盖但用户会遇到」的问题扫出来（2026-10-25）
 

@@ -1,0 +1,37 @@
+/* 提交页 · 工具包生成器 · v3.3 页面分片
+   只在 /submit/ 用到。
+   只在对应页面加载：静态页由构建期注入 <link>，SPA 内跳转由 app.js 的 ensureCss() 补上。 */
+
+/* ===== 工具包生成器（提交页，v2.8 C3） ===== */
+.builder { border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 14px; margin: 14px 0 6px; background: var(--panel); }
+.builder-head h2 { margin: 0 0 6px; font-size: 16px; }
+.builder-head p { margin: 0 0 14px; font-size: 13px; color: var(--muted); line-height: 1.7; }
+.builder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.builder-grid .span2 { grid-column: 1 / -1; }
+.builder label, .bfield { font-size: 12.5px; color: var(--muted); }
+.builder-grid label { display: flex; flex-direction: column; gap: 5px; }
+.builder input, .builder select {
+  font: inherit; font-size: 13px; padding: 7px 9px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text); min-width: 0;
+}
+.builder-fields { margin-top: 16px; }
+.builder-fields-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+.bfield { display: grid; grid-template-columns: 1.2fr 1fr 92px 1.2fr 28px; gap: 6px; align-items: center; margin-bottom: 6px; }
+.bf-del { border: 1px solid var(--border); background: transparent; color: var(--muted); border-radius: 6px; cursor: pointer; height: 30px; }
+.bf-del:hover { color: #d33; border-color: #d33; }
+.builder-hint { font-size: 12px; color: var(--muted); line-height: 1.7; margin: 4px 0 0; }
+.builder .row { display: flex; gap: 10px; margin-top: 16px; }
+.builder-out:empty { display: none; }
+.builder-out { margin-top: 14px; font-size: 13px; }
+.builder-errs { margin: 6px 0 0; padding-left: 20px; color: #c2410c; line-height: 1.8; }
+.builder-pre {
+  max-height: 320px; overflow: auto; font-size: 12px; line-height: 1.6; padding: 12px;
+  border-radius: 8px; background: var(--code-bg, rgba(127,127,127,.1)); border: 1px solid var(--border);
+}
+.builder details { margin-top: 10px; }
+.builder summary { cursor: pointer; font-size: 12.5px; color: var(--accent); }
+@media (max-width: 640px) {
+  .builder-grid { grid-template-columns: 1fr; }
+  .bfield { grid-template-columns: 1fr 1fr; }
+  .bfield .bf-extra { grid-column: 1 / -1; }
+}

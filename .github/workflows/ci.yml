@@ -65,6 +65,17 @@ jobs:
           done
           node scripts/smoke-test.mjs http://127.0.0.1:8788
           node scripts/browser-test.mjs http://127.0.0.1:8788
+          # 全站体检（v3.3 起进 CI）：多视口查横向溢出 / 控制台报错 / CSP / 深色对比度 / 点击区。
+          # 这是 v3.2 造出的「找没想到的问题」的机器——不设闸门，修好的问题会被后面的改动悄悄带回来。
+          node scripts/audit.mjs http://127.0.0.1:8788 --json audit-report.json
+
+      - name: 上传体检报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: audit-report.json
+          if-no-files-found: ignore
 
   deploy:
     name: 部署到 Cloudflare Workers

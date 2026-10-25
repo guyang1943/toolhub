@@ -746,10 +746,15 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('默认零第三方请求（统计关闭）', thirdParty.length === 0 && !(await evaluate(`window.__TOOLHUB_ANALYTICS__`)), thirdParty.slice(0, 2).join(', '));
 
   await goto('/privacy/');
+  // v3.3：内容页模板改为按需加载（pages.js），#page-body 的渲染比静态正文晚一步。
+  // 单次采样会偶发「还没渲染完就判定失败」，改为等正文真正出现再断言（同 v3.2 的轮询教训）。
+  await waitText('#page-body', '不会离开这台设备', 8000);
   const pvText = await evaluate(`document.body.textContent`);
   check('隐私页说明数据流向', pvText.includes('不会离开这台设备') && pvText.includes('AES-GCM'));
   const toggled = await evaluate(`(() => {
-    document.getElementById('analytics-optout').click();
+    const b = document.getElementById('analytics-optout');
+    if (!b) return 'missing';
+    b.click();
     return localStorage.getItem('toolhub:no-analytics');
   })()`);
   check('可在本机关闭统计', toggled === '1', 'localStorage=' + toggled);

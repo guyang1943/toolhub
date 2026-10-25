@@ -1,0 +1,19 @@
+/* 离线包页 · v3.3 页面分片
+   只在 /offline/ 用到。
+   只在对应页面加载：静态页由构建期注入 <link>，SPA 内跳转由 app.js 的 ensureCss() 补上。 */
+
+/* 离线包页（v3.0 E1） */
+.off-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 18px 0; }
+.off-card { padding: 16px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
+.off-card b { display: block; font-size: 14px; margin-bottom: 6px; }
+.off-card p { margin: 0 0 10px; font-size: 13px; color: var(--muted); line-height: 1.6; }
+.off-card .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.off-stat { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.off-bar { height: 6px; border-radius: 999px; background: var(--border); overflow: hidden; margin: 8px 0 6px; }
+.off-fill { height: 100%; width: 0; background: var(--accent); transition: width 0.25s; }
+.off-note {
+  margin: 16px 0; padding: 14px 16px; border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: 10px; background: var(--accent-soft); font-size: 13px; line-height: 1.7; color: var(--text);
+}
+.off-note code { font-family: var(--mono); font-size: 12px; }
+.off-card .btn[disabled] { opacity: 0.55; cursor: not-allowed; }

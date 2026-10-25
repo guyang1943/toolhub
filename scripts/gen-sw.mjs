@@ -100,6 +100,11 @@ export function buildSw({ quiet = false } = {}) {
   // 它们在断网时会被 import() 到，缺席就是「离线打开批量页，点一下没反应」。
   // 从磁盘扫而不是写死清单：以后新增模块自动进包，不会再漏。
   for (const rel of listAppModules()) full.add('/' + rel);
+  // 页面分片 CSS（v3.3）：批量 / 离线 / 提交三页的样式单独成文件。离线时这些页面会被打开，
+  // 缺了样式就是「结构在、样子全散」，所以必须一起进包。扫目录而不是写死，避免以后再漏。
+  for (const f of readdirSync(join(root, 'assets'))) {
+    if (f.endsWith('.css')) full.add('/assets/' + f);
+  }
 
   // 只收录真的存在于磁盘上的路径：install 里的 addAll 是「全有或全无」，一个 404 会让整个装包失败
   const CORE = CORE_ALL.filter(onDisk);

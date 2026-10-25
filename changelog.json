@@ -1,6 +1,24 @@
 {
   "entries": [
     {
+      "date": "2026-10-26",
+      "version": "v3.3",
+      "title": "瘦身与一致：拆开首屏用不到的代码，收敛空/加载/错误态",
+      "items": [
+        "样式分片：批量 / 离线 / 提交三页的样式从 style.css 拆到 style.batch.css、style.offline.css、style.submit.css，首页不再为它们付体积。静态页由构建期注入 <link>，SPA 内跳转由 ensureCss() 按需补上，两条路径都不漏样式",
+        "修：提交页的工具包生成器一直用未定义的 var(--line)，卡片与输入框边框退化成文字色（深色下尤其明显）；统一改用 var(--border)",
+        "app.js 拆模块：工具页（表单渲染、结果区、分享/草稿/加密分享，约 740 行）拆到 assets/tool-page.js，内容页模板（关于/提交/反馈/隐私/批量/离线）拆到 assets/lib/pages.js，都按需 import。首页脚本从 37.5 KB 降到 23.7 KB，样式 11.5 → 11.1 KB，首屏 94.3 → 80.1 KB",
+        "依赖用注入而不是循环引用：tool-page.js 通过 bindToolPage(ctx) 拿到 app.js 的同一批函数，迁移代码几乎保持原样，Node 测试与浏览器跑的是同一份实现",
+        "修：拆分时把 REGISTRY 快照放在 await loadRegistry() 之前，首次进工具页 REGISTRY 还是 null，直接抛「reading tools」；快照移到加载之后",
+        "修：pages.js 里的隐私页依赖 analyticsOptedOut / ANALYTICS_OPT_OUT，拆出后作用域丢失导致整页渲染抛 ReferenceError；改为 makePages(reg, ctx) 显式注入",
+        "修：草稿提示条的「清空」调用了不存在的 renderTool，点一下必抛 ReferenceError；改为重新打开当前工具（openTool）",
+        "统一空态 / 加载态 / 错误态：新增 .state 一套样式与语义（loading/empty 用 role=status，error 用 role=alert），工具加载失败、结果出错、处理中、工具不存在、页面不存在、批量与离线模块加载失败全部换成同一套；减少动效时加载圈停转而不是高速闪烁",
+        "体检进 CI：真浏览器测试之后追加 audit.mjs（52 页 × 3 视口 + 深色对比度），并上传 audit-report.json。v3.2 修好的问题不会再被后续改动悄悄带回来",
+        "测试适配：verify 的源码断言改为同时读 app.js 与 tool-page.js；SPA 测试把 DOM 桩挂到 globalThis 供动态 import 的模块共用；browser 的隐私页断言改为等待 #page-body 渲染完成（延续 v3.2「动态挂载一律轮询」的教训）",
+        "回归：校验 44 / SPA 49 / 功能 161 / 冒烟 84 / 真浏览器 122 全绿；全站体检 156 次检查 0 问题（0 高优 0 中优）"
+      ]
+    },
+    {
       "date": "2026-10-25",
       "version": "v3.2",
       "title": "体检：把「用户会遇到但测试没覆盖」的问题一次扫出来",
