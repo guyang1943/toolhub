@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.0 · 预缓存 97 个地址 · 约 2.4 MB
-const VERSION = "toolhub-v3.0";
+// 版本：toolhub-v3.1 · 预缓存 107 个地址 · 约 2.5 MB
+const VERSION = "toolhub-v3.1";
 const CORE = [
   "/",
   "/index.html",
@@ -8,6 +8,8 @@ const CORE = [
   "/site.webmanifest",
   "/assets/style.css",
   "/assets/app.js",
+  "/assets/pyodide-runtime.js",
+  "/assets/pipeline.js",
   "/assets/icon-192.png",
   "/assets/icon-512.png",
   "/i18n.json",
@@ -24,6 +26,8 @@ const FULL = [
   "/site.webmanifest",
   "/assets/style.css",
   "/assets/app.js",
+  "/assets/pyodide-runtime.js",
+  "/assets/pipeline.js",
   "/assets/icon-192.png",
   "/assets/icon-512.png",
   "/i18n.json",
@@ -114,7 +118,15 @@ const FULL = [
   "/changelog/",
   "/resources/",
   "/topics/",
-  "/evaluations/"
+  "/evaluations/",
+  "/assets/batch.js",
+  "/assets/drop.js",
+  "/assets/lib/drop-route.js",
+  "/assets/lib/intent.js",
+  "/assets/lib/secure-share.js",
+  "/assets/lib/zip.js",
+  "/assets/offline.js",
+  "/assets/toolbuilder.js"
 ];
 
 self.addEventListener('install', (e) => {

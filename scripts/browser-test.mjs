@@ -886,6 +886,95 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('断网期间无 CSP 违规', cspViolations.length === 0, cspViolations[0] || '干净');
   }
 
+  // =============== 16. 拖进来 / 粘进来（v3.1） ===============
+  // 这一节测的是「入口」：文件拖到窗口任意位置、内容粘进搜索框，
+  // 能不能落到对的工具，并且文件真的带过去。
+  console.log('\n🧭 拖放与粘贴入口');
+  {
+    await goto('/');
+
+    // 拖入一个 PNG：先出「松手」浮层，松手后出候选面板
+    const dragState = await evaluate(`(async () => {
+      const mk = () => {
+        const dt = new DataTransfer();
+        dt.items.add(new File([new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10])], 'shot.png', { type: 'image/png' }));
+        return dt;
+      };
+      window.dispatchEvent(new DragEvent('dragenter', { dataTransfer: mk(), bubbles: true, cancelable: true }));
+      // drop.js 是按需加载的：第一次拖拽会现场 import，给它一点时间
+      for (let i = 0; i < 30; i++) {
+        if (document.querySelector('.drop-mask.show')) break;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      const mask = document.querySelector('.drop-mask');
+      return { hasMask: !!mask, shown: !!(mask && mask.classList.contains('show')), text: mask ? mask.textContent : '' };
+    })()`);
+    check('拖入文件时出现「松手」浮层', dragState.shown === true, JSON.stringify(dragState).slice(0, 80));
+    check('浮层说明文件不上传', /不上传|不离开|不会离开/.test(dragState.text || ''), dragState.text.trim().slice(0, 40));
+
+    const panelState = await evaluate(`(async () => {
+      const dt = new DataTransfer();
+      dt.items.add(new File([new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10])], 'shot.png', { type: 'image/png' }));
+      window.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true }));
+      for (let i = 0; i < 40; i++) {
+        const b = document.querySelector('.drop-panel-mask[data-open]');
+        if (b) break;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      const box = document.querySelector('.drop-panel-mask');
+      const mask = document.querySelector('.drop-mask');
+      return {
+        open: !!(box && box.hasAttribute('data-open')),
+        overlayGone: !(mask && mask.classList.contains('show')),
+        head: box ? box.querySelector('.dp-head b').textContent : '',
+        items: box ? [...box.querySelectorAll('.dp-item b')].map((e) => e.textContent) : [],
+      };
+    })()`);
+    check('松手后浮层收起', panelState.overlayGone === true);
+    check('给出候选工具面板', panelState.open === true);
+    check('候选里第一个是图片压缩', (panelState.items[0] || '') === '图片压缩', panelState.items.join(' / '));
+    check('面板标题说明已识别到 1 张图', /1 个图片/.test(panelState.head || ''), panelState.head);
+
+    // 点第一个候选：应当带着文件跳到图片压缩，并且文件真的进了 input
+    await evaluate(`(() => { const b = document.querySelector('.dp-item'); if (b) b.click(); })()`);
+    await sleep(700);
+    const landed = await waitEl('#f-file', 12000);
+    check('点击候选跳到对应工具', landed === true, await evaluate('location.pathname'));
+    const fileIn = await evaluate(`(() => {
+      const el = document.getElementById('f-file');
+      return el && el.files ? { n: el.files.length, name: el.files[0] && el.files[0].name } : null;
+    })()`);
+    check('文件已带入 input（未重新选择）', fileIn && fileIn.n === 1 && fileIn.name === 'shot.png', JSON.stringify(fileIn));
+    const note = await waitText('#tool-fields', '已放入你拖进来的文件', 6000);
+    check('表单里说明文件来源', note === true);
+
+    // 粘一段 JSON 进首页搜索框：不该被当成关键词，而是一条「格式化这段 JSON」
+    await goto('/');
+    const pasteHint = await evaluate(`(async () => {
+      const inp = document.getElementById('hero-search');
+      inp.focus();
+      const dt = new DataTransfer();
+      dt.setData('text', '{"a":1,"b":[2,3]}');
+      inp.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
+      for (let i = 0; i < 25; i++) {
+        if (document.querySelector('.paste-hint')) break;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      const h = document.querySelector('.paste-hint');
+      return { text: h ? h.textContent : '', inputValue: inp.value };
+    })()`);
+    check('粘贴 JSON 出现识别条', /JSON/.test(pasteHint.text), pasteHint.text.trim().slice(0, 40));
+    check('识别条给出可点的动作', /格式化/.test(pasteHint.text), pasteHint.text.trim().slice(0, 40));
+    check('长文本没有被塞进搜索框', !pasteHint.inputValue || pasteHint.inputValue.length < 20, pasteHint.inputValue);
+
+    await evaluate(`(() => { const b = document.querySelector('.paste-hint .ph-go'); if (b) b.click(); })()`);
+    await sleep(900);
+    const pasteLanded = await waitEl('#f-json', 12000);
+    check('点识别条直达工具并预填', pasteLanded === true, await evaluate('location.pathname'));
+    const prefilled = await evaluate(`(document.getElementById('f-json') || {}).value || ''`);
+    check('预填内容就是粘进去的 JSON', prefilled.includes('"b":[2,3]'), prefilled.slice(0, 40));
+  }
+
   // ---- 汇总 ----
   const bad = results.filter((r) => !r.ok);
   console.log(`\n${bad.length ? '❌' : '✅'} 浏览器测试 ${results.length - bad.length}/${results.length}`);

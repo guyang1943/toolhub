@@ -69,6 +69,9 @@
         "image compressor",
         "image",
         "compressor"
+      ],
+      "accepts": [
+        "image/*"
       ]
     },
     {
@@ -370,6 +373,9 @@
         "image resizer",
         "image",
         "resizer"
+      ],
+      "accepts": [
+        "image/*"
       ]
     },
     {
@@ -524,6 +530,9 @@
         "image",
         "to",
         "base64"
+      ],
+      "accepts": [
+        "image/*"
       ]
     },
     {
@@ -613,6 +622,9 @@
         "qr",
         "code",
         "reader"
+      ],
+      "accepts": [
+        "image/*"
       ]
     },
     {
@@ -636,7 +648,11 @@
         "pdf",
         "merge",
         "split"
-      ]
+      ],
+      "accepts": [
+        "application/pdf"
+      ],
+      "fileMultiple": true
     },
     {
       "id": "mortgage-calc",
@@ -706,7 +722,11 @@
         "images",
         "to",
         "pdf"
-      ]
+      ],
+      "accepts": [
+        "image/*"
+      ],
+      "fileMultiple": true
     },
     {
       "id": "exif-strip",
@@ -730,6 +750,12 @@
         "metadata",
         "stripper"
       ],
+      "accepts": [
+        "image/jpeg",
+        ".jpg",
+        ".jpeg"
+      ],
+      "fileMultiple": true,
       "author": "ToolHub 贡献流程示范",
       "since": "v2.8"
     },
@@ -753,6 +779,9 @@
         "image converter",
         "image",
         "converter"
+      ],
+      "accepts": [
+        "image/*"
       ]
     },
     {

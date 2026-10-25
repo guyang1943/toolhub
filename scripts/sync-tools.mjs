@@ -12,6 +12,8 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { isMainModule } from './lib/is-main.mjs';
+import { readManifest } from './lib/tool-manifest.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TOOLS = join(root, 'tools');
@@ -30,6 +32,26 @@ export function readToolShards() {
   return shards;
 }
 
+/** 从 run.js 的 manifest 里取「这个工具能吃哪些文件、能不能吃多个」。
+ *  用途是全局拖放路由（v3.1）：只能推荐**真的接受这种文件**的工具，
+ *  否则用户点进去会看到「选择文件」却拖不进去。
+ *  返回 null 表示不接受文件或清单读不出来（构建期就不写这个字段，保持 JSON 精简）。 */
+export function acceptsOf(id) {
+  const r = readManifest(id, root);
+  if (!r.ok || !r.manifest || !Array.isArray(r.manifest.inputs)) return null;
+  const list = [];
+  let multiple = false;
+  for (const inp of r.manifest.inputs) {
+    if (inp.type !== 'file') continue;
+    if (inp.multiple) multiple = true;
+    for (const a of String(inp.accept || '*').split(',')) {
+      const s = a.trim().toLowerCase();
+      if (s && !list.includes(s)) list.push(s);
+    }
+  }
+  return list.length ? { accepts: list, multiple } : null;
+}
+
 /** 按 registry.order 排序；未登记的 id 追加到末尾（按 id 字典序，保证幂等） */
 export function buildToolsJson() {
   const reg = JSON.parse(readFileSync(REG, 'utf8'));
@@ -45,6 +67,14 @@ export function buildToolsJson() {
     if (m.tags) out.tags = m.tags;
     if (m.hot) out.hot = true;
     if (m.aliases) out.aliases = m.aliases;
+    // 派生的「可接收文件类型」：不进 tool.json（那是手写的），由 run.js 的 manifest 算出来
+    if (m.runtime !== 'link' && existsSync(join(TOOLS, id, 'run.js'))) {
+      const acc = acceptsOf(id);
+      if (acc) {
+        out.accepts = acc.accepts;
+        if (acc.multiple) out.fileMultiple = true;
+      }
+    }
     // 第三方贡献的工具带上署名与入口，页面会显示「社区贡献」
     if (m.author) out.author = m.author;
     if (m.homepage) out.homepage = m.homepage;
@@ -59,7 +89,7 @@ export function buildToolsJson() {
   };
 }
 
-const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+const isMain = isMainModule(import.meta.url);
 if (isMain) {
   const check = process.argv.includes('--check');
   const { payload, unknown, shardCount } = buildToolsJson();

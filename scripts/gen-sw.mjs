@@ -6,7 +6,7 @@
 //   2. 版本号要跟 changelog 走，否则新 SW 不会替换旧缓存
 //
 // 用法：node scripts/gen-sw.mjs [--quiet]
-import { readFileSync, statSync, existsSync, writeFileSync, realpathSync } from 'node:fs';
+import { readFileSync, statSync, existsSync, writeFileSync, realpathSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -35,6 +35,24 @@ const sizeOf = (p) => {
   }
 };
 
+/** 只在构建期用、不会进浏览器的模块（不值得让用户为它们多下一个字节） */
+const BUILD_ONLY = new Set(['lib/json-schema.js', 'lib/security-headers.js']);
+
+/** 扫 assets/ 与 assets/lib/ 下的应用模块（vendor 是第三方库，单独列） */
+function listAppModules() {
+  const out = [];
+  for (const f of readdirSync(join(root, 'assets'))) {
+    if (f.endsWith('.js')) out.push('assets/' + f);
+  }
+  const libDir = join(root, 'assets', 'lib');
+  if (existsSync(libDir)) {
+    for (const f of readdirSync(libDir)) {
+      if (f.endsWith('.js') && !BUILD_ONLY.has('lib/' + f)) out.push('assets/lib/' + f);
+    }
+  }
+  return out.sort();
+}
+
 /**
  * 生成 sw.js。
  * 返回 { version, core, files, bytes }：build-pages 需要用它渲染 /offline/ 页的统计数字。
@@ -46,6 +64,8 @@ export function buildSw({ quiet = false } = {}) {
   const tools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
 
   // 首屏必需：装完就能打开首页并搜索、看离线页
+  // 注意 app.js 的两个**静态** import（pyodide-runtime / pipeline）必须在这里：
+  // 静态 import 是启动链的一部分，缺一个整页直接白屏，而不是「某个功能降级」。
   const CORE_ALL = [
     '/',
     '/index.html',
@@ -53,6 +73,8 @@ export function buildSw({ quiet = false } = {}) {
     '/site.webmanifest',
     '/assets/style.css',
     '/assets/app.js',
+    '/assets/pyodide-runtime.js',
+    '/assets/pipeline.js',
     '/assets/icon-192.png',
     '/assets/icon-512.png',
     '/i18n.json',
@@ -74,6 +96,10 @@ export function buildSw({ quiet = false } = {}) {
   for (const v of VENDOR) if (existsSync(join(root, 'assets', 'vendor', v))) full.add(`/assets/vendor/${v}`);
   const PAGES = ['/privacy/', '/batch/', '/offline/', '/about/', '/submit/', '/compare/', '/changelog/', '/resources/', '/topics/', '/evaluations/'];
   for (const p of PAGES) full.add(p);
+  // 按需加载的应用模块（batch / drop / zip / 加密分享 / 意图解析 …）也必须进包：
+  // 它们在断网时会被 import() 到，缺席就是「离线打开批量页，点一下没反应」。
+  // 从磁盘扫而不是写死清单：以后新增模块自动进包，不会再漏。
+  for (const rel of listAppModules()) full.add('/' + rel);
 
   // 只收录真的存在于磁盘上的路径：install 里的 addAll 是「全有或全无」，一个 404 会让整个装包失败
   const CORE = CORE_ALL.filter(onDisk);

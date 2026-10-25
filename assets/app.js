@@ -2121,7 +2121,9 @@ async function openTool(id) {
     if (!injected) return;
     const note = document.createElement('div');
     note.className = 'pipe-note';
-    note.innerHTML = `↪ ${t('已带入上一步的结果', 'handoffNote')}${
+    // 来源不同，说法要不同：拖进来的文件说「上一步的结果」会让人以为是工具链接力
+    const lead = h.from === 'drop' ? t('已放入你拖进来的文件', 'dropLoaded') : t('已带入上一步的结果', 'handoffNote');
+    note.innerHTML = `↪ ${lead}${
       injected > 1 ? `（${injected} ${t('个文件', 'filesUnit')}）` : ''
     }，${t('确认参数后点运行即可', 'handoffHint')}`;
     const fields = document.getElementById('tool-fields');
@@ -2649,6 +2651,86 @@ if (new URLSearchParams(location.search).get('embed') === '1') {
 ensureOverlays();
 initPalette();
 initKbdHelp();
+
+/* ---------- 拖进来就能用（v3.1） ----------
+   模块按需加载：首屏不该为一个「可能用不到」的拖放浮层付字节。
+   空闲时预热一次；如果用户拖拽时还没到货，import 完成后仍然能接住这次拖拽
+   （drop.js 的 dragover 会在模块就绪后补显浮层）。 */
+let DROP_PROMISE = null;
+function ensureDrop() {
+  if (!DROP_PROMISE) {
+    DROP_PROMISE = import('/assets/drop.js')
+      .then((m) => {
+        m.initDropRoute({
+          getTools: async () => (await loadRegistry()).tools,
+          onPick: (id, files) => {
+            // 同一个 File 对象在 SPA 内直接接力，不读盘、不上传、不转存
+            setHandoff({ from: 'drop', files: files.map((f) => ({ name: f.name, blob: f })), text: '' });
+            navigate('/tools/' + id + '/');
+          },
+        });
+        return m;
+      })
+      .catch(() => null);
+  }
+  return DROP_PROMISE;
+}
+window.addEventListener(
+  'dragenter',
+  (e) => {
+    const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
+    if (types.includes('Files')) ensureDrop();
+  },
+  true
+);
+if ('requestIdleCallback' in window) requestIdleCallback(() => ensureDrop(), { timeout: 4000 });
+else setTimeout(() => ensureDrop(), 2500);
+
+/* ---------- 粘贴即问（v3.1） ----------
+   往搜索框里粘一段 JSON / JWT / CSV，不要把它塞进搜索框当关键词，
+   而是直接给一条「这看起来是什么，去哪个工具」。 */
+let ROUTE_MOD = null;
+function ensureRoute() {
+  if (!ROUTE_MOD) {
+    ROUTE_MOD = import('/assets/lib/drop-route.js').catch(() => null);
+  }
+  return ROUTE_MOD;
+}
+
+function bindPasteRoute(input, host) {
+  if (!input || !host) return;
+  input.addEventListener('paste', async (e) => {
+    const text = (e.clipboardData && e.clipboardData.getData('text')) || '';
+    if (text.trim().length < 8) return;
+    const mod = await ensureRoute();
+    const hit = mod && mod.routePaste(text);
+    if (!hit) return; // 认不出来就按普通粘贴处理，绝不拦截
+    e.preventDefault(); // 4000 字的 JSON 塞进搜索框既看不清也搜不到
+    let box = host.querySelector('.paste-hint');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'paste-hint';
+      input.insertAdjacentElement('afterend', box);
+    }
+    box.style.display = '';
+    box.innerHTML = `<span>🔎 检测到${esc(hit.kind)}</span><button type="button" class="ph-go">${esc(
+      hit.label
+    )}</button><button type="button" class="ph-x" aria-label="关闭">×</button>`;
+    const go = box.querySelector('.ph-go');
+    go.onclick = () => navigate(mod.routeUrl(hit));
+    box.querySelector('.ph-x').onclick = () => {
+      box.style.display = 'none';
+    };
+    go.focus();
+  });
+  // 用户重新开始输入就收起来，避免提示一直挂在那儿
+  input.addEventListener('input', () => {
+    const box = host.querySelector('.paste-hint');
+    if (box) box.style.display = 'none';
+  });
+}
+bindPasteRoute(document.getElementById('hero-search'), document.querySelector('.hero-search-wrap'));
+bindPasteRoute(document.getElementById('palette-input'), document.querySelector('#palette .pal-box'));
 
 // 占位文案按视口宽度取舍：窄屏放不下长提示，会被截成半个括号
 // 顶部搜索框的文案由 applyStaticText() 负责（要跟语言切换联动），这里只处理首页大搜索框

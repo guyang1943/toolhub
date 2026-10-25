@@ -591,10 +591,29 @@ check('离线包清单（E1）', () => {
   assert(!set.has('/sw.js'), '预缓存清单不应包含 /sw.js');
   assert(sw.includes("url.pathname === '/sw.js'"), 'fetch 事件没有跳过 /sw.js');
   assert(core.length >= 10 && core.length < full.length, `首屏清单 ${core.length} 项不合理`);
-  // Pyodide 运行时不能进包（13MB 起），否则「安装」会变成几分钟；
-  // 但 pyodide-loader.js（几 KB 的加载器）要进，否则离线打开 Python 工具连报错都报不出来
-  assert(!full.some((u) => /pyodide-(runtime|wasm)|pyodide\.js|\.whl$/i.test(u)), '离线包不应包含 Pyodide 运行时');
+  // Pyodide 运行时不能进包（核心 13MB + pandas 36MB），否则「安装」会变成几分钟；
+  // 但 assets/pyodide-runtime.js（4KB 的共享加载器，app.js 的静态 import）必须进首屏，
+  // pyodide-loader.js 也要进——否则离线打开 Python 工具连报错都报不出来。
+  // 注意运行时本体在 /assets/vendor/pyodide/ 下，不在 assets/ 根目录，别把加载器误判成运行时。
+  assert(!full.some((u) => /^\/assets\/vendor\/pyodide\//.test(u) || /\.whl$/i.test(u)), '离线包不应包含 Pyodide 运行时');
   assert(full.some((u) => /pyodide-loader\.js$/.test(u)), '离线包缺 pyodide-loader.js（离线时 Python 工具会静默失败）');
+
+  // 应用自身的按需模块（batch / drop / zip / 加密分享 / 意图解析 …）也必须在包里。
+  // 这些是 import() 加载的，缺了不会白屏，而是「离线点一下没反应」——更难发现也更容易漏。
+  const appModules = readdirSync(join(root, 'assets'))
+    .filter((f) => f.endsWith('.js'))
+    .map((f) => `/assets/${f}`);
+  for (const f of readdirSync(join(root, 'assets', 'lib'))) {
+    if (f.endsWith('.js') && !['json-schema.js', 'security-headers.js'].includes(f)) appModules.push(`/assets/lib/${f}`);
+  }
+  for (const m of appModules) if (!set.has(m)) bad.push(`${m} 不在离线清单`);
+
+  // 静态 import 是启动链的一部分：缺一个整页白屏，必须在**首屏**清单里（而不是「按需补」）
+  const bootImports = [...readFileSync(join(root, 'assets', 'app.js'), 'utf8').matchAll(/^import .* from '(\/assets\/[\w./-]+)';$/gm)].map(
+    (m) => m[1]
+  );
+  for (const b of bootImports) if (!core.includes(b)) bad.push(`${b} 是静态 import，却没进首屏清单`);
+
   assert(!bad.length, '清单缺失: ' + bad.slice(0, 6).join(', '));
   return `${full.length} 个地址 / 首屏 ${core.length} 项`;
 });

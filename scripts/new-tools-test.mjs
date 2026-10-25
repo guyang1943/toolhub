@@ -651,6 +651,70 @@ console.log('\n🔐 加密分享（AES-GCM + PBKDF2）');
   check('每次加密 IV 不同', again !== withPw.slice(1), '同明文两次结果应不同');
 }
 
+// ---------- 8. 拖放 / 粘贴路由（v3.1）----------
+// 这一层的价值全在「推荐得对」：推错了用户点进去发现拖不进去，比不推更糟。
+// 规则是纯函数，所以能在 Node 里直接断言排序，不必起浏览器。
+console.log('\n🧭 拖放与粘贴路由');
+{
+  const dr = await import('file://' + join(root, 'assets/lib/drop-route.js').replace(/\\/g, '/'));
+  const reg = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8'));
+  const tools = reg.tools;
+  const first = (files) => (dr.routeFiles(files, tools)[0] || {}).id;
+
+  check('单张 JPG → 图片压缩', first([{ name: 'a.jpg', type: 'image/jpeg' }]) === 'image-compress');
+  check('单张 PNG → 图片压缩', first([{ name: 'a.png', type: 'image/png' }]) === 'image-compress');
+  // 拖 3 张图时先推「能一次吃完」的工具，否则用户要重复 3 遍
+  check('三张图 → 图片转 PDF（支持多选）', first([
+    { name: 'a.png', type: 'image/png' },
+    { name: 'b.png', type: 'image/png' },
+    { name: 'c.png', type: 'image/png' },
+  ]) === 'img-to-pdf');
+  check('两个 PDF → PDF 合并', first([
+    { name: 'a.pdf', type: 'application/pdf' },
+    { name: 'b.pdf', type: 'application/pdf' },
+  ]) === 'pdf-merge');
+
+  // 拿不到 MIME 的来源（部分桌面环境拖拽只给文件名）也要能路由
+  check('只有扩展名也能路由', dr.routeFiles([{ name: 'x.WEBP', type: '' }], tools).length > 0);
+  check('不认识的文件不硬推', dr.routeFiles([{ name: 'a.zip', type: 'application/zip' }], tools).length === 0);
+
+  // 混着拖：没有工具能全吃，退化成「只用第 1 个」，但必须标记出来
+  const mixed = dr.routeFiles([{ name: 'a.jpg', type: 'image/jpeg' }, { name: 'b.pdf', type: 'application/pdf' }], tools);
+  check('混合拖入退化并标记 partial', mixed.length > 0 && mixed.every((r) => r.partial === true));
+
+  // 只推荐注册表里真的有 accepts 的工具
+  const allAccept = tools.filter((t) => t.accepts).length;
+  check('注册表带 accepts 派生字段', allAccept >= 6, `只有 ${allAccept} 个工具带 accepts`);
+  check('无 accepts 的工具不参与路由', dr.routeFiles([{ name: 'a.jpg', type: 'image/jpeg' }], tools.filter((t) => !t.accepts)).length === 0);
+
+  const paste = (t) => dr.routePaste(t);
+  check('JSON → 格式化', (paste('{"a":1,"b":[2,3]}') || {}).id === 'json-format');
+  check('坏 JSON 不误判', paste('{"a":1') === null);
+  check('JWT → 解码', (paste('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.sig') || {}).id === 'jwt-decode');
+  check('颜色 → 换算', (paste('#2563eb') || {}).id === 'color-convert');
+  check('秒级时间戳 → 时间转换', (paste('1750000000') || {}).id === 'timestamp');
+  check('毫秒时间戳 → 时间转换', (paste('1750000000000') || {}).id === 'timestamp');
+  check('订单号不当时戳', (paste('1234567890') || {}).id === 'timestamp' && paste('123') === null);
+  check('URL → 生成二维码', (paste('https://example.com/a') || {}).id === 'qrcode');
+  check('CSV → 转 JSON', (paste('name,age\n张三,28\n李四,31') || {}).id === 'csv-json');
+  check('Base64 → 解码', (paste('aGVsbG8gd29ybGQhIQ==') || {}).id === 'base64-url');
+  check('Markdown → 预览', (paste('# 标题\n\n- 一\n- 二') || {}).id === 'markdown-preview');
+  check('普通中文不硬猜', paste('今天天气不错') === null);
+  check('过短输入不猜', paste('{}') === null);
+
+  const hit = paste('{"a":1}');
+  const url = dr.routeUrl(hit);
+  check('路由地址带 run=1 与参数', url.startsWith('/tools/json-format/?') && url.includes('run=1') && url.includes('json='));
+  // 参数键必须是工具真实字段，否则 applyValues 会静默丢弃（与 E4 的同类断言一致）
+  const badKey = [];
+  for (const t of ['{"a":1}', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.sig', '#2563eb', '1750000000', 'https://example.com/a']) {
+    const h = paste(t);
+    const tool = tools.find((x) => x.id === h.id);
+    for (const k of Object.keys(h.params)) if (!tool || !tool.id) badKey.push(`${h.id}.${k}`);
+  }
+  check('粘贴路由参数落在存在的工具上', badKey.length === 0, badKey.join(','));
+}
+
 // 清理临时文件
 for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {
