@@ -78,7 +78,9 @@
       "cmpOpenTool": "Open tool",
       "cmpPick": "Pick a tool…",
       "cmpOptional": "(optional)",
-      "cmpTip": "Note: directory tools run on third-party sites; ToolHub only curates and recommends them."
+      "cmpTip": "Note: directory tools run on third-party sites; ToolHub only curates and recommends them.",
+      "draftRestored": "Restored your last inputs",
+      "draftClear": "Clear"
     },
     "cats": {
       "文本": "Text",

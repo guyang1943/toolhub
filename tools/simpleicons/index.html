@@ -6,6 +6,21 @@
   <title>Simple Icons · 官方在线版 · ToolHub</title>
   <meta name="description" content="3000+ 品牌 SVG 图标库（含国内主流 App） 3000+ brand SVG icons including major apps" />
   <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/tools/simpleicons/" />
   <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/tools/simpleicons/" />
@@ -16,7 +31,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 84 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 93 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -54,7 +69,7 @@
         <h1>把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span></h1>
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
-          <input id="hero-search" type="text" placeholder="搜索工具或资源…（⌘K 打开命令面板）" />
+          <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
           <div class="hero-search-hint">93 个工具 · 50 条资源 · 全部免费，无需注册</div>
         </div>
         <div class="hero-stats" id="hero-stats"></div>

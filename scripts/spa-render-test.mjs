@@ -171,9 +171,12 @@ check('首页含评测卡', cardsHtml.includes('/evaluations/'));
 // 6) 本地工具页教程板块
 await go('/tools/json-format/');
 await sleep(400); // 等 run.js 动态 import
-const toolHtml = document.getElementById('tool-form') ? document.getElementById('tool-form').innerHTML : '';
-check('工具页含使用步骤', toolHtml.includes('使用步骤') && toolHtml.includes('tut-steps'), `#tool-form ${toolHtml.length} 字符`);
-check('工具页含常见错误', toolHtml.includes('常见错误') && toolHtml.includes('pitfall-item'));
+// 交互区（#tool-form）在前，教程正文（#tool-docs）在后：先能用，再解释
+const formHtml = document.getElementById('tool-form') ? document.getElementById('tool-form').innerHTML : '';
+const docsHtml = document.getElementById('tool-docs') ? document.getElementById('tool-docs').innerHTML : '';
+check('工具页含使用步骤', docsHtml.includes('使用步骤') && docsHtml.includes('tut-steps'), `#tool-docs ${docsHtml.length} 字符`);
+check('工具页含常见错误', docsHtml.includes('常见错误') && docsHtml.includes('pitfall-item'));
+check('教程正文排在输入区之后', formHtml.indexOf('run-btn') > -1 && !formHtml.includes('tut-steps'));
 
 // 7) 站内搜索增强：拼音首字母 / 全拼 / 英文别名 / 权重排序 / 命令面板
 const searchEl = document.getElementById('search');

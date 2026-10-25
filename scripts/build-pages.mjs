@@ -16,7 +16,20 @@ const evaluations = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf
 const resources = JSON.parse(readFileSync(join(root, 'resources.json'), 'utf8'));
 const topics = JSON.parse(readFileSync(join(root, 'topics.json'), 'utf8'));
 const changelog = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8'));
-const tpl = readFileSync(join(root, 'index.html'), 'utf8');
+// 计数归一：模板里的工具数/资源数一律由数据推导，避免每加一个工具就要手改多处 meta
+const TOTAL_TOOLS = tools.length + dirTools.length;
+const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
+const rawTpl = readFileSync(join(root, 'index.html'), 'utf8');
+const tpl = rawTpl
+  .replace(/\d+(?= 个精选开源工具)/g, TOTAL_TOOLS)
+  .replace(/\d+(?= 个开源工具)/g, TOTAL_TOOLS)
+  .replace(/\d+(?= 个工具 ·)/g, TOTAL_TOOLS)
+  .replace(/\d+(?= 条资源)/g, TOTAL_RES);
+// 模板本身也回写（幂等），保证根页面直接访问时计数正确
+if (tpl !== rawTpl) {
+  writeFileSync(join(root, 'index.html'), tpl, 'utf8');
+  console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);
+}
 
 function fillMeta(html, { title, desc, url, botInject, jsonld }) {
   let out = html

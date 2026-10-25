@@ -1,5 +1,5 @@
 // ToolHub Service Worker：离线可用（HTML 网络优先，静态资源缓存优先）
-const VERSION = 'toolhub-v2.4';
+const VERSION = 'toolhub-v2.5';
 const CORE = [
   '/',
   '/index.html',

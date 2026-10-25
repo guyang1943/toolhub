@@ -68,7 +68,10 @@ async function switchLang() {
 }
 function applyStaticText() {
   const ph = t('搜索工具…（按 / 快速聚焦）', 'searchPlaceholder');
-  $('#search').placeholder = ph;
+  // 窄屏放不下括号提示，截断会在半个括号处断开，直接去掉
+  const cut = Math.min(...[ph.indexOf('（'), ph.indexOf('(')].filter((i) => i > 0));
+  const short = Number.isFinite(cut) ? ph.slice(0, cut).trim() : ph;
+  $('#search').placeholder = window.innerWidth < 600 ? short : ph;
   $('#foot-note').innerHTML = t(
     '🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片',
     'footerNote'
@@ -98,18 +101,23 @@ async function initAnalytics() {
   }
 }
 
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0f1219' : '#2563eb');
+  const btn = $('#theme-btn');
+  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+}
+
 function initTheme() {
   const saved = localStorage.getItem('toolhub:theme');
   const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (sysDark ? 'dark' : 'light');
-  document.documentElement.dataset.theme = theme;
-  $('#theme-btn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  applyTheme(saved || (sysDark ? 'dark' : 'light'));
 }
 $('#theme-btn') && $('#theme-btn').addEventListener('click', () => {
   const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
+  applyTheme(next);
   localStorage.setItem('toolhub:theme', next);
-  $('#theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
 });
 initTheme();
 initAnalytics();
@@ -1171,6 +1179,71 @@ function renderHeroStats(reg) {
 }
 
 /* ---------- 工具页 ---------- */
+/* ---------- 工具输入：URL 参数 / 草稿 / 分享链接 ---------- */
+const DRAFT_PREFIX = 'toolhub:draft:';
+
+// 收集当前表单值（文件类不参与序列化）
+function collectValues(manifest) {
+  const values = {};
+  for (const inp of manifest.inputs) {
+    const el = document.getElementById('f-' + inp.name);
+    if (!el) continue;
+    values[inp.name] =
+      inp.type === 'file' ? (inp.multiple ? Array.from(el.files || []) : el.files[0]) : el.value;
+  }
+  return values;
+}
+
+// 把一组值写回表单；按 manifest 顺序写，顺带触发 change 以便联动字段先就位
+function applyValues(manifest, data) {
+  let applied = 0;
+  for (const inp of manifest.inputs) {
+    if (inp.type === 'file' || !(inp.name in data)) continue;
+    const el = document.getElementById('f-' + inp.name);
+    if (!el) continue;
+    const v = String(data[inp.name]).slice(0, 500);
+    if (el.tagName === 'SELECT' && !Array.from(el.options).some((o) => o.value === v)) continue;
+    el.value = v;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    applied++;
+  }
+  return applied;
+}
+
+function saveDraft(id, values) {
+  try {
+    const plain = {};
+    for (const [k, v] of Object.entries(values)) if (typeof v === 'string' && v !== '') plain[k] = v;
+    if (!Object.keys(plain).length) return;
+    const s = JSON.stringify(plain);
+    if (s.length > 4000) return;
+    localStorage.setItem(DRAFT_PREFIX + id, s);
+  } catch {}
+}
+
+function loadDraft(id) {
+  try {
+    const s = localStorage.getItem(DRAFT_PREFIX + id);
+    return s ? JSON.parse(s) : null;
+  } catch {
+    return null;
+  }
+}
+
+// 把当前输入编码进 URL，便于把「算好的结果」直接发人
+function shareUrlOf(id, manifest) {
+  const url = new URL(location.origin + '/tools/' + id + '/');
+  const hasFile = manifest.inputs.some((i) => i.type === 'file');
+  for (const [k, v] of Object.entries(collectValues(manifest))) {
+    if (typeof v !== 'string' || v === '') continue;
+    if (v.length > 500) continue;
+    url.searchParams.set(k, v);
+  }
+  if (!hasFile) url.searchParams.set('run', '1'); // 收到链接即自动算一遍
+  return url.toString();
+}
+
 function fieldHTML(inp) {
   const ph = inp.placeholder ? `placeholder="${esc(inp.placeholder)}"` : '';
   const dv = inp.default != null ? esc(inp.default) : '';
@@ -1274,6 +1347,7 @@ async function openTool(id) {
   $('#tool-body').innerHTML = `
     <div class="panel" id="tool-form"></div>
     <div class="panel result" id="tool-result" style="display:none" role="region" aria-live="polite" aria-label="运行结果"></div>
+    <div id="tool-docs"></div>
     <div id="related-panel"></div>`;
 
   let mod;
@@ -1335,14 +1409,17 @@ async function openTool(id) {
 
   $('#tool-form').innerHTML =
     `<div class="tool-head">
-      <h1><span class="h-icon">${icon}</span>${toolMeta(meta).name}<button class="share-btn" id="share-btn" title="复制工具链接">🔗</button><button class="share-btn" id="cmp-btn" title="加入对比">⇄ 加入对比</button><button class="share-btn" id="eg-btn" title="填入示例数据">⌨ 示例</button><button class="share-btn" id="embed-btn" title="复制嵌入代码">&lt;/&gt; 嵌入</button></h1>
+      <h1><span class="h-icon">${icon}</span>${toolMeta(meta).name}<button class="share-btn" id="share-btn" title="复制带当前输入的链接">🔗</button><button class="share-btn" id="cmp-btn" title="加入对比">⇄ 加入对比</button><button class="share-btn" id="eg-btn" title="填入示例数据">⌨ 示例</button><button class="share-btn" id="embed-btn" title="复制嵌入代码">&lt;/&gt; 嵌入</button></h1>
       <p class="desc">${toolMeta(meta).desc}</p>
       <p class="src">✦ ${t('来源', 'sourceLabel')}：${meta.source} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}${usedNote}</p>
       ${LANG === 'en' && !d ? '<p class="src" style="color:#c2570a">⚠️ Detailed instructions are currently available in Chinese only.</p>' : ''}
-    </div>` +
-    blocks +
-    `<div class="panel">${manifest.inputs.map((inp) => `<div class="field"><label>${labelOf(inp)}</label>${fieldHTML(inp)}</div>`).join('')}
+    </div>
+    <div class="panel" id="tool-fields">${manifest.inputs.map((inp) => `<div class="field"><label>${labelOf(inp)}</label>${fieldHTML(inp)}</div>`).join('')}
       <div class="row"><button class="btn" id="run-btn">${runLabel}</button></div></div>`;
+
+  // 教程正文放在结果之后：先让用户能用，再解释怎么用
+  const docs = $('#tool-docs');
+  if (docs) docs.innerHTML = blocks;
 
   $('#run-btn').onclick = async () => {
     await doRun();
@@ -1357,12 +1434,35 @@ async function openTool(id) {
     }
   }
 
-  async function doRun() {
-    const values = {};
-    for (const inp of manifest.inputs) {
-      const el = document.getElementById('f-' + inp.name);
-      values[inp.name] = inp.type === 'file' ? (inp.multiple ? Array.from(el.files || []) : el.files[0]) : el.value;
+  // 输入回填：URL 参数优先（可分享「算好的结果」），其次恢复本机上次输入
+  (function restoreInputs() {
+    const params = new URLSearchParams(location.search);
+    const fromUrl = {};
+    for (const [k, v] of params) if (k !== 'embed' && k !== 'run') fromUrl[k] = v;
+    if (Object.keys(fromUrl).length && applyValues(manifest, fromUrl)) {
+      if (params.get('run') === '1' && !manifest.inputs.some((i) => i.type === 'file')) {
+        setTimeout(() => doRun(), 60);
+      }
+      return;
     }
+    const draft = loadDraft(meta.id);
+    if (!draft) return;
+    if (!applyValues(manifest, draft)) return;
+    const bar = document.createElement('div');
+    bar.className = 'draft-note';
+    bar.innerHTML = `${t('已恢复上次输入', 'draftRestored')} <button type="button" id="draft-clear">${t('清空', 'draftClear')}</button>`;
+    const fields = document.getElementById('tool-fields');
+    if (fields) fields.insertBefore(bar, fields.firstChild);
+    document.getElementById('draft-clear').onclick = () => {
+      localStorage.removeItem(DRAFT_PREFIX + meta.id);
+      bar.remove();
+      renderTool(meta.id);
+    };
+  })();
+
+  async function doRun() {
+    const values = collectValues(manifest);
+    saveDraft(meta.id, values);
     const box = $('#tool-result');
     box.style.display = '';
     if (meta.runtime === 'pyodide') {
@@ -1451,7 +1551,7 @@ async function openTool(id) {
   if (sb) {
     sb.onclick = async () => {
       try {
-        await navigator.clipboard.writeText(location.href);
+        await navigator.clipboard.writeText(shareUrlOf(meta.id, manifest));
         sb.textContent = '✅';
         setTimeout(() => (sb.textContent = '🔗'), 1600);
       } catch {
@@ -1696,6 +1796,18 @@ if (new URLSearchParams(location.search).get('embed') === '1') {
 
 // 命令面板与 hero 搜索
 initPalette();
+
+// 占位文案按视口宽度取舍：窄屏放不下长提示，会被截成半个括号
+// 顶部搜索框的文案由 applyStaticText() 负责（要跟语言切换联动），这里只处理首页大搜索框
+(function adaptPlaceholders() {
+  const hero = document.getElementById('hero-search');
+  if (!hero) return;
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+  hero.placeholder =
+    window.innerWidth < 600
+      ? '搜索工具或资源…'
+      : `搜索工具或资源…（${isMac ? '⌘' : 'Ctrl'} K 打开命令面板）`;
+})();
 document.addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault();

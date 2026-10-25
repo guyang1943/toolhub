@@ -245,6 +245,22 @@ check('静态页数（工具 + 关于/提交/反馈）', () => {
   return `${toolPages} + ${extras}`;
 });
 
+check('公开文案计数与数据一致', () => {
+  const total = all.length;
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  // 首页三处计数（meta description / og / hero 提示）+ 所有生成页的 twitter:description
+  const nums = [...home.matchAll(/(\d+) 个(?:精选)?开源工具/g)].map((m) => +m[1]);
+  nums.push(...[...home.matchAll(/(\d+) 个工具 ·/g)].map((m) => +m[1]));
+  assert(nums.length >= 4, `首页计数只有 ${nums.length} 处，meta 可能被改动`);
+  const wrong = nums.filter((n) => n !== total);
+  assert(!wrong.length, `首页计数 ${[...new Set(wrong)].join('/')} ≠ 实际 ${total}`);
+  // 抽查生成页的 twitter:description（fillMeta 不覆盖它，历史上漏改过）
+  const probe = readFileSync(join(root, 'tools', all[0].id, 'index.html'), 'utf8');
+  const m = probe.match(/name="twitter:description" content="精选 (\d+) 个开源工具/);
+  assert(m && +m[1] === total, `生成页 twitter:description 计数 ${m ? m[1] : '缺失'} ≠ ${total}`);
+  return `${total} 个工具 / ${nums.length} 处文案`;
+});
+
 // ---------- 4. 资源与可疑内容 ----------
 check('关键资源存在', () => {
   const files = [

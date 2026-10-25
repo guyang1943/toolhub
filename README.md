@@ -1,4 +1,4 @@
-# ToolHub — 开源项目工具化平台（v2.4）
+# ToolHub — 开源项目工具化平台（v2.5）
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
@@ -27,7 +27,7 @@ toolhub/
 ├── articles.json         # 33 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
 ├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
 ├── changelog.json        # 更新日志数据
-├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test / new-tools-test
+├── scripts/              # build-pages / verify / smoke-test / health-check / release / spa-render-test / new-tools-test / browser-test
 ├── topics/ evaluations/ resources/ tools/<id>/   # 构建生成的静态 SEO 页
 └── wrangler.toml         # Cloudflare Workers 静态资源部署配置
 ```
@@ -278,3 +278,26 @@ npx wrangler deploy --config wrangler.toml
 - **身份证 / 银行卡校验** `id-validate`：GB 11643 加权校验码 + Luhn，解析省级归属地、生日、性别、年龄、卡组织；展示打码，全同数字与非法生日单独识别
 - 测试：功能测试 **91 项**（原 41），SPA 渲染 **38 项**（原 34）；新增真实 PNG → PDF 页尺寸校验、冬夏令时与跨日校验
 - 全站 88 → **93** 工具（本地 28 → 33），静态页 **122**，sitemap **123**，`sw.js` VERSION → toolhub-v2.4
+
+## v2.5：交互前置 + 深链分享 + 输入记忆 + 真浏览器 E2E（2026-10-25）
+
+这一版没有加新工具，全部落在「同样 93 个工具，用起来更顺」：
+
+- **工具页交互前置**：输入区原本排在使用说明、使用场景、小贴士、使用步骤、常见错误之后，首个输入框在 1327px 处——用户要先滚过一整屏文字才能开始用。现在输入区紧跟标题（291px），教程正文移到结果之后。
+- **可分享的深链**：`/tools/unit-convert/?cat=mass&value=2&from=kg&to=lb&run=1` 打开即回填并自动计算；分享按钮会把当前所有输入编码进链接，适合把一次算好的结果直接发人。
+- **输入记忆**：每次运行后按工具存草稿，下次进入自动恢复（文件类不参与），并提供「清空」。
+- **深色首帧**：主题在 `<head>` 内联脚本里于首帧前定好，并同步 `theme-color`，不再白闪。
+- **计数单一来源**：工具数/资源数在 `build-pages.mjs` 里从数据推导并回写模板，verify 增加一致性守卫（此前 og/twitter description 停留在 84 个，波及 122 页）。
+- **移动端**：语言按钮换行、标题单字孤行、提示文案被截断三处已修。
+
+### 测试矩阵（v2.5）
+
+| 套件 | 命令 | 覆盖 | 数量 |
+|---|---|---|---|
+| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、meta 一致性、部署安全、无障碍 | 27 |
+| SPA 渲染 | `node scripts/spa-render-test.mjs` | DOM 桩下的路由、搜索、表单联动、端到端 | 39 |
+| 工具功能 | `node scripts/new-tools-test.mjs` | 个税/房贷数学、单位精度、真实 PDF、真实 QR、图片转码 | 91 |
+| 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 | 72 |
+| 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题 | 32 |
+
+`browser-test.mjs` 会自动查找本机 Edge / Chrome，用独立临时 profile 起无头实例，不需要额外依赖。
