@@ -267,9 +267,6 @@
       "dillinger": {
         "desc": "Minimal online Markdown editor"
       },
-      "hackmd": {
-        "desc": "Collaborative Markdown notes, edit together in real time"
-      },
       "affine": {
         "desc": "Open-source Notion alternative: docs + whiteboard + tables"
       },
@@ -417,6 +414,10 @@
       "pdf-merge": {
         "name": "PDF Merge & Split",
         "desc": "Merge, extract pages, or split PDFs locally — files never leave your device"
+      },
+      "cryptpad": {
+        "name": "CryptPad",
+        "desc": "End-to-end encrypted docs, sheets and boards — collaborate without an account"
       }
     }
   }

@@ -27,25 +27,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"工具对比 · ToolHub","description":"把同类开源工具放在一起对比：数据是否上传、能否离线、是否需要注册、开源协议与来源，帮你在几个相似工具里做选择。","url":"https://toolhub.guyang1966.workers.dev/compare/"}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>工具对比</h1><p>把同类开源工具放在一起对比：数据是否上传、能否离线、是否需要注册、开源协议与来源，帮你在几个相似工具里做选择。</p><h2>为什么需要对比同类工具</h2><p>同一个需求往往有好几个工具可选，差别在于数据处理方式、是否要装环境、协议与维护状况。把关键属性并排放，比逐个打开试要快得多。</p><h2>对比维度</h2><p>运行方式（浏览器内执行 / 第三方官网）、数据流向（是否上传）、离线可用性、是否需要注册、输入输出、开源协议与来源。</p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么年初个税低、年底越来越高？","acceptedAnswer":{"@type":"Answer","text":"累计预扣法下，累计应纳税所得额逐月累加，会依次滑入更高的税率档（3% → 10% → 20% …）。同样月薪，1 月可能只扣几十元，12 月可能扣几百元。全年十二个月相加正好等于全年应纳税额，并没有多扣。"}},{"@type":"Question","name":"年终奖要不要单独计税？","acceptedAnswer":{"@type":"Answer","text":"看情况。年终奖可以选单独计税（除以 12 找税率，税额不与工资合并），也可以并入综合所得。收入较低、扣除较多的人并入往往更省；收入较高、工资已适用高税率的人单独计税可能更划算。两种方式都算一遍，选总税负小的。"}},{"@type":"Question","name":"汇算清缴时会不会退税或补税？","acceptedAnswer":{"@type":"Answer","text":"工资部分通常不退不补（累计预扣已精准扣缴）。但如果全年还有稿酬、劳务报酬、特许权使用费，或者中途换过工作、年中才新增专项附加扣除，合并后与预扣有差异，次年 3–6 月汇算时就会多退少补。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>个税计算器</h1><p>工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测</p><h2>关于个税计算器</h2><p>个税计算器把工资条上难以复核的扣税过程完整拆开。工资薪金所得采用累计预扣法：税务系统不按单月收入算税，而是把年初至今的收入、起征点、三险一金和专项附加扣除全部累加，先算出累计应纳税所得额，对照预扣率表得出累计应预扣税额，再减去此前几个月已经预扣的金额，才是这个月实际扣的税。这样做的好处是收入均匀时各月税负分布合理，年终也不再需要为工资部分单独汇算；代价是月初月份个税低、临近年底单月个税会逐渐升高，看工资条时容易误以为「扣得越来越多」。本工具按同一套规则逐月还原，并给出全年十二个月的预测表。</p><h2>使用步骤</h2><ol><li>填写税前月薪（劳动合同上的固定工资，不含年终奖等一次性收入），以及工资条上三险一金的个人缴纳部分</li><li>选择计算第几个月（1–12），累计预扣法下每个月的扣除都是「年初到现在」的累计值</li><li>按实际情况选择专项附加扣除：子女教育、3 岁以下婴幼儿照护、赡养老人、住房贷款利息或住房租金、继续教育，均可多选叠加</li><li>点击「计算个税」，查看本月应预扣税额、税后到手金额，以及全年各月预测表和全年合计</li><li>换工作或有一次性收入时，用年终奖单独计税的方式再算一次，比较哪种总税负更低</li></ol><h2>常见错误</h2><h3>把税前月薪填成税后到手</h3><p>预扣法算的是「税前」。如果把到手金额填进去，会低估税基、算出的个税明显偏低。以劳动合同和工资条上的「应发工资」为准。</p><h3>重复享受住房扣除</h3><p>住房贷款利息与住房租金只能二选一，且夫妻双方申报的也不能超过标准额度。本工具已做互斥，但前提是如实填写——同时符合两项条件时只应保留一项。</p><h3>忽略扣除的起始月份</h3><p>累计预扣的扣除额按「实际发生月份」累加。比如 9 月才出生的宝宝，1–8 月不该有婴幼儿照护扣除，直接用全年额度会高估扣除、低估税负。精确计算时请按实际起止月份分摊。</p><h3>拿本工具结果直接修改工资条</h3><p>本工具是估算：未考虑企业年金、商业健康险递延、残疾孤老烈属减征、以及各地社保基数上下限等细节。金额以争议时，以个人所得税 App 和税务机关的记录为准。</p><h2>常见问题</h2><h3>为什么年初个税低、年底越来越高？</h3><p>累计预扣法下，累计应纳税所得额逐月累加，会依次滑入更高的税率档（3% → 10% → 20% …）。同样月薪，1 月可能只扣几十元，12 月可能扣几百元。全年十二个月相加正好等于全年应纳税额，并没有多扣。</p><h3>年终奖要不要单独计税？</h3><p>看情况。年终奖可以选单独计税（除以 12 找税率，税额不与工资合并），也可以并入综合所得。收入较低、扣除较多的人并入往往更省；收入较高、工资已适用高税率的人单独计税可能更划算。两种方式都算一遍，选总税负小的。</p><h3>汇算清缴时会不会退税或补税？</h3><p>工资部分通常不退不补（累计预扣已精准扣缴）。但如果全年还有稿酬、劳务报酬、特许权使用费，或者中途换过工作、年中才新增专项附加扣除，合并后与预扣有差异，次年 3–6 月汇算时就会多退少补。</p><p>来源：内置实现 · License: MIT · 分类：效率</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

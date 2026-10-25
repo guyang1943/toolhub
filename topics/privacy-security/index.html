@@ -27,25 +27,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"隐私与安全工具箱","description":"密码生成、文件校验、Token 检查——敏感操作全部在本机完成","url":"https://toolhub.guyang1966.workers.dev/topics/privacy-security/","numberOfItems":5}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>隐私与安全工具箱</h1><p>密码生成、文件校验、Token 检查——敏感操作全部在本机完成</p><h2>专题说明</h2><p>处理敏感信息时最大的风险不是工具不够强，而是数据在传输过程中离开了你的控制。这个专题的每个工具都在浏览器本地运行：密码在本机生成、哈希在本机计算、Token 在本机解码。配合 PrivateBin（阅后即焚）和 Bitwarden（密码管理），可以搭起一条「数据不出设备」的工作流。</p><h2>包含工具（按建议顺序）</h2><ol><li>强密码生成</li><li>哈希计算</li><li>JWT 解码</li><li>Base64 / URL 编解码</li><li>Python 运行器</li></ol><h2>常见问题</h2><h3>Base64 能保护密码吗</h3><p>不能。Base64 是公开可逆编码，没有密钥，任何人一秒还原。绝不要用它「加密」敏感数据，需要传输保护请用 HTTPS，需要存储保护请用 bcrypt 这类单向哈希。</p><h3>JWT 里能放敏感信息吗</h3><p>Payload 只是 Base64 编码，不是加密，任何人拿到都能读。JWT 里只放非敏感的身份标识，敏感信息放服务端，过期时间设短一点，并始终走 HTTPS。</p><p><a href="/topics/">← 全部专题</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

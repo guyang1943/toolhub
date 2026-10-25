@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么有些二维码识别不出来？","acceptedAnswer":{"@type":"Answer","text":"常见原因有四类：图片模糊或分辨率过低（QR 码每个模块至少需要 2–3 个像素才稳）；二维码被裁掉一个角（三个定位图案必须完整）；反光、阴影、水印遮挡；内容过长导致码点过密而拍摄分辨率不足。裁剪出完整二维码、保证清晰度后重试，成功率会大幅提高。"}},{"@type":"Question","name":"解析二维码安全吗？会不会自动跳转？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具只把内容作为文本显示，不会自动打开任何链接。看到网址后建议先核对域名再决定是否访问——这正是它的价值：扫码前先看清目标，避免扫到仿冒链接。"}},{"@type":"Question","name":"一张图里有多个二维码，能都识别吗？","acceptedAnswer":{"@type":"Answer","text":"目前每次只返回第一个识别到的。需要解析其他二维码时，把目标码裁剪到图片中央再上传即可。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>二维码解析</h1><p>上传图片本地识别二维码内容，图片不上传，标注识别位置</p><h2>关于二维码解析</h2><p>二维码解析是把一张图片里的二维码还原成可读内容的工具。手机摄像头扫码我们天天用，但坐在电脑前收到一张带二维码的截图、一张海报照片、一份扫描件时，掏手机对扫反而麻烦。本工具基于开源 jsQR 库在浏览器内解码：选择图片后，库会逐行扫描像素定位二维码的三个定位图案，再按 QR 码的格式信息解析数据区，最终还原出网址、文本、WiFi 配置、vCard 联系人等内容，并用红框把识别到的位置标注在原图上。图片全程不上传，含有敏感链接的二维码也能放心解析。</p><h2>使用步骤</h2><ol><li>点击「选择二维码图片」，上传截图、照片或扫描件（PNG / JPG / WebP 均可）</li><li>工具自动解码，成功后显示内容类型（网址、WiFi 配置、联系人等）和完整文本</li><li>右侧预览图上红框标出识别到的二维码位置，可据此判断是否扫到了图里正确的那一个</li><li>点「复制内容」拿走文本；如果是网址，也可以直接点「打开链接」</li><li>识别失败时，按下方常见错误修剪图片后重试</li></ol><h2>常见错误</h2><h3>整屏截图直接丢进来</h3><p>带聊天框、状态栏的大截图里二维码占比很小，压缩后码点粘连，识别率骤降。先用截图工具裁出二维码本体（留 10% 白边）再上传，是最有效的提升手段。</p><h3>照片透视变形严重</h3><p>斜拍、镜头畸变会让定位图案不再是正方形，解码失败。正对拍摄、保持二维码充满画面中央，比高像素更重要。</p><h3>把识别结果当可信来源</h3><p>解码只负责还原内容，不校验真伪。二维码里写什么就显示什么，付款码、登录链接一类的高风险内容，务必先核实来源渠道再操作。</p><h3>拿本工具扫付款码</h3><p>付款码、票据码往往是短时效的动态码，解析出来再手动输入往往已过期，且手工搬运有出错风险。这类场景请直接用官方 App 扫。</p><h2>常见问题</h2><h3>为什么有些二维码识别不出来？</h3><p>常见原因有四类：图片模糊或分辨率过低（QR 码每个模块至少需要 2–3 个像素才稳）；二维码被裁掉一个角（三个定位图案必须完整）；反光、阴影、水印遮挡；内容过长导致码点过密而拍摄分辨率不足。裁剪出完整二维码、保证清晰度后重试，成功率会大幅提高。</p><h3>解析二维码安全吗？会不会自动跳转？</h3><p>不会。本工具只把内容作为文本显示，不会自动打开任何链接。看到网址后建议先核对域名再决定是否访问——这正是它的价值：扫码前先看清目标，避免扫到仿冒链接。</p><h3>一张图里有多个二维码，能都识别吗？</h3><p>目前每次只返回第一个识别到的。需要解析其他二维码时，把目标码裁剪到图片中央再上传即可。</p><p>来源：内置实现 (jsQR) · License: MIT · 分类：效率</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

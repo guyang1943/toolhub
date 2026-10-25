@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么我的数值列被识别成 object？","acceptedAnswer":{"@type":"Answer","text":"列里混有非数字内容，比如千分位逗号、货币符号、空格、破折号或中文“无”。清洗后再读入即可。"}},{"@type":"Question","name":"缺失值和空格子是一回事吗？","acceptedAnswer":{"@type":"Answer","text":"读入时空字符串默认按缺失值（NaN）处理，但仅含空格的字段会被当成普通字符串，需要加 skipinitialspace 或用 strip 处理。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV 数据体检</h1><p>pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</p><h2>关于CSV 数据体检</h2><p>数据分析的第一步不是建模，而是“体检”：有多少行多少列、每列是什么类型、缺失值集中在哪、数值分布是否合理。类型识别尤其关键——一列本该是数字却显示为 object，说明混入了空格、货币符号或“无”这类占位文本，后续任何计算都会出错。</p><h2>使用步骤</h2><ol><li>上传或粘贴 CSV 内容，自动读取前 1000 行做体检</li><li>查看概览：行列数、每列类型、缺失值数量与占比</li><li>展开数值列看统计摘要，找出异常范围和离群值</li><li>根据报告清洗数据（去空格、统一占位符），再重新分析</li></ol><h2>常见错误</h2><h3>没看类型直接求和</h3><p>object 列参与计算会报错或被当成字符串拼接。先看体检报告的类型列，确认是 int/float 再算。</p><h3>占位符伪装成数据</h3><p>「无」「-」「N/A」都会被当成有效字符串，拉高非缺失计数。和业务方确认占位符清单，统一替换成空。</p><h3>重复列名被静默改名</h3><p>pandas 会给重名列加 .1 后缀，后续按列名取值会 KeyError。体检时留意列名是否和源文件一致。</p><h2>常见问题</h2><h3>为什么我的数值列被识别成 object？</h3><p>列里混有非数字内容，比如千分位逗号、货币符号、空格、破折号或中文“无”。清洗后再读入即可。</p><h3>缺失值和空格子是一回事吗？</h3><p>读入时空字符串默认按缺失值（NaN）处理，但仅含空格的字段会被当成普通字符串，需要加 skipinitialspace 或用 strip 处理。</p><p>来源：基于 pandas (BSD-3-Clause) + Pyodide · License: BSD-3-Clause · 分类：数据</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

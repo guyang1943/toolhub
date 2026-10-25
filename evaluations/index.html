@@ -27,25 +27,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"ToolHub 工具评测","url":"https://toolhub.guyang1966.workers.dev/evaluations/"}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>工具评测</h1><p>同类工具横向实测：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚。</p><h2>🖼️ 图片压缩工具横评：本地派 vs 上传派</h2><p>同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。</p><p>实测日期：2026-10-24 · <a href="/evaluations/image-compress-shootout/">阅读全文 →</a></p><h2>📝 Markdown 编辑器横评：四款主流在线编辑器怎么选</h2><p>StackEdit、Dillinger、HackMD 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。</p><p>实测日期：2026-10-24 · <a href="/evaluations/markdown-editors/">阅读全文 →</a></p><h2>📄 PDF 工具横评：本地处理的 BentoPDF  vs 功能最全的 Stirling-PDF</h2><p>两个开源 PDF 工具箱代表两条路线：BentoPDF 坚持浏览器本地处理，Stirling-PDF 用功能广度取胜（官方演示站为服务器处理）。加上「上传型在线 PDF 站」作为反面参照，一次说清怎么选。</p><p>实测日期：2026-10-24 · <a href="/evaluations/pdf-tools/">阅读全文 →</a></p><h2>🔑 密码工具横评：生成器只是起点，管理才是终点</h2><p>对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。</p><p>实测日期：2026-10-24 · <a href="/evaluations/password-tools/">阅读全文 →</a></p><h2>🧾 JSON 工具横评：格式化只是入门，可视化才是分水岭</h2><p>本站 JSON 格式化、JSON Hero、JSON Crack、CyberChef 四款工具同场竞技：扁平 JSON 谁都行，深层嵌套和「既要转换又要看」的场景才见高下。</p><p>实测日期：2026-10-24 · <a href="/evaluations/json-tools/">阅读全文 →</a></p><p><a href="/">← 返回首页</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

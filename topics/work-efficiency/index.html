@@ -27,25 +27,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"职场效率工具包","description":"密码、UUID、时间戳、二维码、名单清洗——办公场景高频小工具一次配齐","url":"https://toolhub.guyang1966.workers.dev/topics/work-efficiency/","numberOfItems":6}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>职场效率工具包</h1><p>密码、UUID、时间戳、二维码、名单清洗——办公场景高频小工具一次配齐</p><h2>专题说明</h2><p>办公场景里最烦人的往往不是大事，而是这些重复小操作：又要编个测试账号密码、数据库主键用什么 ID、活动时间写成时间戳、分享链接做个二维码、名单去重排序。这组工具主打「三秒出结果」，每个都能直接复制粘贴到工作流里，不装插件不登录。</p><h2>包含工具（按建议顺序）</h2><ol><li>强密码生成</li><li>UUID / ULID 生成</li><li>时间戳转换</li><li>二维码生成</li><li>文本去重排序</li><li>Base64 / URL 编解码</li></ol><h2>常见问题</h2><h3>生成的密码怎么保管</h3><p>强密码的唯一正解是密码管理器（Bitwarden 有免费档），不要记在备忘录或共享文档里。涉及公司账号的密码，遵循公司密码策略，不要绕过。</p><h3>活动倒计时总差一天</h3><p>多半是时区没对齐：服务器存的是 UTC，前端显示的是本地时间。生成时间戳时留意用的是哪个时区，跨天活动建议同时给出两地的具体时刻。</p><p><a href="/topics/">← 全部专题</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

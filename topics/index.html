@@ -27,25 +27,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"ToolHub 专题合集","url":"https://toolhub.guyang1966.workers.dev/topics/"}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>专题合集</h1><p>按场景打包好的工具组合，不用自己从一堆工具里挑。</p><h2>🧪 前端调试工具包</h2><p>排查接口、解码 Token、验证正则、对比日志——前端日常最常用的 7 个工具</p><p><a href="/topics/frontend-debug/">查看专题 →</a></p><h2>🖼️ 图片处理全流程</h2><p>压缩、缩放、转 Base64、生成二维码——从拿到图到能用图，一条链路走完</p><p><a href="/topics/image-workflow/">查看专题 →</a></p><h2>📊 数据清洗与转换</h2><p>CSV 与 JSON 互转、去重排序、数值统计、编码哈希——拿到脏数据的处理流程</p><p><a href="/topics/data-cleanup/">查看专题 →</a></p><h2>✍️ 写作工具箱</h2><p>字数统计、Markdown 排版、文本去重、版本对比——写作者的日常五件套</p><p><a href="/topics/writing-toolkit/">查看专题 →</a></p><h2>🔌 接口联调试探</h2><p>联调排错全链路：看返回、解 Token、对时间、验规则——后端联调不再抓瞎</p><p><a href="/topics/api-debug/">查看专题 →</a></p><h2>🔓 开源替代品清单</h2><p>不花钱、不注册、数据在自己手里——主流付费软件的开源平替都在这</p><p><a href="/topics/open-source-alternatives/">查看专题 →</a></p><h2>💼 职场效率工具包</h2><p>密码、UUID、时间戳、二维码、名单清洗——办公场景高频小工具一次配齐</p><p><a href="/topics/work-efficiency/">查看专题 →</a></p><h2>📚 开发者速查手册</h2><p>cron 怎么说人话、命名怎么统一、正则怎么写对——查完接着写代码</p><p><a href="/topics/dev-quickref/">查看专题 →</a></p><h2>🔐 隐私与安全工具箱</h2><p>密码生成、文件校验、Token 检查——敏感操作全部在本机完成</p><p><a href="/topics/privacy-security/">查看专题 →</a></p><h2>🎨 设计与配色</h2><p>颜色格式互转、对比度达标检查——配色不再凭感觉，交出能过审的界面</p><p><a href="/topics/design-color/">查看专题 →</a></p><p><a href="/">← 返回首页</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

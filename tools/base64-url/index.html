@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么用 btoa() 处理中文会报错？","acceptedAnswer":{"@type":"Answer","text":"btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。"}},{"@type":"Question","name":"Base64 能用来加密数据吗？","acceptedAnswer":{"@type":"Answer","text":"不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Base64 / URL 编解码</h1><p>Base64 与 URL 编码互转，支持中文</p><h2>关于Base64 / URL 编解码</h2><p>Base64 是把二进制数据映射成 64 个可打印字符的编码方式，常用在只能传输文本的场景，比如邮件、JSON 字段、URL 参数。URL 编码（percent-encoding）则是把空格、中文、& ? 等特殊字符转成 %XX 形式，避免破坏 URL 结构。两者都是编码，不是加密——任何人都能还原。</p><h2>使用步骤</h2><ol><li>选择模式：Base64 编解码、URL 编解码或 Data URI 处理</li><li>粘贴原文或密文，中文内容勾选 UTF-8 处理</li><li>核对输出结果，复制到目标位置</li><li>批量场景可一次性粘贴多行，按行分别处理</li></ol><h2>常见错误</h2><h3>把 Base64 当加密</h3><p>解码只需要一秒。任何“看起来乱码就觉得安全”的想法都危险，敏感数据请用真正的加密算法。</p><h3>URL 编码不完整</h3><p>只转义空格不转义 & 和 #，链接照样会断。整个查询串都要编码，服务端再解码。</p><h3>编码后当作二进制直接比较</h3><p>Base64 输出依赖填充和换行约定，不同实现可能差在行尾换行；比对内容前先统一格式。</p><h2>常见问题</h2><h3>为什么用 btoa() 处理中文会报错？</h3><p>btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。</p><h3>Base64 能用来加密数据吗？</h3><p>不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。</p><p>来源：内置实现 · License: MIT · 分类：文本</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

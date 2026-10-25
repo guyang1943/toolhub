@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么我写的 * 在分钟位不生效？","acceptedAnswer":{"@type":"Answer","text":"* 表示该字段的每一个值。分钟位写 * 就是每分钟执行一次，如果配合其他字段为 *，就是每分钟都在跑，容易被误认为没生效。"}},{"@type":"Question","name":"0 和 7 都表示周日吗？","acceptedAnswer":{"@type":"Answer","text":"在标准 cron 中是的，两者都指向周日；1 表示周一，依次类推到 6 表示周六。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Cron 解析</h1><p>用人话解释 cron 表达式，并算出接下来 5 次执行时间</p><h2>关于Cron 解析</h2><p>Cron 表达式用五个字段描述定时规则：分钟、小时、日、月、星期。它的坑集中在两个地方——第一，日和星期是“或”的关系（某些实现里同时指定会取并集），第二，服务器时区未必是你以为的那个。把表达式翻译成人话并列出未来执行时间，是避免“任务没跑”这类事故最有效的方式。</p><h2>使用步骤</h2><ol><li>粘贴 cron 表达式，工具自动按五段式解析</li><li>阅读人话解释，确认每个字段的取值是否符合预期</li><li>查看列出的接下来 5 次执行时间，对照日历核对</li><li>上线前确认服务器时区，必要时换算后再写入 crontab</li></ol><h2>常见错误</h2><h3>日与星期同时指定</h3><p>两个字段都写具体值时标准 cron 取“或”的关系，执行频率比预期高。只用一个字段表达规则最清晰。</p><h3>时区想当然</h3><p>crontab 默认用系统时区，云服务器多是 UTC。写“每天 9 点”前先确认系统时区，否则差一整班。</p><h3>步长语法用错场景</h3><p>*/15 表示从 0 开始每 15 分钟一次，不是“每刻钟对齐”。需要整点、半点、45 分这种组合时用逗号列出具体值。</p><h2>常见问题</h2><h3>为什么我写的 * 在分钟位不生效？</h3><p>* 表示该字段的每一个值。分钟位写 * 就是每分钟执行一次，如果配合其他字段为 *，就是每分钟都在跑，容易被误认为没生效。</p><h3>0 和 7 都表示周日吗？</h3><p>在标准 cron 中是的，两者都指向周日；1 表示周一，依次类推到 6 表示周六。</p><p>来源：内置实现 · License: MIT · 分类：开发</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

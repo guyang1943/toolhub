@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"压缩后图片会不会上传到服务器？","acceptedAnswer":{"@type":"Answer","text":"不会。本站使用浏览器 Canvas API 在本机完成编码，图片数据从头到尾都没有离开你的设备，可以放心处理含客户信息的截图。"}},{"@type":"Question","name":"为什么 PNG 压缩后体积几乎没变？","acceptedAnswer":{"@type":"Answer","text":"PNG 是无损格式，质量参数对它无效。要明显减小体积，应该转成 JPEG 或 WebP，或者先用调色板量化。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩</h1><p>在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</p><h2>关于图片压缩</h2><p>图片压缩是在肉眼几乎看不出差别的前提下，降低图片文件体积的处理。常见做法是降低量化精度（有损压缩）或优化编码参数（无损压缩）。有损压缩对照片类图片效果最好，通常质量 70-80 就能把体积减半；无损压缩更适合图标、线条图和需要保留像素精度的截图。</p><h2>使用步骤</h2><ol><li>选择或拖入要压缩的图片（JPG / PNG / WebP）</li><li>拖动质量滑杆，右侧实时显示压缩后体积与预估画质</li><li>需要统一尺寸时先配合缩放工具处理，再压缩</li><li>点击下载，直接得到压缩后的文件</li></ol><h2>常见错误</h2><h3>二次压缩反而变大</h3><p>已经被微信、QQ 或图床压过的图，内部编码已接近极限，再次有损压缩会重新量化，体积可能不降反升。</p><h3>质量拉太低去追小体积</h3><p>质量低于 40 后文字边缘会出现振铃和色块，压缩率提升却有限。截图类建议 60-70，照片类 75-80 是平衡点。</p><h3>忽略格式选择的差异</h3><p>需要透明的图不要转成 JPEG；要兼容旧浏览器时 WebP 不是万能解，准备一份 PNG 兜底。</p><h2>常见问题</h2><h3>压缩后图片会不会上传到服务器？</h3><p>不会。本站使用浏览器 Canvas API 在本机完成编码，图片数据从头到尾都没有离开你的设备，可以放心处理含客户信息的截图。</p><h3>为什么 PNG 压缩后体积几乎没变？</h3><p>PNG 是无损格式，质量参数对它无效。要明显减小体积，应该转成 JPEG 或 WebP，或者先用调色板量化。</p><p>来源：内置实现 (Canvas API) · License: MIT · 分类：图片</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

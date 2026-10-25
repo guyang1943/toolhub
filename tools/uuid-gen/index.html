@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"数据库主键该用 UUID 还是自增 ID？","acceptedAnswer":{"@type":"Answer","text":"需要分布式生成、不暴露业务量时用 UUID/ULID；单库单表且追求极致索引性能时自增 ID 仍然简单有效。用 UUID 时优先 ULID 或 UUID v7 这类时间有序版本。"}},{"@type":"Question","name":"同一毫秒生成多个 ULID 会重复吗？","acceptedAnswer":{"@type":"Answer","text":"理论上同毫秒的随机部分可能碰撞。本工具做了单调递增处理，保证同一毫秒内连续生成也不重复。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>UUID / ULID 生成</h1><p>UUID v4、ULID、Nano ID 批量生成，可作数据库主键</p><h2>关于UUID / ULID 生成</h2><p>UUID 是 128 位的唯一标识符，v4 版本完全随机，碰撞概率可以忽略。ULID 则是 48 位时间戳加 80 位随机的组合，同样是 26 个字符，但按时间有序——这对数据库索引非常友好，因为新记录总是追加在末尾，不会像随机 UUID 那样造成页分裂。Nano ID 更短（默认 21 字符），适合对长度敏感的场景。</p><h2>使用步骤</h2><ol><li>选择类型：UUID v4、UUID v7、ULID 或 Nano ID</li><li>设置数量（批量生成数据库种子数据很有用）</li><li>选择格式：带连字符、去连字符或大写</li><li>复制结果，直接用作主键、追踪 ID 或幂等键</li></ol><h2>常见错误</h2><h3>把随机 UUID 当安全令牌</h3><p>UUID v4 不是密码学凭据，格式可预测性虽低但不保证不可枚举。邀请码、重置令牌请用密码学随机串。</p><h3>随机 UUID 做聚类索引主键</h3><p>无序主键会让插入总是发生在索引中间，造成页分裂和写放大。按时间有序的 ULID/v7 或自增 ID 更合适。</p><h3>以为 UUID 全局唯一就万能</h3><p>UUID 保证“ practically unique”，不是密码学承诺。对唯一性有强要求的账务场景仍要加数据库唯一约束兜底。</p><h2>常见问题</h2><h3>数据库主键该用 UUID 还是自增 ID？</h3><p>需要分布式生成、不暴露业务量时用 UUID/ULID；单库单表且追求极致索引性能时自增 ID 仍然简单有效。用 UUID 时优先 ULID 或 UUID v7 这类时间有序版本。</p><h3>同一毫秒生成多个 ULID 会重复吗？</h3><p>理论上同毫秒的随机部分可能碰撞。本工具做了单调递增处理，保证同一毫秒内连续生成也不重复。</p><p>来源：内置实现 (WebCrypto) · License: MIT · 分类：开发</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

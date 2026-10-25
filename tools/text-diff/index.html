@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么明明只改了一个字，却显示整段都变了？","acceptedAnswer":{"@type":"Answer","text":"多半是换行符不一致（Windows 的 CRLF 与 Unix 的 LF），或者行首缩进被统一替换。统一换行符后重新对比即可。"}},{"@type":"Question","name":"支持多大的文本？","acceptedAnswer":{"@type":"Answer","text":"本工具上限约 2000 行/侧（受浏览器内存约束），更大的文件建议用本地 git diff 或专用工具。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>文本对比</h1><p>两段文本行级差异对比，新增/删除一目了然</p><h2>关于文本对比</h2><p>文本对比（diff）通过最长公共子序列算法找出两段文本的最小差异集，是代码审查、配置比对、日志排查的基础工具。行级 diff 会把相同的行视为未变，标出新增行和删除行；好的 diff 实现应该让差异块尽量少、尽量集中，否则可读性会急剧下降。</p><h2>使用步骤</h2><ol><li>把改动前后的两段文本分别粘贴进左右输入框</li><li>选择对比粒度：按行（适合代码、配置）或按词（适合句子微调）</li><li>查看高亮：删除行为红色、新增行为绿色，未变行置灰</li><li>逐块核对差异，用统计数字（+几行 -几行）快速评估改动量</li></ol><h2>常见错误</h2><h3>换行符不一致造成假差异</h3><p>从 Windows 记事本复制的文本带 CRLF，与 LF 文本对比时每行都“不同”。先统一换行符再对比。</p><h3>按词对比看不出结构变化</h3><p>按词 diff 会把整段重排显示成碎片。代码和配置请用按行对比，按词只适合自然语言微调。</p><h3>忽略空白差异选项</h3><p>缩进从空格改成 Tab 会让整篇“全变”。多数 diff 工具有“忽略空白”开关，比对逻辑改动时先打开它。</p><h2>常见问题</h2><h3>为什么明明只改了一个字，却显示整段都变了？</h3><p>多半是换行符不一致（Windows 的 CRLF 与 Unix 的 LF），或者行首缩进被统一替换。统一换行符后重新对比即可。</p><h3>支持多大的文本？</h3><p>本工具上限约 2000 行/侧（受浏览器内存约束），更大的文件建议用本地 git diff 或专用工具。</p><p>来源：内置实现 (LCS 算法) · License: MIT · 分类：文本</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

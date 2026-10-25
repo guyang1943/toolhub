@@ -278,6 +278,36 @@ check('sw 版本号存在', () => {
   return m[0];
 });
 
+// ---------- 5. 无障碍基础 ----------
+check('无障碍基础（skip link / 地标 / aria）', () => {
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  const bad = [];
+  if (!/class="skip-link" href="#main-content"/.test(home)) bad.push('缺 skip link');
+  if (!/id="main-content"/.test(home)) bad.push('main 缺 id');
+  if (!/<nav[^>]+aria-label=/.test(home)) bad.push('nav 缺 aria-label');
+  if (!/id="search"[^>]+aria-label=/.test(home)) bad.push('搜索框缺 aria-label');
+  if (!/id="palette"[^>]+role="dialog"/.test(home)) bad.push('命令面板缺 dialog 语义');
+  // 工具页（由模板生成）同样具备
+  const sample = all.slice(0, 6);
+  const miss = sample.filter((t) => {
+    const h = readFileSync(join(root, 'tools', t.id, 'index.html'), 'utf8');
+    return !/class="skip-link"/.test(h) || !/id="main-content"/.test(h);
+  }).map((t) => t.id);
+  if (miss.length) bad.push('工具页缺: ' + miss.join(','));
+  // 结果区 aria-live
+  const appSrc = readFileSync(join(root, 'assets/app.js'), 'utf8');
+  if (!/id="tool-result"[^>]+aria-live="polite"/.test(appSrc)) bad.push('结果区缺 aria-live');
+  // 卡片键盘可达（div 卡片需要 tabindex + role + Enter/Space）
+  if (!/function kbLink\(/.test(appSrc)) bad.push('缺 kbLink 辅助函数');
+  if (!/tabIndex = 0/.test(appSrc) || !/setAttribute\('role', 'link'\)/.test(appSrc)) bad.push('卡片缺键盘可达处理');
+  // 焦点样式
+  const css = readFileSync(join(root, 'assets/style.css'), 'utf8');
+  if (!/:focus-visible/.test(css)) bad.push('缺 focus-visible 样式');
+  if (!/prefers-reduced-motion/.test(css)) bad.push('缺 reduced-motion');
+  assert(!bad.length, bad.join('; '));
+  return 'skip link + landmark + aria + focus-visible';
+});
+
 // ---------- 输出 ----------
 console.log('\n🔍 ToolHub 全量校验\n');
 for (const r of results) {

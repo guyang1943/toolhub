@@ -204,17 +204,22 @@
       ]
     },
     {
-      "id": "hackmd",
-      "name": "HackMD",
-      "desc": "协作 Markdown 笔记，实时共同编辑",
+      "id": "cryptpad",
+      "name": "CryptPad",
+      "desc": "端到端加密的在线文档/表格/看板，无需注册即可协作",
       "category": "文档",
-      "url": "https://hackmd.io",
-      "source": "github.com/hackmdio/hackmd",
+      "url": "https://cryptpad.fr",
+      "source": "github.com/cryptpad/cryptpad",
       "license": "AGPL-3.0",
       "tags": [
-        "markdown",
+        "文档",
         "协作",
-        "笔记"
+        "加密",
+        "隐私"
+      ],
+      "blurb": "打开即用的端到端加密文档套件：富文本、Markdown、表格、看板、代码都覆盖。内容在浏览器内加密后上传，服务器看不到明文，链接本身包含密钥——适合写合同草稿、周报和不方便交给云厂商的文档。",
+      "aliases": [
+        "cryptpad"
       ]
     },
     {
@@ -237,7 +242,7 @@
       "name": "CyberChef",
       "desc": "GCHQ 出品的数据解码/加密/转换瑞士军刀",
       "category": "数据",
-      "url": "https://gchq.github.io/CyberChef/",
+      "url": "https://cyberchef.org/",
       "source": "github.com/gchq/CyberChef",
       "license": "Apache-2.0",
       "tags": [
@@ -361,7 +366,7 @@
       "name": "Prettier Playground",
       "desc": "官方在线代码格式化试验场",
       "category": "开发",
-      "url": "https://playground.prettier.io",
+      "url": "https://prettier.io/playground/",
       "source": "github.com/prettier/prettier",
       "license": "MIT",
       "tags": [

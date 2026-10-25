@@ -1,7 +1,7 @@
 {
   "site": "ToolHub",
   "version": 1,
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "total": 88,
   "tools": [
     {
@@ -631,18 +631,19 @@
       ]
     },
     {
-      "id": "hackmd",
-      "name": "HackMD",
-      "desc": "协作 Markdown 笔记，实时共同编辑",
+      "id": "cryptpad",
+      "name": "CryptPad",
+      "desc": "端到端加密的在线文档/表格/看板，无需注册即可协作",
       "category": "文档",
       "runtime": "link",
-      "url": "https://hackmd.io",
-      "source": "github.com/hackmdio/hackmd",
+      "url": "https://cryptpad.fr",
+      "source": "github.com/cryptpad/cryptpad",
       "license": "AGPL-3.0",
       "tags": [
-        "markdown",
+        "文档",
         "协作",
-        "笔记"
+        "加密",
+        "隐私"
       ]
     },
     {
@@ -665,7 +666,7 @@
       "desc": "GCHQ 出品的数据解码/加密/转换瑞士军刀",
       "category": "数据",
       "runtime": "link",
-      "url": "https://gchq.github.io/CyberChef/",
+      "url": "https://cyberchef.org/",
       "source": "github.com/gchq/CyberChef",
       "license": "Apache-2.0",
       "tags": [
@@ -792,7 +793,7 @@
       "desc": "官方在线代码格式化试验场",
       "category": "开发",
       "runtime": "link",
-      "url": "https://playground.prettier.io",
+      "url": "https://prettier.io/playground/",
       "source": "github.com/prettier/prettier",
       "license": "MIT",
       "tags": [

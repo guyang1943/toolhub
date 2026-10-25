@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"标准差用样本还是总体公式？","acceptedAnswer":{"@type":"Answer","text":"本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。"}},{"@type":"Question","name":"四分位数为什么和 Excel 算的略有差异？","acceptedAnswer":{"@type":"Answer","text":"插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>数值统计</h1><p>用 Python statistics 计算均值/中位数/标准差/四分位</p><h2>关于数值统计</h2><p>描述一组数据最常用的几个量：均值反映集中趋势，中位数抗异常值，标准差反映离散程度，四分位数刻画分布形状。当数据里存在极端值时，中位数和四分位距比均值更能代表真实水平——这也是“平均工资”经常让人困惑的原因。</p><h2>使用步骤</h2><ol><li>粘贴数值（空格、逗号或换行分隔，工具自动切分）</li><li>查看均值、中位数、标准差、四分位数等统计量</li><li>结合分布形态判断：均值与中位数差得远说明有极端值</li><li>把结果写进报告，注明用的是样本标准差口径</li></ol><h2>常见错误</h2><h3>数据没清洗就统计</h3><p>混入文字、空值或千分位逗号会让整列解析失败。先用 CSV 数据体检确认列类型干净。</p><h3>均值代表一切</h3><p>收入、房价这类长尾分布的数据，均值会被少数极端值拉高。同时给出中位数和分位数才有说服力。</p><h3>样本总体口径混用</h3><p>报告里写“标准差”要说明除以 n 还是 n-1，两种口径数值不同，评审时容易被问住。</p><h2>常见问题</h2><h3>标准差用样本还是总体公式？</h3><p>本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。</p><h3>四分位数为什么和 Excel 算的略有差异？</h3><p>插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。</p><p>来源：Python 标准库 statistics (Pyodide) · License: PSF-2.0 · 分类：数据</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

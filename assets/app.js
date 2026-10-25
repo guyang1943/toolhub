@@ -201,13 +201,43 @@ function cardHTML(tool) {
   </div>`;
 }
 
+// 让 div 之类的非交互元素变成键盘可达的「链接」（Enter / Space 触发）
+function kbLink(el, handler) {
+  el.onclick = handler;
+  if (!el.hasAttribute('tabindex')) {
+    el.tabIndex = 0;
+    el.setAttribute('role', 'link');
+  }
+  el.addEventListener('keydown', (ev) => {
+    if (ev.target !== el) return;
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      ev.preventDefault();
+      handler();
+    }
+  });
+  return el;
+}
+
 function bindCards(container) {
   // 注意：普通卡片用 .card，推荐区用 .featured-card，统一按 [data-id] 绑定
   container.querySelectorAll('[data-id]').forEach((el) => {
+    const open = () => navigate('/tools/' + el.dataset.id + '/');
     el.onclick = (ev) => {
       if (ev.target.dataset.fav || ev.target.classList.contains('go-btn')) return; // 星标与外链单独处理
-      navigate('/tools/' + el.dataset.id + '/');
+      open();
     };
+    // 卡片是 div：补 tabindex + role，键盘（Tab / Enter / Space）与读屏才能用
+    if (!el.hasAttribute('tabindex')) {
+      el.tabIndex = 0;
+      el.setAttribute('role', 'link');
+    }
+    el.addEventListener('keydown', (ev) => {
+      if (ev.target !== el) return; // 卡片内的收藏按钮/外链自己处理键盘
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        open();
+      }
+    });
   });
   container.querySelectorAll('[data-fav]').forEach((btn) => {
     btn.onclick = (ev) => {
@@ -425,7 +455,7 @@ async function openResourceCollection(slug) {
     </div>`;
 
   $('#page-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {
-    el.onclick = () => navigate('/tools/' + el.dataset.id + '/');
+    kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
   });
 }
 
@@ -505,6 +535,7 @@ function openPalette() {
   const el = document.getElementById('palette');
   if (!el) return;
   el.classList.add('show');
+  el.setAttribute('aria-hidden', 'false'); // 面板可见后必须对辅助技术开放
   PALETTE.open = true;
   const input = el.querySelector('#palette-input');
   input.value = '';
@@ -517,6 +548,7 @@ function closePalette() {
   const el = document.getElementById('palette');
   if (!el) return;
   el.classList.remove('show');
+  el.setAttribute('aria-hidden', 'true');
   PALETTE.open = false;
 }
 
@@ -1034,7 +1066,7 @@ function renderRecent(tools) {
       })
       .join('');
   row.querySelectorAll('.related-chip').forEach((el) => {
-    el.onclick = () => navigate('/tools/' + el.dataset.id + '/');
+    kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
   });
 }
 
@@ -1220,7 +1252,7 @@ async function openTool(id) {
           : ''
       }`;
     $('#tool-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {
-      el.onclick = () => navigate('/tools/' + el.dataset.id + '/');
+      kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
     });
     const sb2 = $('#share-btn');
     if (sb2) {
@@ -1241,7 +1273,7 @@ async function openTool(id) {
   pushRecent(meta.id);
   $('#tool-body').innerHTML = `
     <div class="panel" id="tool-form"></div>
-    <div class="panel result" id="tool-result" style="display:none"></div>
+    <div class="panel result" id="tool-result" style="display:none" role="region" aria-live="polite" aria-label="运行结果"></div>
     <div id="related-panel"></div>`;
 
   let mod;
@@ -1454,7 +1486,7 @@ async function openTool(id) {
   }
   rp.innerHTML = relHTML;
   rp.querySelectorAll('.related-chip[data-id]').forEach((el) => {
-    el.onclick = () => navigate('/tools/' + el.dataset.id + '/');
+    kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
   });
 }
 
@@ -1625,6 +1657,13 @@ $('#search').addEventListener('input', () => {
   }
 });
 $('#home-btn').onclick = () => navigate('/');
+// role="link" 的 div 需要手动响应键盘激活
+$('#home-btn').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    navigate('/');
+  }
+});
 $('#crumb').onclick = () => navigate('/');
 $('#page-crumb').onclick = () => navigate('/');
 window.addEventListener('popstate', route);

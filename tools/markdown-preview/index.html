@@ -28,25 +28,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"预览里能正常显示，发到平台上却乱掉？","acceptedAnswer":{"@type":"Answer","text":"不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。"}},{"@type":"Question","name":"粘贴的 HTML 会被执行吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。"}}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Markdown 预览</h1><p>实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</p><h2>关于Markdown 预览</h2><p>Markdown 用少量符号描述文档结构（# 标题、- 列表、``` 代码块），渲染后生成 HTML 页面。它在 README、技术文档、Issue 中被广泛使用，但不同渲染器对表格、脚注、HTML 混排的支持不一致，所以发布前在实际渲染器里预览一遍很有必要。</p><h2>使用步骤</h2><ol><li>在左侧编辑器输入或粘贴 Markdown 文本</li><li>右侧实时渲染，滚动位置左右同步</li><li>需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码</li><li>发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍</li></ol><h2>常见错误</h2><h3>表格少了分隔行</h3><p>Markdown 表格第二行必须是 |---| 形式的分隔行，漏掉它整段会被当成普通文本。分隔行前后各留一个空行更稳。</p><h3>代码块不标语言</h3><p>``` 后面不写语言就没有语法高亮，某些平台还会按纯文本处理。标上 js、python、bash 体验差别很大。</p><h3>依赖平台方言</h3><p>任务列表、@提及、折叠块都是扩展语法，换个渲染器就失效。对外发布的文档坚持用标准语法最安全。</p><h2>常见问题</h2><h3>预览里能正常显示，发到平台上却乱掉？</h3><p>不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。</p><h3>粘贴的 HTML 会被执行吗？</h3><p>不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。</p><p>来源：基于开源 marked (MIT) + DOMPurify (Apache-2.0) · License: MIT · 分类：文本</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -100,16 +101,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

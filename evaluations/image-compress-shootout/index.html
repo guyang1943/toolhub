@@ -27,25 +27,26 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Review","name":"图片压缩工具横评：本地派 vs 上传派","description":"同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。","url":"https://toolhub.guyang1966.workers.dev/evaluations/image-compress-shootout/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"本站 · 图片压缩","url":"/tools/image-compress/"},{"@type":"SoftwareApplication","name":"Squoosh","url":"https://squoosh.app"},{"@type":"SoftwareApplication","name":"BentoPDF","url":"https://bentopdf.com"}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩工具横评：本地派 vs 上传派</h1><p>同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。</p><p><b>结论：</b>优先用浏览器本地压缩（本站图片压缩或 Squoosh）——速度相当，但数据不出设备；上传型站点处理完应立即关闭页面，敏感图不要用。</p><h2>对比项</h2><ul><li><b>本站 · 图片压缩</b>（浏览器本地 · 隐私：完全本地）</li><li><b>Squoosh</b>（浏览器本地 · 隐私：完全本地）</li><li><b>BentoPDF</b>（浏览器本地 · 隐私：完全本地）</li><li><b>上传型在线压缩站（常见模式）</b>（上传到服务器 · 隐私：需上传）</li></ul><h2>详细解读</h2><p>压缩的本质是在「体积」和「画质」之间找平衡点，所以横评的核心不是谁压得最小，而是谁能在不牺牲可控性的前提下把活干完。四类方案跑下来，本地派和上传派的体验差距比参数差距大得多。</p><p>实测感受：一张 3MB 的 4K 截图，本站工具和 Squoosh 都能在 1 秒内出结果，压到 400KB 左右画质肉眼无差；上传型站点因为多了上传和排队时间，同样一张图要等 3-5 秒，还没算选文件的功夫。批量场景下上传派依然快，但它快在「不用你一张张操作」，不是处理本身快。</p><p>画质方面有个反直觉的结论：盲目追求最小体积没意义。把质量拉到 30 以下，压缩率提升有限，但文字边缘的振铃效应会明显到没法看。建议的用法是——照片类 75-80、截图类 60-70、图标类转 WebP，每一档用对比预览确认后再批量。</p><p>隐私是这次横评最该强调的。上传型站点的图片会经过第三方服务器，服务条款里写什么、保留多久、被谁看过，用户完全不可控。含人脸、身份证、公司内部信息的图，即使用完立刻删，也不应该走这条路。本地派把编码过程放进浏览器的意义就在这里：文件从头到尾没离开过你的设备。</p><p>最终建议：日常单张压缩用本地工具（本站或 Squoosh）；需要精细调编码参数用 Squoosh；PDF 相关操作用 BentoPDF；上传型站点留给「不敏感 + 批量 + 特殊格式」三个条件同时成立的场景。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>

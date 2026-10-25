@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Markdown 编辑器横评：四款主流在线编辑器怎么选 · 工具评测 · ToolHub</title>
-  <meta name="description" content="StackEdit、Dillinger、HackMD 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。" />
+  <meta name="description" content="StackEdit、Dillinger、CryptPad 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。" />
   <meta name="theme-color" content="#2563eb" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/evaluations/markdown-editors/" />
   <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/evaluations/markdown-editors/" />
   <meta property="og:title" content="Markdown 编辑器横评：四款主流在线编辑器怎么选 · 工具评测 · ToolHub" />
-  <meta property="og:description" content="StackEdit、Dillinger、HackMD 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。" />
+  <meta property="og:description" content="StackEdit、Dillinger、CryptPad 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。" />
   <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -24,28 +24,29 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Review","name":"Markdown 编辑器横评：四款主流在线编辑器怎么选","description":"StackEdit、Dillinger、HackMD 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。","url":"https://toolhub.guyang1966.workers.dev/evaluations/markdown-editors/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"本站 · Markdown 预览","url":"/tools/markdown-preview/"},{"@type":"SoftwareApplication","name":"StackEdit","url":"https://stackedit.io"},{"@type":"SoftwareApplication","name":"Dillinger","url":"https://dillinger.io"},{"@type":"SoftwareApplication","name":"HackMD","url":"https://hackmd.io"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Review","name":"Markdown 编辑器横评：四款主流在线编辑器怎么选","description":"StackEdit、Dillinger、CryptPad 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。","url":"https://toolhub.guyang1966.workers.dev/evaluations/markdown-editors/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"本站 · Markdown 预览","url":"/tools/markdown-preview/"},{"@type":"SoftwareApplication","name":"StackEdit","url":"https://stackedit.io"},{"@type":"SoftwareApplication","name":"Dillinger","url":"https://dillinger.io"},{"@type":"SoftwareApplication","name":"CryptPad","url":"https://cryptpad.fr"}]}</script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
-    <nav class="main-nav" id="main-nav">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/" data-nav="tools">工具</a>
       <a href="/resources/" data-nav="resources">资源库</a>
       <a href="/topics/" data-nav="topics">专题</a>
       <a href="/evaluations/" data-nav="evaluations">评测</a>
       <a href="/compare/" data-nav="compare">对比</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" />
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="lang-btn" class="icon-btn" title="Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具">➕</a>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
     </div>
   </header>
 
-  <main class="container"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Markdown 编辑器横评：四款主流在线编辑器怎么选</h1><p>StackEdit、Dillinger、HackMD 和本站的 Markdown 预览，分别代表四种取向：云同步型、导出型、协作型、纯本地型。按你的内容存哪来决定用哪个。</p><p><b>结论：</b>内容只在本机、不想登录：用本站 Markdown 预览；要存云端多端同步：StackEdit；多人一起改：HackMD；要导出各种格式：Dillinger。</p><h2>对比项</h2><ul><li><b>本站 · Markdown 预览</b>（纯本地 · 隐私：完全本地）</li><li><b>StackEdit</b>（云同步 · 隐私：可配置）</li><li><b>Dillinger</b>（导出型 · 隐私：部分上传）</li><li><b>HackMD</b>（协作 · 隐私：服务器）</li></ul><h2>详细解读</h2><p>在线 Markdown 编辑器的分野从来不在渲染效果——大家用的解析库大同小异——而在「你的内容存在哪」。这决定了四款工具各自适合谁，也决定了数据风险的量级。</p><p>本站的 Markdown 预览是最「轻」的一个：打开就能写，渲染走 marked，输出前过一遍 DOMPurify。这个细节值得说一句——很多在线渲染器直接把用户粘贴的 HTML 塞进页面，意味着恶意 Markdown 可以携带脚本；加一层消毒后，粘贴来源不明的内容也不用担心 XSS。代价是它只管预览，编辑和导出都不是强项。</p><p>要云同步选 StackEdit。它的设计是本地存储优先，你可以完全不用云端，也可以绑定 GitHub 当个人笔记仓库——对开发者来说这是杀手级组合：Markdown 存在自己的 repo 里，版本历史免费送。Dillinger 相反，它的亮点全在导出侧，但导出走第三方服务，等于内容要出一趟设备，敏感内容别用它导。</p><p>团队协作只有 HackMD 一个答案。多人同时编辑、评论、版本对比都是企业级体验，代价是必须注册、内容在服务端。用它写公开笔记和团队周报很合适，写合同草稿和个人日记就不合适。</p><p>一句话收尾：先问自己「内容存哪」，再选编辑器。本机 > StackEdit（本地优先）/ HackMD（协作）；要导出格式 > Dillinger。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -99,16 +100,16 @@
     </section>
   </main>
 
-  <div id="palette" aria-hidden="true">
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
     <div class="pal-box">
-      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" />
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
       <div id="palette-results"></div>
       <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
     </div>
   </div>
 
   <div id="cmp-bar" class="cmp-bar"></div>
-  <button id="to-top" class="to-top" title="回到顶部">↑</button>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
     <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
