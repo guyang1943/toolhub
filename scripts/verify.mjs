@@ -6,6 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
+import { sameJsonText } from './lib/eol.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -313,8 +314,10 @@ check('部署安全：不发布版本库与本地环境', () => {
   const must = ['.git/', '.wrangler/', 'node_modules/'];
   const bad = must.filter((x) => !ig.split('\n').map((l) => l.trim()).includes(x));
   assert(!bad.length, '缺排除项: ' + bad.join(', '));
-  // .git 若被发布，任何人都能下载完整提交历史
-  assert(existsSync(join(root, '.git')), '.git 不存在，检查失去意义');
+  // .git 若被发布，任何人都能下载完整提交历史。
+  // 没有 .git 的目录多半是 git archive 导出的快照（外包 / 交接），
+  // 这种场景下没有版本库可供发布，检查不适用——报红只会让收包方以为环境坏了。
+  if (!existsSync(join(root, '.git'))) return '排除项已配（快照无 .git，跳过版本库检查）';
   return '.git / .wrangler / node_modules 已排除';
 });
 
@@ -455,7 +458,9 @@ check('工具清单合规（v2.8 C1）', () => {
 check('注册表与工具分片同步（v2.8 C2）', () => {
   const { payload, unknown } = buildToolsJson();
   const cur = readFileSync(join(root, 'tools', 'tools.json'), 'utf8').trim();
-  assert(cur === JSON.stringify(payload, null, 2).trim(), 'tools/tools.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
+  // 忽略行尾：Windows 上 core.autocrlf=true 的机器 clone 出来就是 CRLF，
+  // 逐字节比会误报成「分片不一致」，把新接手的人引到完全错误的方向（v3.5.1）
+  assert(sameJsonText(cur, JSON.stringify(payload, null, 2)), 'tools/tools.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
   assert(!unknown.length, `未登记在 registry.order：${unknown.join(', ')}`);
   return `${payload.tools.length} 个工具 / 排序已登记`;
 });

@@ -12,6 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintTool, toolSize, MAX_TOOL_BYTES } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
+import { sameJsonText } from './lib/eol.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -41,9 +42,10 @@ for (const id of ids.filter((x) => !missing.includes(x))) {
 }
 
 // 注册表一致性：tools/tools.json 必须等于分片派生的结果
+// 比内容不比字节：Windows 上 core.autocrlf=true 会把它转成 CRLF（v3.5.1）
 const { payload, unknown } = buildToolsJson();
 const current = existsSync(join(root, 'tools', 'tools.json')) ? readFileSync(join(root, 'tools', 'tools.json'), 'utf8') : '';
-if (current.trim() !== JSON.stringify(payload, null, 2).trim()) {
+if (!sameJsonText(current, JSON.stringify(payload, null, 2))) {
   errors.push({
     file: 'tools/tools.json',
     line: 1,
