@@ -11,12 +11,15 @@
 先读：
 
 - `assets/style.css` 的 `@media (max-width: 900px)` 与 `@media (max-width: 560px)` 两段——**现有移动端断点都在这里**
+- `assets/style.tool.css` 的 `@media` 段——v3.5 起工具页专用样式（结果表格、教程、二维码结果、口令弹层等）在这份文件里，**移动端问题大概率有一半落在这里**，别只改 style.css
 - `assets/tool-page.js` 第 537 行附近：`#tool-fields` 的渲染结构（只读，不要改）
 - `docs/TOOL-CONTRACT.md` §2：`inputs` 支持哪些字段类型（text / number / select / textarea / checkbox / file / …）
+- `scripts/css-coverage.mjs`：动完手跑一遍，`style.css` 应该报「仅工具页 0 条、无引用 0 条」——你要是把工具页规则写回了基础表，这里会红
 
 你要改的文件（独占）：
 
 - `assets/style.css`
+- `assets/style.tool.css`（工具页专用，首页不加载）
 - `assets/style.batch.css`、`assets/style.offline.css`、`assets/style.submit.css`（这三份只在各自页面加载）
 
 ## 任务清单

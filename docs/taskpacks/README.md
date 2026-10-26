@@ -9,6 +9,10 @@
 3. 交付物按包里的「交付形式」交回来。
 4. 我这边按「验收命令」跑一遍，绿了就合并。
 
+> **递什么、怎么递、要求对方怎么交回来**，看 [`HANDOFF.md`](./HANDOFF.md)。
+> 内容型任务（TP1 / TP5）只发说明书就够；代码型任务（TP2 / TP3 / TP4）必须连项目快照一起给，
+> 命令是一行 `git archive --format=zip -o ../toolhub-TP2.zip HEAD`。
+
 ## 五个包互不重叠
 
 并行发出去也不会打架，因为文件所有权是分开的：
@@ -16,7 +20,7 @@
 | 包 | 干什么 | 独占的文件 | 不许碰 |
 |---|---|---|---|
 | TP1 | 内容与文案补全 | `content/`、`articles.json`、`i18n.json`、`i18n-detail.json` | `assets/`、`scripts/`、`tools/<id>/` |
-| TP2 | 移动端适配（375px 长表单） | `assets/style.css`、`assets/style.*.css` | 任何 `.js`、任何 `.html` 结构 |
+| TP2 | 移动端适配（375px 长表单） | `assets/style.css`、`assets/style.tool.css`、`assets/style.*.css` | 任何 `.js`、任何 `.html` 结构 |
 | TP3 | 无障碍与键盘覆盖 | `assets/app.js`、`assets/tool-page.js`、`index.html` 的 aria 属性 | 任何 `.css` |
 | TP4 | 新增本地工具 ×3 | `tools/<新id>/`、`tools/registry.json` | `assets/`、`content/`、现有工具 |
 | TP5 | 目录工具扩充与坏链替换 | `tools/directory.json`、`content/directory-copy.json` | `assets/`、`scripts/`、本地工具 |
