@@ -45,9 +45,9 @@
 node scripts/sync-tools.mjs --check        # 注册表与工具目录同步
 node scripts/lint-tools.mjs                # 各工具 manifest 合规
 node scripts/build-pages.mjs               # 构建（含首页静态化与 sw.js）
-node scripts/verify.mjs                    # 44 项结构与内容校验
-node scripts/spa-render-test.mjs           # 49 项渲染逻辑
-node scripts/new-tools-test.mjs            # 161 项工具功能
+node scripts/verify.mjs                    # 结构与内容校验（项数随版本增长，只认「全部通过」）
+node scripts/spa-render-test.mjs           # 渲染逻辑
+node scripts/new-tools-test.mjs            # 工具功能
 node scripts/perf-budget.mjs               # 首屏体积预算
 node scripts/serve.mjs 8788                # 另开一个终端
 node scripts/smoke-test.mjs http://127.0.0.1:8788

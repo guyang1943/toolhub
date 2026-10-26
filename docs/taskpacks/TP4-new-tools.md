@@ -134,7 +134,7 @@ node scripts/lint-tools.mjs file-hash
 node scripts/lint-tools.mjs csv-columns
 node scripts/gen-search-aliases.mjs
 node scripts/build-pages.mjs
-node scripts/verify.mjs             # 必须 45/45（v3.6 起是 45 项，任务包旧版写 44 是错的）
+node scripts/verify.mjs             # 必须「全部通过」（当前 45 项；项数随版本增长，不按写死数字判断）
 node scripts/new-tools-test.mjs     # 必须 161 + 你新增的条数，全绿，0 失败
 node scripts/perf-budget.mjs        # 首屏不能因为新工具超预算（工具不入首屏，理论上不受影响，但要跑）
 ```

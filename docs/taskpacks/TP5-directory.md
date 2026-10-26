@@ -64,7 +64,7 @@ node scripts/health-check.mjs --json r.json --report r.md --fail-on-dead
 ## 不许碰
 
 - `assets/**`、`scripts/**`（一个字符都不改）
-- `tools/<id>/`（34 个本地工具）
+- `tools/<id>/`（本地工具目录，当前 34 个，会随版本增长）
 - `articles.json` / `i18n*.json`（那是 TP1 的地盘，会冲突）
 - 现有 60 条的 id（只允许改 `url` 和正文里的事实错误，改 id 会让外链和 sitemap 一起断）
 
@@ -73,7 +73,7 @@ node scripts/health-check.mjs --json r.json --report r.md --fail-on-dead
 ```bash
 node scripts/sync-tools.mjs --check
 node scripts/build-pages.mjs          # 页面数与 sitemap 要跟着增加
-node scripts/verify.mjs               # 44/44
+node scripts/verify.mjs               # 必须「全部通过」（项数随版本增长，不按写死数字判断）
 node scripts/health-check.mjs --fail-on-dead   # 不许有新增死链，原有死链要清零
 node scripts/smoke-test.mjs http://127.0.0.1:8788
 ```
