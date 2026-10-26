@@ -186,3 +186,52 @@
 .enc-note-bad { color: #9a3412; background: #fff7ed; border-color: #fed7aa; }
 [data-theme='dark'] .enc-note-ok { color: #bbf7d0; background: rgba(34, 197, 94, 0.12); border-color: #166534; }
 [data-theme='dark'] .enc-note-bad { color: #fed7aa; background: rgba(249, 115, 22, 0.12); border-color: #9a3412; }
+
+/* ===== 窄屏（≤560px）：长表单、结果动作条、结果表格 =====
+   34 个本地工具的表单都是 tool-page.js 按 manifest 生成的固定结构：
+   #tool-fields > .field(label + 控件) 若干 → 末尾 .row > #run-btn。
+   不能加包装元素，所以留白压缩、分段线、横滚都只能用选择器做到。 */
+@media (max-width: 560px) {
+  /* 1. 长表单：tax-calc 有 9 个字段，16px 字段间距 + 6px 标签间距 + 20px 面板内边距
+     在 375px 上要吃掉 128 + 54 + 40px，运行按钮被顶到第二屏以下 */
+  #tool-fields { padding: 14px 12px 10px; }
+  #tool-fields > .field { margin-bottom: 8px; }
+  #tool-fields > .field label { margin-bottom: 4px; }
+  #tool-fields > .field :is(input[type=text], input[type=number], select, textarea) { padding: 7px 10px; }
+  #tool-fields > .field textarea { min-height: 120px; }
+
+  /* 2. 分段：相邻同质字段（一连串数字框 / 一连串下拉）围成一组，
+     控件形态一变就画一条虚线——tax-calc 的「收入」与「专项附加扣除」、
+     pdf-merge 的「操作 / 文件 / 页码范围」都是这么切开的。
+     只在下拉成段开始、以及文件/多行控件两侧切，避免把「下拉 + 一个金额框」
+     这种同一语义的组合也拆开 */
+  #tool-fields > .field:has(input:not([type=file])) + .field:has(select),
+  #tool-fields > .field:has(select) + .field:has(textarea, input[type=file]),
+  #tool-fields > .field:has(textarea, input[type=file]) + .field,
+  #tool-fields > .field + .field:has(textarea, input[type=file]) {
+    margin-top: 10px; padding-top: 12px; border-top: 1px dashed var(--border);
+  }
+
+  /* 3. 运行按钮：与上一字段留出比字段间距更大的空隙，扫完表单一眼能找到；
+     不再追加 sticky（吸底会遮住正在填的字段，实测在 375px 上盖掉一整行） */
+  #tool-fields > .row { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+  /* 4. 结果动作条：4～6 个动作挤一行只会把文字截成省略号，改成等宽两列换行 */
+  .result-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .result-actions .btn {
+    max-width: none; padding: 9px 8px; font-size: 13px; text-align: center;
+    white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere;
+  }
+  .result-actions .ra-note { grid-column: 1 / -1; margin-left: 0; text-align: center; }
+  /* 动作数是奇数时最后只剩它一个，占满整行，不留半格空位。
+     注意：这条依赖 .ra-note 始终排在末尾（assets/tool-page.js:190 无条件追加），
+     nth-last-child(2) 才等于「最后一个按钮」。哪天把那条提示去掉，这里会静默失效
+     —— 不会报错，只是奇数个动作时末尾留半格空白。 */
+  .result-actions .btn:nth-last-child(2):nth-child(odd) { grid-column: 1 / -1; }
+
+  /* 5. 结果表格：个税明细 / 单位全量表比屏幕宽，表格自带横滚，别让整页跟着横向溢出 */
+  #tool-result table, .md-preview table {
+    display: block; max-width: 100%; overflow-x: auto;
+    -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+  }
+}

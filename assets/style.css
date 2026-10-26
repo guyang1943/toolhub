@@ -795,3 +795,12 @@ body.dp-lock { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .state-spinner { animation: none; border-top-color: var(--accent); }
 }
+
+/* ===== 窄屏（≤560px）触摸目标 =====
+   体检只把 <24px 判成硬伤，但 24～27px 在 375px 上仍然经常点空。
+   这里把刚好卡在 24px 的两个元素撑到 28px 舒适线（33 个工具页共用同一份
+   排行/卡片星标与页脚「快捷键」入口，改一处全站生效）。 */
+@media (max-width: 560px) {
+  .star { min-width: 28px; min-height: 28px; top: 8px; right: 8px; }
+  .foot-link-btn { min-height: 28px; padding: 0 2px; }
+}
