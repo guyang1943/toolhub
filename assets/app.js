@@ -11,6 +11,13 @@ let activeCategory = '全部';
 const QS0 = new URLSearchParams(location.search);
 let activeRuntime = ['local', 'offline'].includes(QS0.get('runtime')) ? QS0.get('runtime') : 'all';
 let activeSort = ['used', 'new'].includes(QS0.get('sort')) ? QS0.get('sort') : 'default';
+// v3.4：分类也读回 URL。之前只写不读，?cat=图片 刷新后会被丢回「全部」
+activeCategory = QS0.get('cat') || '全部';
+// v3.4 分页：每页 24 个（宽屏 5 列 × 5 行，窄屏 4 列 × 6 行都不留孤行）。
+// 94 个工具一次性铺开是 20 多行、页面 7000px，页脚的信任说明与「更多」全被埋了。
+const PAGE_SIZE = 24;
+const FEATURED_MAX = 8;
+let curPage = Math.max(1, parseInt(QS0.get('page') || '1', 10) || 1);
 // 需要运行时下载大依赖的工具（首次访问联网后即可离线）
 const NEEDS_FIRST_FETCH = new Set(['pdf-merge', 'img-to-pdf', 'qr-decode', 'python-run', 'py-stats', 'pandas-csv']);
 const isLocalTool = (tool) => tool.runtime !== 'link';
@@ -264,21 +271,24 @@ function renderChips(categories) {
   $$('#chips .chip').forEach((el) => {
     el.onclick = () => {
       activeCategory = el.dataset.cat;
-      const url = new URL(location.href);
-      url.searchParams.set('cat', activeCategory);
-      history.replaceState(null, '', url);
+      curPage = 1; // 换分类回到第一页，否则可能停在已不存在的第 4 页
+      syncUrlState();
       renderHome();
     };
   });
 }
 
-// 筛选与排序状态写入 URL（不产生历史记录，刷新后保持）
+// 筛选、排序、分类、页码一并写入 URL（不产生历史记录，刷新/分享后保持）
 function syncUrlState() {
   const url = new URL(location.href);
   if (activeRuntime === 'all') url.searchParams.delete('runtime');
   else url.searchParams.set('runtime', activeRuntime);
   if (activeSort === 'default') url.searchParams.delete('sort');
   else url.searchParams.set('sort', activeSort);
+  if (activeCategory === '全部') url.searchParams.delete('cat');
+  else url.searchParams.set('cat', activeCategory);
+  if (curPage <= 1) url.searchParams.delete('page');
+  else url.searchParams.set('page', String(curPage));
   history.replaceState(null, '', url);
 }
 
@@ -304,6 +314,7 @@ function renderFilterbar() {
   bar.querySelectorAll('[data-rt]').forEach((el) => {
     el.onclick = () => {
       activeRuntime = el.dataset.rt;
+      curPage = 1;
       syncUrlState();
       renderHome();
     };
@@ -311,6 +322,7 @@ function renderFilterbar() {
   bar.querySelectorAll('[data-sort]').forEach((el) => {
     el.onclick = () => {
       activeSort = el.dataset.sort;
+      curPage = 1;
       syncUrlState();
       renderHome();
     };
@@ -440,7 +452,8 @@ function toolScore(tool, kw) {
 function renderFeatured(tools) {
   const sec = $('#featured-section');
   const searching = !!$('#search').value.trim();
-  const ids = (REGISTRY.featured || []).filter((id) => tools.some((t) => t.id === id));
+  // v3.4：最多 8 条。超过 8 条它就不是「精选」而是第二份工具列表了
+  const ids = (REGISTRY.featured || []).filter((id) => tools.some((t) => t.id === id)).slice(0, FEATURED_MAX);
   if (!ids.length || searching || activeCategory !== '全部') {
     sec.style.display = 'none';
     return;
@@ -452,13 +465,10 @@ function renderFeatured(tools) {
     .map((id, i) => {
       const tool = tools.find((x) => x.id === id);
       const m = toolMeta(tool);
-      return `<div class="featured-card" data-id="${tool.id}" data-link="${tool.runtime !== 'link' ? '' : esc(tool.url)}">
+      return `<div class="fl-row" data-id="${tool.id}" data-link="${tool.runtime !== 'link' ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
-        <div class="f-body">
-          <div class="f-name">${m.name}</div>
-          <div class="f-desc">${m.desc}</div>
-          <div class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : t('🌐 在线直达', 'badgeLink')} · ${catName(tool.category)}</div>
-        </div>
+        <div class="f-body"><div class="f-name">${m.name}</div><div class="f-desc">${m.desc}</div></div>
+        <span class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : t('🌐 在线直达', 'badgeLink')} · ${catName(tool.category)}</span>
       </div>`;
     })
     .join('');
@@ -510,8 +520,22 @@ function renderGrid(tools, keyword) {
     })
     .map((x) => x[0]);
 
+  // v3.4 分页：先算出完整结果集，再切当前页。总命中数始终如实报出，
+  // 否则「筛选只剩 3 个」和「第 1 页只放得下 24 个」会分不清。
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (curPage > pages) curPage = pages; // 切换筛选后页数变少，别停在空页
+  if (curPage < 1) curPage = 1;
+  const start = (curPage - 1) * PAGE_SIZE;
+  const pageList = list.slice(start, start + PAGE_SIZE);
+
+  const gridEl = $('#grid');
+  gridEl.dataset.total = String(total);
+  gridEl.dataset.shown = String(pageList.length);
+  gridEl.dataset.page = String(curPage);
+
   const countEl = $('#fb-count');
-  if (countEl) countEl.textContent = LANG === 'en' ? `${list.length} / ${tools.length} shown` : `显示 ${list.length} / ${tools.length}`;
+  if (countEl) countEl.textContent = LANG === 'en' ? `${total} tool${total === 1 ? '' : 's'}` : `共 ${total} 个`;
 
   if (!list.length) {
     const emptyMsg =
@@ -519,24 +543,73 @@ function renderGrid(tools, keyword) {
       : activeCategory === '🔥 最常用' ? t('还没有使用记录，运行任意工具后这里会自动统计', 'emptyUsed')
       : activeRuntime !== 'all' ? t('当前筛选下没有工具，试试切回「全部」', 'emptyRuntime')
       : t('没有匹配的工具，换个关键词试试', 'emptyAll');
-    $('#grid').innerHTML = `
+    gridEl.innerHTML = `
       <div class="empty">
         <div style="font-size:32px;margin-bottom:8px">🔍</div>
         ${emptyMsg}
         <div style="margin-top:14px"><button class="btn ghost" id="reset-filter">${t('查看全部工具', 'viewAll')}</button></div>
       </div>`;
+    renderPager(0, 1, 0);
     const rb = $('#reset-filter');
     if (rb) rb.onclick = () => {
       activeCategory = '全部';
       activeRuntime = 'all';
+      curPage = 1;
       syncUrlState();
       $('#search').value = '';
       renderHome();
     };
     return;
   }
-  $('#grid').innerHTML = list.map((tool) => cardHTML(tool)).join('');
-  bindCards($('#grid'));
+  gridEl.innerHTML = pageList.map((tool) => cardHTML(tool)).join('');
+  bindCards(gridEl);
+  renderPager(total, pages, start);
+}
+
+// 分页条：页码窗口最多 7 个（1 … 3 4 5 … 12），两头留「跳到首/末页」
+function renderPager(total, pages, start) {
+  const box = $('#pager');
+  if (!box) return;
+  if (total <= PAGE_SIZE) {
+    box.innerHTML = '';
+    return;
+  }
+  const nums = [];
+  const push = (n) => nums.push(`<button type="button" class="pg-btn ${n === curPage ? 'active' : ''}" data-page="${n}"${n === curPage ? ' aria-current="page"' : ''}>${n}</button>`);
+  const gap = '<span class="pg-gap">…</span>';
+  if (pages <= 7) {
+    for (let n = 1; n <= pages; n++) push(n);
+  } else {
+    push(1);
+    if (curPage > 3) nums.push(gap);
+    for (let n = Math.max(2, curPage - 1); n <= Math.min(pages - 1, curPage + 1); n++) push(n);
+    if (curPage < pages - 2) nums.push(gap);
+    push(pages);
+  }
+  const shownFrom = start + 1;
+  const shownTo = Math.min(start + PAGE_SIZE, total);
+  const prevLabel = LANG === 'en' ? 'Previous page' : '上一页';
+  const nextLabel = LANG === 'en' ? 'Next page' : '下一页';
+  const info = LANG === 'en' ? `${shownFrom}–${shownTo} of ${total}` : `第 ${shownFrom}–${shownTo} 个，共 ${total} 个`;
+  box.innerHTML =
+    `<button type="button" class="pg-btn" data-page="${curPage - 1}"${curPage === 1 ? ' disabled' : ''} aria-label="${prevLabel}">‹</button>` +
+    nums.join('') +
+    `<button type="button" class="pg-btn" data-page="${curPage + 1}"${curPage === pages ? ' disabled' : ''} aria-label="${nextLabel}">›</button>` +
+    `<span class="pg-info">${info}</span>`;
+  $$('#pager .pg-btn[data-page]').forEach((el) => {
+    el.onclick = () => goPage(parseInt(el.dataset.page, 10));
+  });
+}
+
+function goPage(n) {
+  if (!Number.isFinite(n)) return;
+  const box = $('#grid');
+  const total = parseInt(box?.dataset.total || '0', 10) || 0;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  curPage = Math.min(Math.max(1, n), pages);
+  syncUrlState();
+  renderGrid(REGISTRY.tools, $('#search').value);
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ---------- 资源库 ---------- */
@@ -565,9 +638,7 @@ function resCard(c) {
 async function openResources() {
   const res = await loadResources();
   await loadI18n();
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `资源库 · ${SITE}`;
   renderNavActive('/resources');
   const groups = res.groups || [];
@@ -596,9 +667,7 @@ async function openResourceCollection(slug) {
     $('#page-body').innerHTML = '<div class="empty">合集不存在</div>';
     return;
   }
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `${c.title} · 资源库 · ToolHub`;
   renderNavActive('/resources');
 
@@ -658,29 +727,30 @@ async function openResourceCollection(slug) {
 function renderRouteCards(reg, res, evals) {
   const box = document.getElementById('route-cards');
   if (!box) return;
+  // v3.4：四个板块并成一行，每块一个徽章 + 一个标签（颜色靠 rc--* 区分，不用再靠文字分辨）
   box.innerHTML = `
-    <a class="route-card" href="#tools-anchor" data-scroll="grid">
-      <span class="rc-icon">🧰</span>
+    <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
+      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
       <b>${reg.counts.local + reg.counts.dir} 个工具</b>
-      <span>按任务或分类找工具，能本地跑的都在本地跑</span>
+      <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
       <em>浏览工具 →</em>
     </a>
-    <a class="route-card" href="/resources/">
-      <span class="rc-icon">📚</span>
+    <a class="route-card rc--res" href="/resources/">
+      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
       <b>${(res.collections || []).length} 个合集 · ${(res.collections || []).reduce((a, c) => a + c.items.length, 0)} 条资源</b>
-      <span>图标、字体、配色、学习路线——拿来就能用</span>
+      <span class="rc-desc">图标、字体、配色、学习路线，拿来就能用</span>
       <em>逛资源库 →</em>
     </a>
-    <a class="route-card" href="/compare/">
-      <span class="rc-icon">⇄</span>
+    <a class="route-card rc--compare" href="/compare/">
+      <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
       <b>工具对比</b>
-      <span>同类工具并排看：是否上传数据、能否离线、协议与来源</span>
+      <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
       <em>开始对比 →</em>
     </a>
-    <a class="route-card" href="/evaluations/">
-      <span class="rc-icon">🔬</span>
+    <a class="route-card rc--eval" href="/evaluations/">
+      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
       <b>${(evals?.evaluations || []).length} 篇评测</b>
-      <span>同类工具横向实测：隐私、速度、功能边界一次讲清</span>
+      <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a>`;
   const scrollCard = box.querySelector('[data-scroll]');
@@ -1023,9 +1093,7 @@ async function openTopics() {
   const data = await loadTopics();
   const reg = await loadRegistry();
   await loadI18n();
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `专题合集 · ${SITE}`;
   renderNavActive('');
   $('#page-body').innerHTML = `
@@ -1057,9 +1125,7 @@ async function openTopic(slug) {
     return;
   }
   const res = await loadResources();
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `${tp.title} · 专题 · ToolHub`;
   renderNavActive('');
   const tools = tp.tools.map((id) => reg.tools.find((x) => x.id === id)).filter(Boolean);
@@ -1129,9 +1195,7 @@ async function loadArticles() {
 async function openEvaluations() {
   const data = await loadEvaluations();
   await loadI18n();
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `工具评测 · ${SITE}`;
   renderNavActive('');
   $('#page-body').innerHTML = `
@@ -1162,9 +1226,7 @@ async function openEvaluation(slug) {
   }
   await loadI18n();
   const reg = await loadRegistry();
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `${ev.title} · 工具评测 · ${SITE}`;
   renderNavActive('');
   const pvClass = (p) => {
@@ -1231,9 +1293,7 @@ async function loadLog() {
 
 async function openChangelog() {
   const data = await loadLog();
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `更新日志 · ${SITE}`;
   renderNavActive('');
   $('#page-body').innerHTML = `
@@ -1330,9 +1390,7 @@ async function openCompare(queryIds) {
   }
   const picked = ids.map((id) => reg.tools.find((x) => x.id === id));
 
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   document.title = `${t('工具对比', 'cmpTitle')} · ${SITE}`;
   renderNavActive('/compare');
 
@@ -1461,6 +1519,7 @@ function renderTasks() {
     el.onclick = () => {
       $('#search').value = el.dataset.kw;
       activeCategory = '全部';
+      curPage = 1;
       renderFeatured(REGISTRY.tools);
       renderGrid(REGISTRY.tools, el.dataset.kw);
       document.querySelector('#grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1472,9 +1531,7 @@ async function renderHome() {
   const reg = await loadRegistry();
   await loadI18n();
   applyStaticText();
-  $('#view-home').style.display = '';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = 'none';
+  setView('home');
   document.title = LANG === 'en' ? 'ToolHub · Open-source tools, ready to use' : SITE;
   $('#foot-count').textContent =
     LANG === 'en'
@@ -1494,6 +1551,17 @@ async function renderHome() {
   renderFilterbar();
   renderGrid(reg.tools, $('#search').value);
   renderCompareBar();
+}
+
+// 视图切换：三块只显示一块，同时把当前视图写到 body 上。
+// v3.4 需要它是因为首页要把头部搜索框收起来（首屏已经有 hero 大框），
+// 而工具页 / 内容页没有 hero 框，头部那个才是唯一入口 —— 判断依据就是 body[data-view]。
+function setView(name) {
+  document.body.dataset.view = name;
+  ['home', 'tool', 'page'].forEach((v) => {
+    const el = document.getElementById('view-' + v);
+    if (el) el.style.display = v === name ? '' : 'none';
+  });
 }
 
 // 导航高亮（按当前路径标记）
@@ -1602,9 +1670,7 @@ async function openPage(name) {
   const PAGES = makePages(reg, { analyticsOptedOut, ANALYTICS_OPT_OUT });
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
-  $('#view-home').style.display = 'none';
-  $('#view-tool').style.display = 'none';
-  $('#view-page').style.display = '';
+  setView('page');
   const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
@@ -1718,10 +1784,13 @@ function route() {
 
 $('#search').addEventListener('input', () => {
   if (REGISTRY) {
+    curPage = 1; // 改了关键词就从第一页看起
     renderFeatured(REGISTRY.tools);
     renderGrid(REGISTRY.tools, $('#search').value);
   }
 });
+// 首页头部把输入框收起来后，这里换成「打开命令面板」——它搜的是全站，不是又一份同样的筛选
+$('#search-open').onclick = () => openPalette();
 $('#home-btn').onclick = () => navigate('/');
 // role="link" 的 div 需要手动响应键盘激活
 $('#home-btn').addEventListener('keydown', (e) => {
@@ -1739,12 +1808,16 @@ window.addEventListener('hashchange', route);
 document.addEventListener('keydown', (e) => {
   if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
     e.preventDefault();
-    $('#search').focus();
+    // 首页头部输入框是隐藏的（v3.4），聚焦它等于把光标丢进虚空 —— 首页要落到 hero 框上
+    const target = document.body.dataset.view === 'home' ? $('#hero-search') : $('#search');
+    if (target && target.offsetParent !== null) target.focus();
+    else openPalette();
   }
-  if (e.key === 'Escape' && document.activeElement === $('#search')) {
-    $('#search').value = '';
-    $('#search').blur();
-    if (REGISTRY) { renderFeatured(REGISTRY.tools); renderGrid(REGISTRY.tools, ''); }
+  if (e.key === 'Escape' && (document.activeElement === $('#search') || document.activeElement === $('#hero-search'))) {
+    // 两个框共用一份筛选状态（hero 会镜像进 #search），清的时候一起清，否则会剩下一半
+    ['#search', '#hero-search'].forEach((s) => { const el = $(s); if (el) el.value = ''; });
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    if (REGISTRY) { curPage = 1; renderFeatured(REGISTRY.tools); renderGrid(REGISTRY.tools, ''); }
   }
 });
 
@@ -1869,6 +1942,7 @@ document.addEventListener('keydown', (e) => {
       const v = heroInput.value;
       $('#search').value = v;
       if (REGISTRY) {
+        curPage = 1; // 首页唯一输入框：改字就回第一页
         renderFeatured(REGISTRY.tools);
         renderGrid(REGISTRY.tools, v);
       }
@@ -1889,10 +1963,6 @@ document.addEventListener('keydown', (e) => {
     });
   }
 })();
-
-// 初始分类来自 URL
-const catParam = new URLSearchParams(location.search).get('cat');
-if (catParam) activeCategory = catParam;
 
 // 注册 Service Worker（离线可用 + 可安装为桌面应用）
 // 装成应用（PWA）：beforeinstallprompt 必须在页面极早期捕获，否则会被浏览器丢弃，

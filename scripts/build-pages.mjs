@@ -42,6 +42,9 @@ const DIR_COPY = existsSync(dirCopyPath) ? JSON.parse(readFileSync(dirCopyPath, 
 // 计数归一：模板里的工具数/资源数一律由数据推导，避免每加一个工具就要手改多处 meta
 const TOTAL_TOOLS = tools.length + dirTools.length;
 const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
+// v3.4：首页高频推荐最多 8 条。超过 8 条它就从「精选」变成「第二份工具列表」，
+// 而且会和下方网格抢同一份注意力。这个数字必须与 assets/app.js 的 FEATURED_MAX 一致。
+const FEATURED_MAX = 8;
 const rawTpl = readFileSync(join(root, 'index.html'), 'utf8');
 const tpl = rawTpl
   .replace(/\d+(?= 个精选开源工具)/g, TOTAL_TOOLS)
@@ -62,6 +65,10 @@ function fillMeta(html, { title, desc, url, botInject, jsonld }) {
     );
   // og:image 用绝对地址，社交平台才能抓取
   out = out.replace('content="/assets/og.png"', `content="${BASE}/assets/og.png"`);
+  // v3.4：首页把头部搜索框收起换成按钮，靠 body[data-view] 判断。首帧就得是对的，
+  // 否则静态 HTML 先画出一个搜索框、脚本跑起来又收掉，会顶一下布局（CLS）。
+  // 非首页统一先标 page；工具页由 tool-page.js 运行时改成 tool。
+  out = out.replace('<body data-view="home">', '<body data-view="page">');
   if (jsonld) out = out.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
   return out.replace(
     '<script type="module" src="/assets/app.js"></script>',
@@ -776,44 +783,45 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
     <div class="stat"><b>0</b><span>数据上传</span></div>
     <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>`;
 
+  // v3.4：四个入口并成一行，每块一个徽章 + 一个板块标签（标签颜色靠 rc--* 类区分）
   const routeCards = `
-    <a class="route-card" href="#tools-anchor" data-scroll="grid">
-      <span class="rc-icon">🧰</span>
+    <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
+      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
       <b>${TOTAL_TOOLS} 个工具</b>
-      <span>按任务或分类找工具，能本地跑的都在本地跑</span>
+      <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
       <em>浏览工具 →</em>
     </a>
-    <a class="route-card" href="/resources/">
-      <span class="rc-icon">📚</span>
+    <a class="route-card rc--res" href="/resources/">
+      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
       <b>${resources.collections.length} 个合集 · ${TOTAL_RES} 条资源</b>
-      <span>图标、字体、配色、学习路线——拿来就能用</span>
+      <span class="rc-desc">图标、字体、配色、学习路线，拿来就能用</span>
       <em>逛资源库 →</em>
     </a>
-    <a class="route-card" href="/compare/">
-      <span class="rc-icon">⇄</span>
+    <a class="route-card rc--compare" href="/compare/">
+      <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
       <b>工具对比</b>
-      <span>同类工具并排看：是否上传数据、能否离线、协议与来源</span>
+      <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
       <em>开始对比 →</em>
     </a>
-    <a class="route-card" href="/evaluations/">
-      <span class="rc-icon">🔬</span>
+    <a class="route-card rc--eval" href="/evaluations/">
+      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
       <b>${evaluations.evaluations.length} 篇评测</b>
-      <span>同类工具横向实测：隐私、速度、功能边界一次讲清</span>
+      <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a>`;
 
-  const featuredIds = (registry.featured || []).filter((id) => allTools.some((x) => x.id === id));
+  // v3.4：13 → 8 条，并改成行式列表（卡片形式与下方工具网格太像，会被误认成同一份列表）
+  const featuredIds = (registry.featured || [])
+    .filter((id) => allTools.some((x) => x.id === id))
+    .slice(0, FEATURED_MAX);
   const featuredHTML = featuredIds
     .map((id, i) => {
       const tool = allTools.find((x) => x.id === id);
       const isLocal = tool.runtime !== 'link';
-      return `<div class="featured-card" data-id="${tool.id}" data-link="${isLocal ? '' : esc(tool.url)}">
+      return `<div class="fl-row" data-id="${tool.id}" data-link="${isLocal ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
-        <div class="f-body">
-          <div class="f-name">${esc(tool.name)}</div>
-          <div class="f-desc">${esc(tool.desc)}</div>
-          <div class="f-meta">${isLocal ? '🔒 本地运行' : '🌐 在线直达'} · ${tool.category}</div>
-        </div>
+        <div class="f-body"><div class="f-name">${esc(tool.name)}</div><div class="f-desc">${esc(tool.desc)}</div></div>
+        <span class="f-meta">${isLocal ? '🔒 本地' : '🌐 在线'} · ${tool.category}</span>
       </div>`;
     })
     .join('');
@@ -843,7 +851,7 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
     ['默认', '🔥 最常用', '🆕 最近收录']
       .map((x, i) => `<button type="button" class="chip ${i === 0 ? 'active' : ''}" data-sort="${['default', 'used', 'new'][i]}">${x}</button>`)
       .join('') +
-    `<span class="fb-count" id="fb-count">显示 ${TOTAL_TOOLS} / ${TOTAL_TOOLS}</span>`;
+    `<span class="fb-count" id="fb-count">共 ${TOTAL_TOOLS} 个</span>`;
 
   // --- 注入 ---
   let html = tpl;
@@ -860,7 +868,7 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   };
   put('hero-stats', 'hero-stats', 'div', heroStats);
   put('route-cards', 'route-cards', 'div', routeCards);
-  put('featured-grid', 'featured-grid', 'div', featuredHTML);
+  put('featured-list', 'featured-grid', 'div', featuredHTML);
   put('res-preview-grid', 'res-preview-grid', 'div', resPreview);
   put('chips', 'chips', 'div', chips);
   put('filterbar', 'filterbar', 'div', filterbar);

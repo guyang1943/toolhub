@@ -382,6 +382,8 @@ export async function openTool(id) {
   const D18N = getD18N();
   const SEO_BODY = getSeoBody();
   const meta = reg.tools.find((tool) => tool.id === id);
+  // v3.4：告诉 CSS 现在在工具页 —— 首页会收起头部搜索框，这里得把它放出来
+  document.body.dataset.view = 'tool';
   $('#view-home').style.display = 'none';
   $('#view-page').style.display = 'none';
   $('#view-tool').style.display = '';

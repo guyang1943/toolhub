@@ -300,7 +300,7 @@ async function feedFile(selector, dataUrl, name, type) {
   await sleep(900);
   if (swDropped) console.log('   （已清掉 ' + swDropped + ' 个旧 Service Worker 注册）');
   const cards = await evaluate(`document.querySelectorAll('#grid [data-id]').length`);
-  check('首页渲染工具卡片', cards >= 30, cards + ' 张');
+  check('首页渲染工具卡片（一页 24）', cards === 24, cards + ' 张');
   check('首页无控制台错误', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '));
   check('首页无 4xx 资源', netFails.length === 0, netFails.slice(0, 2).join(' | '));
   const heroText = await evaluate(`(document.querySelector('.hero-search-hint') || {}).textContent || ''`);
@@ -312,7 +312,8 @@ async function feedFile(selector, dataUrl, name, type) {
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: '/', code: 'Slash', windowsVirtualKeyCode: 191 });
   await sleep(350);
   const slashFocus = await evaluate(`document.activeElement.id`);
-  check('按 / 聚焦搜索框', slashFocus === 'search', String(slashFocus));
+  // v3.4：首页头部输入框已收起，/ 落到 hero 大框上
+  check('按 / 聚焦搜索框', slashFocus === 'hero-search', String(slashFocus));
 
   // Ctrl+K 打开命令面板
   await evaluate(`document.activeElement.blur()`);
@@ -479,23 +480,45 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('首页运行方式筛选 3 档', rtBtns === 3, rtBtns + ' 档');
   const sortBtns = await evaluate(`document.querySelectorAll('#filterbar [data-sort]').length`);
   check('首页排序 3 档', sortBtns === 3, sortBtns + ' 档');
-  const allNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  // v3.4 起列表分页：DOM 里只有当前页的卡，总命中数看 #grid.dataset.total
+  const gridTotal = () => evaluate(`parseInt(document.getElementById('grid').dataset.total || '0', 10)`);
+  const gridShown = () => evaluate(`parseInt(document.getElementById('grid').dataset.shown || '0', 10)`);
+  const allNum = await gridTotal();
+  const allShown = await gridShown();
+  check('首页首屏只渲染一页', allShown === 24 && allNum > 24, `${allShown} / 全部 ${allNum}`);
+  const pagerBtns = await evaluate(`document.querySelectorAll('#pager .pg-btn[data-page]').length`);
+  check('分页条给出页码与上下页', pagerBtns >= 4, pagerBtns + ' 个按钮');
+  await evaluate(`document.querySelector('#pager .pg-btn[data-page="2"]').click()`);
+  await sleep(700);
+  const page2Qs = await evaluate(`location.search`);
+  const page2Shown = await gridShown();
+  check('翻页写进 URL', page2Qs.includes('page=2'), page2Qs);
+  check('第 2 页仍是满页 24 张', page2Shown === 24, page2Shown + ' 张');
+  const page2First = await evaluate(
+    `(document.querySelector('#grid .card') || {}).dataset ? document.querySelector('#grid .card').dataset.id : ''`
+  );
+  await evaluate(`document.querySelector('#pager .pg-btn[data-page="1"]').click()`);
+  await sleep(600);
+  const page1First = await evaluate(`document.querySelector('#grid .card').dataset.id`);
+  check('翻页后首卡不同（真的换了内容）', page1First !== page2First, `${page1First} vs ${page2First}`);
   await evaluate(`document.querySelector('#filterbar [data-rt="local"]').click()`);
-  await sleep(500);
-  const localNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  await sleep(600);
+  const localNum = await gridTotal();
   check(`仅本机执行筛出 ${LOCAL_TOOLS} 个`, localNum === LOCAL_TOOLS, `${localNum} / 全部 ${allNum}`);
+  const backTo1 = await evaluate(`document.getElementById('grid').dataset.page`);
+  check('改筛选回到第 1 页', backTo1 === '1', 'page ' + backTo1);
   const qs = await evaluate(`location.search`);
   check('筛选状态写入 URL', qs.includes('runtime=local'), qs);
   await evaluate(`document.querySelector('#filterbar [data-rt="offline"]').click()`);
-  await sleep(500);
-  const offNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  await sleep(600);
+  const offNum = await gridTotal();
   check('断网也能用少于本机执行', offNum > 0 && offNum < localNum, `${offNum} 个`);
   await cdp.send('Page.reload');
   await sleep(1200);
   const kept = await evaluate(
     `(document.querySelector('#filterbar [data-rt="offline"]') || {}).className || ''`
   );
-  const keptNum = await evaluate(`document.querySelectorAll('#grid .card').length`);
+  const keptNum = await gridTotal();
   check('刷新后筛选保持', String(kept).includes('active') && keptNum === offNum, `${keptNum} 个 · ${kept.includes('active')}`);
   await evaluate(`document.querySelector('#filterbar [data-sort="used"]').click()`);
   await sleep(400);
