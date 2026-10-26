@@ -62,12 +62,37 @@ node scripts/new-tool.mjs csv-columns --name "CSV 选列与重排" --cat 数据
 - **大文件不能一次读进内存**：用 `FileReader` 分片或 `Blob.stream()`，并显示进度
 - 有「校验值」输入框时，比对结果要明确说「一致 / 不一致」，不一致时把两个值的差异位置标出来
 - 空文件也要能算（有确定的哈希值）
+- **测试必须对上这些公开向量**（大小写不敏感，但输出统一小写）：
+
+  | 算法 | 输入 | 期望值 |
+  |---|---|---|
+  | MD5 | `""`（空） | `d41d8cd98f00b204e9800998ecf8427e` |
+  | MD5 | `"abc"` | `900150983cd24fb0d6963f7d28e17f72` |
+  | MD5 | `"The quick brown fox jumps over the lazy dog"` | `9e107d9d372bb6826bd81d3542a419d6` |
+  | SHA-1 | `"abc"` | `a9993e364706816aba3e25717850c26c9cd0d89d` |
+  | SHA-256 | `""`（空） | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+  | SHA-256 | `"abc"` | `ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad` |
+  | SHA-512 | `"abc"` | `ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f` |
+
+  MD5 自己实现时最常错的两处：**padding 的长度位要写 64 位小端**（不是 32 位），以及**最后一轮的 a/b/c/d 加法顺序**。用上面 `"abc"` 和空串两个向量能同时抓住这两类错误。
 
 **`csv-columns`**
 - 必须正确处理引号内的逗号、换行、双写引号（`"a,b"`、`"line1\nline2"`、`""""`）
 - 分隔符可自定义（逗号 / 制表符 / 分号 / 竖线）
 - 过滤是「列值包含某字符串」，不是正则（避免又一个正则坑）
 - 输出时保留原引号风格，别把 `"a,b"` 写成 `a,b`
+- **解析器必须过这组用例**（自己写状态机，不要用 `split(',')`）：
+
+  | 输入 | 期望解析结果 |
+  |---|---|
+  | `a,b,c` | 1 行 3 列：`a` / `b` / `c` |
+  | `"a,b",c` | 1 行 2 列：`a,b` / `c` |
+  | `"line1\nline2",x` | 1 行 2 列：`line1␊line2` / `x`（**这是 1 行不是 2 行**） |
+  | `"say ""hi""",y` | 1 行 2 列：`say "hi"` / `y` |
+  | `a,,c` | 1 行 3 列，中间是空字符串 |
+  | `a,b\r\nc,d` | 2 行 2 列（CRLF 与 LF 都要认） |
+
+  最后一条特别说明：**空字段不是缺字段**。`a,,c` 是三列，中间那列值为空；把它压成两列是最常见的手写 bug。
 
 ### 3. 补三份长尾内容
 
@@ -99,6 +124,8 @@ node scripts/new-tool.mjs csv-columns --name "CSV 选列与重排" --cat 数据
 - 现有 34 个工具的任何文件
 - `scripts/**` 里除了 `new-tools-test.mjs` 之外的任何脚本（尤其不要改 `verify.mjs` 和 `build-pages.mjs`）
 
+**注意 `assets/**` 里包含所有样式表。** 新工具在 375px 手机上的排版只能继承既有的通用窄屏规则（v3.6 已做完：`.field` 间距 8px、`#tool-fields` 按控件形态画分组虚线、结果动作条两列网格、表格自带横向滚动）。**如果你的工具需要专属窄屏样式，不要自己加——在交付说明里单独列一条「需要补的样式」，我来加。** 样式预算只剩 0.8 KB，顺手加几条就会超。
+
 ## 验收
 
 ```bash
@@ -107,10 +134,16 @@ node scripts/lint-tools.mjs file-hash
 node scripts/lint-tools.mjs csv-columns
 node scripts/gen-search-aliases.mjs
 node scripts/build-pages.mjs
-node scripts/verify.mjs             # 必须 44/44
-node scripts/new-tools-test.mjs     # 必须 ≥161 + 你新增的条数，全绿
+node scripts/verify.mjs             # 必须 45/45（v3.6 起是 45 项，任务包旧版写 44 是错的）
+node scripts/new-tools-test.mjs     # 必须 161 + 你新增的条数，全绿，0 失败
 node scripts/perf-budget.mjs        # 首屏不能因为新工具超预算（工具不入首屏，理论上不受影响，但要跑）
 ```
+
+**跑完 `build-pages.mjs` 之后必须回头看一眼这三件事**，它们和新工具直接相关，漏了会红或者会静默坏：
+
+1. `verify` 会遍历**每一个**工具页断言它引了 `/assets/style.tool.css`。你的 3 个新页面必须由 `build-pages.mjs` 生成（不要手写 `tools/<id>/index.html`），漏跑构建这一条就红。
+2. 工具总数会从 **94 → 97**，首页「97 个工具」等计数文案是构建期按数据算的，跑完构建自动对；`browser-test.mjs` 的 `TOTAL_TOOLS` 也是派生的，不用改。
+3. `sw.js` 预缓存地址会从 **127** 条增加，也是构建期自动生成的，不要手改 `sw.js`。
 
 再手动过一遍：启动 `node scripts/serve.mjs 8788`，首页搜「裁剪」「哈希」「CSV 列」，三个都能搜到并打开；每个工具用真实输入跑一次，把产物下载出来打开确认能看。
 
