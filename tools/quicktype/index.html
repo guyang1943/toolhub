@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="/assets/style.css" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"quicktype","description":"JSON 一键生成 TypeScript/Java/Go 等类型定义","url":"https://toolhub.guyang1966.workers.dev/tools/quicktype/","sameAs":"https://app.quicktype.io","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"Apache-2.0"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"quicktype 是免费的吗？","acceptedAnswer":{"@type":"Answer","text":"quicktype 是开源项目，采用 Apache-2.0 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。"}},{"@type":"Question","name":"quicktype 适合什么场景？","acceptedAnswer":{"@type":"Answer","text":"最常见的是这几种：拿到第三方 API 的返回样例，生成 TypeScript 类型定义；把一堆 JSON 日志转成 Go struct 做解析；从 GraphQL 响应生成 Kotlin data class。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。"}},{"@type":"Question","name":"它和 ToolHub 的本地工具有什么区别？","acceptedAnswer":{"@type":"Answer","text":"ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；quicktype 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。"}},{"@type":"Question","name":"用 quicktype 有什么限制？","acceptedAnswer":{"@type":"Answer","text":"只根据「样本」推断类型：样本里没出现的字段不会生成，样本里全是 null 的字段会被推断成 any；生产环境建议多喂几份覆盖不同分支的样本。"}}]}</script>
+  <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>

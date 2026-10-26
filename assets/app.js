@@ -1640,21 +1640,36 @@ async function openTool(id) {
     getSeoBody: () => SEO_BODY,
     stateHTML,
     CHAINS, setHandoff, takeHandoff, setProgressHandler,
+    ensureCss,
   });
   return m.openTool(id);
 }
 
-/* ---------- 页面分片 CSS（v3.3） ----------
-   批量 / 离线 / 提交三页的样式已从 style.css 拆出。静态页自带 <link>；
-   SPA 内跳转到这些页时由这里补一份，避免「路由过来了但样式没加载」。 */
-const LOADED_CSS = new Set();
+/* ---------- 按需样式表（v3.3 起，v3.5 扩到工具页） ----------
+   批量 / 离线 / 提交三页 + 工具页的样式都已从 style.css 拆出。静态页自带 <link>；
+   SPA 内跳转时由这里补一份，避免「路由过来了但样式没加载」。
+   返回 Promise：内容页的样式少几处不影响用，调用方 fire-and-forget；
+   工具页要等它到位再画，否则会闪一下没有样式的裸结构。 */
+const LOADED_CSS = new Map();
 function ensureCss(href) {
-  if (LOADED_CSS.has(href) || document.querySelector(`link[rel="stylesheet"][href="${href}"]`)) return;
-  LOADED_CSS.add(href);
-  const l = document.createElement('link');
-  l.rel = 'stylesheet';
-  l.href = href;
-  document.head.appendChild(l);
+  const hit = LOADED_CSS.get(href);
+  if (hit) return hit;
+  if (document.querySelector(`link[rel="stylesheet"][href="${href}"]`)) {
+    const done = Promise.resolve();
+    LOADED_CSS.set(href, done);
+    return done;
+  }
+  const pending = new Promise((resolve) => {
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = href;
+    // 加载失败也要放行：少几处样式，总比整页卡住打不开强
+    l.onload = resolve;
+    l.onerror = resolve;
+    document.head.appendChild(l);
+  });
+  LOADED_CSS.set(href, pending);
+  return pending;
 }
 const PAGE_CSS = {
   batch: '/assets/style.batch.css',

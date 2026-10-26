@@ -45,6 +45,11 @@ const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
 // v3.4：首页高频推荐最多 8 条。超过 8 条它就从「精选」变成「第二份工具列表」，
 // 而且会和下方网格抢同一份注意力。这个数字必须与 assets/app.js 的 FEATURED_MAX 一致。
 const FEATURED_MAX = 8;
+
+// v3.5：工具页专用样式拆到独立文件，首页不为它付字节。
+// 工具页在构建期就把这张表引进 <head>（整页加载无闪烁）；从首页点卡片进工具的
+// SPA 路径由 app.js 的 ensureCss() 先取到再画——两条路径都靠「rel + href」认亲。
+const TOOL_CSS_LINK = '  <link rel="stylesheet" href="/assets/style.tool.css" />';
 const rawTpl = readFileSync(join(root, 'index.html'), 'utf8');
 const tpl = rawTpl
   .replace(/\d+(?= 个精选开源工具)/g, TOTAL_TOOLS)
@@ -188,6 +193,7 @@ for (const tool of tools) {
         `<p><a href="/">← 返回 ToolHub 全部工具</a></p>`,
     })}`
   );
+  html = html.replace('</head>', TOOL_CSS_LINK + '\n</head>');
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
   count++;
 }
@@ -352,6 +358,7 @@ for (const tool of dirTools) {
     jsonld,
   });
   html = html.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(faqLd)}</script>\n</head>`);
+  html = html.replace('</head>', TOOL_CSS_LINK + '\n</head>');
   html = html.replace(
     /<main class="container"[^>]*>/,
     `<main class="container" id="main-content" tabindex="-1">${seoBlock({

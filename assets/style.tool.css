@@ -1,0 +1,188 @@
+/* 工具页专用样式（v3.5 从 style.css 拆出）。只放 /tools/<id>/ 用得到的规则；
+   类名出现在首页 / 内容页 / app.js 里的一律留在 style.css。
+   加载口子两条：构建期 tools/<id>/index.html 静态引入；SPA 路径由 tool-page.js 的 ensureToolCss() 先 await 再用。 */
+
+/* ===== Pyodide 运行时下载进度 ===== */
+.py-load { padding: 28px 8px; text-align: center; }
+.py-load-bar { height: 8px; border-radius: 99px; background: var(--border); overflow: hidden; max-width: 420px; margin: 0 auto; }
+.py-load-fill { height: 100%; width: 0; border-radius: 99px; background: var(--accent); transition: width .2s ease; }
+.py-load-txt { margin-top: 12px; font-size: 13px; color: var(--muted); }
+
+/* ===== 工具页头部 ===== */
+.tool-head h1 { font-size: 22px; margin: 0 0 6px; }
+
+/* ===== 恢复草稿 / 工具链接力提示 ===== */
+.draft-note {
+  display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted);
+  background: var(--accent-soft); border-radius: 8px; padding: 7px 10px; margin-bottom: 14px;
+}
+.draft-note button {
+  border: none; background: transparent; color: var(--accent); font-size: 12px;
+  cursor: pointer; text-decoration: underline; padding: 0;
+}
+.pipe-note {
+  font-size: 12.5px; color: #166534; background: #f0fdf4;
+  border: 1px solid #bbf7d0; border-radius: 8px; padding: 8px 11px; margin-bottom: 14px;
+}
+
+/* ===== 统一结果出口：预览 / 复制 / 下载 / 分享 ===== */
+.result-preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.result-preview img { max-width: 100%; max-height: 320px; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+.result-actions {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border);
+}
+.result-actions .ra-note { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+/* ===== 结果表格（个税 / 单位换算等） ===== */
+.tbl { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }
+.tbl th, .tbl td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+.tbl th { background: var(--bg); font-size: 12.5px; color: var(--muted); font-weight: 600; white-space: nowrap; }
+.tbl tbody tr:hover { background: var(--accent-soft); }
+
+/* ===== 个税大数字卡 ===== */
+.tax-hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0 4px; }
+.tax-hero-item {
+  background: var(--accent-soft); border: 1px solid #c7d4f5; border-radius: var(--radius);
+  padding: 16px 18px; display: grid; gap: 4px;
+}
+.tax-hero-item b { font-size: 26px; color: var(--accent); font-variant-numeric: tabular-nums; }
+.tax-hero-item span { font-size: 13px; color: var(--muted); }
+
+/* ===== 二维码解析结果布局 ===== */
+.qr-out { display: grid; grid-template-columns: 1fr auto; gap: 18px; margin-top: 12px; align-items: start; }
+.qr-text { min-width: 0; }
+.qr-text label { display: block; margin-bottom: 6px; }
+.qr-preview { min-width: 180px; }
+.qr-kind {
+  display: inline-block; background: var(--accent-soft); color: var(--accent);
+  border: 1px solid #c7d4f5; border-radius: 999px; padding: 1px 12px; font-size: 12px; font-weight: 600;
+}
+
+@media (max-width: 640px) {
+   .qr-out { grid-template-columns: 1fr; } 
+}
+
+/* ===== 个税大数字卡 ===== */
+[data-theme='dark'] .tax-hero-item { border-color: #2b3a55; }
+[data-theme='dark'] .qr-kind { border-color: #2b3a55; }
+.h-icon { margin-right: 8px; }
+
+/* ===== 长尾教程：使用步骤 / 常见错误 ===== */
+.tutorial { font-size: 13.5px; }
+.tutorial > b { display: block; margin-bottom: 8px; }
+.tut-steps { margin: 0; padding-left: 22px; line-height: 1.9; }
+.tut-steps li { margin-left: 2px; }
+.pitfall-list { display: grid; gap: 8px; }
+.pitfall-item {
+  display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: baseline;
+  border-left: 3px solid #f59e0b; padding: 4px 0 4px 12px;
+}
+.pitfall-item b { font-size: 13px; color: #b45309; }
+.pitfall-item span { font-size: 13px; color: var(--text); line-height: 1.75; }
+
+@media (max-width: 640px) {
+   .pitfall-item { grid-template-columns: 1fr; gap: 2px; } 
+}
+[data-theme='dark'] .pitfall-item { border-color: #b45309; }
+[data-theme='dark'] .pitfall-item b { color: #f0b429; }
+
+/* ===== diff 配色 ===== */
+.diff-box { padding: 10px 0; font-size: 13px; }
+.diff-add { background: #ecfdf3; color: #067647; padding: 1px 14px; }
+.diff-del { background: #fef2f2; color: #b42318; text-decoration: line-through; text-decoration-color: #fda29b; }
+.diff-same { color: #94a3b8; padding: 1px 14px; }
+
+/* ===== Markdown 预览排版 ===== */
+.md-preview { line-height: 1.75; font-size: 15px; }
+.md-preview h1, .md-preview h2, .md-preview h3 { border-bottom: 1px solid var(--border); padding-bottom: 6px; margin-top: 22px; }
+.md-preview code { font-family: var(--mono); background: #f1f3f6; padding: 2px 6px; border-radius: 5px; font-size: .9em; }
+.md-preview pre code { display: block; padding: 12px; background: #0f172a; color: #e2e8f0; border-radius: 8px; overflow: auto; }
+.md-preview blockquote { border-left: 4px solid var(--accent); margin: 10px 0; padding: 4px 14px; color: var(--muted); background: var(--accent-soft); border-radius: 0 8px 8px 0; }
+.md-preview table { border-collapse: collapse; margin: 10px 0; }
+.md-preview th, .md-preview td { border: 1px solid var(--border); padding: 6px 12px; }
+.md-preview a { color: var(--accent); text-decoration: underline; }
+.md-preview img { max-width: 100%; }
+
+/* ===== diff 配色 ===== */
+[data-theme='dark'] .diff-add { background: #0f2a1c; color: #6ee7a8; }
+[data-theme='dark'] .diff-del { background: #2c1416; color: #fca5a5; }
+[data-theme='dark'] .diff-same { color: #6b7484; }
+
+/* ===== Markdown 预览排版 ===== */
+[data-theme='dark'] .md-preview code { background: #10141b; }
+[data-theme='dark'] .md-preview blockquote { background: #151d2e; }
+[data-theme='dark'] .md-preview th, [data-theme='dark'] .md-preview td { border-color: var(--border); }
+
+/* ===== 分享按钮 ===== */
+.share-btn {
+  margin-left: 10px; border: 1px solid var(--border); background: var(--panel);
+  border-radius: 8px; padding: 2px 8px; font-size: 13px; cursor: pointer; vertical-align: middle;
+  transition: border-color .12s;
+  display: inline-flex; align-items: center; min-height: 28px;
+  /* 不给 color 就用浏览器的黑色 buttontext，深色面板上 1.2:1，整排按钮隐形 */
+  color: var(--text);
+}
+.share-btn:hover { border-color: var(--accent); }
+
+/* ===== 使用场景 ===== */
+.scenario-list { margin-top: 12px; display: grid; gap: 10px; }
+.scenario-item { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; }
+.sc-title { font-size: 13.5px; font-weight: 600; display: flex; gap: 8px; align-items: baseline; }
+.sc-num {
+  display: inline-flex; width: 18px; height: 18px; border-radius: 50%; background: var(--accent-soft);
+  color: var(--accent); font-size: 11px; align-items: center; justify-content: center; flex: none;
+}
+.sc-flow, .sc-result { font-size: 12.5px; color: var(--muted); margin-top: 3px; line-height: 1.6; }
+.sc-result { color: var(--ok); }
+
+/* ===== 目录工具详情页 CTA ===== */
+.dir-cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin-top: 16px; padding: 16px 18px; border-radius: 12px;
+  background: linear-gradient(135deg, #f5f8ff 0%, #fdf5ff 100%); border: 1px solid #dfe6fb;
+}
+.dir-cta-text code { font-family: var(--mono); background: #fff; padding: 1px 6px; border-radius: 5px; font-size: 12px; }
+[data-theme='dark'] .dir-cta { background: linear-gradient(135deg, #141a28 0%, #1b1526 100%); border-color: #2a3140; }
+[data-theme='dark'] .dir-cta-text code { background: #10141b; }
+
+/* ===== 结果出现时闪一下 ===== */
+.result-flash { animation: resultFlash .9s ease-out 1; }
+
+/* ===== 目录工具页正文 ===== */
+.doc-body { padding: 20px 22px; line-height: 1.85; color: var(--text); font-size: 14px; }
+.doc-body h2 { font-size: 16px; margin: 22px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.doc-body h3 { font-size: 14px; margin: 16px 0 6px; color: var(--text); }
+.doc-body p { margin: 8px 0; color: var(--text); }
+.doc-body ul, .doc-body ol { margin: 8px 0 8px 22px; padding: 0; }
+.doc-body li { margin: 5px 0; }
+.doc-body a { color: var(--accent); }
+.doc-body code { font-family: var(--mono); font-size: 12.5px; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+.doc-body b { color: var(--accent); }
+
+@media (max-width: 620px) {
+   .doc-body { padding: 16px 14px; font-size: 13.5px; } 
+}
+
+/* ===== 口令弹层与加密分享 ===== */
+.enc-mask {
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(12, 16, 22, 0.45); backdrop-filter: blur(2px);
+}
+.enc-modal {
+  width: min(420px, 92vw); padding: 20px 22px 18px; border-radius: 14px;
+  background: var(--panel); border: 1px solid var(--border);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+.enc-modal h3 { margin: 0 0 8px; font-size: 16px; }
+.enc-modal p { margin: 0 0 12px; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.enc-modal input {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; padding: 9px 11px;
+  border-radius: 9px; border: 1px solid var(--border); background: var(--bg); color: var(--text);
+}
+.enc-modal input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.enc-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+.enc-note-ok { color: #166534; background: #f0fdf4; border-color: #bbf7d0; }
+.enc-note-bad { color: #9a3412; background: #fff7ed; border-color: #fed7aa; }
+[data-theme='dark'] .enc-note-ok { color: #bbf7d0; background: rgba(34, 197, 94, 0.12); border-color: #166534; }
+[data-theme='dark'] .enc-note-bad { color: #fed7aa; background: rgba(249, 115, 22, 0.12); border-color: #9a3412; }

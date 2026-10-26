@@ -72,7 +72,13 @@ const document = {
   querySelector: (sel) => (typeof sel === 'string' && sel.startsWith('#') ? document.getElementById(sel.slice(1)) : null),
   querySelectorAll: () => [],
   addEventListener() {},
-  createElement: () => makeEl('div'),
+  // v3.5：工具页样式改成按需 <link> 加载，openTool 会 await 它的 onload。
+  // 桩里没人会发网络请求，所以挂上去就立刻「加载完成」——否则那个 await 永远悬着。
+  createElement: (tag) => {
+    const el = makeEl(tag || 'div');
+    if (tag === 'link') setTimeout(() => el.onload && el.onload(), 0);
+    return el;
+  },
 };
 const listeners = {};
 const location = { pathname: '/', hash: '', search: '' };

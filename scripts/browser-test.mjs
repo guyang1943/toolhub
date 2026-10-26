@@ -305,6 +305,9 @@ async function feedFile(selector, dataUrl, name, type) {
   check('首页无 4xx 资源', netFails.length === 0, netFails.slice(0, 2).join(' | '));
   const heroText = await evaluate(`(document.querySelector('.hero-search-hint') || {}).textContent || ''`);
   check('首页计数文案正确', heroText.includes(`${TOTAL_TOOLS} 个工具`), heroText.trim());
+  // v3.5：工具页样式拆成独立文件后，首页绝不能把它捎上——不然拆了个寂寞
+  const homeHasToolCss = await evaluate(`!!document.querySelector('link[href="/assets/style.tool.css"]')`);
+  check('首页不加载工具页样式', homeHasToolCss === false);
   await shot('01-home');
 
   // ---- 2. 键盘操作（真实键盘事件）----
@@ -347,6 +350,16 @@ async function feedFile(selector, dataUrl, name, type) {
   // ---- 4. 个税计算器 ----
   await goto('/tools/tax-calc/');
   check('个税页无控制台错误', pageErrors.length === 0, pageErrors.slice(0, 1).join(''));
+  // v3.5：工具页样式是独立的 style.tool.css，整页加载时构建期就该写进 <head>。
+  // 顺带用一条只在工具样式表里的规则（.tool-head h1 = 22px）证明它真的生效了，
+  // 光有 <link> 不算——断网或路径写错时 link 在、样式不在。
+  const toolCssState = await evaluate(`(() => {
+    const l = document.querySelector('link[href="/assets/style.tool.css"]');
+    const h1 = document.querySelector('.tool-head h1');
+    return { link: !!l, href: l && l.getAttribute('href'), size: h1 ? getComputedStyle(h1).fontSize : '' };
+  })()`);
+  check('工具页构建期引入 style.tool.css', toolCssState.link && toolCssState.href === '/assets/style.tool.css', toolCssState.href || '缺 link');
+  check('工具页专用样式已生效', toolCssState.size === '22px', `.tool-head h1 = ${toolCssState.size || '未渲染'}`);
   const formTop = await evaluate(`Math.round(document.getElementById('tool-form').getBoundingClientRect().top + window.scrollY)`);
   check('工具表单在首屏内（不被长文压在下面）', formTop < 760, formTop + 'px');
   const fieldTop = await evaluate(`Math.round(document.getElementById('f-salary').getBoundingClientRect().top + window.scrollY)`);
@@ -552,6 +565,17 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   await sleep(700);
   const opened = await evaluate(`location.pathname`);
   check('Enter 打开选中的工具', opened === '/tools/' + cardIds[1] + '/', opened);
+
+  // v3.5：从首页点进工具是 SPA 路径，首页没带 style.tool.css，得靠 tool-page.js 现取。
+  // 这条同时验两件事：link 补上了、并且是「拿到样式之后才画」——否则会闪一下裸结构。
+  await sleep(400);
+  const spaToolCss = await evaluate(`(() => {
+    const l = document.querySelector('link[href="/assets/style.tool.css"]');
+    const h1 = document.querySelector('#view-tool .tool-head h1');
+    return { link: !!l, size: h1 ? getComputedStyle(h1).fontSize : '' };
+  })()`);
+  check('SPA 进工具页补上样式表', spaToolCss.link === true);
+  check('SPA 进工具页样式已生效', spaToolCss.size === '22px', spaToolCss.size || '未渲染');
 
   // 结果出现后焦点自动落到结果区
   await goto('/tools/uuid-gen/');

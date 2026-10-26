@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.4 · 预缓存 112 个地址 · 约 2.4 MB
-const VERSION = "toolhub-v3.4";
+// 版本：toolhub-v3.5 · 预缓存 113 个地址 · 约 2.4 MB
+const VERSION = "toolhub-v3.5";
 const CORE = [
   "/",
   "/index.html",
@@ -131,7 +131,8 @@ const FULL = [
   "/assets/toolbuilder.js",
   "/assets/style.batch.css",
   "/assets/style.offline.css",
-  "/assets/style.submit.css"
+  "/assets/style.submit.css",
+  "/assets/style.tool.css"
 ];
 
 self.addEventListener('install', (e) => {

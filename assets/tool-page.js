@@ -11,18 +11,25 @@
 let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles;
 let kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive;
 let getRegistry, getLang, getD18N, getSeoBody, stateHTML;
-let CHAINS, setHandoff, takeHandoff, setProgressHandler;
+let CHAINS, setHandoff, takeHandoff, setProgressHandler, ensureCss;
 
 export function bindToolPage(ctx) {
   ({
     $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles,
     kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive,
     getRegistry, getLang, getD18N, getSeoBody, stateHTML,
-    CHAINS, setHandoff, takeHandoff, setProgressHandler,
+    CHAINS, setHandoff, takeHandoff, setProgressHandler, ensureCss,
   } = ctx);
 }
 
 /* ---------- 工具页 ---------- */
+/* ---------- 工具页样式（v3.5：从 style.css 拆成 style.tool.css，按需加载） ---------- */
+// 首页不再为工具页样式付字节，所以从首页点卡片进来时这张表还是缺的。
+// 走 app.js 的 ensureCss（和批量 / 离线 / 提交三页共用同一套加载逻辑），但这里要 await：
+// 拿不到样式就不画——宁可多等一个本地缓存往返，也别让用户看见一堆裸结构先闪出来。
+// 整页加载 /tools/<id>/ 时构建期已经写好 <link>，ensureCss 直接命中。
+const TOOL_CSS = '/assets/style.tool.css';
+
 /* ---------- 工具输入：URL 参数 / 草稿 / 分享链接 ---------- */
 const DRAFT_PREFIX = 'toolhub:draft:';
 
@@ -373,6 +380,7 @@ async function applyEncryptedShare(meta, manifest, doRun) {
 }
 
 export async function openTool(id) {
+  const cssReady = ensureCss(TOOL_CSS); // 和下面的注册表请求并行，别串成两步等
   const reg = await loadRegistry();
   await loadI18n();
   // 依赖快照必须放在「注册表 / 多语言」加载之后：REGISTRY 与 D18N 都是加载完成后才赋值，
@@ -382,6 +390,8 @@ export async function openTool(id) {
   const D18N = getD18N();
   const SEO_BODY = getSeoBody();
   const meta = reg.tools.find((tool) => tool.id === id);
+  // 样式就位前不翻视图：翻了就是一次裸结构闪烁
+  await cssReady;
   // v3.4：告诉 CSS 现在在工具页 —— 首页会收起头部搜索框，这里得把它放出来
   document.body.dataset.view = 'tool';
   $('#view-home').style.display = 'none';

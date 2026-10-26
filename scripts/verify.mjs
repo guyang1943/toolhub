@@ -363,7 +363,9 @@ check('结果出口契约（text / files）', () => {
     readFileSync(join(root, 'assets', 'app.js'), 'utf8') + '\n' + readFileSync(join(root, 'assets', 'tool-page.js'), 'utf8');
   if (!/function renderResultActions\(/.test(appSrc2)) bad.push('缺统一结果出口');
   if (!/releaseResultUrls\(\)/.test(appSrc2)) bad.push('缺 objectURL 回收');
-  const css2 = readFileSync(join(root, 'assets/style.css'), 'utf8');
+  // v3.5：工具页样式拆到 assets/style.tool.css，结果区的样式在那边；断言按「全站样式」合并读
+  const css2 =
+    readFileSync(join(root, 'assets/style.css'), 'utf8') + '\n' + readFileSync(join(root, 'assets/style.tool.css'), 'utf8');
   if (!/\.result-actions\s*\{/.test(css2)) bad.push('缺 .result-actions 样式');
   assert(!bad.length, bad.join('; '));
   return `${covered.length}/${localDirs.length} 工具走标准出口`;
@@ -560,6 +562,43 @@ check('首屏性能预算（D4）', () => {
   assert(existsSync(join(root, 'perf-budget.json')), '缺 perf-budget.json');
   assert(existsSync(join(root, 'scripts', 'perf-budget.mjs')), '缺 scripts/perf-budget.mjs');
   return `${srcs.length} 个首屏脚本，无第三方库`;
+});
+
+// ---------- v3.5：工具页样式分片 ----------
+check('工具页样式分片（v3.5）', () => {
+  const TOOL_CSS = 'assets/style.tool.css';
+  assert(existsSync(join(root, TOOL_CSS)), '缺 assets/style.tool.css');
+  const toolCss = readFileSync(join(root, TOOL_CSS), 'utf8');
+  const base = readFileSync(join(root, 'assets/style.css'), 'utf8');
+  assert(toolCss.length > 4000, `style.tool.css 只有 ${toolCss.length} 字节，不像是真拆过`);
+  // 首页必须不为它付字节——这是整个拆分的目的
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  assert(!home.includes('style.tool.css'), '首页又引入了工具页样式，首屏预算白省了');
+  // 每个工具页（本地 + 目录）构建期就要带上它，否则整页加载会先闪一下裸结构
+  const bad = [];
+  for (const t of all) {
+    const p = join(root, 'tools', t.id, 'index.html');
+    if (!existsSync(p)) continue;
+    if (!readFileSync(p, 'utf8').includes('href="/assets/style.tool.css"')) bad.push(t.id);
+  }
+  assert(
+    !bad.length,
+    `工具页没引 style.tool.css：${bad.slice(0, 5).join(', ')}${bad.length > 5 ? ` 等 ${bad.length} 个` : ''}`
+  );
+  // 内容页用不到它，引了就是白加一个请求
+  for (const p of ['submit/index.html', 'about/index.html', 'compare/index.html']) {
+    const f = join(root, p);
+    if (existsSync(f)) assert(!readFileSync(f, 'utf8').includes('style.tool.css'), `${p} 引了工具页样式`);
+  }
+  // 防回流：这几个只服务工具页的规则不许再长回基础表
+  const leaked = ['.result-actions', '.tax-hero', '.md-preview', '.enc-modal', '.pitfall-item', '.doc-body'].filter(
+    (sel) => new RegExp(`\\${sel}\\s*[,{]`).test(base)
+  );
+  assert(!leaked.length, `这些只服务工具页的规则又回到 style.css：${leaked.join(', ')}`);
+  // 断网打开工具页也得有样式
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('/assets/style.tool.css'), 'sw.js 预缓存缺 style.tool.css（断网后工具页没样式）');
+  return `${(toolCss.length / 1024).toFixed(1)} KB 已拆出，${all.length} 个工具页逐页引入`;
 });
 
 check('隐私说明与统计口径（D3）', () => {

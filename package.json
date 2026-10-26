@@ -1,6 +1,6 @@
 {
   "name": "toolhub",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "private": true,
   "description": "ToolHub · 把开源工具变成打开即用的在线工具（零依赖静态站）",
   "scripts": {
