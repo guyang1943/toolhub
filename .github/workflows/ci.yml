@@ -22,6 +22,18 @@ jobs:
         with:
           node-version: '22'
 
+      # Python 只被两处「与参考实现对拍」用到：真二维码生成（qrcode + pillow）
+      # 和测试用 PNG 生成（pillow）。v3.9 之前脚本里写死了开发机的 Windows 绝对路径，
+      # 本地永远绿、CI 一推就 ENOENT。现在由 scripts/lib/python.mjs 解析解释器。
+      # 用 setup-python 而不是系统 python3：ubuntu-24.04 的 python3 受 PEP 668 保护，
+      # 直接 pip install 会报 externally-managed-environment。
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装对拍用 Python 依赖
+        run: python -m pip install --quiet --upgrade "qrcode[pil]"
+
       # 1) 派生文件是否漂移：改了 tool.json 却忘了 sync-tools 会在这里拦下
       - name: 注册表漂移检查
         run: node scripts/sync-tools.mjs --check

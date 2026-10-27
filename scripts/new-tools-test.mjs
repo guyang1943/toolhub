@@ -6,9 +6,17 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
+import { PYTHON, PYTHON_HINT } from './lib/python.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
+
+// 这组测试有两节要拿 Python 当参考实现（二维码、PNG 生成）。
+// 缺工具就直接说清楚缺什么，别让 ENOENT 冒出来冒充「被测代码有 bug」。
+if (!PYTHON) {
+  console.error(`\n❌ 无法运行功能测试：${PYTHON_HINT}\n`);
+  process.exit(1);
+}
 
 let pass = 0,
   fail = 0;
@@ -174,7 +182,7 @@ const qrRgba = join(root, '.tmp-qr.rgba');
 const qrInv = join(root, '.tmp-qr-inv.rgba');
 const qrNoise = join(root, '.tmp-noise.rgba');
 if (!existsSync(qrRgba)) {
-  execFileSync('C:\\Users\\huwei\\.workbuddy\\binaries\\python\\versions\\3.13.12\\python.exe', ['-c', `
+  execFileSync(PYTHON, ['-c', `
 import qrcode, json, random
 from PIL import Image
 qr = qrcode.QRCode(border=2, box_size=8)
@@ -365,7 +373,7 @@ console.log('\n🖼️ 图片转 PDF（真实 PNG 生成真实 PDF）');
 const imgA = join(root, '.tmp-img-a.png');
 const imgB = join(root, '.tmp-img-b.png');
 if (!existsSync(imgA) || !existsSync(imgB)) {
-  execFileSync('C:\\Users\\huwei\\.workbuddy\\binaries\\python\\versions\\3.13.12\\python.exe', ['-c', `
+  execFileSync(PYTHON, ['-c', `
 from PIL import Image
 Image.new('RGB', (800, 600), (37, 99, 235)).save(${JSON.stringify(imgA)})
 Image.new('RGB', (300, 1200), (220, 38, 38)).save(${JSON.stringify(imgB)})

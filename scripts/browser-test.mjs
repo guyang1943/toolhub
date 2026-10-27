@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
+import { PYTHON, PYTHON_HINT } from './lib/python.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // 工具总数从数据推导，新增工具时不必再改测试
@@ -432,10 +433,12 @@ async function feedFile(selector, dataUrl, name, type) {
 
   // ---- 7. 二维码解析（真实 jsQR 解码，文件走 DataTransfer）----
   let qrDataUrl = null;
-  try {
-    const py = 'C:/Users/huwei/.workbuddy/binaries/python/versions/3.13.12/python.exe';
+  // 缺 Python / 缺 qrcode 只跳过这一节：这里要的是「参考实现造一张真二维码」，
+  // 属于测试环境缺失，不该判成被测功能有问题。
+  if (!PYTHON) console.log(`  ⚠️ 跳过二维码对拍：${PYTHON_HINT}`);
+  else try {
     const out = join(tmpdir(), 'toolhub-qr-' + Date.now() + '.png');
-    execFileSync(py, ['-c', `
+    execFileSync(PYTHON, ['-c', `
 import qrcode
 qr = qrcode.QRCode(border=2, box_size=8)
 qr.add_data('https://sitool.eu.org/browser-ok')
