@@ -4,6 +4,8 @@
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
+import { gzipSync } from 'node:zlib';
+import { spawnSync } from 'node:child_process';
 import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { sameJsonText } from './lib/eol.mjs';
@@ -606,8 +608,42 @@ check('工具页样式分片（v3.5）', () => {
   return `${(toolCss.length / 1024).toFixed(1)} KB 已拆出，${all.length} 个工具页逐页引入`;
 });
 
-check('隐私说明与统计口径（D3）', () => {
-  const page = join(root, 'privacy', 'index.html');
+// ---------- v3.8：样式预算口径 ----------
+// 这一条守的不是数字，是「上限得给人留活路」这件事本身。
+// v3.7 收尾时 styles 只剩 0.6 KB，于是三个新工具里每加一条样式都要先掂量——
+// 上限一旦贴着实际值，它就从「提醒」变成了「禁令」，谁都不敢改样式了。
+check('样式预算口径（v3.8）', () => {
+  const budget = read('perf-budget.json').budgets;
+  const cssGz = gzipSync(readFileSync(join(root, 'assets/style.css')), { level: 9 }).length;
+  const headroom = budget.styles - cssGz;
+  assert(
+    headroom >= 512,
+    `styles 只剩 ${(headroom / 1024).toFixed(2)} KB 余量（下限 0.5 KB）。加一条新样式就会顶到上限——` +
+      '这时候该做的不是压着不改，而是要么搬进分片、要么重新定档并写明理由。'
+  );
+  // 总量必须严格小于各分项之和。否则四条单项可以同时贴着上限，总量那条线永远碰不到，等于没有刹车。
+  const sum = budget.document + budget.styles + budget.scripts + budget.bootData;
+  assert(
+    budget.total < sum,
+    `total ${(budget.total / 1024).toFixed(1)} KB 已经不小于各分项之和 ${(sum / 1024).toFixed(1)} KB，` +
+      '总量预算失去意义（分项一起贴顶也不会触发它）'
+  );
+  return `styles ${(cssGz / 1024).toFixed(1)} / ${(budget.styles / 1024).toFixed(1)} KB，余量 ${(headroom / 1024).toFixed(2)} KB`;
+});
+
+// ---------- v3.8：基础样式表不许有死规则 ----------
+// 预算膨胀最常见的来源不是「加了一条大样式」，而是「删了功能、样式留着」。
+// 这类规则留着没有任何好处，直接卡在发版前。
+check('基础样式表无死规则（v3.8）', () => {
+  const r = spawnSync(process.execPath, [join(root, 'scripts/css-coverage.mjs'), '--fail'], {
+    cwd: root,
+    encoding: 'utf8',
+  });
+  assert(r.status === 0, (r.stdout || '').split('\n').filter((l) => l.trim()).slice(-12).join('\n'));
+  return 'style.css 里每条规则都有引用';
+});
+
+check('隐私说明与统计口径（D3）', () => {  const page = join(root, 'privacy', 'index.html');
   assert(existsSync(page), '缺 /privacy/ 静态页（构建后再校验）');
   const body = readFileSync(page, 'utf8');
   assert(/不上传/.test(body), '隐私页没有说明数据不上传');
