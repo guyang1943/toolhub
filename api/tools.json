@@ -1,8 +1,8 @@
 {
   "site": "ToolHub",
   "version": 1,
-  "updated": "2026-10-26",
-  "total": 94,
+  "updated": "2026-10-27",
+  "total": 97,
   "tools": [
     {
       "id": "json-format",
@@ -513,6 +513,55 @@
         "银行卡",
         "校验",
         "luhn"
+      ]
+    },
+    {
+      "id": "img-crop",
+      "name": "图片裁剪",
+      "desc": "拖出选区或填空坐标裁剪图片，支持等比锁定与圆角",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/img-crop/",
+      "source": "内置实现 (Canvas API)",
+      "license": "MIT",
+      "tags": [
+        "图片",
+        "裁剪",
+        "圆角",
+        "头像"
+      ]
+    },
+    {
+      "id": "file-hash",
+      "name": "文件哈希校验",
+      "desc": "拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/file-hash/",
+      "source": "内置实现（手写增量 MD5 / SHA 系列）",
+      "license": "MIT",
+      "tags": [
+        "hash",
+        "md5",
+        "sha256",
+        "校验",
+        "文件"
+      ]
+    },
+    {
+      "id": "csv-columns",
+      "name": "CSV 选列与重排",
+      "desc": "CSV 列太多？选列、拖动排序、按列值过滤后导出新表",
+      "category": "数据",
+      "runtime": "browser",
+      "url": "https://toolhub.guyang1966.workers.dev/tools/csv-columns/",
+      "source": "内置实现（自写 CSV 引号状态机）",
+      "license": "MIT",
+      "tags": [
+        "csv",
+        "表格",
+        "选列",
+        "过滤"
       ]
     },
     {

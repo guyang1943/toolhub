@@ -1,0 +1,25 @@
+{
+  "id": "file-hash",
+  "name": "文件哈希校验",
+  "desc": "拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对",
+  "category": "开发",
+  "source": "内置实现（手写增量 MD5 / SHA 系列）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "hash",
+    "md5",
+    "sha256",
+    "校验",
+    "文件"
+  ],
+  "since": "v3.7",
+  "aliases": [
+    "wenjianhaxixiaoyan",
+    "wjhxxy",
+    "file hash checker",
+    "file",
+    "hash",
+    "checker"
+  ]
+}

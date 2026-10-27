@@ -60,6 +60,9 @@
     "img-to-pdf",
     "exif-strip",
     "image-convert",
-    "id-validate"
+    "id-validate",
+    "img-crop",
+    "file-hash",
+    "csv-columns"
   ]
 }

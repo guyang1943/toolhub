@@ -1,0 +1,24 @@
+{
+  "id": "csv-columns",
+  "name": "CSV 选列与重排",
+  "desc": "CSV 列太多？选列、拖动排序、按列值过滤后导出新表",
+  "category": "数据",
+  "source": "内置实现（自写 CSV 引号状态机）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "csv",
+    "表格",
+    "选列",
+    "过滤"
+  ],
+  "since": "v3.7",
+  "aliases": [
+    "xuanlieyuzhongpai",
+    "xlyzp",
+    "csv column picker",
+    "csv",
+    "column",
+    "picker"
+  ]
+}

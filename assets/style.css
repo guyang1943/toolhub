@@ -1,7 +1,7 @@
 :root {
   --bg: #f6f7f9; --panel: #ffffff; --border: #e3e6ea;
   --text: #1c2128; --muted: #6b7280; --accent: #2563eb;
-  --accent-soft: #eff4ff; --ok: #16a34a; --err: #dc2626;
+  --accent-soft: #eff4ff; --ok: #16a34a; --err: #dc2626; --warn: #b45309;
   --radius: 12px; --mono: ui-monospace, Consolas, "Courier New", monospace;
 }
 * { box-sizing: border-box; }
@@ -209,6 +209,9 @@ body[data-view='home'] #search-open { display: inline-flex; }
 .result pre.ok { outline: 2px solid var(--ok); }
 .result pre.err { outline: 2px solid var(--err); }
 .msg-ok { color: var(--ok); font-size: 13px; }
+/* v3.7：提醒类提示（「已收缩到边缘」「校验值不一致」）。之前只有 .msg-ok，
+   .msg-warn 在 exif-strip、file-hash、csv-columns 和提交页的工具构建器里都是裸文本。 */
+.msg-warn { color: var(--warn); font-size: 13px; }
 .msg-err { color: var(--err); font-size: 13px; }
 /* 统一结果出口：复制 / 下载 / 分享 */
 .result-actions .btn { padding: 8px 14px; font-size: 13px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -290,7 +293,7 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 [data-theme='dark'] {
   --bg: #0e1116; --panel: #161a22; --border: #262b36;
   --text: #e6e9ef; --muted: #98a1b0; --accent: #6b97ff;
-  --accent-soft: #1a2233; --ok: #4ade80; --err: #f87171;
+  --accent-soft: #1a2233; --ok: #4ade80; --err: #f87171; --warn: #fbbf24;
 }
 [data-theme='dark'] body { background: var(--bg); color: var(--text); }
 [data-theme='dark'] .site-header { background: rgba(22, 26, 34, .92); backdrop-filter: blur(8px); }

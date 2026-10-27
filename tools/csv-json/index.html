@@ -31,7 +31,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 94 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 97 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -65,7 +65,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV ↔ JSON</h1><p>CSV 与 JSON 数组互转，正确处理引号与换行</p><h2>关于CSV ↔ JSON</h2><p>CSV 是最通用的表格交换格式，但它没有类型系统，所有值都是字符串；JSON 则支持嵌套和类型。两者互转时的常见陷阱是分隔符冲突：字段内部含有逗号或换行时，必须用双引号包裹，否则解析会错列。正确处理引号的解析器才能保证数据不串行。</p><h2>使用步骤</h2><ol><li>粘贴 CSV 文本（或 JSON 数组），确认首行是表头</li><li>指定分隔符（逗号 / 分号 / Tab）与是否首行为表头</li><li>查看转换结果，抽查含逗号、引号、换行的字段是否正确</li><li>复制 JSON 或下载，交给下游工具使用</li></ol><h2>常见错误</h2><h3>含逗号字段没加引号</h3><p>「北京, 上海」这种值会把一行裂成两列。生成 CSV 时给所有含分隔符、引号、换行的值加双引号包裹。</p><h3>类型丢失</h3><p>CSV 里全是字符串，转 JSON 后数字还是字符串。下游要计算时先用 pandas 体检或手动转换类型。</p><h3>换行藏在引号里</h3><p>字段内部的换行必须连同引号一起保留，很多简易解析器在这里断行出错，导致行数对不上。</p><h2>常见问题</h2><h3>为什么导入 Excel 后中文变乱码？</h3><p>编码不是 UTF-8。在 Excel 里选择“另存为 → CSV UTF-8”，或从数据导入功能指定 UTF-8 编码。</p><h3>嵌套的 JSON 能转成 CSV 吗？</h3><p>只能转单层对象数组。多层嵌套需要先拍平（把嵌套字段展开成 a.b 这样的列名），否则会丢失结构。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV ↔ JSON</h1><p>CSV 与 JSON 数组互转，正确处理引号与换行</p><h2>关于CSV ↔ JSON</h2><p>CSV 是最通用的表格交换格式，但它没有类型系统，所有值都是字符串；JSON 则支持嵌套和类型。两者互转时的常见陷阱是分隔符冲突：字段内部含有逗号或换行时，必须用双引号包裹，否则解析会错列。正确处理引号的解析器才能保证数据不串行。</p><h2>使用步骤</h2><ol><li>粘贴 CSV 文本（或 JSON 数组），确认首行是表头</li><li>指定分隔符（逗号 / 分号 / Tab）与是否首行为表头</li><li>查看转换结果，抽查含逗号、引号、换行的字段是否正确</li><li>复制 JSON 或下载，交给下游工具使用</li></ol><h2>常见错误</h2><h3>含逗号字段没加引号</h3><p>「北京, 上海」这种值会把一行裂成两列。生成 CSV 时给所有含分隔符、引号、换行的值加双引号包裹。</p><h3>类型丢失</h3><p>CSV 里全是字符串，转 JSON 后数字还是字符串。下游要计算时先用 pandas 体检或手动转换类型。</p><h3>换行藏在引号里</h3><p>字段内部的换行必须连同引号一起保留，很多简易解析器在这里断行出错，导致行数对不上。</p><h2>常见问题</h2><h3>为什么导入 Excel 后中文变乱码？</h3><p>编码不是 UTF-8。在 Excel 里选择“另存为 → CSV UTF-8”，或从数据导入功能指定 UTF-8 编码。</p><h3>嵌套的 JSON 能转成 CSV 吗？</h3><p>只能转单层对象数组。多层嵌套需要先拍平（把嵌套字段展开成 a.b 这样的列名），否则会丢失结构。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -74,11 +74,11 @@
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
           <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
-          <div class="hero-search-hint">94 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</div>
+          <div class="hero-search-hint">97 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</div>
         </div>
         <div class="hero-stats" id="hero-stats"><!--hs:hero-stats-->
-    <div class="stat"><b>94</b><span>精选工具</span></div>
-    <div class="stat"><b>34</b><span>本地执行</span></div>
+    <div class="stat"><b>97</b><span>精选工具</span></div>
+    <div class="stat"><b>37</b><span>本地执行</span></div>
     <div class="stat"><b>9</b><span>分类</span></div>
     <div class="stat"><b>0</b><span>数据上传</span></div>
     <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button><!--/hs:hero-stats--></div>
@@ -87,7 +87,7 @@
       <div class="route-cards" id="route-cards"><!--hs:route-cards-->
     <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b>94 个工具</b>
+      <b>97 个工具</b>
       <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
       <em>浏览工具 →</em>
     </a>
@@ -169,7 +169,7 @@
 
       <div class="task-row" id="task-row"></div>
       <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
-      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 94 个</span><!--/hs:filterbar--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 97 个</span><!--/hs:filterbar--></div>
       <div class="recent-row" id="recent-row" style="display:none"></div>
       <div class="grid" id="grid"></div>
       <div class="pager" id="pager"></div>

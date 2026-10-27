@@ -676,7 +676,12 @@ console.log('\n🧭 拖放与粘贴路由');
 
   // 拿不到 MIME 的来源（部分桌面环境拖拽只给文件名）也要能路由
   check('只有扩展名也能路由', dr.routeFiles([{ name: 'x.WEBP', type: '' }], tools).length > 0);
-  check('不认识的文件不硬推', dr.routeFiles([{ name: 'a.zip', type: 'application/zip' }], tools).length === 0);
+  // 反例用真正没人处理的格式。v3.7 之前这里写的是 a.zip——但 zip 是哈希校验最典型的对象
+  // （开源发布包几乎都是 .zip / .tar.gz），file-hash 补上压缩包 accept 后它就不再是「不认识的文件」了。
+  check('不认识的文件不硬推', dr.routeFiles([{ name: 'a.xyz', type: 'application/x-unknown' }], tools).length === 0);
+  // 对应的正向：发布包必须能推给哈希工具，否则「下载完核对校验值」这个最典型的场景进不去
+  check('发布包（.zip）→ 文件哈希校验', first([{ name: 'pkg.zip', type: 'application/zip' }]) === 'file-hash');
+  check('镜像（.iso）→ 文件哈希校验', first([{ name: 'sys.iso', type: 'application/octet-stream' }]) === 'file-hash');
 
   // 混着拖：没有工具能全吃，退化成「只用第 1 个」，但必须标记出来
   const mixed = dr.routeFiles([{ name: 'a.jpg', type: 'image/jpeg' }, { name: 'b.pdf', type: 'application/pdf' }], tools);
@@ -713,6 +718,224 @@ console.log('\n🧭 拖放与粘贴路由');
     for (const k of Object.keys(h.params)) if (!tool || !tool.id) badKey.push(`${h.id}.${k}`);
   }
   check('粘贴路由参数落在存在的工具上', badKey.length === 0, badKey.join(','));
+}
+
+// ---------- 9. 图片裁剪（Canvas 桩，验证裁剪框与导出参数） ----------
+console.log('\n✂️  图片裁剪（Canvas 桩）');
+{
+  let drawArgs = null;
+  let lastType = '';
+  let lastQ = 0;
+  let filled = 0;
+  globalThis.createImageBitmap = async () => ({ width: 800, height: 600, close() {} });
+  globalThis.document = {
+    createElement: () => ({
+      width: 0,
+      height: 0,
+      getContext: () => ({
+        set fillStyle(v) {},
+        fillRect() { filled++; },
+        drawImage(...a) { drawArgs = a; },
+        beginPath() {},
+        roundRect() {},
+        clip() {},
+        closePath() {},
+      }),
+      toBlob(cb, type, q) {
+        lastType = type;
+        lastQ = q;
+        cb({ size: 40960, type });
+      },
+    }),
+    getElementById: () => null,
+    head: { appendChild() {} },
+  };
+  const crop = await import('file://' + join(root, 'tools/img-crop/run.js').replace(/\\/g, '/'));
+  const img = { name: 'shot.png', type: 'image/png', size: 102400 };
+
+  const out = await crop.run({ file: img, x: '100', y: '50', w: '400', h: '300', aspect: 'free', radius: '0', format: 'image/png' });
+  check('裁剪文件名带尺寸 shot-400x300.png', out.files?.[0]?.name === 'shot-400x300.png', out.files?.[0]?.name);
+  check('drawImage 只搬裁剪框内的像素', drawArgs && drawArgs[1] === 100 && drawArgs[2] === 50 && drawArgs[3] === 400 && drawArgs[4] === 300, JSON.stringify(drawArgs));
+  check('结果写明 原图 800×600 → 裁剪后 400×300', out.html.includes('800×600') && out.html.includes('400×300'));
+  check('体积变化 -60.0%（102400 → 40960）', out.html.includes('-60.0%'), out.html.match(/[-+][\d.]+%/)?.[0]);
+
+  const sq = await crop.run({ file: img, x: '0', y: '0', w: '400', h: '300', aspect: '1:1', radius: '0', format: 'image/png' });
+  check('1:1 锁定后按短边收缩为 300×300', sq.files?.[0]?.name === 'shot-300x300.png', sq.files?.[0]?.name);
+
+  const over = await crop.run({ file: img, x: '700', y: '0', w: '400', h: '300', aspect: 'free', radius: '0', format: 'image/png' });
+  check('越界框收缩到右边缘 100×300 并提示', over.files?.[0]?.name === 'shot-100x300.png' && over.html.includes('已自动收进图内'), over.files?.[0]?.name);
+
+  filled = 0;
+  const jpg = await crop.run({ file: img, x: '0', y: '0', w: '200', h: '200', aspect: 'free', radius: '100', format: 'image/jpeg' });
+  check('JPEG 圆角先铺白底（否则圆角外是黑的）', filled === 1, `fillRect ${filled} 次`);
+  check('JPEG 用质量 0.92 导出', lastType === 'image/jpeg' && lastQ === 0.92, `${lastType} @ ${lastQ}`);
+
+  const round = await crop.run({ file: img, x: '0', y: '0', w: '200', h: '200', aspect: 'free', radius: '400', format: 'image/png' });
+  check('圆角超过短边一半时按最大值处理并提示', round.html.includes('已按最大可用值 100px'), round.html.match(/最大可用值 \d+px/)?.[0]);
+
+  let err = '';
+  try {
+    await crop.run({ file: null, x: '0', y: '0', w: '0', h: '0', aspect: 'free', radius: '0', format: 'image/png' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('未选图片报错', err.includes('请先选择'), err);
+  err = '';
+  try {
+    await crop.run({ file: img, x: '1000', y: '0', w: '400', h: '300', aspect: 'free', radius: '0', format: 'image/png' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('起点在图外时明确报错并给出图片尺寸', err.includes('超出了图片范围') && err.includes('800×600'), err);
+}
+
+// ---------- 10. 文件哈希校验（直接对公开向量 + 分片路径） ----------
+console.log('\n🔐 文件哈希校验（手写 MD5 / SHA-1 / SHA-256 / SHA-512）');
+{
+  const nodeCrypto = await import('node:crypto');
+  const fh = await import('file://' + join(root, 'tools/file-hash/run.js').replace(/\\/g, '/'));
+  globalThis.document = { getElementById: () => null };
+  const enc = new TextEncoder();
+  const hexOf = (algo, s) => fh.toHex(fh.hashBytes(algo, enc.encode(s)));
+  const fakeFile = (buf, name) => ({
+    name,
+    type: 'application/octet-stream',
+    size: buf.length,
+    slice(start, end) {
+      return { arrayBuffer: async () => buf.buffer.slice(buf.byteOffset + start, buf.byteOffset + end) };
+    },
+  });
+
+  // 公开测试向量：空串 + abc 能同时抓住 padding 与末轮加法的错误
+  check('MD5 空串 = d41d8cd98f00b204e9800998ecf8427e', hexOf('MD5', '') === 'd41d8cd98f00b204e9800998ecf8427e', hexOf('MD5', ''));
+  check('MD5 "abc" = 900150983cd24fb0d6963f7d28e17f72', hexOf('MD5', 'abc') === '900150983cd24fb0d6963f7d28e17f72', hexOf('MD5', 'abc'));
+  check('MD5 长句 = 9e107d9d372bb6826bd81d3542a419d6', hexOf('MD5', 'The quick brown fox jumps over the lazy dog') === '9e107d9d372bb6826bd81d3542a419d6');
+  check('SHA-1 "abc" = a9993e36…d89d', hexOf('SHA-1', 'abc') === 'a9993e364706816aba3e25717850c26c9cd0d89d', hexOf('SHA-1', 'abc'));
+  check('SHA-256 空串 = e3b0c442…b855', hexOf('SHA-256', '') === 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+  check('SHA-256 "abc" = ba7816bf…15ad', hexOf('SHA-256', 'abc') === 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad', hexOf('SHA-256', 'abc'));
+  check(
+    'SHA-512 "abc" 与公开向量一致',
+    hexOf('SHA-512', 'abc') ===
+      'ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f',
+    hexOf('SHA-512', 'abc').slice(0, 16) + '…'
+  );
+
+  // 空文件：run() 不能因为「读到 0 字节」就报错
+  const emptyFile = fakeFile(new Uint8Array(0), 'empty.bin');
+  const empty = await fh.run({ file: emptyFile, algo: 'SHA-256', expect: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' });
+  check('空文件也能算出 SHA-256 并判定一致', empty.text === 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' && empty.html.includes('一致'));
+
+  // 分片路径：9MB 超过 4MB 分片阈值，结果必须与一次性计算完全一致
+  const big = new Uint8Array(9 * 1024 * 1024);
+  for (let i = 0; i < big.length; i += 4096) big[i] = i & 0xff;
+  const bigFile = fakeFile(big, 'big.bin');
+  const bigOut = await fh.run({ file: bigFile, algo: 'SHA-256', expect: '' });
+  const wantBig = nodeCrypto.createHash('sha256').update(big).digest('hex');
+  check('9MB 分片计算的 SHA-256 与 Node crypto 一致', bigOut.text === wantBig, bigOut.text.slice(0, 16) + '…');
+  check('大文件显示体积与耗时', bigOut.html.includes('9.00 MB'), bigOut.html.match(/9\.00 MB/)?.[0]);
+
+  // 校验值比对：忽略空格/大写，不一致时指出第几位
+  const cmp = await fh.run({ file: fakeFile(enc.encode('abc'), 'a.txt'), algo: 'MD5', expect: '9001 5098 3CD2 4fb0 d696 3f7d 28e1 7f72' });
+  check('校验值的大小写与空格被忽略', cmp.html.includes('一致'), cmp.html.slice(0, 80));
+  const bad = await fh.run({ file: fakeFile(enc.encode('abc'), 'a.txt'), algo: 'MD5', expect: '900150983cd24fb0d6963f7d28e17f71' });
+  check('不一致时指出从第 32 位开始不同', bad.html.includes('第 32 位') && bad.html.includes('不一致'), bad.html.match(/第 \d+ 位/)?.[0]);
+  const wrongLen = await fh.run({ file: fakeFile(enc.encode('abc'), 'a.txt'), algo: 'MD5', expect: 'abc' });
+  check('位数不对时提示换算法', wrongLen.html.includes('位数不对'), wrongLen.html.match(/位数不对[^<]*/)?.[0]);
+
+  let err = '';
+  try {
+    await fh.run({ file: null, algo: 'MD5', expect: '' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('未选文件报错', err.includes('请先选择'), err);
+  err = '';
+  try {
+    await fh.run({ file: fakeFile(enc.encode('x'), 'x.bin'), algo: 'SHA-3', expect: '' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('未知算法报错', err.includes('不支持的算法'), err);
+}
+
+// ---------- 11. CSV 选列与重排（引号状态机 + 选列/过滤/导出） ----------
+console.log('\n📊 CSV 选列与重排（自写引号状态机）');
+{
+  const cc = await import('file://' + join(root, 'tools/csv-columns/run.js').replace(/\\/g, '/'));
+  const shape = (t) => {
+    const rows = cc.parseCSV(t, ',');
+    return { rows: rows.length, cols: rows.map((r) => r.length), vals: rows.map((r) => r.map((c) => c.v)) };
+  };
+
+  const s1 = shape('a,b,c');
+  check('a,b,c → 1 行 3 列', s1.rows === 1 && s1.cols[0] === 3, JSON.stringify(s1.cols));
+  const s2 = shape('"a,b",c');
+  check('引号内的逗号不拆列："a,b",c → 1 行 2 列', s2.rows === 1 && s2.cols[0] === 2 && s2.vals[0][0] === 'a,b', JSON.stringify(s2.vals));
+  const s3 = shape('"line1\nline2",x');
+  check('引号内的换行不算行分隔："line1␊line2",x → 1 行 2 列', s3.rows === 1 && s3.vals[0][0] === 'line1\nline2', JSON.stringify(s3.vals));
+  const s4 = shape('"say ""hi""",y');
+  check('双写引号还原成一个引号：say "hi"', s4.vals[0][0] === 'say "hi"' && s4.cols[0] === 2, JSON.stringify(s4.vals));
+  const s5 = shape('a,,c');
+  check('a,,c 是三列，中间是空字符串（不是两列）', s5.cols[0] === 3 && s5.vals[0][1] === '', JSON.stringify(s5.vals));
+  const s6 = shape('a,b\r\nc,d');
+  check('CRLF 与 LF 都当一次换行：2 行 2 列', s6.rows === 2 && s6.cols.every((n) => n === 2), JSON.stringify(s6.vals));
+
+  const reordered = await cc.run({
+    input: 'id,name,city\n1,张三,南京\n2,李四,上海',
+    delim: 'auto',
+    header: 'yes',
+    cols: 'city,id',
+    filterCol: '',
+    filterVal: '',
+  });
+  check('选列 + 重排：输出 city,id 顺序', reordered.text.split('\r\n')[0] === 'city,id', reordered.text.split('\r\n')[0]);
+  check('导出 2 行数据（筛选前）', reordered.text.split('\r\n').length === 3, reordered.text.split('\r\n').length + ' 行');
+  check('产出可下载的 csv 文件', reordered.files?.[0]?.name.endsWith('.csv') && reordered.files[0].blob.size > 0, reordered.files?.[0]?.name);
+
+  const filtered = await cc.run({
+    input: 'id,name,city\n1,张三,南京\n2,李四,上海\n3,王五,南京',
+    delim: 'auto',
+    header: 'yes',
+    cols: '',
+    filterCol: 'city',
+    filterVal: '南京',
+  });
+  check('按列值包含「南京」过滤出 2 行', filtered.text.split('\r\n').length === 3, filtered.text.split('\r\n').length + ' 行');
+  check('过滤后列结构不变（4 列 → 3 列原文）', filtered.text.split('\r\n')[0] === 'id,name,city');
+  // 预览表格必须按「输出列顺序」取单元格：早先按原列号取，表头行会被当成数据行、列还会错位
+  check(
+    '预览表头与首行数据对齐',
+    filtered.html.includes('<th>id</th><th>name</th><th>city</th>') && filtered.html.includes('<td>1</td><td>张三</td><td>南京</td>'),
+    filtered.html.match(/<tbody>[\s\S]{0,90}/)?.[0]
+  );
+
+  const quoted = await cc.run({ input: 'id,note\n1,"a,b"\n2,"say ""hi"""', delim: ',', header: 'yes', cols: '', filterCol: '', filterVal: '' });
+  check('导出保留原引号风格，"a,b" 不会被写成 a,b', quoted.text.includes('"a,b"') && quoted.text.includes('"say ""hi"""'), quoted.text.replace(/\r\n/g, ' | '));
+
+  const asIndex = await cc.run({ input: 'a,b,c\n1,2,3', delim: ',', header: 'yes', cols: '3, 1', filterCol: '', filterVal: '' });
+  check('列名与序号混用（3, 1）按序输出 c,a', asIndex.text.split('\r\n')[0] === 'c,a', asIndex.text.split('\r\n')[0]);
+
+  let err = '';
+  try {
+    await cc.run({ input: '   ', delim: 'auto', header: 'yes', cols: '', filterCol: '', filterVal: '' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('空输入报错', err.includes('请先粘贴'), err);
+  err = '';
+  try {
+    await cc.run({ input: 'a,b\n1,2', delim: ',', header: 'yes', cols: 'nope', filterCol: '', filterVal: '' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('列名不存在时报错并列出已有列', err.includes('找不到') && err.includes('1.a'), err);
+  err = '';
+  try {
+    await cc.run({ input: 'a;b\n1;2', delim: ',', header: 'yes', cols: '', filterCol: '', filterVal: '' });
+  } catch (e) {
+    err = e.message;
+  }
+  check('分隔符选错时提示改成实际分隔符', err.includes('分号'), err);
 }
 
 // 清理临时文件

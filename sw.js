@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.6 · 预缓存 113 个地址 · 约 2.4 MB
-const VERSION = "toolhub-v3.6";
+// 版本：toolhub-v3.7 · 预缓存 119 个地址 · 约 2.5 MB
+const VERSION = "toolhub-v3.7";
 const CORE = [
   "/",
   "/index.html",
@@ -104,6 +104,12 @@ const FULL = [
   "/tools/image-convert/run.js",
   "/tools/id-validate/",
   "/tools/id-validate/run.js",
+  "/tools/img-crop/",
+  "/tools/img-crop/run.js",
+  "/tools/file-hash/",
+  "/tools/file-hash/run.js",
+  "/tools/csv-columns/",
+  "/tools/csv-columns/run.js",
   "/assets/vendor/jsQR.js",
   "/assets/vendor/marked.min.js",
   "/assets/vendor/pdf-lib.min.js",

@@ -235,3 +235,20 @@
     -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
   }
 }
+
+/* ---------- 新工具的专属件（v3.7） ---------- */
+
+/* img-crop 预览画布：只在字段里给 width:100% 的话，800×2000 的长截图会变成 375×938，
+   把「左上角 X/Y」四个数字框整个推出视野。限高之后按高度收，宽度自适应。 */
+#tool-fields .field canvas { max-height: 42vh; width: auto; max-width: 100%; }
+
+/* csv-columns 的列标签：40 列的报表会换五六行，把「运行」按钮顶走。
+   限高后在容器内滚动。颜色一律走变量——写死 #fff / #eff6ff 在深色主题下是一排白块。 */
+.chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; max-height: 112px; overflow: auto; }
+.chip-pick {
+  font: inherit; font-size: 12px; padding: 4px 10px; min-height: 28px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--panel); color: var(--muted); cursor: grab;
+}
+.chip-pick.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.chip-hint { margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.6; }

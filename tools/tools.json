@@ -810,6 +810,105 @@
         "card",
         "validator"
       ]
+    },
+    {
+      "id": "img-crop",
+      "name": "图片裁剪",
+      "desc": "拖出选区或填空坐标裁剪图片，支持等比锁定与圆角",
+      "category": "图片",
+      "source": "内置实现 (Canvas API)",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "图片",
+        "裁剪",
+        "圆角",
+        "头像"
+      ],
+      "aliases": [
+        "tupiancaijian",
+        "tpcj",
+        "image cropper",
+        "image",
+        "cropper"
+      ],
+      "accepts": [
+        "image/*"
+      ],
+      "since": "v3.7"
+    },
+    {
+      "id": "file-hash",
+      "name": "文件哈希校验",
+      "desc": "拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对",
+      "category": "开发",
+      "source": "内置实现（手写增量 MD5 / SHA 系列）",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "hash",
+        "md5",
+        "sha256",
+        "校验",
+        "文件"
+      ],
+      "aliases": [
+        "wenjianhaxixiaoyan",
+        "wjhxxy",
+        "file hash checker",
+        "file",
+        "hash",
+        "checker"
+      ],
+      "accepts": [
+        ".exe",
+        ".msi",
+        ".dmg",
+        ".pkg",
+        ".deb",
+        ".rpm",
+        ".apk",
+        ".appimage",
+        ".iso",
+        ".img",
+        ".bin",
+        ".jar",
+        ".whl",
+        ".pdf",
+        ".zip",
+        ".tar",
+        ".gz",
+        ".tgz",
+        ".7z",
+        ".xz",
+        ".bz2",
+        ".zst"
+      ],
+      "since": "v3.7"
+    },
+    {
+      "id": "csv-columns",
+      "name": "CSV 选列与重排",
+      "desc": "CSV 列太多？选列、拖动排序、按列值过滤后导出新表",
+      "category": "数据",
+      "source": "内置实现（自写 CSV 引号状态机）",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "csv",
+        "表格",
+        "选列",
+        "过滤"
+      ],
+      "aliases": [
+        "xuanlieyuzhongpai",
+        "xlyzp",
+        "csv column picker",
+        "csv",
+        "column",
+        "picker"
+      ],
+      "since": "v3.7"
     }
   ]
 }

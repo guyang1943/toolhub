@@ -465,6 +465,18 @@
       "exif-strip": {
         "name": "Photo Metadata Stripper",
         "desc": "Inspect and strip GPS, camera model and timestamps from photos — lossless, no re-encoding"
+      },
+      "img-crop": {
+        "name": "Image Cropper",
+        "desc": "Crop by dragging a box or typing coordinates, with aspect lock and rounded corners"
+      },
+      "file-hash": {
+        "name": "File Hash Checker",
+        "desc": "MD5 / SHA-1 / SHA-256 / SHA-512 of a file, compared against a published checksum"
+      },
+      "csv-columns": {
+        "name": "CSV Column Picker",
+        "desc": "Pick, reorder and filter CSV columns, then export a fresh CSV"
       }
     }
   }

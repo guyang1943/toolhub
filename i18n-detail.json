@@ -1041,6 +1041,107 @@
         "mode": "Action"
       },
       "runLabel": "Process"
+    },
+    "img-crop": {
+      "usage": "Pick an image, drag a box on the preview (or type the top-left corner and size), lock an aspect ratio, add rounded corners, then export PNG / JPEG / WebP. The crop box is clamped to the image so you never get a blank export.",
+      "tips": [
+        "Leave width or height empty (or 0) to crop from the start point to the image edge",
+        "Export PNG when you need transparent rounded corners — JPEG fills them with white",
+        "JPEG and WebP are exported at quality 0.92; one re-encode is the only quality loss"
+      ],
+      "scenarios": [
+        {
+          "scene": "Only the middle of a screenshot matters",
+          "how": "Pick image → drag a box → export PNG",
+          "result": "A clean cut-out without opening an editor"
+        },
+        {
+          "scene": "Round avatar at 1:1",
+          "how": "Lock 1:1 → drag → radius 20 → PNG",
+          "result": "Transparent corners, ready to upload"
+        },
+        {
+          "scene": "16:9 article cover",
+          "how": "Lock 16:9 → drag → export JPEG",
+          "result": "Exact ratio that platforms will not re-crop"
+        }
+      ],
+      "runLabel": "Crop",
+      "labels": {
+        "file": "Choose image",
+        "x": "Left X (px)",
+        "y": "Top Y (px)",
+        "w": "Crop width (0 = to right edge)",
+        "h": "Crop height (0 = to bottom edge)",
+        "aspect": "Aspect lock",
+        "radius": "Corner radius (px, 0 = none)",
+        "format": "Output format"
+      }
+    },
+    "file-hash": {
+      "usage": "Drop an installer, image or archive and compute its MD5 / SHA-1 / SHA-256 / SHA-512. Paste the checksum published by the vendor to see instantly whether the file is intact. Everything runs on your machine; the file is never uploaded.",
+      "tips": [
+        "Spaces, colons and upper case in the published checksum are ignored when comparing",
+        "SHA-256 is the common default; MD5 is kept for older release pages",
+        "A mismatch can also mean an unfinished download, not necessarily tampering"
+      ],
+      "scenarios": [
+        {
+          "scene": "Verify a downloaded OS image",
+          "how": "Pick the iso → SHA-256 → paste the vendor value",
+          "result": "“Match” means the file is intact"
+        },
+        {
+          "scene": "Check a file a colleague sent",
+          "how": "Compute MD5 and compare with their value",
+          "result": "Mismatches point at the exact digit"
+        },
+        {
+          "scene": "Two files look identical",
+          "how": "Hash both with SHA-256",
+          "result": "Equal hashes prove identical content"
+        }
+      ],
+      "runLabel": "Compute hash",
+      "labels": {
+        "file": "Choose file (or drop it here)",
+        "algo": "Algorithm",
+        "expect": "Published checksum (optional)"
+      }
+    },
+    "csv-columns": {
+      "usage": "Paste a CSV (or tab-separated data), drop the columns you do not need, drag the rest into the order you want, filter rows by one column value, then export a new CSV. Quoted commas, newlines and doubled quotes are parsed by a real state machine, and the original quoting style is preserved.",
+      "tips": [
+        "Columns can be names or 1-based indexes, mixed freely: “3, name, 1”",
+        "Filtering is a case-insensitive substring match, not a regex",
+        "If everything lands in one column, switch the delimiter to the one actually used"
+      ],
+      "scenarios": [
+        {
+          "scene": "A 40-column export where only 6 matter",
+          "how": "Paste → type “order_id, customer, amount” → export",
+          "result": "Only those columns, in your order"
+        },
+        {
+          "scene": "Finance only needs one region",
+          "how": "Filter column “region”, keyword “East”",
+          "result": "Rows filtered, column layout untouched"
+        },
+        {
+          "scene": "A semicolon-delimited file misaligns",
+          "how": "Switch the delimiter to semicolon",
+          "result": "Columns split correctly again"
+        }
+      ],
+      "runLabel": "Export CSV",
+      "labels": {
+        "input": "CSV content",
+        "delim": "Delimiter",
+        "header": "First row",
+        "cols": "Columns to keep (name or index)",
+        "filterCol": "Filter by column (optional)",
+        "filterVal": "Value contains (optional)"
+      }
     }
   }
 }
