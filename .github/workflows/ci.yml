@@ -92,7 +92,12 @@ jobs:
   deploy:
     name: 部署到 Cloudflare Workers
     needs: test
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # 默认不自动部署。要启用：① 在仓库 Secrets 里配 CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID；
+    # ② 在仓库 Variables 里把 DEPLOY_ENABLED 设为 true（Settings → Secrets and variables → Actions）。
+    # 为什么用仓库变量而不是直接判断 secret：GitHub 不允许在 job 级 if 里读 secrets 上下文，
+    # 硬判断会让这个作业每次推送都红，把「没配密钥」误报成「代码有问题」。
+    # 现状（v3.9）：部署仍走本地 wrangler deploy，CI 只负责把关测试。
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
