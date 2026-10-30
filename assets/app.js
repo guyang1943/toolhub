@@ -16,7 +16,7 @@ activeCategory = QS0.get('cat') || '全部';
 // v3.4 分页：每页 24 个（宽屏 5 列 × 5 行，窄屏 4 列 × 6 行都不留孤行）。
 // 94 个工具一次性铺开是 20 多行、页面 7000px，页脚的信任说明与「更多」全被埋了。
 const PAGE_SIZE = 24;
-const FEATURED_MAX = 8;
+const FEATURED_MAX = 10;
 let curPage = Math.max(1, parseInt(QS0.get('page') || '1', 10) || 1);
 // 需要运行时下载大依赖的工具（首次访问联网后即可离线）
 const NEEDS_FIRST_FETCH = new Set(['pdf-merge', 'img-to-pdf', 'qr-decode', 'python-run', 'py-stats', 'pandas-csv']);
@@ -728,28 +728,30 @@ function renderRouteCards(reg, res, evals) {
   const box = document.getElementById('route-cards');
   if (!box) return;
   // v3.4：四个板块并成一行，每块一个徽章 + 一个标签（颜色靠 rc--* 区分，不用再靠文字分辨）
+  // v3.9：每张卡以数字打头，原来单独一行的六项统计（工具/本地/分类/资源/上传/评测）全并进来。
+  //       这四个板块本来就是中文硬编码（没走 i18n），保持原状，别在这里引入半套翻译。
   box.innerHTML = `
     <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b>${reg.counts.local + reg.counts.dir} 个工具</b>
-      <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
+      <b><span class="rc-num">${reg.counts.local + reg.counts.dir}</span>个工具</b>
+      <span class="rc-desc">${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类</span>
       <em>浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
       <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
-      <b>${(res.collections || []).length} 个合集 · ${(res.collections || []).reduce((a, c) => a + c.items.length, 0)} 条资源</b>
-      <span class="rc-desc">图标、字体、配色、学习路线，拿来就能用</span>
+      <b><span class="rc-num">${(res.collections || []).reduce((a, c) => a + c.items.length, 0)}</span>条资源</b>
+      <span class="rc-desc">${(res.collections || []).length} 个合集：图标、字体、配色、学习路线</span>
       <em>逛资源库 →</em>
     </a>
     <a class="route-card rc--compare" href="/compare/">
       <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
-      <b>工具对比</b>
+      <b><span class="rc-num">0</span>数据上传</b>
       <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
       <em>开始对比 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
       <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b>${(evals?.evaluations || []).length} 篇评测</b>
+      <b><span class="rc-num">${(evals?.evaluations || []).length}</span>篇评测</b>
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a>`;
@@ -1595,29 +1597,27 @@ async function renderResPreview() {
 }
 
 function renderHeroStats(reg) {
-  const el = $('#hero-stats');
-  const total = reg.counts.local + reg.counts.dir;
-  // Hero 标题与副标题（双语）
+  // Hero 标题与副标题（双语）。v3.9：标题从两行长句压成一行短语，
+  // 数字不再单独占一行统计条，而是并进入口卡（见 renderRouteCards）。
   const h1 = document.querySelector('.hero h1');
   if (h1 && LANG === 'en') {
-    h1.innerHTML = `${t('Great open-source tools from GitHub,', 'heroTitle1')}<br /><span class="grad">${t('ready to use', 'heroTitle2')}</span>`;
+    h1.innerHTML = `Safe, fast, <span class="grad">${t('open-source tools & resources', 'heroTitle2')}</span>`;
   } else if (h1) {
-    h1.innerHTML = `把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span>`;
+    h1.innerHTML = `安全、快捷、<span class="grad">开源工具及资源</span>`;
   }
   const hp = document.querySelector('.hero p');
   if (hp) hp.textContent = t('无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。', 'heroDesc');
 
-  el.innerHTML = `
-    <div class="stat"><b>${total}</b><span>${t('精选工具', 'statTools')}</span></div>
-    <div class="stat"><b>${reg.counts.local}</b><span>${t('本地执行', 'statLocal')}</span></div>
-    <div class="stat"><b>${reg.categories.length}</b><span>${t('分类', 'statCats')}</span></div>
-    <div class="stat"><b>0</b><span>${t('数据上传', 'statUpload')}</span></div>
-    <button class="random-btn" id="random-btn" title="${t('随机发现一个工具', 'random')}">${t('🎲 随便看看', 'random')}</button>`;
-  $('#random-btn').onclick = () => {
-    const pool = reg.tools.filter((x) => x.runtime !== 'link');
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    if (pick) navigate('/tools/' + pick.id + '/');
-  };
+  const btn = $('#random-btn');
+  if (btn) {
+    btn.title = t('随机发现一个工具', 'random');
+    btn.textContent = t('🎲 随便看看', 'random');
+    btn.onclick = () => {
+      const pool = reg.tools.filter((x) => x.runtime !== 'link');
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      if (pick) navigate('/tools/' + pick.id + '/');
+    };
+  }
 }
 
 /* ---------- 工具页（v3.3 拆为独立模块，按需加载） ----------

@@ -322,14 +322,11 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .recent-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: -8px 0 18px; }
 .recent-label { font-size: 12.5px; color: var(--muted); margin-right: 2px; }
 
-/* ===== Hero 统计条 + 随机发现 ===== */
-.hero-stats { display: flex; justify-content: center; align-items: center; gap: 26px; margin-top: 22px; flex-wrap: wrap; }
-.hero-stats .stat { display: flex; flex-direction: column; align-items: center; }
-.hero-stats .stat b { font-size: 22px; color: var(--accent); line-height: 1.2; }
-.hero-stats .stat span { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+/* ===== 随机发现（v3.9：从统计条搬进搜索框下方那行提示里） ===== */
 .random-btn {
   border: 1px dashed var(--accent); background: transparent; color: var(--accent);
-  border-radius: 999px; padding: 8px 16px; font-size: 13px; cursor: pointer; transition: background .15s;
+  border-radius: 999px; padding: 4px 12px; font-size: 12px; line-height: 1.5;
+  white-space: nowrap; cursor: pointer; transition: background .15s;
 }
 .random-btn:hover { background: var(--accent-soft); }
 
@@ -501,18 +498,26 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .rp-count { font-size: 11.5px; color: var(--accent); }
 
 /* ===== 首页 hero 搜索 + 内容路由卡 ===== */
-.hero-search-wrap { position: relative; max-width: 560px; margin: 20px auto 14px; }
+/* v3.9：搜索框从 560 加宽到 700——它现在是首屏唯一的主输入，窄了显得局促 */
+.hero-search-wrap { position: relative; max-width: 700px; margin: 20px auto 14px; }
 #hero-search {
   width: 100%; padding: 14px 18px 14px 44px; font-size: 15px;
   border: 1px solid var(--border); border-radius: 999px; background: var(--panel); color: var(--text);
   outline: none; box-shadow: 0 4px 18px rgba(37, 99, 235, .08);
 }
 #hero-search:focus { border-color: var(--accent); box-shadow: 0 6px 22px rgba(37, 99, 235, .16); }
-.hero-search-wrap::before {
+/* 搜索图标挂在 .hs-field（只包输入框）上，而不是整个 wrap：
+   v3.9 把「随便看看」挪进提示行后 wrap 变高了，50% 会把图标顶到提示行上去 */
+.hs-field { position: relative; }
+.hs-field::before {
   content: '⌕'; position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-  font-size: 18px; color: var(--muted);
+  font-size: 18px; color: var(--muted); pointer-events: none;
 }
-.hero-search-hint { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+/* 提示文案与「随便看看」并排：一行里左说明右动作，窄屏自动折行 */
+.hero-search-hint {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  gap: 6px 10px; margin-top: 8px; font-size: 11.5px; color: var(--muted);
+}
 /* ===== 四个入口（v3.4：改成一整行，每个板块一个徽章 + 一个标签） =====
    原来是 3 列网格，4 张卡永远剩一张孤零零占第二行；这里按板块数直接给 4 列 */
 .route-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0 8px; }
@@ -542,7 +547,9 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
   font-size: 10.5px; letter-spacing: .04em; padding: 2px 7px;
   border: 1px solid currentColor; border-radius: 99px; color: var(--rc); opacity: .85;
 }
-.route-card b { font-size: 15px; color: var(--text); }
+.route-card b { display: flex; align-items: baseline; gap: 4px; font-size: 12.5px; color: var(--muted); font-weight: 600; }
+/* 卡片主数字：原来 hero 统计条里那四个大数字（22px 强调色），现在住进卡片头部 */
+.route-card b .rc-num { font-size: 21px; line-height: 1.15; font-weight: 700; color: var(--rc); letter-spacing: -.02em; }
 .route-card span.rc-desc { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
 .route-card em { font-style: normal; font-size: 12px; color: var(--rc); margin-top: auto; padding-top: 4px; }
 

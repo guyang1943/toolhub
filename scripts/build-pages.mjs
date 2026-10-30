@@ -42,9 +42,10 @@ const DIR_COPY = existsSync(dirCopyPath) ? JSON.parse(readFileSync(dirCopyPath, 
 // 计数归一：模板里的工具数/资源数一律由数据推导，避免每加一个工具就要手改多处 meta
 const TOTAL_TOOLS = tools.length + dirTools.length;
 const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
-// v3.4：首页高频推荐最多 8 条。超过 8 条它就从「精选」变成「第二份工具列表」，
-// 而且会和下方网格抢同一份注意力。这个数字必须与 assets/app.js 的 FEATURED_MAX 一致。
-const FEATURED_MAX = 8;
+// v3.9：8 → 10。上限不是「越多越好」的旋钮，而是「多少条还算精选」的判断：
+// 两列五行仍然是一屏之内能扫完的量，再多就和下方网格抢同一份注意力了。
+// 这个数字必须与 assets/app.js 的 FEATURED_MAX 一致。
+const FEATURED_MAX = 10;
 
 // v3.5：工具页专用样式拆到独立文件，首页不为它付字节。
 // 工具页在构建期就把这张表引进 <head>（整页加载无闪烁）；从首页点卡片进工具的
@@ -772,7 +773,8 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
 // 6) 首页静态化（v3.0 E/D4）
 // 背景：首页内容一直由 JS 渲染，route-cards / featured / res-preview 在首帧后才插入，
 // 把它们下面的 trust-section 与 footer 整体下推，实测 CLS 0.249（预算 0.05）。
-// 做法：把这四块 + hero 统计 + 分类芯片 + 筛选栏在构建期直接写进 index.html。
+// 做法：把这四块 + 分类芯片 + 筛选栏在构建期直接写进 index.html。
+// v3.9：原来单独注入的 hero 统计条已撤销，六个数并进入口卡（见 routeCards）。
 // 收益：首帧即最终布局（CLS≈0），首页对爬虫可见，且只有首页背这份体积（工具页仍用模板生成）。
 // 注意：这里的 HTML 必须与 assets/app.js 里对应渲染函数输出一致，否则 JS 重新渲染时又会位移一次。
 {
@@ -783,36 +785,31 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   const ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
 
   // --- 各区块 HTML（与 app.js 输出保持同构） ---
-  const heroStats = `
-    <div class="stat"><b>${TOTAL_TOOLS}</b><span>精选工具</span></div>
-    <div class="stat"><b>${tools.length}</b><span>本地执行</span></div>
-    <div class="stat"><b>${cats.length}</b><span>分类</span></div>
-    <div class="stat"><b>0</b><span>数据上传</span></div>
-    <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>`;
-
-  // v3.4：四个入口并成一行，每块一个徽章 + 一个板块标签（标签颜色靠 rc--* 类区分）
+  // v3.9：原来的「一行统计数字 + 一行入口卡」是两块说同一件事的皮（97 出现两次），
+  // 现在合成一行：每张卡以一个数字打头，精选工具/本地执行/分类/资源/数据上传/评测
+  // 六个数全部落进卡片，不再单独占一行。
   const routeCards = `
     <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b>${TOTAL_TOOLS} 个工具</b>
-      <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
+      <b><span class="rc-num">${TOTAL_TOOLS}</span>个工具</b>
+      <span class="rc-desc">${tools.length} 个纯本地执行 · ${cats.length} 个分类</span>
       <em>浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
       <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
-      <b>${resources.collections.length} 个合集 · ${TOTAL_RES} 条资源</b>
-      <span class="rc-desc">图标、字体、配色、学习路线，拿来就能用</span>
+      <b><span class="rc-num">${TOTAL_RES}</span>条资源</b>
+      <span class="rc-desc">${resources.collections.length} 个合集：图标、字体、配色、学习路线</span>
       <em>逛资源库 →</em>
     </a>
     <a class="route-card rc--compare" href="/compare/">
       <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
-      <b>工具对比</b>
+      <b><span class="rc-num">0</span>数据上传</b>
       <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
       <em>开始对比 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
       <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b>${evaluations.evaluations.length} 篇评测</b>
+      <b><span class="rc-num">${evaluations.evaluations.length}</span>篇评测</b>
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a>`;
@@ -873,7 +870,6 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
     if (!html.includes(from)) throw new Error(`首页静态化失败：找不到空容器 ${tag}#${id}`);
     html = html.replace(from, `<${tag} class="${cls}" id="${id}"><!--hs:${id}-->${inner}<!--/hs:${id}--></${tag}>`);
   };
-  put('hero-stats', 'hero-stats', 'div', heroStats);
   put('route-cards', 'route-cards', 'div', routeCards);
   put('featured-list', 'featured-grid', 'div', featuredHTML);
   put('res-preview-grid', 'res-preview-grid', 'div', resPreview);

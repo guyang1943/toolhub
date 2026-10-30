@@ -2,93 +2,93 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ToolHub · 开源工具，打开即用</title>
-    <link>https://toolhub.guyang1966.workers.dev/</link>
+    <link>https://toolhub.bot.cd/</link>
     <description>精选开源工具与免费资源，本地执行保护隐私。</description>
     <language>zh-CN</language>
-    <atom:link href="https://toolhub.guyang1966.workers.dev/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://toolhub.bot.cd/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CSV 选列与重排</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/csv-columns/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/csv-columns/</guid>
+      <link>https://toolhub.bot.cd/tools/csv-columns/</link>
+      <guid>https://toolhub.bot.cd/tools/csv-columns/</guid>
       <description>CSV 列太多？选列、拖动排序、按列值过滤后导出新表</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>文件哈希校验</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/file-hash/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/file-hash/</guid>
+      <link>https://toolhub.bot.cd/tools/file-hash/</link>
+      <guid>https://toolhub.bot.cd/tools/file-hash/</guid>
       <description>拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>图片裁剪</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/img-crop/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/img-crop/</guid>
+      <link>https://toolhub.bot.cd/tools/img-crop/</link>
+      <guid>https://toolhub.bot.cd/tools/img-crop/</guid>
       <description>拖出选区或填空坐标裁剪图片，支持等比锁定与圆角</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>身份证 / 银行卡校验</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/id-validate/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/id-validate/</guid>
+      <link>https://toolhub.bot.cd/tools/id-validate/</link>
+      <guid>https://toolhub.bot.cd/tools/id-validate/</guid>
       <description>批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>图片格式转换</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/image-convert/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/image-convert/</guid>
+      <link>https://toolhub.bot.cd/tools/image-convert/</link>
+      <guid>https://toolhub.bot.cd/tools/image-convert/</guid>
       <description>PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>照片元数据剥离</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/exif-strip/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/exif-strip/</guid>
+      <link>https://toolhub.bot.cd/tools/exif-strip/</link>
+      <guid>https://toolhub.bot.cd/tools/exif-strip/</guid>
       <description>查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>图片转 PDF</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/img-to-pdf/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/img-to-pdf/</guid>
+      <link>https://toolhub.bot.cd/tools/img-to-pdf/</link>
+      <guid>https://toolhub.bot.cd/tools/img-to-pdf/</guid>
       <description>多张图片合成一个 PDF，A4 或适应图片，本地生成不上传</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>时区转换</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/timezone-convert/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/timezone-convert/</guid>
+      <link>https://toolhub.bot.cd/tools/timezone-convert/</link>
+      <guid>https://toolhub.bot.cd/tools/timezone-convert/</guid>
       <description>一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>房贷计算器</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/mortgage-calc/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/mortgage-calc/</guid>
+      <link>https://toolhub.bot.cd/tools/mortgage-calc/</link>
+      <guid>https://toolhub.bot.cd/tools/mortgage-calc/</guid>
       <description>等额本息与等额本金月供、总利息对比，含逐年还款明细表</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>PDF 合并拆分</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/pdf-merge/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/pdf-merge/</guid>
+      <link>https://toolhub.bot.cd/tools/pdf-merge/</link>
+      <guid>https://toolhub.bot.cd/tools/pdf-merge/</guid>
       <description>多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>二维码解析</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/qr-decode/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/qr-decode/</guid>
+      <link>https://toolhub.bot.cd/tools/qr-decode/</link>
+      <guid>https://toolhub.bot.cd/tools/qr-decode/</guid>
       <description>上传图片本地识别二维码内容，图片不上传，标注识别位置</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
     <item>
       <title>单位换算</title>
-      <link>https://toolhub.guyang1966.workers.dev/tools/unit-convert/</link>
-      <guid>https://toolhub.guyang1966.workers.dev/tools/unit-convert/</guid>
+      <link>https://toolhub.bot.cd/tools/unit-convert/</link>
+      <guid>https://toolhub.bot.cd/tools/unit-convert/</guid>
       <description>长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转</description>
-      <pubDate>Tue, 27 Oct 2026 01:03:58 GMT</pubDate>
+      <pubDate>Fri, 30 Oct 2026 10:47:07 GMT</pubDate>
     </item>
   </channel>
 </rss>

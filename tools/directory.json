@@ -814,6 +814,40 @@
         "格式转换",
         "文件"
       ]
+    },
+    {
+      "id": "it-tools",
+      "name": "IT-Tools",
+      "desc": "几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码",
+      "category": "开发",
+      "url": "https://it-tools.tech",
+      "source": "github.com/CorentinTh/it-tools",
+      "license": "GPL-3.0",
+      "tags": [
+        "工具箱",
+        "哈希",
+        "时间戳",
+        "正则",
+        "编解码"
+      ],
+      "blurb": "临时要算个哈希、转个时间戳、试条正则，它的价值是不用开一堆标签页——左分类右结果，打开就是干活的地方。"
+    },
+    {
+      "id": "ffmpeg-wasm",
+      "name": "ffmpeg.wasm",
+      "desc": "浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF",
+      "category": "音视频",
+      "url": "https://ffmpegwasm.netlify.app",
+      "source": "github.com/ffmpegwasm/ffmpeg.wasm",
+      "license": "MIT",
+      "tags": [
+        "视频",
+        "转码",
+        "压缩",
+        "gif",
+        "ffmpeg"
+      ],
+      "blurb": "把 FFmpeg 编成 WebAssembly 塞进浏览器，视频不上传也能压、能转、能抽音轨；代价是参数得自己写命令行。"
     }
   ]
 }

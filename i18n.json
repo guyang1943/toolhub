@@ -3,7 +3,7 @@
     "ui": {
       "searchPlaceholder": "Search tools… (press / to focus)",
       "heroTitle1": "Great open-source tools from GitHub,",
-      "heroTitle2": "ready to use",
+      "heroTitle2": "open-source tools & resources",
       "heroDesc": "No install, no sign-up, no terminal — pick a tool, fill in the args, get the result.",
       "statTools": "Curated tools",
       "statLocal": "Run locally",
@@ -274,6 +274,14 @@
       },
       "tesseract": {
         "desc": "In-browser OCR with Tesseract.js — extract text from images"
+      },
+      "it-tools": {
+        "name": "IT-Tools",
+        "desc": "Dozens of small dev tools on one page: hashes, timestamps, UUIDs, regex, encoders"
+      },
+      "ffmpeg-wasm": {
+        "name": "ffmpeg.wasm",
+        "desc": "FFmpeg in the browser: compress, transcode, pull the audio track, export GIFs"
       },
       "bentopdf": {
         "desc": "Merge, split and compress PDFs entirely on your machine"

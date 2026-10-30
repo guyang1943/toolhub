@@ -12,8 +12,16 @@
     "网络"
   ],
   "featured": [
-    "json-format",
     "image-compress",
+    "pdf-merge",
+    "qrcode",
+    "image-convert",
+    "tesseract",
+    "ffmpeg-wasm",
+    "it-tools",
+    "excalidraw",
+    "json-format",
+    "word-count",
     "squoosh",
     "cyberchef",
     "bentopdf",

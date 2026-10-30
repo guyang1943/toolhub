@@ -1,782 +1,794 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/json-format/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/json-format/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/image-compress/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/image-compress/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/qrcode/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/qrcode/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/base64-url/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/base64-url/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/timestamp/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/timestamp/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/sha256-hash/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/sha256-hash/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/password-gen/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/password-gen/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/uuid-gen/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/uuid-gen/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/color-convert/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/color-convert/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/text-diff/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/text-diff/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/markdown-preview/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/markdown-preview/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/python-run/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/python-run/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/cron-parser/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/cron-parser/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/jwt-decode/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/jwt-decode/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/csv-json/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/csv-json/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/image-resize/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/image-resize/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/py-stats/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/py-stats/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/pandas-csv/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/pandas-csv/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/regex-tester/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/regex-tester/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/case-convert/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/case-convert/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/text-dedupe/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/text-dedupe/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/word-count/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/word-count/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/image-base64/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/image-base64/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/color-contrast/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/color-contrast/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/tax-calc/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/tax-calc/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/unit-convert/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/unit-convert/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/qr-decode/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/qr-decode/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/pdf-merge/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/pdf-merge/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/mortgage-calc/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/mortgage-calc/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/timezone-convert/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/timezone-convert/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/img-to-pdf/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/img-to-pdf/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/exif-strip/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/exif-strip/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/image-convert/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/image-convert/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/id-validate/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/id-validate/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/img-crop/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/img-crop/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/file-hash/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/file-hash/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/csv-columns/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/csv-columns/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/excalidraw/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/excalidraw/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/tldraw/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/tldraw/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/diagrams/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/diagrams/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/jspaint/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/jspaint/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/svgedit/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/svgedit/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/threejs-editor/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/threejs-editor/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/oklch/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/oklch/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/squoosh/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/squoosh/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/picsum/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/picsum/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/tesseract/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/tesseract/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/bentopdf/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/bentopdf/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/stirlingpdf/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/stirlingpdf/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/pdfjs/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/pdfjs/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/stackedit/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/stackedit/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/dillinger/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/dillinger/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/cryptpad/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/cryptpad/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/affine/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/affine/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/cyberchef/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/cyberchef/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/transform/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/transform/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/quicktype/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/quicktype/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/jsonhero/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/jsonhero/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/jsonplaceholder/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/jsonplaceholder/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/httpbin/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/httpbin/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/webhook/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/webhook/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/duckdb/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/duckdb/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/devdocs/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/devdocs/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/prettier/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/prettier/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/regexper/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/regexper/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/mermaid/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/mermaid/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/markmap/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/markmap/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/plantuml/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/plantuml/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/asciiflow/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/asciiflow/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/explainshell/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/explainshell/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/roadmap/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/roadmap/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/icones/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/icones/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/lucide/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/lucide/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/audiomass/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/audiomass/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/pairdrop/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/pairdrop/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/localsend/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/localsend/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/filepizza/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/filepizza/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/privatebin/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/privatebin/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/bitwarden-gen/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/bitwarden-gen/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/monkeytype/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/monkeytype/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/librespeed/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/librespeed/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/flexbox-froggy/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/flexbox-froggy/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/layoutit/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/layoutit/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/carbon/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/carbon/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/jsoncrack/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/jsoncrack/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/regex-vis/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/regex-vis/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/wisemapping/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/wisemapping/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/rawgraphs/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/rawgraphs/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/svgomg/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/svgomg/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/placehold/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/placehold/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/dicebear/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/dicebear/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/simpleicons/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/simpleicons/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/quickref/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/quickref/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/exercism/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/exercism/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/colorbrewer/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/colorbrewer/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/simplytranslate/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/simplytranslate/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/tools/vert/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/vert/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/about/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/tools/it-tools/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.bot.cd/tools/ffmpeg-wasm/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.bot.cd/about/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/batch/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/batch/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/offline/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/offline/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/privacy/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/privacy/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/submit/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/submit/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/compare/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/compare/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/feedback/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/feedback/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/icons/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/icons/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/fonts/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/fonts/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/colors/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/colors/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/learning/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/learning/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/open-source/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/open-source/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/resources/templates/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/resources/templates/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/frontend-debug/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/frontend-debug/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/image-workflow/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/image-workflow/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/data-cleanup/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/data-cleanup/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/writing-toolkit/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/writing-toolkit/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/api-debug/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/api-debug/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/open-source-alternatives/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/open-source-alternatives/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/work-efficiency/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/work-efficiency/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/dev-quickref/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/dev-quickref/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/privacy-security/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/privacy-security/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/topics/design-color/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/topics/design-color/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/evaluations/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/evaluations/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/evaluations/image-compress-shootout/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/evaluations/image-compress-shootout/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/evaluations/markdown-editors/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/evaluations/markdown-editors/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/evaluations/pdf-tools/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/evaluations/pdf-tools/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/evaluations/password-tools/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/evaluations/password-tools/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/evaluations/json-tools/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/evaluations/json-tools/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://toolhub.guyang1966.workers.dev/changelog/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <loc>https://toolhub.bot.cd/changelog/</loc>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

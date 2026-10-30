@@ -22,16 +22,16 @@
     })();
   </script>
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/tools/threejs-editor/" />
-  <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/tools/threejs-editor/" />
+  <meta property="og:url" content="https://toolhub.bot.cd/tools/threejs-editor/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/tools/threejs-editor/" />
   <meta property="og:title" content="Three.js Editor · 官方在线版 · ToolHub" />
   <meta property="og:description" content="浏览器内 3D 场景编辑器 Browser-based 3D scene editor built on Three.js" />
-  <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 97 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -39,7 +39,7 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Three.js Editor","description":"浏览器内 3D 场景编辑器","url":"https://toolhub.guyang1966.workers.dev/tools/threejs-editor/","sameAs":"https://threejs.org/editor/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Three.js Editor","description":"浏览器内 3D 场景编辑器","url":"https://toolhub.bot.cd/tools/threejs-editor/","sameAs":"https://threejs.org/editor/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Three.js Editor 是免费的吗？","acceptedAnswer":{"@type":"Answer","text":"Three.js Editor 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。"}},{"@type":"Question","name":"Three.js Editor 适合什么场景？","acceptedAnswer":{"@type":"Answer","text":"最常见的是这几种：给产品做一个 360° 展示页，先在这里摆好相机和灯光再导代码；学习 Three.js 时可视化理解场景图（Scene Graph）层级关系；快速检查一个 glTF 模型能否正常加载、贴图有没有丢。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。"}},{"@type":"Question","name":"它和 ToolHub 的本地工具有什么区别？","acceptedAnswer":{"@type":"Answer","text":"ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；Three.js Editor 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。"}},{"@type":"Question","name":"用 Three.js Editor 有什么限制？","acceptedAnswer":{"@type":"Answer","text":"没有版本管理和协作能力，导出的 HTML 是单文件、代码结构比较原始；不适合做上线项目，只适合验证和教学。"}}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -69,80 +69,87 @@
     <section id="view-home">
       <div class="hero">
         <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span></h1>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
-          <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
-          <div class="hero-search-hint">97 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</div>
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+          </div>
         </div>
-        <div class="hero-stats" id="hero-stats"><!--hs:hero-stats-->
-    <div class="stat"><b>97</b><span>精选工具</span></div>
-    <div class="stat"><b>37</b><span>本地执行</span></div>
-    <div class="stat"><b>9</b><span>分类</span></div>
-    <div class="stat"><b>0</b><span>数据上传</span></div>
-    <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button><!--/hs:hero-stats--></div>
       </div>
 
       <div class="route-cards" id="route-cards"><!--hs:route-cards-->
     <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b>97 个工具</b>
-      <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
+      <b><span class="rc-num">99</span>个工具</b>
+      <span class="rc-desc">37 个纯本地执行 · 9 个分类</span>
       <em>浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
       <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
-      <b>6 个合集 · 50 条资源</b>
-      <span class="rc-desc">图标、字体、配色、学习路线，拿来就能用</span>
+      <b><span class="rc-num">50</span>条资源</b>
+      <span class="rc-desc">6 个合集：图标、字体、配色、学习路线</span>
       <em>逛资源库 →</em>
     </a>
     <a class="route-card rc--compare" href="/compare/">
       <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
-      <b>工具对比</b>
+      <b><span class="rc-num">0</span>数据上传</b>
       <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
       <em>开始对比 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
       <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b>5 篇评测</b>
+      <b><span class="rc-num">5</span>篇评测</b>
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a><!--/hs:route-cards--></div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
-        <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="json-format" data-link="">
+        <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="image-compress" data-link="">
         <span class="rank">01</span>
-        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
-        <span class="f-meta">🔒 本地 · 文本</span>
-      </div><div class="fl-row" data-id="image-compress" data-link="">
-        <span class="rank">02</span>
         <div class="f-body"><div class="f-name">图片压缩</div><div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div></div>
         <span class="f-meta">🔒 本地 · 图片</span>
-      </div><div class="fl-row" data-id="squoosh" data-link="">
-        <span class="rank">03</span>
-        <div class="f-body"><div class="f-name">Squoosh</div><div class="f-desc">Google 出品的图片压缩，对比预览效果极佳</div></div>
-        <span class="f-meta">🔒 本地 · 图片</span>
-      </div><div class="fl-row" data-id="cyberchef" data-link="">
-        <span class="rank">04</span>
-        <div class="f-body"><div class="f-name">CyberChef</div><div class="f-desc">GCHQ 出品的数据解码/加密/转换瑞士军刀</div></div>
-        <span class="f-meta">🔒 本地 · 数据</span>
-      </div><div class="fl-row" data-id="bentopdf" data-link="">
-        <span class="rank">05</span>
-        <div class="f-body"><div class="f-name">BentoPDF</div><div class="f-desc">PDF 合并/拆分/压缩，全部本地处理</div></div>
+      </div><div class="fl-row" data-id="pdf-merge" data-link="">
+        <span class="rank">02</span>
+        <div class="f-body"><div class="f-name">PDF 合并拆分</div><div class="f-desc">多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</div></div>
         <span class="f-meta">🔒 本地 · 文档</span>
-      </div><div class="fl-row" data-id="pairdrop" data-link="">
+      </div><div class="fl-row" data-id="qrcode" data-link="">
+        <span class="rank">03</span>
+        <div class="f-body"><div class="f-name">二维码生成</div><div class="f-desc">把文本/网址变成二维码，可下载 PNG</div></div>
+        <span class="f-meta">🔒 本地 · 开发</span>
+      </div><div class="fl-row" data-id="image-convert" data-link="">
+        <span class="rank">04</span>
+        <div class="f-body"><div class="f-name">图片格式转换</div><div class="f-desc">PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="tesseract" data-link="">
+        <span class="rank">05</span>
+        <div class="f-body"><div class="f-name">Tesseract.js OCR</div><div class="f-desc">浏览器本地图片文字识别（OCR）官方演示</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="ffmpeg-wasm" data-link="">
         <span class="rank">06</span>
-        <div class="f-body"><div class="f-name">PairDrop</div><div class="f-desc">同一网络设备间 P2P 互传文件，免安装</div></div>
-        <span class="f-meta">🔒 本地 · 效率</span>
-      </div><div class="fl-row" data-id="devdocs" data-link="">
+        <div class="f-body"><div class="f-name">ffmpeg.wasm</div><div class="f-desc">浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF</div></div>
+        <span class="f-meta">🔒 本地 · 音视频</span>
+      </div><div class="fl-row" data-id="it-tools" data-link="">
         <span class="rank">07</span>
-        <div class="f-body"><div class="f-name">DevDocs</div><div class="f-desc">一站式 API 文档聚合（100+ 语言/框架）</div></div>
+        <div class="f-body"><div class="f-name">IT-Tools</div><div class="f-desc">几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码</div></div>
         <span class="f-meta">🔒 本地 · 开发</span>
-      </div><div class="fl-row" data-id="python-run" data-link="">
+      </div><div class="fl-row" data-id="excalidraw" data-link="">
         <span class="rank">08</span>
-        <div class="f-body"><div class="f-name">Python 运行器</div><div class="f-desc">浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机</div></div>
-        <span class="f-meta">🔒 本地 · 开发</span>
+        <div class="f-body"><div class="f-name">Excalidraw</div><div class="f-desc">手绘风格白板画图，协作绘图神器</div></div>
+        <span class="f-meta">🔒 本地 · 设计</span>
+      </div><div class="fl-row" data-id="json-format" data-link="">
+        <span class="rank">09</span>
+        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
+      </div><div class="fl-row" data-id="word-count" data-link="">
+        <span class="rank">10</span>
+        <div class="f-body"><div class="f-name">字数统计</div><div class="f-desc">中英文字数、字符、段落与阅读时长统计</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
       </div><!--/hs:featured-grid--></div>
       </div>
 
@@ -168,7 +175,7 @@
 
       <div class="task-row" id="task-row"></div>
       <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
-      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 97 个</span><!--/hs:filterbar--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 99 个</span><!--/hs:filterbar--></div>
       <div class="recent-row" id="recent-row" style="display:none"></div>
       <div class="grid" id="grid"></div>
       <div class="pager" id="pager"></div>

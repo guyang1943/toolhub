@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ffmpeg.wasm / ffmpeg.wasm · 官方在线版 · ToolHub</title>
+  <meta name="description" content="浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF FFmpeg in the browser: compress, transcode, pull the audio track, export GIFs" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/tools/ffmpeg-wasm/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/tools/ffmpeg-wasm/" />
+  <meta property="og:title" content="ffmpeg.wasm / ffmpeg.wasm · 官方在线版 · ToolHub" />
+  <meta property="og:description" content="浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF FFmpeg in the browser: compress, transcode, pull the audio track, export GIFs" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"ffmpeg.wasm","description":"浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF","url":"https://toolhub.bot.cd/tools/ffmpeg-wasm/","sameAs":"https://ffmpegwasm.netlify.app","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"ffmpeg.wasm 是免费的吗？","acceptedAnswer":{"@type":"Answer","text":"ffmpeg.wasm 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。"}},{"@type":"Question","name":"ffmpeg.wasm 适合什么场景？","acceptedAnswer":{"@type":"Answer","text":"最常见的是这几种：把手机拍的 4K 视频缩到 720p，压成能直接发出去的大小；从一段视频里抽出音轨，存成 mp3 或 wav；截取视频前 10 秒转成 GIF，放进文档或聊天里。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。"}},{"@type":"Question","name":"它和 ToolHub 的本地工具有什么区别？","acceptedAnswer":{"@type":"Answer","text":"ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；ffmpeg.wasm 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。"}},{"@type":"Question","name":"用 ffmpeg.wasm 有什么限制？","acceptedAnswer":{"@type":"Answer","text":"参数要自己写 FFmpeg 命令行（例如 -c:v libx264 -crf 28），不懂命令行的话门槛不低；WASM 版只打包了常用编解码器，单线程处理长视频明显慢于桌面版，几百 MB 以上的文件建议还是用本地 FFmpeg。"}}]}</script>
+  <link rel="stylesheet" href="/assets/style.tool.css" />
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/" data-nav="tools">工具</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>ffmpeg.wasm · 官方在线版</h1><p>浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF</p><h2>它解决什么问题</h2><p>ffmpeg.wasm 把 FFmpeg 编译成 WebAssembly，于是视频压缩、转码、抽音轨、转 GIF 这些往年必须装客户端的活，现在打开网页就能干，文件不出本机。官方演示页给的是最简转换器：选文件、填参数、点 Run，日志实时打在页面上——没有花哨的预设，只有 FFmpeg 本身的能力。</p><p>把 FFmpeg 编成 WebAssembly 塞进浏览器，视频不上传也能压、能转、能抽音轨；代价是参数得自己写命令行。</p><h2>三个典型使用场景</h2><ol><li>把手机拍的 4K 视频缩到 720p，压成能直接发出去的大小</li><li>从一段视频里抽出音轨，存成 mp3 或 wav</li><li>截取视频前 10 秒转成 GIF，放进文档或聊天里</li></ol><h2>和 ToolHub 本地工具怎么配合</h2><p><b><a href="/tools/image-compress/">图片压缩</a></b>：只处理图片时不必动视频引擎，站内工具点两下就出结果（本地工具，文件不上传）</p><p><b><a href="/tools/img-to-pdf/">图片转 PDF</a></b>：要把视频截图或图片合成一份 PDF，站内工具直接生成（本地工具，文件不上传）</p><p><b><a href="/tools/file-hash/">文件哈希校验</a></b>：转码或传输之后想确认文件没坏，站内工具可以算 SHA-256 对一下（本地工具，文件不上传）</p><h2>同类可替代方案</h2><ul><li><a href="/tools/audiomass/">AudioMass</a> —— 浏览器音频剪辑/特效，免安装的声波编辑器</li></ul><h2>使用时要注意什么</h2><p>参数要自己写 FFmpeg 命令行（例如 -c:v libx264 -crf 28），不懂命令行的话门槛不低；WASM 版只打包了常用编解码器，单线程处理长视频明显慢于桌面版，几百 MB 以上的文件建议还是用本地 FFmpeg。</p><h2>常见问题</h2><h3>ffmpeg.wasm 是免费的吗？</h3><p>ffmpeg.wasm 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。</p><h3>ffmpeg.wasm 适合什么场景？</h3><p>最常见的是这几种：把手机拍的 4K 视频缩到 720p，压成能直接发出去的大小；从一段视频里抽出音轨，存成 mp3 或 wav；截取视频前 10 秒转成 GIF，放进文档或聊天里。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。</p><h3>它和 ToolHub 的本地工具有什么区别？</h3><p>ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；ffmpeg.wasm 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。</p><h3>用 ffmpeg.wasm 有什么限制？</h3><p>参数要自己写 FFmpeg 命令行（例如 -c:v libx264 -crf 28），不懂命令行的话门槛不低；WASM 版只打包了常用编解码器，单线程处理长视频明显慢于桌面版，几百 MB 以上的文件建议还是用本地 FFmpeg。</p><h2>相关阅读</h2><ul><li><a href="/">ToolHub 全部 93 个工具</a> —— 33 个在浏览器本地执行，数据不上传</li><li><a href="/?cat=%E9%9F%B3%E8%A7%86%E9%A2%91">全部音视频类工具</a> —— 按分类筛选，含本地执行与目录直达</li><li><a href="/tools/audiomass/">AudioMass</a> —— 同类别另一个选择</li></ul><p>项目来源：github.com/ffmpegwasm/ffmpeg.wasm · License: MIT · 分类：<a href="/?cat=%E9%9F%B3%E8%A7%86%E9%A2%91">音视频</a></p><p>官网地址：<a href="https://ffmpegwasm.netlify.app" target="_blank" rel="noopener">https://ffmpegwasm.netlify.app</a>（新标签页打开 ffmpegwasm.netlify.app）</p><p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"><!--hs:route-cards-->
+    <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
+      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
+      <b><span class="rc-num">99</span>个工具</b>
+      <span class="rc-desc">37 个纯本地执行 · 9 个分类</span>
+      <em>浏览工具 →</em>
+    </a>
+    <a class="route-card rc--res" href="/resources/">
+      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
+      <b><span class="rc-num">50</span>条资源</b>
+      <span class="rc-desc">6 个合集：图标、字体、配色、学习路线</span>
+      <em>逛资源库 →</em>
+    </a>
+    <a class="route-card rc--compare" href="/compare/">
+      <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
+      <b><span class="rc-num">0</span>数据上传</b>
+      <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
+      <em>开始对比 →</em>
+    </a>
+    <a class="route-card rc--eval" href="/evaluations/">
+      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
+      <b><span class="rc-num">5</span>篇评测</b>
+      <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
+      <em>读评测 →</em>
+    </a><!--/hs:route-cards--></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="image-compress" data-link="">
+        <span class="rank">01</span>
+        <div class="f-body"><div class="f-name">图片压缩</div><div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="pdf-merge" data-link="">
+        <span class="rank">02</span>
+        <div class="f-body"><div class="f-name">PDF 合并拆分</div><div class="f-desc">多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</div></div>
+        <span class="f-meta">🔒 本地 · 文档</span>
+      </div><div class="fl-row" data-id="qrcode" data-link="">
+        <span class="rank">03</span>
+        <div class="f-body"><div class="f-name">二维码生成</div><div class="f-desc">把文本/网址变成二维码，可下载 PNG</div></div>
+        <span class="f-meta">🔒 本地 · 开发</span>
+      </div><div class="fl-row" data-id="image-convert" data-link="">
+        <span class="rank">04</span>
+        <div class="f-body"><div class="f-name">图片格式转换</div><div class="f-desc">PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="tesseract" data-link="">
+        <span class="rank">05</span>
+        <div class="f-body"><div class="f-name">Tesseract.js OCR</div><div class="f-desc">浏览器本地图片文字识别（OCR）官方演示</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="ffmpeg-wasm" data-link="">
+        <span class="rank">06</span>
+        <div class="f-body"><div class="f-name">ffmpeg.wasm</div><div class="f-desc">浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF</div></div>
+        <span class="f-meta">🔒 本地 · 音视频</span>
+      </div><div class="fl-row" data-id="it-tools" data-link="">
+        <span class="rank">07</span>
+        <div class="f-body"><div class="f-name">IT-Tools</div><div class="f-desc">几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码</div></div>
+        <span class="f-meta">🔒 本地 · 开发</span>
+      </div><div class="fl-row" data-id="excalidraw" data-link="">
+        <span class="rank">08</span>
+        <div class="f-body"><div class="f-name">Excalidraw</div><div class="f-desc">手绘风格白板画图，协作绘图神器</div></div>
+        <span class="f-meta">🔒 本地 · 设计</span>
+      </div><div class="fl-row" data-id="json-format" data-link="">
+        <span class="rank">09</span>
+        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
+      </div><div class="fl-row" data-id="word-count" data-link="">
+        <span class="rank">10</span>
+        <div class="f-body"><div class="f-name">字数统计</div><div class="f-desc">中英文字数、字符、段落与阅读时长统计</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
+      </div><!--/hs:featured-grid--></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"><!--hs:res-preview-grid--><a class="res-preview-card" href="/resources/icons/">
+        <span class="rp-icon">🎨</span>
+        <span class="rp-title">免费图标库</span>
+        <span class="rp-desc">做界面最常用的图标来源，全部免费可用、授权清晰</span>
+        <span class="rp-count">10 个来源 →</span>
+      </a><a class="res-preview-card" href="/resources/fonts/">
+        <span class="rp-icon">🔤</span>
+        <span class="rp-title">免费商用字体</span>
+        <span class="rp-desc">中文与西文免费商用字体，附授权类型说明</span>
+        <span class="rp-count">8 个来源 →</span>
+      </a><a class="res-preview-card" href="/resources/colors/">
+        <span class="rp-icon">🎨</span>
+        <span class="rp-title">配色方案与调色板</span>
+        <span class="rp-desc">成套配色系统、数据可视化色板与配色灵感</span>
+        <span class="rp-count">8 个来源 →</span>
+      </a><!--/hs:res-preview-grid--></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 99 个</span><!--/hs:filterbar--></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__TOOL__="ffmpeg-wasm";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

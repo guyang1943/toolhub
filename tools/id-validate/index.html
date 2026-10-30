@@ -22,16 +22,16 @@
     })();
   </script>
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://toolhub.guyang1966.workers.dev/tools/id-validate/" />
-  <link rel="canonical" href="https://toolhub.guyang1966.workers.dev/tools/id-validate/" />
+  <meta property="og:url" content="https://toolhub.bot.cd/tools/id-validate/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/tools/id-validate/" />
   <meta property="og:title" content="身份证 / 银行卡校验 / ID & Card Validator · ToolHub" />
   <meta property="og:description" content="批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别 Batch-check Chinese ID checksums and bank card Luhn digits, with region and birthdate parsing" />
-  <meta property="og:image" content="https://toolhub.guyang1966.workers.dev/assets/og.png" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
-  <meta name="twitter:description" content="精选 97 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -39,9 +39,9 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"身份证 / 银行卡校验","description":"批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别","url":"https://toolhub.guyang1966.workers.dev/tools/id-validate/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"身份证 / 银行卡校验","description":"批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别","url":"https://toolhub.bot.cd/tools/id-validate/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"校验通过就能证明这个身份证是真的吗？","acceptedAnswer":{"@type":"Answer","text":"不能。校验码只能证明「这 18 位符合编码规则」，也就是大概率不是随手编的、没有抄错一位。号码是否真实存在、是否注销、是否与姓名匹配，只有公安实名核验接口能回答。"}},{"@type":"Question","name":"15 位老身份证还能校验吗？","acceptedAnswer":{"@type":"Answer","text":"15 位没有校验码，工具只能解析出生日期和性别，并提示建议升位。15 位升级到 18 位的规则是：插入世纪「19」、补校验码。"}},{"@type":"Question","name":"银行卡号 Luhn 通过就一定能扣款成功吗？","acceptedAnswer":{"@type":"Answer","text":"不一定。Luhn 只能拦住约九成的单字符输错，无法判断卡号是否存在、是否过期、是否支持该卡组织。正式扣款前仍需走银行或支付机构的鉴权。"}}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用身份证 / 银行卡校验","description":"批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"身份证 / 银行卡校验"}],"step":[{"@type":"HowToStep","position":1,"name":"把要校验的号码粘贴进来，每行一个，也可以直接用逗号分隔","text":"把要校验的号码粘贴进来，每行一个，也可以直接用逗号分隔","url":"https://toolhub.guyang1966.workers.dev/tools/id-validate/#step1"},{"@type":"HowToStep","position":2,"name":"点「校验」，看顶部汇总：通过几个、未通过几个、识别出多少身份证与银行卡","text":"点「校验」，看顶部汇总：通过几个、未通过几个、识别出多少身份证与银行卡","url":"https://toolhub.guyang1966.workers.dev/tools/id-validate/#step2"},{"@type":"HowToStep","position":3,"name":"逐行看结果列的解析详情：身份证会给出地区、生日、年龄与校验码；银行卡会给出卡…","text":"逐行看结果列的解析详情：身份证会给出地区、生日、年龄与校验码；银行卡会给出卡组织与 Luhn 结果","url":"https://toolhub.guyang1966.workers.dev/tools/id-validate/#step3"},{"@type":"HowToStep","position":4,"name":"校验码不通过的 18 位号码，详情里会直接写出「应为 X，实际 Y」，方便定…","text":"校验码不通过的 18 位号码，详情里会直接写出「应为 X，实际 Y」，方便定位是抄错还是输错一位","url":"https://toolhub.guyang1966.workers.dev/tools/id-validate/#step4"},{"@type":"HowToStep","position":5,"name":"修正数据后重新粘贴校验，直到全部通过","text":"修正数据后重新粘贴校验，直到全部通过","url":"https://toolhub.guyang1966.workers.dev/tools/id-validate/#step5"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用身份证 / 银行卡校验","description":"批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"身份证 / 银行卡校验"}],"step":[{"@type":"HowToStep","position":1,"name":"把要校验的号码粘贴进来，每行一个，也可以直接用逗号分隔","text":"把要校验的号码粘贴进来，每行一个，也可以直接用逗号分隔","url":"https://toolhub.bot.cd/tools/id-validate/#step1"},{"@type":"HowToStep","position":2,"name":"点「校验」，看顶部汇总：通过几个、未通过几个、识别出多少身份证与银行卡","text":"点「校验」，看顶部汇总：通过几个、未通过几个、识别出多少身份证与银行卡","url":"https://toolhub.bot.cd/tools/id-validate/#step2"},{"@type":"HowToStep","position":3,"name":"逐行看结果列的解析详情：身份证会给出地区、生日、年龄与校验码；银行卡会给出卡…","text":"逐行看结果列的解析详情：身份证会给出地区、生日、年龄与校验码；银行卡会给出卡组织与 Luhn 结果","url":"https://toolhub.bot.cd/tools/id-validate/#step3"},{"@type":"HowToStep","position":4,"name":"校验码不通过的 18 位号码，详情里会直接写出「应为 X，实际 Y」，方便定…","text":"校验码不通过的 18 位号码，详情里会直接写出「应为 X，实际 Y」，方便定位是抄错还是输错一位","url":"https://toolhub.bot.cd/tools/id-validate/#step4"},{"@type":"HowToStep","position":5,"name":"修正数据后重新粘贴校验，直到全部通过","text":"修正数据后重新粘贴校验，直到全部通过","url":"https://toolhub.bot.cd/tools/id-validate/#step5"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
 <body data-view="page">
@@ -70,80 +70,87 @@
     <section id="view-home">
       <div class="hero">
         <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>把 GitHub 上好用的开源工具<br /><span class="grad">变成打开就能用</span></h1>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
         <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
         <div class="hero-search-wrap">
-          <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
-          <div class="hero-search-hint">97 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</div>
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+          </div>
         </div>
-        <div class="hero-stats" id="hero-stats"><!--hs:hero-stats-->
-    <div class="stat"><b>97</b><span>精选工具</span></div>
-    <div class="stat"><b>37</b><span>本地执行</span></div>
-    <div class="stat"><b>9</b><span>分类</span></div>
-    <div class="stat"><b>0</b><span>数据上传</span></div>
-    <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button><!--/hs:hero-stats--></div>
       </div>
 
       <div class="route-cards" id="route-cards"><!--hs:route-cards-->
     <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b>97 个工具</b>
-      <span class="rc-desc">按任务或分类找，能本地跑的都在本地跑</span>
+      <b><span class="rc-num">99</span>个工具</b>
+      <span class="rc-desc">37 个纯本地执行 · 9 个分类</span>
       <em>浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
       <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
-      <b>6 个合集 · 50 条资源</b>
-      <span class="rc-desc">图标、字体、配色、学习路线，拿来就能用</span>
+      <b><span class="rc-num">50</span>条资源</b>
+      <span class="rc-desc">6 个合集：图标、字体、配色、学习路线</span>
       <em>逛资源库 →</em>
     </a>
     <a class="route-card rc--compare" href="/compare/">
       <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
-      <b>工具对比</b>
+      <b><span class="rc-num">0</span>数据上传</b>
       <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
       <em>开始对比 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
       <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b>5 篇评测</b>
+      <b><span class="rc-num">5</span>篇评测</b>
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a><!--/hs:route-cards--></div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
-        <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="json-format" data-link="">
+        <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="image-compress" data-link="">
         <span class="rank">01</span>
-        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
-        <span class="f-meta">🔒 本地 · 文本</span>
-      </div><div class="fl-row" data-id="image-compress" data-link="">
-        <span class="rank">02</span>
         <div class="f-body"><div class="f-name">图片压缩</div><div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div></div>
         <span class="f-meta">🔒 本地 · 图片</span>
-      </div><div class="fl-row" data-id="squoosh" data-link="">
-        <span class="rank">03</span>
-        <div class="f-body"><div class="f-name">Squoosh</div><div class="f-desc">Google 出品的图片压缩，对比预览效果极佳</div></div>
-        <span class="f-meta">🔒 本地 · 图片</span>
-      </div><div class="fl-row" data-id="cyberchef" data-link="">
-        <span class="rank">04</span>
-        <div class="f-body"><div class="f-name">CyberChef</div><div class="f-desc">GCHQ 出品的数据解码/加密/转换瑞士军刀</div></div>
-        <span class="f-meta">🔒 本地 · 数据</span>
-      </div><div class="fl-row" data-id="bentopdf" data-link="">
-        <span class="rank">05</span>
-        <div class="f-body"><div class="f-name">BentoPDF</div><div class="f-desc">PDF 合并/拆分/压缩，全部本地处理</div></div>
+      </div><div class="fl-row" data-id="pdf-merge" data-link="">
+        <span class="rank">02</span>
+        <div class="f-body"><div class="f-name">PDF 合并拆分</div><div class="f-desc">多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</div></div>
         <span class="f-meta">🔒 本地 · 文档</span>
-      </div><div class="fl-row" data-id="pairdrop" data-link="">
+      </div><div class="fl-row" data-id="qrcode" data-link="">
+        <span class="rank">03</span>
+        <div class="f-body"><div class="f-name">二维码生成</div><div class="f-desc">把文本/网址变成二维码，可下载 PNG</div></div>
+        <span class="f-meta">🔒 本地 · 开发</span>
+      </div><div class="fl-row" data-id="image-convert" data-link="">
+        <span class="rank">04</span>
+        <div class="f-body"><div class="f-name">图片格式转换</div><div class="f-desc">PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="tesseract" data-link="">
+        <span class="rank">05</span>
+        <div class="f-body"><div class="f-name">Tesseract.js OCR</div><div class="f-desc">浏览器本地图片文字识别（OCR）官方演示</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="ffmpeg-wasm" data-link="">
         <span class="rank">06</span>
-        <div class="f-body"><div class="f-name">PairDrop</div><div class="f-desc">同一网络设备间 P2P 互传文件，免安装</div></div>
-        <span class="f-meta">🔒 本地 · 效率</span>
-      </div><div class="fl-row" data-id="devdocs" data-link="">
+        <div class="f-body"><div class="f-name">ffmpeg.wasm</div><div class="f-desc">浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF</div></div>
+        <span class="f-meta">🔒 本地 · 音视频</span>
+      </div><div class="fl-row" data-id="it-tools" data-link="">
         <span class="rank">07</span>
-        <div class="f-body"><div class="f-name">DevDocs</div><div class="f-desc">一站式 API 文档聚合（100+ 语言/框架）</div></div>
+        <div class="f-body"><div class="f-name">IT-Tools</div><div class="f-desc">几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码</div></div>
         <span class="f-meta">🔒 本地 · 开发</span>
-      </div><div class="fl-row" data-id="python-run" data-link="">
+      </div><div class="fl-row" data-id="excalidraw" data-link="">
         <span class="rank">08</span>
-        <div class="f-body"><div class="f-name">Python 运行器</div><div class="f-desc">浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机</div></div>
-        <span class="f-meta">🔒 本地 · 开发</span>
+        <div class="f-body"><div class="f-name">Excalidraw</div><div class="f-desc">手绘风格白板画图，协作绘图神器</div></div>
+        <span class="f-meta">🔒 本地 · 设计</span>
+      </div><div class="fl-row" data-id="json-format" data-link="">
+        <span class="rank">09</span>
+        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
+      </div><div class="fl-row" data-id="word-count" data-link="">
+        <span class="rank">10</span>
+        <div class="f-body"><div class="f-name">字数统计</div><div class="f-desc">中英文字数、字符、段落与阅读时长统计</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
       </div><!--/hs:featured-grid--></div>
       </div>
 
@@ -169,7 +176,7 @@
 
       <div class="task-row" id="task-row"></div>
       <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
-      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 97 个</span><!--/hs:filterbar--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 99 个</span><!--/hs:filterbar--></div>
       <div class="recent-row" id="recent-row" style="display:none"></div>
       <div class="grid" id="grid"></div>
       <div class="pager" id="pager"></div>

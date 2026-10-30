@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT-Tools / IT-Tools · 官方在线版 · ToolHub</title>
+  <meta name="description" content="几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码 Dozens of small dev tools on one page: hashes, timestamps, UUIDs, regex, encoders" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/tools/it-tools/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/tools/it-tools/" />
+  <meta property="og:title" content="IT-Tools / IT-Tools · 官方在线版 · ToolHub" />
+  <meta property="og:description" content="几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码 Dozens of small dev tools on one page: hashes, timestamps, UUIDs, regex, encoders" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"IT-Tools","description":"几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码","url":"https://toolhub.bot.cd/tools/it-tools/","sameAs":"https://it-tools.tech","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"GPL-3.0"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"IT-Tools 是免费的吗？","acceptedAnswer":{"@type":"Answer","text":"IT-Tools 是开源项目，采用 GPL-3.0 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。"}},{"@type":"Question","name":"IT-Tools 适合什么场景？","acceptedAnswer":{"@type":"Answer","text":"最常见的是这几种：接口联调时临时算一个 SHA-256 或 HMAC，不想开终端；把一串 UUID、时间戳批量转成可读格式再贴进文档；写正则时先在这里实时试通，再抄回代码。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。"}},{"@type":"Question","name":"它和 ToolHub 的本地工具有什么区别？","acceptedAnswer":{"@type":"Answer","text":"ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；IT-Tools 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。"}},{"@type":"Question","name":"用 IT-Tools 有什么限制？","acceptedAnswer":{"@type":"Answer","text":"GPL-3.0 开源项目，官方演示站全程在浏览器本地计算，输入内容不上传；但界面按开发者习惯设计，中文翻译覆盖不全，部分功能依赖浏览器 WebCrypto，过旧的浏览器会直接不可用。"}}]}</script>
+  <link rel="stylesheet" href="/assets/style.tool.css" />
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/" data-nav="tools">工具</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>IT-Tools · 官方在线版</h1><p>几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码</p><h2>它解决什么问题</h2><p>IT-Tools 是一页式开发者工具箱，把哈希、时间戳、UUID、正则测试、编解码、进制转换、二维码、文本处理这些「用完就关」的小需求塞进同一个界面：左侧分类导航、右侧即时出结果，不注册、不装插件。它比同类站更值得收藏的地方是交互——输入即算，没有「提交」按钮，也不用等页面跳转。</p><p>临时要算个哈希、转个时间戳、试条正则，它的价值是不用开一堆标签页——左分类右结果，打开就是干活的地方。</p><h2>三个典型使用场景</h2><ol><li>接口联调时临时算一个 SHA-256 或 HMAC，不想开终端</li><li>把一串 UUID、时间戳批量转成可读格式再贴进文档</li><li>写正则时先在这里实时试通，再抄回代码</li></ol><h2>和 ToolHub 本地工具怎么配合</h2><p><b><a href="/tools/sha256-hash/">哈希计算</a></b>：只算一段文本的哈希，站内工具更快，也不必先把内容复制到另一个站（本地工具，文件不上传）</p><p><b><a href="/tools/timestamp/">时间戳转换</a></b>：只做时间戳与日期互转时，站内工具按本机时区换算，不会把 UTC 当成本地时间（本地工具，文件不上传）</p><p><b><a href="/tools/uuid-gen/">UUID / ULID 生成</a></b>：批量生成并去重校验 UUID，站内工具够用且能一键复制（本地工具，文件不上传）</p><h2>同类可替代方案</h2><ul><li><a href="/tools/devdocs/">DevDocs</a> —— 一站式 API 文档聚合（100+ 语言/框架）</li><li><a href="/tools/prettier/">Prettier Playground</a> —— 官方在线代码格式化试验场</li><li><a href="/tools/regexper/">Regexper</a> —— 正则表达式可视化图解，一眼看懂</li></ul><h2>使用时要注意什么</h2><p>GPL-3.0 开源项目，官方演示站全程在浏览器本地计算，输入内容不上传；但界面按开发者习惯设计，中文翻译覆盖不全，部分功能依赖浏览器 WebCrypto，过旧的浏览器会直接不可用。</p><h2>常见问题</h2><h3>IT-Tools 是免费的吗？</h3><p>IT-Tools 是开源项目，采用 GPL-3.0 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。</p><h3>IT-Tools 适合什么场景？</h3><p>最常见的是这几种：接口联调时临时算一个 SHA-256 或 HMAC，不想开终端；把一串 UUID、时间戳批量转成可读格式再贴进文档；写正则时先在这里实时试通，再抄回代码。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。</p><h3>它和 ToolHub 的本地工具有什么区别？</h3><p>ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；IT-Tools 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。</p><h3>用 IT-Tools 有什么限制？</h3><p>GPL-3.0 开源项目，官方演示站全程在浏览器本地计算，输入内容不上传；但界面按开发者习惯设计，中文翻译覆盖不全，部分功能依赖浏览器 WebCrypto，过旧的浏览器会直接不可用。</p><h2>相关阅读</h2><ul><ul><li><a href="/tools/qrcode/">二维码生成</a> —— 把文本/网址变成二维码，可下载 PNG（在浏览器内执行，不联网也能用）</li><li><a href="/tools/sha256-hash/">哈希计算</a> —— SHA-256/384/512 哈希，基于 WebCrypto 安全实现（在浏览器内执行，不联网也能用）</li><li><a href="/tools/uuid-gen/">UUID / ULID 生成</a> —— UUID v4、ULID、Nano ID 批量生成，可作数据库主键（在浏览器内执行，不联网也能用）</li></ul><li><a href="/?cat=%E5%BC%80%E5%8F%91">全部开发类工具</a> —— 按分类筛选，含本地执行与目录直达</li><li><a href="/tools/devdocs/">DevDocs</a> —— 同类别另一个选择</li></ul><p>项目来源：github.com/CorentinTh/it-tools · License: GPL-3.0 · 分类：<a href="/?cat=%E5%BC%80%E5%8F%91">开发</a></p><p>官网地址：<a href="https://it-tools.tech" target="_blank" rel="noopener">https://it-tools.tech</a>（新标签页打开 it-tools.tech）</p><p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"><!--hs:route-cards-->
+    <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
+      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
+      <b><span class="rc-num">99</span>个工具</b>
+      <span class="rc-desc">37 个纯本地执行 · 9 个分类</span>
+      <em>浏览工具 →</em>
+    </a>
+    <a class="route-card rc--res" href="/resources/">
+      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
+      <b><span class="rc-num">50</span>条资源</b>
+      <span class="rc-desc">6 个合集：图标、字体、配色、学习路线</span>
+      <em>逛资源库 →</em>
+    </a>
+    <a class="route-card rc--compare" href="/compare/">
+      <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
+      <b><span class="rc-num">0</span>数据上传</b>
+      <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
+      <em>开始对比 →</em>
+    </a>
+    <a class="route-card rc--eval" href="/evaluations/">
+      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
+      <b><span class="rc-num">5</span>篇评测</b>
+      <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
+      <em>读评测 →</em>
+    </a><!--/hs:route-cards--></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="image-compress" data-link="">
+        <span class="rank">01</span>
+        <div class="f-body"><div class="f-name">图片压缩</div><div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="pdf-merge" data-link="">
+        <span class="rank">02</span>
+        <div class="f-body"><div class="f-name">PDF 合并拆分</div><div class="f-desc">多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</div></div>
+        <span class="f-meta">🔒 本地 · 文档</span>
+      </div><div class="fl-row" data-id="qrcode" data-link="">
+        <span class="rank">03</span>
+        <div class="f-body"><div class="f-name">二维码生成</div><div class="f-desc">把文本/网址变成二维码，可下载 PNG</div></div>
+        <span class="f-meta">🔒 本地 · 开发</span>
+      </div><div class="fl-row" data-id="image-convert" data-link="">
+        <span class="rank">04</span>
+        <div class="f-body"><div class="f-name">图片格式转换</div><div class="f-desc">PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="tesseract" data-link="">
+        <span class="rank">05</span>
+        <div class="f-body"><div class="f-name">Tesseract.js OCR</div><div class="f-desc">浏览器本地图片文字识别（OCR）官方演示</div></div>
+        <span class="f-meta">🔒 本地 · 图片</span>
+      </div><div class="fl-row" data-id="ffmpeg-wasm" data-link="">
+        <span class="rank">06</span>
+        <div class="f-body"><div class="f-name">ffmpeg.wasm</div><div class="f-desc">浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF</div></div>
+        <span class="f-meta">🔒 本地 · 音视频</span>
+      </div><div class="fl-row" data-id="it-tools" data-link="">
+        <span class="rank">07</span>
+        <div class="f-body"><div class="f-name">IT-Tools</div><div class="f-desc">几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码</div></div>
+        <span class="f-meta">🔒 本地 · 开发</span>
+      </div><div class="fl-row" data-id="excalidraw" data-link="">
+        <span class="rank">08</span>
+        <div class="f-body"><div class="f-name">Excalidraw</div><div class="f-desc">手绘风格白板画图，协作绘图神器</div></div>
+        <span class="f-meta">🔒 本地 · 设计</span>
+      </div><div class="fl-row" data-id="json-format" data-link="">
+        <span class="rank">09</span>
+        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
+      </div><div class="fl-row" data-id="word-count" data-link="">
+        <span class="rank">10</span>
+        <div class="f-body"><div class="f-name">字数统计</div><div class="f-desc">中英文字数、字符、段落与阅读时长统计</div></div>
+        <span class="f-meta">🔒 本地 · 文本</span>
+      </div><!--/hs:featured-grid--></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"><!--hs:res-preview-grid--><a class="res-preview-card" href="/resources/icons/">
+        <span class="rp-icon">🎨</span>
+        <span class="rp-title">免费图标库</span>
+        <span class="rp-desc">做界面最常用的图标来源，全部免费可用、授权清晰</span>
+        <span class="rp-count">10 个来源 →</span>
+      </a><a class="res-preview-card" href="/resources/fonts/">
+        <span class="rp-icon">🔤</span>
+        <span class="rp-title">免费商用字体</span>
+        <span class="rp-desc">中文与西文免费商用字体，附授权类型说明</span>
+        <span class="rp-count">8 个来源 →</span>
+      </a><a class="res-preview-card" href="/resources/colors/">
+        <span class="rp-icon">🎨</span>
+        <span class="rp-title">配色方案与调色板</span>
+        <span class="rp-desc">成套配色系统、数据可视化色板与配色灵感</span>
+        <span class="rp-count">8 个来源 →</span>
+      </a><!--/hs:res-preview-grid--></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 99 个</span><!--/hs:filterbar--></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__TOOL__="it-tools";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

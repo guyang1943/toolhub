@@ -1,8 +1,8 @@
 {
   "site": "ToolHub",
   "version": 1,
-  "updated": "2026-10-27",
-  "total": 97,
+  "updated": "2026-10-30",
+  "total": 99,
   "tools": [
     {
       "id": "json-format",
@@ -10,7 +10,7 @@
       "desc": "美化/压缩 JSON，自动校验语法错误",
       "category": "文本",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/json-format/",
+      "url": "https://toolhub.bot.cd/tools/json-format/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -25,7 +25,7 @@
       "desc": "在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器",
       "category": "图片",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/image-compress/",
+      "url": "https://toolhub.bot.cd/tools/image-compress/",
       "source": "内置实现 (Canvas API)",
       "license": "MIT",
       "tags": [
@@ -40,7 +40,7 @@
       "desc": "把文本/网址变成二维码，可下载 PNG",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/qrcode/",
+      "url": "https://toolhub.bot.cd/tools/qrcode/",
       "source": "基于开源 qrcodejs (MIT)",
       "license": "MIT",
       "tags": [
@@ -54,7 +54,7 @@
       "desc": "Base64 与 URL 编码互转，支持中文",
       "category": "文本",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/base64-url/",
+      "url": "https://toolhub.bot.cd/tools/base64-url/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -69,7 +69,7 @@
       "desc": "Unix 时间戳与可读时间互转，多时区支持",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/timestamp/",
+      "url": "https://toolhub.bot.cd/tools/timestamp/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -84,7 +84,7 @@
       "desc": "SHA-256/384/512 哈希，基于 WebCrypto 安全实现",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/sha256-hash/",
+      "url": "https://toolhub.bot.cd/tools/sha256-hash/",
       "source": "内置实现 (WebCrypto)",
       "license": "MIT",
       "tags": [
@@ -99,7 +99,7 @@
       "desc": "crypto 安全随机源生成强密码，本机生成不上传",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/password-gen/",
+      "url": "https://toolhub.bot.cd/tools/password-gen/",
       "source": "内置实现 (WebCrypto)",
       "license": "MIT",
       "tags": [
@@ -113,7 +113,7 @@
       "desc": "UUID v4、ULID、Nano ID 批量生成，可作数据库主键",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/uuid-gen/",
+      "url": "https://toolhub.bot.cd/tools/uuid-gen/",
       "source": "内置实现 (WebCrypto)",
       "license": "MIT",
       "tags": [
@@ -128,7 +128,7 @@
       "desc": "HEX / RGB / HSL 互转，附色块预览与 CSS 变量",
       "category": "设计",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/color-convert/",
+      "url": "https://toolhub.bot.cd/tools/color-convert/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -144,7 +144,7 @@
       "desc": "两段文本行级差异对比，新增/删除一目了然",
       "category": "文本",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/text-diff/",
+      "url": "https://toolhub.bot.cd/tools/text-diff/",
       "source": "内置实现 (LCS 算法)",
       "license": "MIT",
       "tags": [
@@ -158,7 +158,7 @@
       "desc": "实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS",
       "category": "文本",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/markdown-preview/",
+      "url": "https://toolhub.bot.cd/tools/markdown-preview/",
       "source": "基于开源 marked (MIT) + DOMPurify (Apache-2.0)",
       "license": "MIT",
       "tags": [
@@ -172,7 +172,7 @@
       "desc": "浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机",
       "category": "开发",
       "runtime": "pyodide",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/python-run/",
+      "url": "https://toolhub.bot.cd/tools/python-run/",
       "source": "基于开源 Pyodide (MPL-2.0)",
       "license": "MPL-2.0",
       "tags": [
@@ -187,7 +187,7 @@
       "desc": "用人话解释 cron 表达式，并算出接下来 5 次执行时间",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/cron-parser/",
+      "url": "https://toolhub.bot.cd/tools/cron-parser/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -202,7 +202,7 @@
       "desc": "解码 JWT 的 Header/Payload，标注过期时间，本地不上传",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/jwt-decode/",
+      "url": "https://toolhub.bot.cd/tools/jwt-decode/",
       "source": "内置实现 (Base64URL)",
       "license": "MIT",
       "tags": [
@@ -217,7 +217,7 @@
       "desc": "CSV 与 JSON 数组互转，正确处理引号与换行",
       "category": "数据",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/csv-json/",
+      "url": "https://toolhub.bot.cd/tools/csv-json/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -232,7 +232,7 @@
       "desc": "按最大边长等比缩放图片，生成头像/封面尺寸",
       "category": "图片",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/image-resize/",
+      "url": "https://toolhub.bot.cd/tools/image-resize/",
       "source": "内置实现 (Canvas API)",
       "license": "MIT",
       "tags": [
@@ -247,7 +247,7 @@
       "desc": "用 Python statistics 计算均值/中位数/标准差/四分位",
       "category": "数据",
       "runtime": "pyodide",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/py-stats/",
+      "url": "https://toolhub.bot.cd/tools/py-stats/",
       "source": "Python 标准库 statistics (Pyodide)",
       "license": "PSF-2.0",
       "tags": [
@@ -262,7 +262,7 @@
       "desc": "pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要",
       "category": "数据",
       "runtime": "pyodide",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/pandas-csv/",
+      "url": "https://toolhub.bot.cd/tools/pandas-csv/",
       "source": "基于 pandas (BSD-3-Clause) + Pyodide",
       "license": "BSD-3-Clause",
       "tags": [
@@ -277,7 +277,7 @@
       "desc": "实时高亮正则匹配结果，列出分组与位置",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/regex-tester/",
+      "url": "https://toolhub.bot.cd/tools/regex-tester/",
       "source": "内置实现 (RegExp)",
       "license": "MIT",
       "tags": [
@@ -292,7 +292,7 @@
       "desc": "camelCase / snake_case / kebab-case 等命名互转",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/case-convert/",
+      "url": "https://toolhub.bot.cd/tools/case-convert/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -307,7 +307,7 @@
       "desc": "按行去重、排序、去空行，适合清洗名单与日志",
       "category": "文本",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/text-dedupe/",
+      "url": "https://toolhub.bot.cd/tools/text-dedupe/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -322,7 +322,7 @@
       "desc": "中英文字数、字符、段落与阅读时长统计",
       "category": "文本",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/word-count/",
+      "url": "https://toolhub.bot.cd/tools/word-count/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -337,7 +337,7 @@
       "desc": "图片与 Data URI / Base64 双向转换",
       "category": "图片",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/image-base64/",
+      "url": "https://toolhub.bot.cd/tools/image-base64/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -352,7 +352,7 @@
       "desc": "按 WCAG 标准检查文字与背景的对比度是否达标",
       "category": "设计",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/color-contrast/",
+      "url": "https://toolhub.bot.cd/tools/color-contrast/",
       "source": "内置实现 (WCAG 2.1)",
       "license": "MIT",
       "tags": [
@@ -367,7 +367,7 @@
       "desc": "工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/tax-calc/",
+      "url": "https://toolhub.bot.cd/tools/tax-calc/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -382,7 +382,7 @@
       "desc": "长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/unit-convert/",
+      "url": "https://toolhub.bot.cd/tools/unit-convert/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -397,7 +397,7 @@
       "desc": "上传图片本地识别二维码内容，图片不上传，标注识别位置",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/qr-decode/",
+      "url": "https://toolhub.bot.cd/tools/qr-decode/",
       "source": "内置实现 (jsQR)",
       "license": "MIT",
       "tags": [
@@ -412,7 +412,7 @@
       "desc": "多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传",
       "category": "文档",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/pdf-merge/",
+      "url": "https://toolhub.bot.cd/tools/pdf-merge/",
       "source": "内置实现 (pdf-lib)",
       "license": "MIT",
       "tags": [
@@ -427,7 +427,7 @@
       "desc": "等额本息与等额本金月供、总利息对比，含逐年还款明细表",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/mortgage-calc/",
+      "url": "https://toolhub.bot.cd/tools/mortgage-calc/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -443,7 +443,7 @@
       "desc": "一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时",
       "category": "效率",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/timezone-convert/",
+      "url": "https://toolhub.bot.cd/tools/timezone-convert/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -459,7 +459,7 @@
       "desc": "多张图片合成一个 PDF，A4 或适应图片，本地生成不上传",
       "category": "文档",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/img-to-pdf/",
+      "url": "https://toolhub.bot.cd/tools/img-to-pdf/",
       "source": "内置实现 (pdf-lib)",
       "license": "MIT",
       "tags": [
@@ -474,7 +474,7 @@
       "desc": "查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码",
       "category": "图片",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/exif-strip/",
+      "url": "https://toolhub.bot.cd/tools/exif-strip/",
       "source": "社区贡献 · 纯浏览器实现（无第三方依赖）",
       "license": "MIT",
       "tags": [
@@ -490,7 +490,7 @@
       "desc": "PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码",
       "category": "图片",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/image-convert/",
+      "url": "https://toolhub.bot.cd/tools/image-convert/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -505,7 +505,7 @@
       "desc": "批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/id-validate/",
+      "url": "https://toolhub.bot.cd/tools/id-validate/",
       "source": "内置实现",
       "license": "MIT",
       "tags": [
@@ -521,7 +521,7 @@
       "desc": "拖出选区或填空坐标裁剪图片，支持等比锁定与圆角",
       "category": "图片",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/img-crop/",
+      "url": "https://toolhub.bot.cd/tools/img-crop/",
       "source": "内置实现 (Canvas API)",
       "license": "MIT",
       "tags": [
@@ -537,7 +537,7 @@
       "desc": "拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对",
       "category": "开发",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/file-hash/",
+      "url": "https://toolhub.bot.cd/tools/file-hash/",
       "source": "内置实现（手写增量 MD5 / SHA 系列）",
       "license": "MIT",
       "tags": [
@@ -554,7 +554,7 @@
       "desc": "CSV 列太多？选列、拖动排序、按列值过滤后导出新表",
       "category": "数据",
       "runtime": "browser",
-      "url": "https://toolhub.guyang1966.workers.dev/tools/csv-columns/",
+      "url": "https://toolhub.bot.cd/tools/csv-columns/",
       "source": "内置实现（自写 CSV 引号状态机）",
       "license": "MIT",
       "tags": [
@@ -1400,6 +1400,40 @@
       "tags": [
         "格式转换",
         "文件"
+      ]
+    },
+    {
+      "id": "it-tools",
+      "name": "IT-Tools",
+      "desc": "几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码",
+      "category": "开发",
+      "runtime": "link",
+      "url": "https://it-tools.tech",
+      "source": "github.com/CorentinTh/it-tools",
+      "license": "GPL-3.0",
+      "tags": [
+        "工具箱",
+        "哈希",
+        "时间戳",
+        "正则",
+        "编解码"
+      ]
+    },
+    {
+      "id": "ffmpeg-wasm",
+      "name": "ffmpeg.wasm",
+      "desc": "浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF",
+      "category": "音视频",
+      "runtime": "link",
+      "url": "https://ffmpegwasm.netlify.app",
+      "source": "github.com/ffmpegwasm/ffmpeg.wasm",
+      "license": "MIT",
+      "tags": [
+        "视频",
+        "转码",
+        "压缩",
+        "gif",
+        "ffmpeg"
       ]
     }
   ]
