@@ -193,6 +193,10 @@ async function fill(map) {
 }
 
 async function clickRun() {
+  // 工具页是运行时渲染的：openTool 要依次等注册表、多语言、样式表、本篇教程四份资源。
+  // v3.10 教程改成按 id 单篇取之后多了一次真实网络请求，goto 的固定等待偶尔不够，
+  // 表现为「点运行按钮时它还不存在」的偶发失败。等元素出现比赌时间可靠。
+  await waitEl('run-btn', 15000);
   await evaluate(`document.getElementById('run-btn').click()`);
 }
 
@@ -310,6 +314,16 @@ async function feedFile(selector, dataUrl, name, type) {
   const homeHasToolCss = await evaluate(`!!document.querySelector('link[href="/assets/style.tool.css"]')`);
   check('首页不加载工具页样式', homeHasToolCss === false);
   await shot('01-home');
+
+  // ---- 1.5 /?q= 搜索落地（v3.10）----
+  // 首页 ld+json 里的 SearchAction 指向 /?q=。声明了站内搜索，这个 URL 就必须真能筛出结果——
+  // 抓出来是空页会被 Search Console 判为无效结构化数据，比不声明更糟。
+  await goto('/?q=pdf');
+  const qValue = await evaluate(`(document.getElementById('search') || {}).value || ''`);
+  const qCount = await evaluate(`document.querySelectorAll('#grid [data-id]').length`);
+  check('/?q= 回填到搜索框', qValue === 'pdf', JSON.stringify(qValue));
+  check('/?q= 真实筛出了结果', qCount > 0 && qCount < 24, qCount + ' 张');
+  await goto('/');
 
   // ---- 2. 键盘操作（真实键盘事件）----
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: '/', code: 'Slash', text: '/', windowsVirtualKeyCode: 191 });

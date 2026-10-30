@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>数值统计 / Number Stats · ToolHub</title>
-  <meta name="description" content="用 Python statistics 计算均值/中位数/标准差/四分位 Mean, median, quartiles and standard deviation via Python statistics" />
+  <title>数值统计 · ToolHub</title>
+  <meta name="description" content="用 Python statistics 计算均值/中位数/标准差/四分位" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/tools/py-stats/" />
   <link rel="canonical" href="https://toolhub.bot.cd/tools/py-stats/" />
-  <meta property="og:title" content="数值统计 / Number Stats · ToolHub" />
-  <meta property="og:description" content="用 Python statistics 计算均值/中位数/标准差/四分位 Mean, median, quartiles and standard deviation via Python statistics" />
+  <meta property="og:title" content="数值统计 · ToolHub" />
+  <meta property="og:description" content="用 Python statistics 计算均值/中位数/标准差/四分位" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
   <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
@@ -39,8 +39,11 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"数值统计","description":"用 Python statistics 计算均值/中位数/标准差/四分位","url":"https://toolhub.bot.cd/tools/py-stats/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"PSF-2.0"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"标准差用样本还是总体公式？","acceptedAnswer":{"@type":"Answer","text":"本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。"}},{"@type":"Question","name":"四分位数为什么和 Excel 算的略有差异？","acceptedAnswer":{"@type":"Answer","text":"插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"标准差用样本还是总体公式？","acceptedAnswer":{"@type":"Answer","text":"本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。"}},{"@type":"Question","name":"四分位数为什么和 Excel 算的略有差异？","acceptedAnswer":{"@type":"Answer","text":"插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。"}},{"@type":"Question","name":"和 Excel 算出来的数不一样，该信哪个？","acceptedAnswer":{"@type":"Answer","text":"先确认口径：样本标准差除以 n-1，总体标准差除以 n。Excel 的 STDEV.P 是总体、STDEV.S 是样本，工具默认给样本。四分位数的算法有至少九种（Excel 用 PERCENTILE.INC），差异就出在插值方式上。口径一致时两边结果应当相同。"}},{"@type":"Question","name":"能一次算多少个数？","acceptedAnswer":{"@type":"Answer","text":"几千个数值很快，十万级会开始明显等待——WebAssembly 传大数据本身有开销。真要跑大规模统计，导出成 CSV 用本地 Python 更合适，这里定位是「贴一列数看一眼」。"}},{"@type":"Question","name":"能直接导入 CSV 吗？","acceptedAnswer":{"@type":"Answer","text":"把数值列粘进来就行，工具会按分隔符切分。含表头的第一行会被识别并跳过；混入文字的行会提示而不是静默丢掉——静默丢数据是统计工具最危险的失败方式。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用数值统计","description":"用 Python statistics 计算均值/中位数/标准差/四分位","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"数值统计"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴数值（空格、逗号或换行分隔，工具自动切分）","text":"粘贴数值（空格、逗号或换行分隔，工具自动切分）","url":"https://toolhub.bot.cd/tools/py-stats/#step1"},{"@type":"HowToStep","position":2,"name":"查看均值、中位数、标准差、四分位数等统计量","text":"查看均值、中位数、标准差、四分位数等统计量","url":"https://toolhub.bot.cd/tools/py-stats/#step2"},{"@type":"HowToStep","position":3,"name":"结合分布形态判断：均值与中位数差得远说明有极端值","text":"结合分布形态判断：均值与中位数差得远说明有极端值","url":"https://toolhub.bot.cd/tools/py-stats/#step3"},{"@type":"HowToStep","position":4,"name":"把结果写进报告，注明用的是样本标准差口径","text":"把结果写进报告，注明用的是样本标准差口径","url":"https://toolhub.bot.cd/tools/py-stats/#step4"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -65,7 +68,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>数值统计</h1><p>用 Python statistics 计算均值/中位数/标准差/四分位</p><h2>关于数值统计</h2><p>描述一组数据最常用的几个量：均值反映集中趋势，中位数抗异常值，标准差反映离散程度，四分位数刻画分布形状。当数据里存在极端值时，中位数和四分位距比均值更能代表真实水平——这也是“平均工资”经常让人困惑的原因。</p><h2>使用步骤</h2><ol><li>粘贴数值（空格、逗号或换行分隔，工具自动切分）</li><li>查看均值、中位数、标准差、四分位数等统计量</li><li>结合分布形态判断：均值与中位数差得远说明有极端值</li><li>把结果写进报告，注明用的是样本标准差口径</li></ol><h2>常见错误</h2><h3>数据没清洗就统计</h3><p>混入文字、空值或千分位逗号会让整列解析失败。先用 CSV 数据体检确认列类型干净。</p><h3>均值代表一切</h3><p>收入、房价这类长尾分布的数据，均值会被少数极端值拉高。同时给出中位数和分位数才有说服力。</p><h3>样本总体口径混用</h3><p>报告里写“标准差”要说明除以 n 还是 n-1，两种口径数值不同，评审时容易被问住。</p><h2>常见问题</h2><h3>标准差用样本还是总体公式？</h3><p>本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。</p><h3>四分位数为什么和 Excel 算的略有差异？</h3><p>插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。</p><p>来源：Python 标准库 statistics (Pyodide) · License: PSF-2.0 · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/csv-json/">CSV ↔ JSON</a> —— CSV 与 JSON 数组互转，正确处理引号与换行</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>数值统计</h1><p>用 Python statistics 计算均值/中位数/标准差/四分位</p><h2>关于数值统计</h2><p>描述一组数据最常用的几个量：均值反映集中趋势，中位数抗异常值，标准差反映离散程度，四分位数刻画分布形状。当数据里存在极端值时，中位数和四分位距比均值更能代表真实水平——这也是“平均工资”经常让人困惑的原因。</p><h2>使用步骤</h2><ol><li>粘贴数值（空格、逗号或换行分隔，工具自动切分）</li><li>查看均值、中位数、标准差、四分位数等统计量</li><li>结合分布形态判断：均值与中位数差得远说明有极端值</li><li>把结果写进报告，注明用的是样本标准差口径</li></ol><h2>常见错误</h2><h3>数据没清洗就统计</h3><p>混入文字、空值或千分位逗号会让整列解析失败。先用 CSV 数据体检确认列类型干净。</p><h3>均值代表一切</h3><p>收入、房价这类长尾分布的数据，均值会被少数极端值拉高。同时给出中位数和分位数才有说服力。</p><h3>样本总体口径混用</h3><p>报告里写“标准差”要说明除以 n 还是 n-1，两种口径数值不同，评审时容易被问住。</p><h2>常见问题</h2><h3>标准差用样本还是总体公式？</h3><p>本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。</p><h3>四分位数为什么和 Excel 算的略有差异？</h3><p>插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。</p><h3>和 Excel 算出来的数不一样，该信哪个？</h3><p>先确认口径：样本标准差除以 n-1，总体标准差除以 n。Excel 的 STDEV.P 是总体、STDEV.S 是样本，工具默认给样本。四分位数的算法有至少九种（Excel 用 PERCENTILE.INC），差异就出在插值方式上。口径一致时两边结果应当相同。</p><h3>能一次算多少个数？</h3><p>几千个数值很快，十万级会开始明显等待——WebAssembly 传大数据本身有开销。真要跑大规模统计，导出成 CSV 用本地 Python 更合适，这里定位是「贴一列数看一眼」。</p><h3>能直接导入 CSV 吗？</h3><p>把数值列粘进来就行，工具会按分隔符切分。含表头的第一行会被识别并跳过；混入文字的行会提示而不是静默丢掉——静默丢数据是统计工具最危险的失败方式。</p><p>来源：Python 标准库 statistics (Pyodide) · License: PSF-2.0 · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/csv-json/">CSV ↔ JSON</a> —— CSV 与 JSON 数组互转，正确处理引号与换行</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

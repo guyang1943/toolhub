@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>字数统计 / Word Count · ToolHub</title>
-  <meta name="description" content="中英文字数、字符、段落与阅读时长统计 Characters, CJK characters, words, paragraphs and reading time" />
+  <title>字数统计 · ToolHub</title>
+  <meta name="description" content="中英文字数、字符、段落与阅读时长统计" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/tools/word-count/" />
   <link rel="canonical" href="https://toolhub.bot.cd/tools/word-count/" />
-  <meta property="og:title" content="字数统计 / Word Count · ToolHub" />
-  <meta property="og:description" content="中英文字数、字符、段落与阅读时长统计 Characters, CJK characters, words, paragraphs and reading time" />
+  <meta property="og:title" content="字数统计 · ToolHub" />
+  <meta property="og:description" content="中英文字数、字符、段落与阅读时长统计" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
   <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
@@ -39,8 +39,11 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"字数统计","description":"中英文字数、字符、段落与阅读时长统计","url":"https://toolhub.bot.cd/tools/word-count/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"中文字数怎么算？","acceptedAnswer":{"@type":"Answer","text":"按汉字字符个数统计，不含标点与空格。这是公众号、多数内容平台采用的口径。"}},{"@type":"Question","name":"阅读时长准吗？","acceptedAnswer":{"@type":"Answer","text":"只是估算，按中文 400 字/分钟、英文 200 词/分钟计算，实际受内容难度与讲者语速影响。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"中文字数怎么算？","acceptedAnswer":{"@type":"Answer","text":"按汉字字符个数统计，不含标点与空格。这是公众号、多数内容平台采用的口径。"}},{"@type":"Question","name":"阅读时长准吗？","acceptedAnswer":{"@type":"Answer","text":"只是估算，按中文 400 字/分钟、英文 200 词/分钟计算，实际受内容难度与讲者语速影响。"}},{"@type":"Question","name":"英文单词怎么算？","acceptedAnswer":{"@type":"Answer","text":"按空白和标点切分连续的字母序列，don't 算 1 个词，well-known 算 2 个。这和 Word 的计数口径接近，但和某些平台的「字符数」统计不同——公众号按字符、部分期刊按词，先确认对方要求哪个。"}},{"@type":"Question","name":"标点和数字算不算？","acceptedAnswer":{"@type":"Answer","text":"纯标点不算字，数字算。中英混排时中文按字计、英文按词计，这是最贴近实际阅读量的口径。要严格按「字符数」投稿，看另一个字符统计数值。"}},{"@type":"Question","name":"能统计多段分别的字数吗？","acceptedAnswer":{"@type":"Answer","text":"整体统计是默认行为。要分段统计，把每段单独贴一次最快——目前没有按段落拆分的报表。写论文卡字数时这个用法比整体数字更有用。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用字数统计","description":"中英文字数、字符、段落与阅读时长统计","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"字数统计"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴或输入正文内容","text":"粘贴或输入正文内容","url":"https://toolhub.bot.cd/tools/word-count/#step1"},{"@type":"HowToStep","position":2,"name":"查看分开统计的汉字数、英文单词数、字符数（含/不含空格）","text":"查看分开统计的汉字数、英文单词数、字符数（含/不含空格）","url":"https://toolhub.bot.cd/tools/word-count/#step2"},{"@type":"HowToStep","position":3,"name":"按目标平台的口径取对应数字核对限制","text":"按目标平台的口径取对应数字核对限制","url":"https://toolhub.bot.cd/tools/word-count/#step3"},{"@type":"HowToStep","position":4,"name":"参考阅读时长估算安排讲稿或视频节奏","text":"参考阅读时长估算安排讲稿或视频节奏","url":"https://toolhub.bot.cd/tools/word-count/#step4"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -65,7 +68,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>字数统计</h1><p>中英文字数、字符、段落与阅读时长统计</p><h2>关于字数统计</h2><p>不同平台对字数的统计口径不一样：有的按字符数（含空格），有的只算汉字，有的把英文按单词计。投稿、公众号、论文摘要的字数限制如果按错口径核对，很容易在最后一步被打回。分开统计中英文与标点，才能对上平台规则。</p><h2>使用步骤</h2><ol><li>粘贴或输入正文内容</li><li>查看分开统计的汉字数、英文单词数、字符数（含/不含空格）</li><li>按目标平台的口径取对应数字核对限制</li><li>参考阅读时长估算安排讲稿或视频节奏</li></ol><h2>常见错误</h2><h3>口径对不上平台</h3><p>有的平台把标点计入字数，有的不计。提交前看清对方规则，取对应的统计项，别只看一个总数。</p><h3>粘贴时带上格式残留</h3><p>从 Word 或网页复制会带入零宽字符和全角空格，统计数虚高。先过一遍纯文本再计数。</p><h3>英文按字符数估算</h3><p>英文文章用“字符数”对字数限制没有意义，平台基本按单词计。双语内容要分开看两个口径。</p><h2>常见问题</h2><h3>中文字数怎么算？</h3><p>按汉字字符个数统计，不含标点与空格。这是公众号、多数内容平台采用的口径。</p><h3>阅读时长准吗？</h3><p>只是估算，按中文 400 字/分钟、英文 200 词/分钟计算，实际受内容难度与讲者语速影响。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>字数统计</h1><p>中英文字数、字符、段落与阅读时长统计</p><h2>关于字数统计</h2><p>不同平台对字数的统计口径不一样：有的按字符数（含空格），有的只算汉字，有的把英文按单词计。投稿、公众号、论文摘要的字数限制如果按错口径核对，很容易在最后一步被打回。分开统计中英文与标点，才能对上平台规则。</p><h2>使用步骤</h2><ol><li>粘贴或输入正文内容</li><li>查看分开统计的汉字数、英文单词数、字符数（含/不含空格）</li><li>按目标平台的口径取对应数字核对限制</li><li>参考阅读时长估算安排讲稿或视频节奏</li></ol><h2>常见错误</h2><h3>口径对不上平台</h3><p>有的平台把标点计入字数，有的不计。提交前看清对方规则，取对应的统计项，别只看一个总数。</p><h3>粘贴时带上格式残留</h3><p>从 Word 或网页复制会带入零宽字符和全角空格，统计数虚高。先过一遍纯文本再计数。</p><h3>英文按字符数估算</h3><p>英文文章用“字符数”对字数限制没有意义，平台基本按单词计。双语内容要分开看两个口径。</p><h2>常见问题</h2><h3>中文字数怎么算？</h3><p>按汉字字符个数统计，不含标点与空格。这是公众号、多数内容平台采用的口径。</p><h3>阅读时长准吗？</h3><p>只是估算，按中文 400 字/分钟、英文 200 词/分钟计算，实际受内容难度与讲者语速影响。</p><h3>英文单词怎么算？</h3><p>按空白和标点切分连续的字母序列，don't 算 1 个词，well-known 算 2 个。这和 Word 的计数口径接近，但和某些平台的「字符数」统计不同——公众号按字符、部分期刊按词，先确认对方要求哪个。</p><h3>标点和数字算不算？</h3><p>纯标点不算字，数字算。中英混排时中文按字计、英文按词计，这是最贴近实际阅读量的口径。要严格按「字符数」投稿，看另一个字符统计数值。</p><h3>能统计多段分别的字数吗？</h3><p>整体统计是默认行为。要分段统计，把每段单独贴一次最快——目前没有按段落拆分的报表。写论文卡字数时这个用法比整体数字更有用。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

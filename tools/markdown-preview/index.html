@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Markdown 预览 / Markdown Preview · ToolHub</title>
-  <meta name="description" content="实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS Live Markdown rendering, sanitized with DOMPurify" />
+  <title>Markdown 预览 · ToolHub</title>
+  <meta name="description" content="实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/tools/markdown-preview/" />
   <link rel="canonical" href="https://toolhub.bot.cd/tools/markdown-preview/" />
-  <meta property="og:title" content="Markdown 预览 / Markdown Preview · ToolHub" />
-  <meta property="og:description" content="实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS Live Markdown rendering, sanitized with DOMPurify" />
+  <meta property="og:title" content="Markdown 预览 · ToolHub" />
+  <meta property="og:description" content="实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
   <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
@@ -39,8 +39,11 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Markdown 预览","description":"实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS","url":"https://toolhub.bot.cd/tools/markdown-preview/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"预览里能正常显示，发到平台上却乱掉？","acceptedAnswer":{"@type":"Answer","text":"不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。"}},{"@type":"Question","name":"粘贴的 HTML 会被执行吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"预览里能正常显示，发到平台上却乱掉？","acceptedAnswer":{"@type":"Answer","text":"不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。"}},{"@type":"Question","name":"粘贴的 HTML 会被执行吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。"}},{"@type":"Question","name":"支持哪些扩展语法？","acceptedAnswer":{"@type":"Answer","text":"表格、任务列表、删除线、围栏代码块这些 GFM 扩展都支持。数学公式和 mermaid 图不在默认范围内——它们要额外的渲染器，会让首屏体积翻倍。"}},{"@type":"Question","name":"为什么本地预览正常，发到公众号或知乎就乱了？","acceptedAnswer":{"@type":"Answer","text":"因为各平台的 Markdown 方言不同：有的不支持表格，有的把 HTML 过滤掉，有的对嵌套列表的缩进要求不一样。预览只能保证「标准 GFM 下的渲染结果」，发布前要在目标平台再看一眼。"}},{"@type":"Question","name":"能导出成 HTML 吗？","acceptedAnswer":{"@type":"Answer","text":"渲染结果是真实的 DOM，可以选中复制（带格式）粘进富文本编辑器，也可以用开发者工具拷 outerHTML。要独立文件的话，把渲染结果套一层最小 HTML 骨架就行。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用Markdown 预览","description":"实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"Markdown 预览"}],"step":[{"@type":"HowToStep","position":1,"name":"在左侧编辑器输入或粘贴 Markdown 文本","text":"在左侧编辑器输入或粘贴 Markdown 文本","url":"https://toolhub.bot.cd/tools/markdown-preview/#step1"},{"@type":"HowToStep","position":2,"name":"右侧实时渲染，滚动位置左右同步","text":"右侧实时渲染，滚动位置左右同步","url":"https://toolhub.bot.cd/tools/markdown-preview/#step2"},{"@type":"HowToStep","position":3,"name":"需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码","text":"需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码","url":"https://toolhub.bot.cd/tools/markdown-preview/#step3"},{"@type":"HowToStep","position":4,"name":"发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍","text":"发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍","url":"https://toolhub.bot.cd/tools/markdown-preview/#step4"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -65,7 +68,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Markdown 预览</h1><p>实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</p><h2>关于Markdown 预览</h2><p>Markdown 用少量符号描述文档结构（# 标题、- 列表、``` 代码块），渲染后生成 HTML 页面。它在 README、技术文档、Issue 中被广泛使用，但不同渲染器对表格、脚注、HTML 混排的支持不一致，所以发布前在实际渲染器里预览一遍很有必要。</p><h2>使用步骤</h2><ol><li>在左侧编辑器输入或粘贴 Markdown 文本</li><li>右侧实时渲染，滚动位置左右同步</li><li>需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码</li><li>发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍</li></ol><h2>常见错误</h2><h3>表格少了分隔行</h3><p>Markdown 表格第二行必须是 |---| 形式的分隔行，漏掉它整段会被当成普通文本。分隔行前后各留一个空行更稳。</p><h3>代码块不标语言</h3><p>``` 后面不写语言就没有语法高亮，某些平台还会按纯文本处理。标上 js、python、bash 体验差别很大。</p><h3>依赖平台方言</h3><p>任务列表、@提及、折叠块都是扩展语法，换个渲染器就失效。对外发布的文档坚持用标准语法最安全。</p><h2>常见问题</h2><h3>预览里能正常显示，发到平台上却乱掉？</h3><p>不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。</p><h3>粘贴的 HTML 会被执行吗？</h3><p>不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。</p><p>来源：基于开源 marked (MIT) + DOMPurify (Apache-2.0) · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/evaluations/markdown-editors/">Markdown 编辑器横评：四款主流在线编辑器怎么选</a> —— 横评对比</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Markdown 预览</h1><p>实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</p><h2>关于Markdown 预览</h2><p>Markdown 用少量符号描述文档结构（# 标题、- 列表、``` 代码块），渲染后生成 HTML 页面。它在 README、技术文档、Issue 中被广泛使用，但不同渲染器对表格、脚注、HTML 混排的支持不一致，所以发布前在实际渲染器里预览一遍很有必要。</p><h2>使用步骤</h2><ol><li>在左侧编辑器输入或粘贴 Markdown 文本</li><li>右侧实时渲染，滚动位置左右同步</li><li>需要 HTML 时切换「导出 HTML」，得到可直接嵌入页面的代码</li><li>发布前按目标平台（GitHub / 公众号 / 内部 wiki）各预览一遍</li></ol><h2>常见错误</h2><h3>表格少了分隔行</h3><p>Markdown 表格第二行必须是 |---| 形式的分隔行，漏掉它整段会被当成普通文本。分隔行前后各留一个空行更稳。</p><h3>代码块不标语言</h3><p>``` 后面不写语言就没有语法高亮，某些平台还会按纯文本处理。标上 js、python、bash 体验差别很大。</p><h3>依赖平台方言</h3><p>任务列表、@提及、折叠块都是扩展语法，换个渲染器就失效。对外发布的文档坚持用标准语法最安全。</p><h2>常见问题</h2><h3>预览里能正常显示，发到平台上却乱掉？</h3><p>不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。</p><h3>粘贴的 HTML 会被执行吗？</h3><p>不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。</p><h3>支持哪些扩展语法？</h3><p>表格、任务列表、删除线、围栏代码块这些 GFM 扩展都支持。数学公式和 mermaid 图不在默认范围内——它们要额外的渲染器，会让首屏体积翻倍。</p><h3>为什么本地预览正常，发到公众号或知乎就乱了？</h3><p>因为各平台的 Markdown 方言不同：有的不支持表格，有的把 HTML 过滤掉，有的对嵌套列表的缩进要求不一样。预览只能保证「标准 GFM 下的渲染结果」，发布前要在目标平台再看一眼。</p><h3>能导出成 HTML 吗？</h3><p>渲染结果是真实的 DOM，可以选中复制（带格式）粘进富文本编辑器，也可以用开发者工具拷 outerHTML。要独立文件的话，把渲染结果套一层最小 HTML 骨架就行。</p><p>来源：基于开源 marked (MIT) + DOMPurify (Apache-2.0) · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/base64-url/">Base64 / URL 编解码</a> —— Base64 与 URL 编码互转，支持中文</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/writing-toolkit/">写作工具箱</a> —— 专题工具包</li><li><a href="/evaluations/markdown-editors/">Markdown 编辑器横评：四款主流在线编辑器怎么选</a> —— 横评对比</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

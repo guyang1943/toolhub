@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSV 数据体检 / CSV Health Check · ToolHub</title>
-  <meta name="description" content="pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要 pandas-powered analysis of a CSV: shape, dtypes, missing values, summaries" />
+  <title>CSV 数据体检 · ToolHub</title>
+  <meta name="description" content="pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/tools/pandas-csv/" />
   <link rel="canonical" href="https://toolhub.bot.cd/tools/pandas-csv/" />
-  <meta property="og:title" content="CSV 数据体检 / CSV Health Check · ToolHub" />
-  <meta property="og:description" content="pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要 pandas-powered analysis of a CSV: shape, dtypes, missing values, summaries" />
+  <meta property="og:title" content="CSV 数据体检 · ToolHub" />
+  <meta property="og:description" content="pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
   <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
@@ -39,8 +39,11 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"CSV 数据体检","description":"pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要","url":"https://toolhub.bot.cd/tools/pandas-csv/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"BSD-3-Clause"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么我的数值列被识别成 object？","acceptedAnswer":{"@type":"Answer","text":"列里混有非数字内容，比如千分位逗号、货币符号、空格、破折号或中文“无”。清洗后再读入即可。"}},{"@type":"Question","name":"缺失值和空格子是一回事吗？","acceptedAnswer":{"@type":"Answer","text":"读入时空字符串默认按缺失值（NaN）处理，但仅含空格的字段会被当成普通字符串，需要加 skipinitialspace 或用 strip 处理。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么我的数值列被识别成 object？","acceptedAnswer":{"@type":"Answer","text":"列里混有非数字内容，比如千分位逗号、货币符号、空格、破折号或中文“无”。清洗后再读入即可。"}},{"@type":"Question","name":"缺失值和空格子是一回事吗？","acceptedAnswer":{"@type":"Answer","text":"读入时空字符串默认按缺失值（NaN）处理，但仅含空格的字段会被当成普通字符串，需要加 skipinitialspace 或用 strip 处理。"}},{"@type":"Question","name":"和直接用 pandas 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"这里是把 pandas 的常见体检动作预先做成了固定流程：类型推断、缺失值、重复行、异常分布，一次跑完给报告。省掉写代码，代价是不能自定义分析逻辑。要做任意变换还得自己写。"}},{"@type":"Question","name":"能导出清洗后的数据吗？","acceptedAnswer":{"@type":"Answer","text":"目前只出报告，不改你的数据。这是有意的边界——自动「修复」数据比自动检测危险得多，删错行不会有提示。按报告里指出的问题回到原表改，改完再上传一次核对。"}},{"@type":"Question","name":"内置了哪些检查？","acceptedAnswer":{"@type":"Answer","text":"主要覆盖四类：每列推断出的类型（以及为什么是 object）、缺失与空字符串的分布、完全重复的行、数值列的分布异常。这四项能解释掉数据清洗里大部分「为什么跑不出结果」。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用CSV 数据体检","description":"pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"CSV 数据体检"}],"step":[{"@type":"HowToStep","position":1,"name":"上传或粘贴 CSV 内容，自动读取前 1000 行做体检","text":"上传或粘贴 CSV 内容，自动读取前 1000 行做体检","url":"https://toolhub.bot.cd/tools/pandas-csv/#step1"},{"@type":"HowToStep","position":2,"name":"查看概览：行列数、每列类型、缺失值数量与占比","text":"查看概览：行列数、每列类型、缺失值数量与占比","url":"https://toolhub.bot.cd/tools/pandas-csv/#step2"},{"@type":"HowToStep","position":3,"name":"展开数值列看统计摘要，找出异常范围和离群值","text":"展开数值列看统计摘要，找出异常范围和离群值","url":"https://toolhub.bot.cd/tools/pandas-csv/#step3"},{"@type":"HowToStep","position":4,"name":"根据报告清洗数据（去空格、统一占位符），再重新分析","text":"根据报告清洗数据（去空格、统一占位符），再重新分析","url":"https://toolhub.bot.cd/tools/pandas-csv/#step4"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -65,7 +68,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV 数据体检</h1><p>pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</p><h2>关于CSV 数据体检</h2><p>数据分析的第一步不是建模，而是“体检”：有多少行多少列、每列是什么类型、缺失值集中在哪、数值分布是否合理。类型识别尤其关键——一列本该是数字却显示为 object，说明混入了空格、货币符号或“无”这类占位文本，后续任何计算都会出错。</p><h2>使用步骤</h2><ol><li>上传或粘贴 CSV 内容，自动读取前 1000 行做体检</li><li>查看概览：行列数、每列类型、缺失值数量与占比</li><li>展开数值列看统计摘要，找出异常范围和离群值</li><li>根据报告清洗数据（去空格、统一占位符），再重新分析</li></ol><h2>常见错误</h2><h3>没看类型直接求和</h3><p>object 列参与计算会报错或被当成字符串拼接。先看体检报告的类型列，确认是 int/float 再算。</p><h3>占位符伪装成数据</h3><p>「无」「-」「N/A」都会被当成有效字符串，拉高非缺失计数。和业务方确认占位符清单，统一替换成空。</p><h3>重复列名被静默改名</h3><p>pandas 会给重名列加 .1 后缀，后续按列名取值会 KeyError。体检时留意列名是否和源文件一致。</p><h2>常见问题</h2><h3>为什么我的数值列被识别成 object？</h3><p>列里混有非数字内容，比如千分位逗号、货币符号、空格、破折号或中文“无”。清洗后再读入即可。</p><h3>缺失值和空格子是一回事吗？</h3><p>读入时空字符串默认按缺失值（NaN）处理，但仅含空格的字段会被当成普通字符串，需要加 skipinitialspace 或用 strip 处理。</p><p>来源：基于 pandas (BSD-3-Clause) + Pyodide · License: BSD-3-Clause · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/csv-json/">CSV ↔ JSON</a> —— CSV 与 JSON 数组互转，正确处理引号与换行</li><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV 数据体检</h1><p>pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</p><h2>关于CSV 数据体检</h2><p>数据分析的第一步不是建模，而是“体检”：有多少行多少列、每列是什么类型、缺失值集中在哪、数值分布是否合理。类型识别尤其关键——一列本该是数字却显示为 object，说明混入了空格、货币符号或“无”这类占位文本，后续任何计算都会出错。</p><h2>使用步骤</h2><ol><li>上传或粘贴 CSV 内容，自动读取前 1000 行做体检</li><li>查看概览：行列数、每列类型、缺失值数量与占比</li><li>展开数值列看统计摘要，找出异常范围和离群值</li><li>根据报告清洗数据（去空格、统一占位符），再重新分析</li></ol><h2>常见错误</h2><h3>没看类型直接求和</h3><p>object 列参与计算会报错或被当成字符串拼接。先看体检报告的类型列，确认是 int/float 再算。</p><h3>占位符伪装成数据</h3><p>「无」「-」「N/A」都会被当成有效字符串，拉高非缺失计数。和业务方确认占位符清单，统一替换成空。</p><h3>重复列名被静默改名</h3><p>pandas 会给重名列加 .1 后缀，后续按列名取值会 KeyError。体检时留意列名是否和源文件一致。</p><h2>常见问题</h2><h3>为什么我的数值列被识别成 object？</h3><p>列里混有非数字内容，比如千分位逗号、货币符号、空格、破折号或中文“无”。清洗后再读入即可。</p><h3>缺失值和空格子是一回事吗？</h3><p>读入时空字符串默认按缺失值（NaN）处理，但仅含空格的字段会被当成普通字符串，需要加 skipinitialspace 或用 strip 处理。</p><h3>和直接用 pandas 有什么区别？</h3><p>这里是把 pandas 的常见体检动作预先做成了固定流程：类型推断、缺失值、重复行、异常分布，一次跑完给报告。省掉写代码，代价是不能自定义分析逻辑。要做任意变换还得自己写。</p><h3>能导出清洗后的数据吗？</h3><p>目前只出报告，不改你的数据。这是有意的边界——自动「修复」数据比自动检测危险得多，删错行不会有提示。按报告里指出的问题回到原表改，改完再上传一次核对。</p><h3>内置了哪些检查？</h3><p>主要覆盖四类：每列推断出的类型（以及为什么是 object）、缺失与空字符串的分布、完全重复的行、数值列的分布异常。这四项能解释掉数据清洗里大部分「为什么跑不出结果」。</p><p>来源：基于 pandas (BSD-3-Clause) + Pyodide · License: BSD-3-Clause · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/csv-json/">CSV ↔ JSON</a> —— CSV 与 JSON 数组互转，正确处理引号与换行</li><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

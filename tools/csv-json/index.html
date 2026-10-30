@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CSV ↔ JSON / CSV to JSON · ToolHub</title>
-  <meta name="description" content="CSV 与 JSON 数组互转，正确处理引号与换行 Convert CSV and JSON arrays both ways, quotes handled correctly" />
+  <title>CSV ↔ JSON · ToolHub</title>
+  <meta name="description" content="CSV 与 JSON 数组互转，正确处理引号与换行" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/tools/csv-json/" />
   <link rel="canonical" href="https://toolhub.bot.cd/tools/csv-json/" />
-  <meta property="og:title" content="CSV ↔ JSON / CSV to JSON · ToolHub" />
-  <meta property="og:description" content="CSV 与 JSON 数组互转，正确处理引号与换行 Convert CSV and JSON arrays both ways, quotes handled correctly" />
+  <meta property="og:title" content="CSV ↔ JSON · ToolHub" />
+  <meta property="og:description" content="CSV 与 JSON 数组互转，正确处理引号与换行" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
   <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
@@ -39,8 +39,11 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"CSV ↔ JSON","description":"CSV 与 JSON 数组互转，正确处理引号与换行","url":"https://toolhub.bot.cd/tools/csv-json/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么导入 Excel 后中文变乱码？","acceptedAnswer":{"@type":"Answer","text":"编码不是 UTF-8。在 Excel 里选择“另存为 → CSV UTF-8”，或从数据导入功能指定 UTF-8 编码。"}},{"@type":"Question","name":"嵌套的 JSON 能转成 CSV 吗？","acceptedAnswer":{"@type":"Answer","text":"只能转单层对象数组。多层嵌套需要先拍平（把嵌套字段展开成 a.b 这样的列名），否则会丢失结构。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么导入 Excel 后中文变乱码？","acceptedAnswer":{"@type":"Answer","text":"编码不是 UTF-8。在 Excel 里选择“另存为 → CSV UTF-8”，或从数据导入功能指定 UTF-8 编码。"}},{"@type":"Question","name":"嵌套的 JSON 能转成 CSV 吗？","acceptedAnswer":{"@type":"Answer","text":"只能转单层对象数组。多层嵌套需要先拍平（把嵌套字段展开成 a.b 这样的列名），否则会丢失结构。"}},{"@type":"Question","name":"大 CSV 会不会把浏览器卡死？","acceptedAnswer":{"@type":"Answer","text":"几万行以内是流畅的；到几十万行时，整份文本解析成对象数组会占掉大量内存，页面会明显停顿。真要处理这么大的量，用「CSV 数据体检」或直接上命令行——浏览器不是批处理引擎。"}},{"@type":"Question","name":"分隔符不是逗号怎么办？","acceptedAnswer":{"@type":"Answer","text":"制表符（TSV）、分号、竖线都支持，工具会自动嗅探，也可以手动指定。分号最常见于欧洲区域的 Excel 导出，直接按逗号切会把整行当成一列。"}},{"@type":"Question","name":"字段里本身有换行怎么处理？","acceptedAnswer":{"@type":"Answer","text":"按 RFC 4180，含换行或分隔符的字段要用双引号包起来，字段内的双引号写成两个。这是 CSV 最容易出错的地方——很多手写解析器按行切分，一遇到多行字段就全乱。本站遵循标准解析。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用CSV ↔ JSON","description":"CSV 与 JSON 数组互转，正确处理引号与换行","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"CSV ↔ JSON"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴 CSV 文本（或 JSON 数组），确认首行是表头","text":"粘贴 CSV 文本（或 JSON 数组），确认首行是表头","url":"https://toolhub.bot.cd/tools/csv-json/#step1"},{"@type":"HowToStep","position":2,"name":"指定分隔符（逗号 / 分号 / Tab）与是否首行为表头","text":"指定分隔符（逗号 / 分号 / Tab）与是否首行为表头","url":"https://toolhub.bot.cd/tools/csv-json/#step2"},{"@type":"HowToStep","position":3,"name":"查看转换结果，抽查含逗号、引号、换行的字段是否正确","text":"查看转换结果，抽查含逗号、引号、换行的字段是否正确","url":"https://toolhub.bot.cd/tools/csv-json/#step3"},{"@type":"HowToStep","position":4,"name":"复制 JSON 或下载，交给下游工具使用","text":"复制 JSON 或下载，交给下游工具使用","url":"https://toolhub.bot.cd/tools/csv-json/#step4"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -65,7 +68,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV ↔ JSON</h1><p>CSV 与 JSON 数组互转，正确处理引号与换行</p><h2>关于CSV ↔ JSON</h2><p>CSV 是最通用的表格交换格式，但它没有类型系统，所有值都是字符串；JSON 则支持嵌套和类型。两者互转时的常见陷阱是分隔符冲突：字段内部含有逗号或换行时，必须用双引号包裹，否则解析会错列。正确处理引号的解析器才能保证数据不串行。</p><h2>使用步骤</h2><ol><li>粘贴 CSV 文本（或 JSON 数组），确认首行是表头</li><li>指定分隔符（逗号 / 分号 / Tab）与是否首行为表头</li><li>查看转换结果，抽查含逗号、引号、换行的字段是否正确</li><li>复制 JSON 或下载，交给下游工具使用</li></ol><h2>常见错误</h2><h3>含逗号字段没加引号</h3><p>「北京, 上海」这种值会把一行裂成两列。生成 CSV 时给所有含分隔符、引号、换行的值加双引号包裹。</p><h3>类型丢失</h3><p>CSV 里全是字符串，转 JSON 后数字还是字符串。下游要计算时先用 pandas 体检或手动转换类型。</p><h3>换行藏在引号里</h3><p>字段内部的换行必须连同引号一起保留，很多简易解析器在这里断行出错，导致行数对不上。</p><h2>常见问题</h2><h3>为什么导入 Excel 后中文变乱码？</h3><p>编码不是 UTF-8。在 Excel 里选择“另存为 → CSV UTF-8”，或从数据导入功能指定 UTF-8 编码。</p><h3>嵌套的 JSON 能转成 CSV 吗？</h3><p>只能转单层对象数组。多层嵌套需要先拍平（把嵌套字段展开成 a.b 这样的列名），否则会丢失结构。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>CSV ↔ JSON</h1><p>CSV 与 JSON 数组互转，正确处理引号与换行</p><h2>关于CSV ↔ JSON</h2><p>CSV 是最通用的表格交换格式，但它没有类型系统，所有值都是字符串；JSON 则支持嵌套和类型。两者互转时的常见陷阱是分隔符冲突：字段内部含有逗号或换行时，必须用双引号包裹，否则解析会错列。正确处理引号的解析器才能保证数据不串行。</p><h2>使用步骤</h2><ol><li>粘贴 CSV 文本（或 JSON 数组），确认首行是表头</li><li>指定分隔符（逗号 / 分号 / Tab）与是否首行为表头</li><li>查看转换结果，抽查含逗号、引号、换行的字段是否正确</li><li>复制 JSON 或下载，交给下游工具使用</li></ol><h2>常见错误</h2><h3>含逗号字段没加引号</h3><p>「北京, 上海」这种值会把一行裂成两列。生成 CSV 时给所有含分隔符、引号、换行的值加双引号包裹。</p><h3>类型丢失</h3><p>CSV 里全是字符串，转 JSON 后数字还是字符串。下游要计算时先用 pandas 体检或手动转换类型。</p><h3>换行藏在引号里</h3><p>字段内部的换行必须连同引号一起保留，很多简易解析器在这里断行出错，导致行数对不上。</p><h2>常见问题</h2><h3>为什么导入 Excel 后中文变乱码？</h3><p>编码不是 UTF-8。在 Excel 里选择“另存为 → CSV UTF-8”，或从数据导入功能指定 UTF-8 编码。</p><h3>嵌套的 JSON 能转成 CSV 吗？</h3><p>只能转单层对象数组。多层嵌套需要先拍平（把嵌套字段展开成 a.b 这样的列名），否则会丢失结构。</p><h3>大 CSV 会不会把浏览器卡死？</h3><p>几万行以内是流畅的；到几十万行时，整份文本解析成对象数组会占掉大量内存，页面会明显停顿。真要处理这么大的量，用「CSV 数据体检」或直接上命令行——浏览器不是批处理引擎。</p><h3>分隔符不是逗号怎么办？</h3><p>制表符（TSV）、分号、竖线都支持，工具会自动嗅探，也可以手动指定。分号最常见于欧洲区域的 Excel 导出，直接按逗号切会把整行当成一列。</p><h3>字段里本身有换行怎么处理？</h3><p>按 RFC 4180，含换行或分隔符的字段要用双引号包起来，字段内的双引号写成两个。这是 CSV 最容易出错的地方——很多手写解析器按行切分，一遇到多行字段就全乱。本站遵循标准解析。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%95%B0%E6%8D%AE">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/csv-columns/">CSV 选列与重排</a> —— CSV 列太多？选列、拖动排序、按列值过滤后导出新表</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/topics/data-cleanup/">数据清洗与转换</a> —— 专题工具包</li><li><a href="/?cat=%E6%95%B0%E6%8D%AE">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

@@ -753,6 +753,83 @@ check('批量处理与 ZIP（E3）', () => {
   return 'STORE + CRC32 单一实现';
 });
 
+// ---------- SEO：结构化数据 ----------
+// v3.10：全站 131 页原来只有首页没有 ld+json——工具页早有 SoftwareApplication /
+// FAQPage / HowTo，首页反而空着，品牌词就拿不到 sitelinks 与搜索框。
+check('首页结构化数据（SEO）', () => {
+  const h = readFileSync(join(root, 'index.html'), 'utf8');
+  const m = h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  assert(m, '首页没有 ld+json');
+  const d = JSON.parse(m[1]);
+  const nodes = d['@graph'] || [d];
+  const types = new Set(nodes.map((x) => x['@type']));
+  assert(types.has('WebSite'), '缺 WebSite');
+  assert(types.has('Organization'), '缺 Organization');
+  const site = nodes.find((x) => x['@type'] === 'WebSite');
+  const tpl = site.potentialAction?.target?.urlTemplate || '';
+  assert(tpl.includes('?q={search_term_string}'), `SearchAction 未指向 ?q=，实际 ${tpl || '(无)'}`);
+  // 声明了站内搜索，就必须真的能搜。写一个抓出来是空页的 URL 会被 Search Console 判无效。
+  const js = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(
+    /URLSearchParams\(location\.search\)\.get\('q'\)/.test(js),
+    'SearchAction 声明了站内搜索，但 app.js 不读 ?q= —— 属于无效声明'
+  );
+  return 'WebSite + Organization + SearchAction(?q= 已接线)';
+});
+
+// ---------- SEO：标题语言单一 ----------
+// 中英挤在一个 title 里（「JSON 格式化 / JSON Formatter · ToolHub」）拿不到两份排名，
+// 只会把权重摊薄，页面语言也判不清楚。英文词条留在 i18n.json，等 hreflang 双语站再用。
+check('标题不中英混排（SEO）', () => {
+  const files = ['index.html', ...all.map((t) => `tools/${t.id}/index.html`)];
+  // 旧格式是「中文名 / 英文名 · ToolHub」——特征是斜杠**右侧是一段纯英文**，
+  // 即同一个工具用两种语言说了两遍。判据就只抓这一种，别的都不算：
+  //   「JSON 格式化 / JSON Formatter」→ 右段纯英 → 混排
+  //   「Base64 / URL 编解码」        → 右段含中文，是名字内部并列，不是混排
+  //   「OKLCH Color Picker · …」    → 产品名本来就是英文，合法
+  const CJK = /[\u4e00-\u9fa5]/;
+  const bad = [];
+  let n = 0;
+  for (const f of files) {
+    const p = join(root, f);
+    if (!existsSync(p)) continue;
+    n++;
+    const m = readFileSync(p, 'utf8').match(/<title>([\s\S]*?)<\/title>/);
+    if (!m) { bad.push(`${f} 无 title`); continue; }
+    const head = m[1].split(' · ')[0];
+    const slash = head.indexOf(' / ');
+    if (slash < 0) continue;
+    const right = head.slice(slash + 3).trim();
+    if (right && !CJK.test(right)) bad.push(`${f}: ${m[1]}`);
+  }
+  assert(!bad.length, `中英混排 ${bad.length} 处：` + bad.slice(0, 4).join(' | '));
+  return `${n} 个页面均为单一语言`;
+});
+
+// ---------- SEO：工具页问答深度 ----------
+// v3.10：本地工具的 FAQ 从每篇 2 条补到 5 条（共 185 条）。FAQPage 结构化数据是
+// 工具页唯一能拿到富结果的抓手，条数掉了直接反映在搜索结果里，所以钉成断言。
+check('工具页 FAQ 深度（SEO）', () => {
+  const thin = [];
+  let n = 0;
+  for (const tool of local.tools) {
+    const p = join(root, 'tools', tool.id, 'index.html');
+    if (!existsSync(p)) continue;
+    const h = readFileSync(p, 'utf8');
+    const blocks = [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+    const faq = blocks.map((b) => JSON.parse(b[1])).find((d) => d['@type'] === 'FAQPage');
+    if (!faq) { thin.push(`${tool.id}(无 FAQPage)`); continue; }
+    const c = (faq.mainEntity || []).length;
+    n += c;
+    if (c < 5) thin.push(`${tool.id}(${c} 条)`);
+  }
+  assert(!thin.length, `FAQ 不足 5 条 ${thin.length} 个：` + thin.slice(0, 6).join(' '));
+  // 单篇 JSON 也要在：工具页按 id 取自己那一篇，缺了就是「SPA 进来没有使用步骤」
+  const noFile = local.tools.filter((t) => !existsSync(join(root, 'articles', t.id + '.json'))).map((t) => t.id);
+  assert(!noFile.length, '缺单篇教程 JSON：' + noFile.slice(0, 6).join(' '));
+  return `${local.tools.length} 个工具页共 ${n} 条问答`;
+});
+
 checkAsync('意图解析规则（E4）', async () => {
   const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
   const cases = [

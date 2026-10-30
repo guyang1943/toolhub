@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.9 · 预缓存 119 个地址 · 约 2.6 MB
-const VERSION = "toolhub-v3.9";
+// 版本：toolhub-v3.10 · 预缓存 156 个地址 · 约 2.8 MB
+const VERSION = "toolhub-v3.10";
 const CORE = [
   "/",
   "/index.html",
@@ -138,7 +138,44 @@ const FULL = [
   "/assets/style.batch.css",
   "/assets/style.offline.css",
   "/assets/style.submit.css",
-  "/assets/style.tool.css"
+  "/assets/style.tool.css",
+  "/articles/base64-url.json",
+  "/articles/case-convert.json",
+  "/articles/color-contrast.json",
+  "/articles/color-convert.json",
+  "/articles/cron-parser.json",
+  "/articles/csv-columns.json",
+  "/articles/csv-json.json",
+  "/articles/exif-strip.json",
+  "/articles/file-hash.json",
+  "/articles/id-validate.json",
+  "/articles/image-base64.json",
+  "/articles/image-compress.json",
+  "/articles/image-convert.json",
+  "/articles/image-resize.json",
+  "/articles/img-crop.json",
+  "/articles/img-to-pdf.json",
+  "/articles/json-format.json",
+  "/articles/jwt-decode.json",
+  "/articles/markdown-preview.json",
+  "/articles/mortgage-calc.json",
+  "/articles/pandas-csv.json",
+  "/articles/password-gen.json",
+  "/articles/pdf-merge.json",
+  "/articles/py-stats.json",
+  "/articles/python-run.json",
+  "/articles/qr-decode.json",
+  "/articles/qrcode.json",
+  "/articles/regex-tester.json",
+  "/articles/sha256-hash.json",
+  "/articles/tax-calc.json",
+  "/articles/text-dedupe.json",
+  "/articles/text-diff.json",
+  "/articles/timestamp.json",
+  "/articles/timezone-convert.json",
+  "/articles/unit-convert.json",
+  "/articles/uuid-gen.json",
+  "/articles/word-count.json"
 ];
 
 self.addEventListener('install', (e) => {

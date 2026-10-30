@@ -25,7 +25,7 @@ const isOfflineTool = (tool) => tool.runtime === 'browser' && !NEEDS_FIRST_FETCH
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
-const SITE = 'ToolHub · 开源工具，打开即用';
+const SITE = 'ToolHub · 本地执行的开源在线工具';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -1193,6 +1193,24 @@ async function loadArticles() {
   }
   return ARTICLES;
 }
+// v3.10：教程正文加厚后整份 articles.json 到 112 KB（gzip 44 KB），
+// 而单个工具页只用到自己那篇（raw 平均 1.2 KB）。所以构建期按 id 拆了单篇，
+// 这里按需取。取不到（老部署 / 新增工具还没文章）再退回整份。
+const ARTICLE_CACHE = new Map();
+async function loadArticle(id) {
+  if (!id) return null;
+  if (ARTICLE_CACHE.has(id)) return ARTICLE_CACHE.get(id);
+  let art = null;
+  try {
+    const r = await fetch('/articles/' + id + '.json');
+    if (r.ok) art = await r.json();
+  } catch {
+    art = null;
+  }
+  if (!art) art = (await loadArticles())[id] || null;
+  ARTICLE_CACHE.set(id, art);
+  return art;
+}
 
 async function openEvaluations() {
   const data = await loadEvaluations();
@@ -1534,7 +1552,16 @@ async function renderHome() {
   await loadI18n();
   applyStaticText();
   setView('home');
-  document.title = LANG === 'en' ? 'ToolHub · Open-source tools, ready to use' : SITE;
+  document.title = LANG === 'en' ? 'ToolHub · Local-first open-source tools' : SITE;
+  // v3.10：/?q=关键词 直接带出筛选结果。首页 SearchAction 的落地入口就是它，
+  // 所以这个参数必须真的生效——结构化数据里写一个抓不出内容的 URL，是会被判负的。
+  // 复用 input 事件的同一份筛选逻辑：填进两个框，末尾的 renderGrid 自然会读到。
+  const q0 = new URLSearchParams(location.search).get('q');
+  if (q0) {
+    $('#search').value = q0;
+    const heroBox = document.getElementById('hero-search');
+    if (heroBox) heroBox.value = q0;
+  }
   $('#foot-count').textContent =
     LANG === 'en'
       ? `${reg.counts.local + reg.counts.dir} ${t('tools curated', 'footerCount')}`
@@ -1632,7 +1659,7 @@ async function openTool(id) {
     return;
   }
   m.bindToolPage({
-    $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles,
+    $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles, loadArticle,
     kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive,
     getRegistry: () => REGISTRY,
     getLang: () => LANG,

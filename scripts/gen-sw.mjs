@@ -105,6 +105,13 @@ export function buildSw({ quiet = false } = {}) {
   for (const f of readdirSync(join(root, 'assets'))) {
     if (f.endsWith('.css')) full.add('/assets/' + f);
   }
+  // 单篇教程 JSON（v3.10）：工具页按需取自己那一篇。离线时工具页要能照常显示
+  // 使用步骤与常见错误，所以一起进包——37 个文件合计约 45 KB，相对 2.7 MB 忽略不计。
+  if (existsSync(join(root, 'articles'))) {
+    for (const f of readdirSync(join(root, 'articles'))) {
+      if (f.endsWith('.json')) full.add('/articles/' + f);
+    }
+  }
 
   // 只收录真的存在于磁盘上的路径：install 里的 addAll 是「全有或全无」，一个 404 会让整个装包失败
   const CORE = CORE_ALL.filter(onDisk);

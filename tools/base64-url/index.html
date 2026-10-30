@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Base64 / URL 编解码 / Base64 / URL Codec · ToolHub</title>
-  <meta name="description" content="Base64 与 URL 编码互转，支持中文 Encode and decode Base64 and URL components, UTF-8 safe" />
+  <title>Base64 / URL 编解码 · ToolHub</title>
+  <meta name="description" content="Base64 与 URL 编码互转，支持中文" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/tools/base64-url/" />
   <link rel="canonical" href="https://toolhub.bot.cd/tools/base64-url/" />
-  <meta property="og:title" content="Base64 / URL 编解码 / Base64 / URL Codec · ToolHub" />
-  <meta property="og:description" content="Base64 与 URL 编码互转，支持中文 Encode and decode Base64 and URL components, UTF-8 safe" />
+  <meta property="og:title" content="Base64 / URL 编解码 · ToolHub" />
+  <meta property="og:description" content="Base64 与 URL 编码互转，支持中文" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ToolHub · 开源工具，打开即用" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
   <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
@@ -39,8 +39,11 @@
   <link rel="manifest" href="/site.webmanifest" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Base64 / URL 编解码","description":"Base64 与 URL 编码互转，支持中文","url":"https://toolhub.bot.cd/tools/base64-url/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么用 btoa() 处理中文会报错？","acceptedAnswer":{"@type":"Answer","text":"btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。"}},{"@type":"Question","name":"Base64 能用来加密数据吗？","acceptedAnswer":{"@type":"Answer","text":"不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么用 btoa() 处理中文会报错？","acceptedAnswer":{"@type":"Answer","text":"btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。"}},{"@type":"Question","name":"Base64 能用来加密数据吗？","acceptedAnswer":{"@type":"Answer","text":"不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。"}},{"@type":"Question","name":"URL 编码和 Base64 该用哪个？","acceptedAnswer":{"@type":"Answer","text":"URL 编码（encodeURIComponent）用于把参数安全地放进 URL，结果是可读的 %E4%B8%AD 形式；Base64 用于把任意二进制塞进只接受文本的通道，比如邮件、JSON 字段、Data URI。两者目的不同，不能互相替代。"}},{"@type":"Question","name":"为什么编码后长度会变长三分之一？","acceptedAnswer":{"@type":"Answer","text":"Base64 用 4 个字符表示 3 个字节，体积固定涨约 33%，加了换行还会更多。这是编码方式本身的代价，不是实现问题。要传大文件应该走 multipart 或直接传二进制，不要套 Base64。"}},{"@type":"Question","name":"文件也能转 Base64 吗？","acceptedAnswer":{"@type":"Answer","text":"可以，用「图片转 Base64」那个工具，它读本地文件后转成 Data URI。小图标（几 KB）内联进 CSS 能少一次请求；超过 10 KB 反而拖慢首屏，因为 Base64 不可单独缓存、还会阻塞渲染。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用Base64 / URL 编解码","description":"Base64 与 URL 编码互转，支持中文","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"Base64 / URL 编解码"}],"step":[{"@type":"HowToStep","position":1,"name":"选择模式：Base64 编解码、URL 编解码或 Data URI 处理","text":"选择模式：Base64 编解码、URL 编解码或 Data URI 处理","url":"https://toolhub.bot.cd/tools/base64-url/#step1"},{"@type":"HowToStep","position":2,"name":"粘贴原文或密文，中文内容勾选 UTF-8 处理","text":"粘贴原文或密文，中文内容勾选 UTF-8 处理","url":"https://toolhub.bot.cd/tools/base64-url/#step2"},{"@type":"HowToStep","position":3,"name":"核对输出结果，复制到目标位置","text":"核对输出结果，复制到目标位置","url":"https://toolhub.bot.cd/tools/base64-url/#step3"},{"@type":"HowToStep","position":4,"name":"批量场景可一次性粘贴多行，按行分别处理","text":"批量场景可一次性粘贴多行，按行分别处理","url":"https://toolhub.bot.cd/tools/base64-url/#step4"}]}</script>
   <link rel="stylesheet" href="/assets/style.tool.css" />
 </head>
@@ -65,7 +68,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Base64 / URL 编解码</h1><p>Base64 与 URL 编码互转，支持中文</p><h2>关于Base64 / URL 编解码</h2><p>Base64 是把二进制数据映射成 64 个可打印字符的编码方式，常用在只能传输文本的场景，比如邮件、JSON 字段、URL 参数。URL 编码（percent-encoding）则是把空格、中文、& ? 等特殊字符转成 %XX 形式，避免破坏 URL 结构。两者都是编码，不是加密——任何人都能还原。</p><h2>使用步骤</h2><ol><li>选择模式：Base64 编解码、URL 编解码或 Data URI 处理</li><li>粘贴原文或密文，中文内容勾选 UTF-8 处理</li><li>核对输出结果，复制到目标位置</li><li>批量场景可一次性粘贴多行，按行分别处理</li></ol><h2>常见错误</h2><h3>把 Base64 当加密</h3><p>解码只需要一秒。任何“看起来乱码就觉得安全”的想法都危险，敏感数据请用真正的加密算法。</p><h3>URL 编码不完整</h3><p>只转义空格不转义 & 和 #，链接照样会断。整个查询串都要编码，服务端再解码。</p><h3>编码后当作二进制直接比较</h3><p>Base64 输出依赖填充和换行约定，不同实现可能差在行尾换行；比对内容前先统一格式。</p><h2>常见问题</h2><h3>为什么用 btoa() 处理中文会报错？</h3><p>btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。</p><h3>Base64 能用来加密数据吗？</h3><p>不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/tools/markdown-preview/">Markdown 预览</a> —— 实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/api-debug/">接口联调试探</a> —— 专题工具包</li><li><a href="/topics/work-efficiency/">职场效率工具包</a> —— 专题工具包</li><li><a href="/topics/privacy-security/">隐私与安全工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Base64 / URL 编解码</h1><p>Base64 与 URL 编码互转，支持中文</p><h2>关于Base64 / URL 编解码</h2><p>Base64 是把二进制数据映射成 64 个可打印字符的编码方式，常用在只能传输文本的场景，比如邮件、JSON 字段、URL 参数。URL 编码（percent-encoding）则是把空格、中文、& ? 等特殊字符转成 %XX 形式，避免破坏 URL 结构。两者都是编码，不是加密——任何人都能还原。</p><h2>使用步骤</h2><ol><li>选择模式：Base64 编解码、URL 编解码或 Data URI 处理</li><li>粘贴原文或密文，中文内容勾选 UTF-8 处理</li><li>核对输出结果，复制到目标位置</li><li>批量场景可一次性粘贴多行，按行分别处理</li></ol><h2>常见错误</h2><h3>把 Base64 当加密</h3><p>解码只需要一秒。任何“看起来乱码就觉得安全”的想法都危险，敏感数据请用真正的加密算法。</p><h3>URL 编码不完整</h3><p>只转义空格不转义 & 和 #，链接照样会断。整个查询串都要编码，服务端再解码。</p><h3>编码后当作二进制直接比较</h3><p>Base64 输出依赖填充和换行约定，不同实现可能差在行尾换行；比对内容前先统一格式。</p><h2>常见问题</h2><h3>为什么用 btoa() 处理中文会报错？</h3><p>btoa 只接受 Latin-1 字符。中文需要先按 UTF-8 转成字节数组再编码，本工具已内置这个处理。</p><h3>Base64 能用来加密数据吗？</h3><p>不能。Base64 是公开的可逆编码，没有任何密钥，只适合传输，绝不能当作密码或敏感数据的保护手段。</p><h3>URL 编码和 Base64 该用哪个？</h3><p>URL 编码（encodeURIComponent）用于把参数安全地放进 URL，结果是可读的 %E4%B8%AD 形式；Base64 用于把任意二进制塞进只接受文本的通道，比如邮件、JSON 字段、Data URI。两者目的不同，不能互相替代。</p><h3>为什么编码后长度会变长三分之一？</h3><p>Base64 用 4 个字符表示 3 个字节，体积固定涨约 33%，加了换行还会更多。这是编码方式本身的代价，不是实现问题。要传大文件应该走 multipart 或直接传二进制，不要套 Base64。</p><h3>文件也能转 Base64 吗？</h3><p>可以，用「图片转 Base64」那个工具，它读本地文件后转成 Data URI。小图标（几 KB）内联进 CSS 能少一次请求；超过 10 KB 反而拖慢首屏，因为 Base64 不可单独缓存、还会阻塞渲染。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/?cat=%E6%96%87%E6%9C%AC">文本</a></p><h2>相关阅读</h2><ul><li><a href="/tools/json-format/">JSON 格式化</a> —— 美化/压缩 JSON，自动校验语法错误</li><li><a href="/tools/text-diff/">文本对比</a> —— 两段文本行级差异对比，新增/删除一目了然</li><li><a href="/tools/markdown-preview/">Markdown 预览</a> —— 实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</li><li><a href="/topics/frontend-debug/">前端调试工具包</a> —— 专题工具包</li><li><a href="/topics/api-debug/">接口联调试探</a> —— 专题工具包</li><li><a href="/topics/work-efficiency/">职场效率工具包</a> —— 专题工具包</li><li><a href="/topics/privacy-security/">隐私与安全工具箱</a> —— 专题工具包</li><li><a href="/?cat=%E6%96%87%E6%9C%AC">全部文本类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

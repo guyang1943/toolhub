@@ -8,14 +8,14 @@
  * 于是迁移过来的代码基本保持原样（不必在每个函数里写 deps.xxx），
  * 也避免与主模块循环引用。Node 测试与浏览器跑的是同一份实现。
  */
-let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles;
+let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles, loadArticle;
 let kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive;
 let getRegistry, getLang, getD18N, getSeoBody, stateHTML;
 let CHAINS, setHandoff, takeHandoff, setProgressHandler, ensureCss;
 
 export function bindToolPage(ctx) {
   ({
-    $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles,
+    $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles, loadArticle,
     kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive,
     getRegistry, getLang, getD18N, getSeoBody, stateHTML,
     CHAINS, setHandoff, takeHandoff, setProgressHandler, ensureCss,
@@ -527,7 +527,8 @@ export async function openTool(id) {
     blocks += `<div class="panel tips">💡 <b>${t('小贴士', 'detailTips')}</b><ul>${tipList.map((x) => `<li>${x}</li>`).join('')}</ul></div>`;
 
   // 长尾教程（步骤 + 常见错误，中文模式展示；英文详情见 i18n-detail）
-  const article = (await loadArticles())[meta.id];
+  // v3.10：只取本工具那一篇（平均 1.2 KB），不再拉整份 articles.json
+  const article = await loadArticle(meta.id);
   if (article && LANG !== 'en') {
     if (article.steps && article.steps.length)
       blocks += `<div class="panel tutorial"><b>📝 使用步骤</b><ol class="tut-steps">${article.steps.map((s) => `<li>${s}</li>`).join('')}</ol></div>`;

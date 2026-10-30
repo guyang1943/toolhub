@@ -103,14 +103,21 @@ function seoBlock({ h1, desc, article, extra = '' }) {
 
 let count = 0;
 
+// v3.10：教程正文从每篇 2 条 FAQ 补到 5 条后，整份 articles.json 涨到 112 KB（gzip 44 KB），
+// 而工具页只用到自己那一篇（raw 平均 1.2 KB）。SPA 进工具页时整份 fetch 是纯浪费，
+// 所以按 id 拆成单篇——加载量降两个数量级。整份 articles.json 保留，作为兜底。
+mkdirSync(join(root, 'articles'), { recursive: true });
+
 // 1) 工具页
 for (const tool of tools) {
   const dir = join(root, 'tools', tool.id);
   if (!existsSync(dir)) continue;
-  const en = (i18n.tools && i18n.tools[tool.id]) || {};
   const article = articles[tool.id];
-  const title = `${tool.name}${en.name ? ' / ' + en.name : ''} · ToolHub`;
-  const desc = (tool.desc + (en.desc ? ' ' + en.desc : '')).replace(/"/g, '&quot;');
+  // v3.10：title / description 只留中文。原来拼成「JSON 格式化 / JSON Formatter · ToolHub」，
+  // 搜索引擎不会因为写了两个词就给两份排名，只会把权重摊薄，页面语言也会被判定得不清楚。
+  // 英文词条仍留在 i18n.json，等真正做 hreflang 双语站（两套 URL + 互指）时再用。
+  const title = `${tool.name} · ToolHub`;
+  const desc = tool.desc.replace(/"/g, '&quot;');
   const url = `${BASE}/tools/${tool.id}/`;
 
   const jsonld = {
@@ -196,6 +203,8 @@ for (const tool of tools) {
   );
   html = html.replace('</head>', TOOL_CSS_LINK + '\n</head>');
   writeFileSync(join(dir, 'index.html'), html, 'utf8');
+  // 单篇教程 JSON：只有这个工具自己的内容，工具页按需取这一份
+  if (article) writeFileSync(join(root, 'articles', tool.id + '.json'), JSON.stringify(article), 'utf8');
   count++;
 }
 
@@ -232,9 +241,8 @@ const shortCopy = [];
 for (const tool of dirTools) {
   const dir = join(root, 'tools', tool.id);
   mkdirSync(dir, { recursive: true });
-  const en = (i18n.tools && i18n.tools[tool.id]) || {};
-  const title = `${tool.name}${en.name ? ' / ' + en.name : ''} · 官方在线版 · ToolHub`;
-  const desc = (tool.desc + (en.desc ? ' ' + en.desc : '')).replace(/"/g, '&quot;');
+  const title = `${tool.name} · 官方在线版 · ToolHub`;
+  const desc = tool.desc.replace(/"/g, '&quot;');
   const url = `${BASE}/tools/${tool.id}/`;
   let host = tool.url;
   try {
@@ -878,6 +886,49 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
 
   if (featuredIds.length) html = html.replace(/(<div class="featured-section" id="featured-section" style=")[^"]*(")/, '$1$2');
   html = html.replace(/(<div class="res-preview" id="res-preview" style=")[^"]*(")/, '$1$2');
+
+  // v3.10：首页补结构化数据。全站 131 页里唯独首页是 0 个 ld+json——工具页早有
+  // SoftwareApplication / FAQPage / HowTo，首页却什么都没有，所以「ToolHub」这个
+  // 品牌词拿不到 sitelinks，也拿不到搜索结果里的站内搜索框。
+  // SearchAction 指向 /?q=，这个参数在 app.js 的 renderHome 里真的会筛出结果；
+  // 先让功能存在再声明——写一个抓出来是空页的 URL，Search Console 会判无效。
+  // 用 <!--hs:--> 包住，复用上面的清理逻辑，保证反复构建不叠加。
+  const homeLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': `${BASE}/#website`,
+        name: 'ToolHub',
+        alternateName: 'ToolHub 开源工具',
+        url: `${BASE}/`,
+        description: '收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。',
+        inLanguage: 'zh-CN',
+        publisher: { '@id': `${BASE}/#org` },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: { '@type': 'EntryPoint', urlTemplate: `${BASE}/?q={search_term_string}` },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${BASE}/#org`,
+        name: 'ToolHub',
+        url: `${BASE}/`,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BASE}/assets/icon-512.png`,
+          width: 512,
+          height: 512,
+        },
+      },
+    ],
+  };
+  html = html.replace(
+    '</head>',
+    `  <!--hs:home-ld--><script type="application/ld+json">${JSON.stringify(homeLd)}</script><!--/hs:home-ld-->\n</head>`
+  );
 
   writeFileSync(join(root, 'index.html'), html, 'utf8');
   console.log(`   ↻ 首页静态化：${featuredIds.length} 个推荐 / ${cats.length} 个分类 / ${resources.collections.length} 个合集（CLS 由 0.25 → ~0）`);
