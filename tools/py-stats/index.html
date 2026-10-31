@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"数值统计","description":"用 Python statistics 计算均值/中位数/标准差/四分位","url":"https://toolhub.bot.cd/tools/py-stats/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"PSF-2.0"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"标准差用样本还是总体公式？","acceptedAnswer":{"@type":"Answer","text":"本工具使用样本标准差（除以 n-1），适用于从总体中抽样得到的观测数据。如果你手上就是完整总体，应改用总体公式。"}},{"@type":"Question","name":"四分位数为什么和 Excel 算的略有差异？","acceptedAnswer":{"@type":"Answer","text":"插值方法不同。本工具与 Excel 的 QUARTILE.INC 一致（线性插值），部分软件使用 QUARTILE.EXC 会得到不同结果。"}},{"@type":"Question","name":"和 Excel 算出来的数不一样，该信哪个？","acceptedAnswer":{"@type":"Answer","text":"先确认口径：样本标准差除以 n-1，总体标准差除以 n。Excel 的 STDEV.P 是总体、STDEV.S 是样本，工具默认给样本。四分位数的算法有至少九种（Excel 用 PERCENTILE.INC），差异就出在插值方式上。口径一致时两边结果应当相同。"}},{"@type":"Question","name":"能一次算多少个数？","acceptedAnswer":{"@type":"Answer","text":"几千个数值很快，十万级会开始明显等待——WebAssembly 传大数据本身有开销。真要跑大规模统计，导出成 CSV 用本地 Python 更合适，这里定位是「贴一列数看一眼」。"}},{"@type":"Question","name":"能直接导入 CSV 吗？","acceptedAnswer":{"@type":"Answer","text":"把数值列粘进来就行，工具会按分隔符切分。含表头的第一行会被识别并跳过；混入文字的行会提示而不是静默丢掉——静默丢数据是统计工具最危险的失败方式。"}}]}</script>

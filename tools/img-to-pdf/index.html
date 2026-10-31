@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片转 PDF","description":"多张图片合成一个 PDF，A4 或适应图片，本地生成不上传","url":"https://toolhub.bot.cd/tools/img-to-pdf/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"支持哪些图片格式？","acceptedAnswer":{"@type":"Answer","text":"PNG 与 JPG/JPEG。WebP、GIF、HEIC（iPhone 默认格式）、TIFF 需要先转换：可以先用本站的「图片格式转换」转成 PNG 再来。工具会逐张提示哪些文件被跳过，其余正常生成。"}},{"@type":"Question","name":"生成的 PDF 很大，怎么变小？","acceptedAnswer":{"@type":"Answer","text":"PDF 内嵌的是原始图片数据，不做重新压缩，所以体积基本等于所有图片之和。要减小体积，先用「图片缩放」把长边压到 1600–2000 像素，或用「图片压缩」降低质量，再转 PDF。"}},{"@type":"Question","name":"能调整页面顺序或删除某一页吗？","acceptedAnswer":{"@type":"Answer","text":"可以在生成前按顺序重新点选文件；生成后如果只想保留部分页面，用「PDF 合并拆分」的提取模式按页码抽出即可。"}},{"@type":"Question","name":"纸张大小和方向能调吗？","acceptedAnswer":{"@type":"Answer","text":"能选 A4、Letter 等常见尺寸，也能让页面跟随图片原始比例。跟随原图的好处是不产生白边，坏处是每页尺寸不一，打印时会各自缩放。要打印装订就固定 A4 并选「适应页面」。"}},{"@type":"Question","name":"手机拍的照片方向不对、旁边有白边？","acceptedAnswer":{"@type":"Answer","text":"方向问题来自 EXIF 里的旋转标记，多数情况下会自动校正。白边是因为照片比例和纸张比例不匹配——选「跟随图片比例」就没有白边，选固定纸张则会自动留白。要彻底干净，先用「图片裁剪」把比例裁成和纸张一致。"}}]}</script>

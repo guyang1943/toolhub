@@ -434,19 +434,76 @@ function kbOpen() {
 /* ---------- 站内搜索：权重评分 ---------- */
 // 匹配优先级：名称（前缀 > 包含）> 标签 > 别名（拼音全拼/首字母/英文关键词）> 描述
 // 别名词条由 scripts/gen-search-aliases.mjs 在构建期写入 tools.json / directory.json
+// v3.11：可搜索文本缓存到工具上（跟 LANG 走）。99 个工具时每次按键重算四次拼接太浪费。
+function haystack(tool) {
+  const c = tool.__hay;
+  if (c && c.lang === LANG) return c;
+  const m = toolMeta(tool);
+  const h = {
+    lang: LANG,
+    name: (tool.name + ' ' + m.name).toLowerCase(),
+    tags: ((tool.tags || []).join(' ') + ' ' + tool.name).toLowerCase(),
+    alias: (tool.aliases || []).join(' ').toLowerCase(),
+    desc: (tool.desc + ' ' + m.desc).toLowerCase(),
+  };
+  tool.__hay = h;
+  return h;
+}
+
+function scoreOne(tool, kw) {
+  const h = haystack(tool);
+  let s = 0;
+  if (h.name.includes(kw)) s += h.name.startsWith(kw) ? 100 : 60;
+  if (h.tags.includes(kw)) s += 40;
+  if (h.alias.includes(kw)) s += 30;
+  if (h.desc.includes(kw)) s += 10;
+  return s;
+}
+
 function toolScore(tool, kw) {
   if (!kw) return 1;
-  const m = toolMeta(tool);
-  const name = (tool.name + ' ' + m.name).toLowerCase();
-  const tags = ((tool.tags || []).join(' ') + ' ' + tool.name).toLowerCase();
-  const alias = (tool.aliases || []).join(' ').toLowerCase();
-  const desc = (tool.desc + ' ' + m.desc).toLowerCase();
-  let s = 0;
-  if (name.includes(kw)) s += name.startsWith(kw) ? 100 : 60;
-  if (tags.includes(kw)) s += 40;
-  if (alias.includes(kw)) s += 30;
-  if (desc.includes(kw)) s += 10;
-  return s;
+  const toks = kw.split(/\s+/).filter(Boolean);
+  if (toks.length === 1) return scoreOne(tool, toks[0]);
+  // v3.11：多词按 AND 收窄、分数累加。以前整串当一个子串比，
+  // 「图片 压缩」这种中间带空格的输入一个结果都搜不到。
+  let sum = 0;
+  for (const tk of toks) {
+    const s = scoreOne(tool, tk);
+    if (!s) return 0;
+    sum += s;
+  }
+  return sum;
+}
+
+// v3.11：打错字的兜底，只在「一条都搜不到」时跑，算错也不影响正常结果。
+function lev(a, b) {
+  let prev = [...Array(b.length + 1).keys()];
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+function suggestFix(kw) {
+  // 三个字符以内不猜：「js」和「jc」距离是 1，但那是两个不同的缩写
+  if (kw.length < 3) return null;
+  const limit = kw.length <= 5 ? 1 : 2;
+  let best = null;
+  let bestD = limit + 1;
+  for (const tool of REGISTRY.tools) {
+    for (const c of [tool.name.toLowerCase()].concat(tool.name.toLowerCase().split(/[\s/·]+/))) {
+      if (!c || Math.abs(c.length - kw.length) > limit) continue;
+      const d = lev(kw, c);
+      if (d && d < bestD) {
+        bestD = d;
+        best = toolMeta(tool).name;
+      }
+    }
+  }
+  return best;
 }
 
 function renderFeatured(tools) {
@@ -543,12 +600,24 @@ function renderGrid(tools, keyword) {
       : activeCategory === '🔥 最常用' ? t('还没有使用记录，运行任意工具后这里会自动统计', 'emptyUsed')
       : activeRuntime !== 'all' ? t('当前筛选下没有工具，试试切回「全部」', 'emptyRuntime')
       : t('没有匹配的工具，换个关键词试试', 'emptyAll');
+    // 只在「关键词没命中」这种空态猜错别字：收藏夹空、筛选空都不是打字问题
+    const fix = kw && activeCategory === '全部' && activeRuntime === 'all' ? suggestFix(kw) : null;
     gridEl.innerHTML = `
       <div class="empty">
         <div style="font-size:32px;margin-bottom:8px">🔍</div>
         ${emptyMsg}
+        ${fix ? `<div style="margin-top:12px;font-size:13px">${t('没有找到', 'fixNo')}「${esc(kw)}」，${t('是不是要找', 'fixAsk')}：<button class="btn ghost" id="fix-kw" data-kw="${esc(fix)}">${esc(fix)}</button></div>` : ''}
         <div style="margin-top:14px"><button class="btn ghost" id="reset-filter">${t('查看全部工具', 'viewAll')}</button></div>
       </div>`;
+    const fixBtn = gridEl.querySelector('#fix-kw');
+    if (fixBtn) fixBtn.onclick = () => {
+      const v = fixBtn.dataset.kw;
+      $('#search').value = v;
+      const hero = document.getElementById('hero-search');
+      if (hero) hero.value = v;
+      curPage = 1;
+      renderGrid(REGISTRY.tools, v);
+    };
     renderPager(0, 1, 0);
     const rb = $('#reset-filter');
     if (rb) rb.onclick = () => {
@@ -1977,12 +2046,69 @@ document.addEventListener('keydown', (e) => {
     PALETTE.open ? closePalette() : openPalette();
   }
 });
+/* ---------- 首页搜索框的「也许你要」直达条（v3.11） ---------- */
+// 命令面板早就会做意图识别（E4），但首页大框只在按回车时用一次——用户既不知道要回车，
+// 也不知道打完一句话能直接进工具。这里改成边打边认，规则表仍按需加载，不进首屏。
+let heroIntentBox = null;
+let heroIntentHit = null;
+let heroIntentTimer = 0;
+
+function hideHeroIntent() {
+  heroIntentHit = null;
+  if (heroIntentBox) heroIntentBox.hidden = true;
+}
+
+function ensureHeroIntentBox() {
+  if (heroIntentBox) return heroIntentBox;
+  const field = document.querySelector('.hs-field');
+  if (!field) return null;
+  heroIntentBox = document.createElement('div');
+  heroIntentBox.className = 'hero-intent';
+  heroIntentBox.id = 'hero-intent';
+  heroIntentBox.hidden = true;
+  field.after(heroIntentBox);
+  return heroIntentBox;
+}
+
+async function showHeroIntent(q) {
+  const box = ensureHeroIntentBox();
+  if (!box) return;
+  const mod = await ensureIntent();
+  // 等待期间用户可能已经改了输入或换了页面，回来先确认还是同一句话
+  const live = document.getElementById('hero-search');
+  if (!mod || !live || live.value.trim() !== q) return;
+  const hit = mod.parseIntent(q);
+  const tool = hit && REGISTRY && REGISTRY.tools.find((x) => x.id === hit.id);
+  if (!tool || !isLocalTool(tool)) return hideHeroIntent();
+  heroIntentHit = hit;
+  const params = Object.entries(hit.params || {})
+    .map(([k, v]) => `${k}=${v}`)
+    .join(' · ');
+  box.innerHTML = `<span class="hi-tag">${t('💡 也许你要', 'intentMaybe')}</span>
+    <b>${esc(toolMeta(tool).name)}</b>
+    ${params ? `<span class="hi-params">${esc(params)}</span>` : ''}
+    <span class="hi-go">${t('打开并预填 →', 'intentGo')}</span>`;
+  box.hidden = false;
+  box.onclick = () => {
+    if (heroIntentHit) navigate(INTENT_MOD.intentUrl(heroIntentHit));
+  };
+}
+
+// 只有「像句子」的输入才值得拉规则表：太短（≤3 字）或纯英文/拼音的，交给普通搜索
+function scheduleHeroIntent(raw) {
+  clearTimeout(heroIntentTimer);
+  const q = (raw || '').trim();
+  if (q.length < 4 || !/[\u4e00-\u9fa5]/.test(q)) return hideHeroIntent();
+  heroIntentTimer = setTimeout(() => showHeroIntent(q), 180);
+}
+
 (function bindHeroSearch() {
   const heroInput = document.getElementById('hero-search');
   if (heroInput) {
     heroInput.addEventListener('input', () => {
       const v = heroInput.value;
       $('#search').value = v;
+      scheduleHeroIntent(v);
       if (REGISTRY) {
         curPage = 1; // 首页唯一输入框：改字就回第一页
         renderFeatured(REGISTRY.tools);
@@ -1997,6 +2123,7 @@ document.addEventListener('keydown', (e) => {
         const mod = await ensureIntent();
         const hit = mod && mod.parseIntent(q);
         if (hit) {
+          hideHeroIntent();
           navigate(mod.intentUrl(hit));
           return;
         }

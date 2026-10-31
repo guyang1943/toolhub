@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"JSON 格式化","description":"美化/压缩 JSON，自动校验语法错误","url":"https://toolhub.bot.cd/tools/json-format/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"格式化会不会改变 JSON 的内容或语义？","acceptedAnswer":{"@type":"Answer","text":"不会。JSON 规范中空白字符不参与语义，格式化只改变排版，键值顺序和数据内容完全不变。"}},{"@type":"Question","name":"遇到 Unexpected token 报错怎么办？","acceptedAnswer":{"@type":"Answer","text":"把光标定位到报错提示的位置附近，常见原因包括：多了一个尾随逗号、用了单引号而不是双引号、注释（JSON 标准不支持注释）、中文全角标点。"}},{"@type":"Question","name":"粘进来的 JSON 会传到服务器吗？","acceptedAnswer":{"@type":"Answer","text":"不会。格式化、校验、折叠全部在浏览器里用 JavaScript 完成，页面没有任何把文本发出去的请求。断网之后这个工具照样能用——这一点你可以自己验证：拔掉网线再打开它。"}},{"@type":"Question","name":"支持多大的 JSON？","acceptedAnswer":{"@type":"Answer","text":"几十 MB 的文本能解析，但折叠视图会明显变卡，因为它要为每个节点生成 DOM。超过 10 MB 建议先压缩看整体结构，或者改用命令行的 jq。浏览器里做单次文本解析，几万行是舒服的区间。"}},{"@type":"Question","name":"JSON5、JSONC 和标准 JSON 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"标准 JSON 不允许注释和尾随逗号；JSON5 允许注释、单引号、不加引号的键名；JSONC 是「JSON + 注释」，VS Code 的配置文件用它。本站按标准 JSON 校验，所以带注释的配置文件会报错——那不是文件坏了，是格式本来就不合法。"}}]}</script>

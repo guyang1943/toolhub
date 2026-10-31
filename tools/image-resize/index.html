@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片缩放","description":"按最大边长等比缩放图片，生成头像/封面尺寸","url":"https://toolhub.bot.cd/tools/image-resize/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"缩小后再放大能恢复清晰度吗？","acceptedAnswer":{"@type":"Answer","text":"不能。缩小过程丢弃了像素信息，放大只会插值出模糊的近似值，无法还原细节。"}},{"@type":"Question","name":"为什么转成 JPEG 后透明背景变成白色？","acceptedAnswer":{"@type":"Answer","text":"JPEG 不支持透明通道。需要透明请保留 PNG 或使用 WebP。"}},{"@type":"Question","name":"按比例缩放还是固定尺寸？","acceptedAnswer":{"@type":"Answer","text":"两种都行：填宽或高其中一个、另一个留空即按比例联动；两个都填会拉伸变形。批量处理时按最长边限制更实用——不同尺寸的手机截图混在一起，统一长边才能真正控制体积。"}},{"@type":"Question","name":"缩小图片用的是什么算法，会不会糊？","acceptedAnswer":{"@type":"Answer","text":"用浏览器 Canvas 的双线性插值，缩小倍数大时会丢细节。要更好的结果应该先按 2 的幂次逐级减半再缩到目标尺寸，或者用支持 Lanczos 重采样的桌面工具。日常分享尺寸用不到这个精度。"}},{"@type":"Question","name":"批量缩放怎么用？","acceptedAnswer":{"@type":"Answer","text":"批量页可以一次拖进多张图、统一填目标尺寸、打包下载。注意每张图的原始比例不同，混着比例缩放要选「按最长边」而不是「固定宽高」，否则竖图会被压扁。"}}]}</script>

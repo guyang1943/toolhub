@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"UUID / ULID 生成","description":"UUID v4、ULID、Nano ID 批量生成，可作数据库主键","url":"https://toolhub.bot.cd/tools/uuid-gen/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"数据库主键该用 UUID 还是自增 ID？","acceptedAnswer":{"@type":"Answer","text":"需要分布式生成、不暴露业务量时用 UUID/ULID；单库单表且追求极致索引性能时自增 ID 仍然简单有效。用 UUID 时优先 ULID 或 UUID v7 这类时间有序版本。"}},{"@type":"Question","name":"同一毫秒生成多个 ULID 会重复吗？","acceptedAnswer":{"@type":"Answer","text":"理论上同毫秒的随机部分可能碰撞。本工具做了单调递增处理，保证同一毫秒内连续生成也不重复。"}},{"@type":"Question","name":"UUID v4 和 v7 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"v4 完全随机；v7 的前 48 位是毫秒时间戳，所以按字典序排就是按时间排。做数据库主键时 v7 对 B 树索引友好得多——v4 的随机分布会让插入不断分裂索引页，写放大明显。"}},{"@type":"Question","name":"生成几万个会不会重复？","acceptedAnswer":{"@type":"Answer","text":"v4 有 122 位随机，要生成约 2.7×10^18 个才有较大概率出现一次碰撞，实际系统里可以当作不会重复。v7 在同一毫秒内靠后面的随机位区分，同样不会重复。"}},{"@type":"Question","name":"能批量生成吗？","acceptedAnswer":{"@type":"Answer","text":"可以，填数量后一次输出多行，直接复制进 SQL 的 IN 列表或测试夹具。批量生成仍然全部在本地完成，不占用任何服务端资源。"}}]}</script>

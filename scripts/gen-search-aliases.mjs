@@ -12,6 +12,7 @@ import { createRequire } from 'node:module';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
 const pinyin = require('./vendor/tiny-pinyin/dist/index.js');
+import { spokenAliases } from './lib/search-lexicon.mjs';
 
 // 多音字补丁（工具名里的高频词，补上另一个常见读音的全拼）
 const EXTRA = {
@@ -44,6 +45,9 @@ const enTools = (i18n.en && i18n.en.tools) || {};
 function aliasesFor(t) {
   const alias = new Set(zhAliases(t.name));
   (EXTRA[t.name] || []).forEach((a) => alias.add(a));
+  // v3.11：口语说法也进别名（「瘦身」→ 图片压缩）。放在拼音之后、英文之前，
+  // 顺序稳定，增量 diff 时不会整段翻掉。
+  spokenAliases(t.name, t.tags).forEach((a) => alias.add(a));
   const enName = enTools[t.id] && enTools[t.id].name;
   if (enName) {
     alias.add(enName.toLowerCase());

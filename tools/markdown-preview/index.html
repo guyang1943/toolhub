@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Markdown 预览","description":"实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS","url":"https://toolhub.bot.cd/tools/markdown-preview/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"预览里能正常显示，发到平台上却乱掉？","acceptedAnswer":{"@type":"Answer","text":"不同平台支持的是不同方言（GitHub Flavored Markdown、CommonMark 等）。尽量只用标准语法，避免依赖 HTML 混排和脚注。"}},{"@type":"Question","name":"粘贴的 HTML 会被执行吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具的输出经过 DOMPurify 消毒，script 标签和事件属性都会被移除。"}},{"@type":"Question","name":"支持哪些扩展语法？","acceptedAnswer":{"@type":"Answer","text":"表格、任务列表、删除线、围栏代码块这些 GFM 扩展都支持。数学公式和 mermaid 图不在默认范围内——它们要额外的渲染器，会让首屏体积翻倍。"}},{"@type":"Question","name":"为什么本地预览正常，发到公众号或知乎就乱了？","acceptedAnswer":{"@type":"Answer","text":"因为各平台的 Markdown 方言不同：有的不支持表格，有的把 HTML 过滤掉，有的对嵌套列表的缩进要求不一样。预览只能保证「标准 GFM 下的渲染结果」，发布前要在目标平台再看一眼。"}},{"@type":"Question","name":"能导出成 HTML 吗？","acceptedAnswer":{"@type":"Answer","text":"渲染结果是真实的 DOM，可以选中复制（带格式）粘进富文本编辑器，也可以用开发者工具拷 outerHTML。要独立文件的话，把渲染结果套一层最小 HTML 骨架就行。"}}]}</script>

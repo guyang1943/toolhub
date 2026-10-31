@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"命名风格转换","description":"camelCase / snake_case / kebab-case 等命名互转","url":"https://toolhub.bot.cd/tools/case-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"驼峰命名是怎么被切分成单词的？","acceptedAnswer":{"@type":"Answer","text":"按小写/数字后接大写字母、以及连续大写后接小写字母的边界切分。例如 httpResponseCode → http/response/code，APIKey → API/Key。"}},{"@type":"Question","name":"含数字的名称转换可靠吗？","acceptedAnswer":{"@type":"Answer","text":"多数情况没问题，但像 v2Api 这类可能有歧义的名称建议人工确认一遍再批量替换。"}},{"@type":"Question","name":"缩写词（HTTP、ID）怎么处理？","acceptedAnswer":{"@type":"Answer","text":"工具会保留连续大写的片段，camelCase 转换时通常输出 httpId 而不是 hTtPId。但这本质上有歧义——HTTPResponse 到底切成 HTTP + Response 还是 HTTPR + esponse，没有算法能保证猜对。含缩写时建议人工确认一遍。"}},{"@type":"Question","name":"支持哪些命名风格？","acceptedAnswer":{"@type":"Answer","text":"camelCase、PascalCase、snake_case、kebab-case、CONSTANT_CASE、dot.case 这些常见风格都支持。不同语言的社区习惯不同：Python 用 snake、Go 用 Pascal、文件名多用 kebab，转换时按目标语言挑。"}},{"@type":"Question","name":"能批量转换吗？","acceptedAnswer":{"@type":"Answer","text":"可以，一行一个标识符贴进去，逐行输出。建数据库字段映射、批量改 API 参数名时最省事。注意每行独立处理，所以一行里混多个单词不会互相影响切分。"}}]}</script>

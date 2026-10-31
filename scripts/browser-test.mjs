@@ -325,6 +325,52 @@ async function feedFile(selector, dataUrl, name, type) {
   check('/?q= 真实筛出了结果', qCount > 0 && qCount < 24, qCount + ' 张');
   await goto('/');
 
+  // ---- 1.6 口语、多词、容错与意图直达（v3.11）----
+  // 这组断言守的是三条链：口语词表 → 生成器 → 别名；分词 → 打分；规则表 → 直达条 → 表单回填。
+  // 任何一环断了，用户看到的都是「搜不到」，而单看代码是看不出来的。
+  const typeHero = (text) =>
+    evaluate(`(() => {
+      const el = document.getElementById('hero-search');
+      el.value = ${JSON.stringify(text)};
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      return el.value;
+    })()`);
+
+  await typeHero('瘦身');
+  const slimming = await evaluate(`[...document.querySelectorAll('#grid [data-id]')].map((e) => e.dataset.id)`);
+  check('口语词「瘦身」命中图片压缩', slimming.includes('image-compress'), slimming.slice(0, 3).join(',') || '（无结果）');
+
+  await typeHero('图片 压缩');
+  const multiHits = await evaluate(`[...document.querySelectorAll('#grid [data-id]')].map((e) => e.dataset.id)`);
+  check('多词查询（空格分隔）不再是零结果', multiHits.includes('image-compress'), multiHits.length + ' 个结果');
+
+  await typeHero('把图片压到 200KB');
+  const intentShown = await waitEl('#hero-intent:not([hidden])', 8000);
+  const intentText = await evaluate(`(document.getElementById('hero-intent') || {}).textContent || ''`);
+  check(
+    '句子输入浮出「也许你要」直达条',
+    intentShown && intentText.includes('图片压缩'),
+    intentText.replace(/\s+/g, ' ').trim().slice(0, 36)
+  );
+  await shot('08-intent');
+
+  await evaluate(`document.getElementById('hero-intent').click()`);
+  await waitEl('#f-quality', 8000);
+  await sleep(300);
+  const landPath = await evaluate(`location.pathname`);
+  const landQuality = await evaluate(`(document.getElementById('f-quality') || {}).value || ''`);
+  check(
+    '直达条带着预填参数进工具页',
+    landPath === '/tools/image-compress/' && landQuality === '60',
+    landPath + ' quality=' + landQuality
+  );
+
+  await goto('/');
+  await typeHero('图片压宿');
+  const typoHint = await waitText('#grid', '是不是要找', 8000);
+  check('打错字时给出「是不是要找」', typoHint);
+  await goto('/');
+
   // ---- 2. 键盘操作（真实键盘事件）----
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: '/', code: 'Slash', text: '/', windowsVirtualKeyCode: 191 });
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: '/', code: 'Slash', windowsVirtualKeyCode: 191 });
@@ -764,6 +810,12 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const heroPh = await evaluate(`document.getElementById('hero-search').placeholder`);
   check('窄屏占位文案已缩短', ph === '搜索工具…' && heroPh === '搜索工具或资源…', `${ph} | ${heroPh}`);
   await shot('04-mobile');
+  // v3.11：直达条是首屏最新的浮动块，窄屏最容易把它撑破——单独量一次
+  await typeHero('把图片压到 200KB');
+  await waitEl('#hero-intent:not([hidden])', 8000);
+  const intentOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('移动端直达条不撑破布局', intentOverflow <= 1, 'overflow ' + intentOverflow + 'px');
+  await shot('04b-intent-mobile');
   await cdp.send('Emulation.clearDeviceMetricsOverride');
 
   // ---- 13. 深色主题：无 app.js 时也必须是深色（验证首帧无白闪）----

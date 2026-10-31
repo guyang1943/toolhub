@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"照片元数据剥离","description":"查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码","url":"https://toolhub.bot.cd/tools/exif-strip/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"剥离元数据会降低画质吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具不重新编码图片，只是按 JPEG 段结构把携带个人信息的整段字节删掉，压缩后的图像数据一位都没动，所以画面与原图逐像素一致、体积只会略小。"}},{"@type":"Question","name":"为什么剥离后文件反而变小了一点点？","acceptedAnswer":{"@type":"Answer","text":"被删掉的 EXIF、IPTC、注释段本身就占体积，常见手机照片在几十 KB 到一百多 KB 之间。图像数据没变，所以打开后看不出任何差别。"}},{"@type":"Question","name":"照片转成 PNG 或截图为什么读不到信息？","acceptedAnswer":{"@type":"Answer","text":"截图、社交软件转发的图片通常已被平台重新编码，元数据在这个过程中就丢了；PNG 本身也不存 EXIF（可能有 eXIf 块，但极少）。本工具只处理 JPEG。"}},{"@type":"Question","name":"具体会删掉哪些信息？","acceptedAnswer":{"@type":"Answer","text":"删除的是整个 EXIF/元数据段：拍摄时间、相机型号与序列号、镜头参数、GPS 经纬度、方向标记，以及部分软件写入的缩略图和编辑历史。像素数据完全不动，所以画质不变。"}},{"@type":"Question","name":"什么场景一定要删？","acceptedAnswer":{"@type":"Answer","text":"发二手商品图（暴露家庭住址）、发社交平台原图（暴露拍摄设备和时间线）、发给客户或外部合作方（暴露内部设备编号）。反向场景也要注意：需要保留拍摄时间做证据、或需要 GPS 做位置记录时，删了就找不回来，先留一份原图。"}}]}</script>

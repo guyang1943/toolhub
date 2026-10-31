@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"JWT 解码","description":"解码 JWT 的 Header/Payload，标注过期时间，本地不上传","url":"https://toolhub.bot.cd/tools/jwt-decode/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"解码出来的内容能直接用来判断权限吗？","acceptedAnswer":{"@type":"Answer","text":"不能。攻击者可以伪造任意载荷，只有服务端验签通过后的内容才可信。前端解码仅用于调试。"}},{"@type":"Question","name":"exp 是秒还是毫秒？","acceptedAnswer":{"@type":"Answer","text":"JWT 规范的 exp/iat/nbf 都是秒级时间戳。看到 10 位数字是正常的，13 位通常是实现方用了毫秒，需与签发方确认。"}},{"@type":"Question","name":"解码和验签有什么区别？","acceptedAnswer":{"@type":"Answer","text":"解码只是把 Base64URL 还原成 JSON，谁都能做，不需要密钥；验签是验证这段内容确实由持有私钥的一方签发、且没被改过。很多「JWT 漏洞」的根源就是把解码结果当成可信身份——签名没验，内容就是可以随便编的。"}},{"@type":"Question","name":"alg:none 是什么漏洞？","acceptedAnswer":{"@type":"Answer","text":"JWT 头部有个 alg 字段声明签名算法。早期库会信任这个字段，攻击者把它改成 none 并去掉签名，服务端就当作「无需验证」放行。正确做法是服务端固定允许的算法列表，绝不采信头部声明的值。"}},{"@type":"Question","name":"token 会被发到服务器吗？","acceptedAnswer":{"@type":"Answer","text":"不会，解码在浏览器里完成。但注意别在公共电脑上粘贴生产环境的 token——它本身就是凭证，任何人拿到就等价于拿到那个身份，有效期结束前一直有效。"}}]}</script>

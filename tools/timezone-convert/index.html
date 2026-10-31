@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"时区转换","description":"一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时","url":"https://toolhub.bot.cd/tools/timezone-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"夏令时是怎么处理的？","acceptedAnswer":{"@type":"Answer","text":"按 IANA 时区数据库自动判断。以纽约为例，3 月第二个周日到 11 月第一个周日是夏令时（UTC−4），其余时间是标准时（UTC−5）。同一句「上午 9 点开会」，冬天和夏天对应的北京时间会差一小时，所以跨季节的排期务必重新换算一次。"}},{"@type":"Question","name":"为什么印度、伊朗是半小时偏移？","acceptedAnswer":{"@type":"Answer","text":"时区不必须是整小时。印度采用 UTC+5:30，尼泊尔是 UTC+5:45，伊朗是 UTC+3:30。本工具会显示 +5:30 这种带分钟的偏移，不四舍五入。"}},{"@type":"Question","name":"中国大陆有几个时区？","acceptedAnswer":{"@type":"Answer","text":"官方统一使用北京时间（UTC+8），尽管地理上横跨五个时区。新疆等地民间作息常比北京时间晚两小时，安排当地事务时要问清对方说的是「北京时间」还是「新疆时间」。"}},{"@type":"Question","name":"CST、IST 这些缩写为什么不能直接用？","acceptedAnswer":{"@type":"Answer","text":"因为同一个缩写对应多个时区：CST 可以是北美中部时间（UTC−6）、中国标准时间（UTC+8）、古巴标准时间（UTC−5）。缩写不可靠，正确做法是用 IANA 名称，比如 Asia/Shanghai、America/Chicago，它唯一且有完整历史规则。"}},{"@type":"Question","name":"约跨时区会议怎么定时间最稳？","acceptedAnswer":{"@type":"Answer","text":"先固定一个基准时区（通常用 UTC 或组织总部时区）写进会议邀请，再让对方换算——这样夏令时切换时不会两边都改。日历系统内部存的也是 UTC 加时区名，手写「下午 3 点」是最容易出错的写法。"}}]}</script>

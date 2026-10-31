@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"二维码解析","description":"上传图片本地识别二维码内容，图片不上传，标注识别位置","url":"https://toolhub.bot.cd/tools/qr-decode/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么有些二维码识别不出来？","acceptedAnswer":{"@type":"Answer","text":"常见原因有四类：图片模糊或分辨率过低（QR 码每个模块至少需要 2–3 个像素才稳）；二维码被裁掉一个角（三个定位图案必须完整）；反光、阴影、水印遮挡；内容过长导致码点过密而拍摄分辨率不足。裁剪出完整二维码、保证清晰度后重试，成功率会大幅提高。"}},{"@type":"Question","name":"解析二维码安全吗？会不会自动跳转？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具只把内容作为文本显示，不会自动打开任何链接。看到网址后建议先核对域名再决定是否访问——这正是它的价值：扫码前先看清目标，避免扫到仿冒链接。"}},{"@type":"Question","name":"一张图里有多个二维码，能都识别吗？","acceptedAnswer":{"@type":"Answer","text":"目前每次只返回第一个识别到的。需要解析其他二维码时，把目标码裁剪到图片中央再上传即可。"}},{"@type":"Question","name":"模糊、倾斜、反光的照片能识别吗？","acceptedAnswer":{"@type":"Answer","text":"能处理一定程度的透视变形和低对比度，但超出纠错能力就无能为力。实践中最有效的三件事：把二维码区域裁出来只留码本身、提高对比度（转灰度再调黑白）、确保没有大面积反光遮挡。相机拍歪十几度通常没问题。"}},{"@type":"Question","name":"支持哪些图片格式？","acceptedAnswer":{"@type":"Answer","text":"PNG、JPEG、WebP、GIF 首帧都能读，也支持直接从剪贴板粘贴截图。手机相册里的 HEIC 需要先转成 JPEG——浏览器解码器普遍不认 HEIC，这不是工具的限制。"}}]}</script>

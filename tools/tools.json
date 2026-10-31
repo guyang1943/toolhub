@@ -52,6 +52,9 @@
       "aliases": [
         "geshihua",
         "gsh",
+        "验证",
+        "检查格式",
+        "对不对",
         "json formatter",
         "json",
         "formatter"
@@ -74,6 +77,14 @@
       "aliases": [
         "tupianyasuo",
         "tpys",
+        "瘦身",
+        "压小",
+        "变小",
+        "减体积",
+        "太大了",
+        "照片",
+        "截图",
+        "图像",
         "image compressor",
         "image",
         "compressor"
@@ -98,6 +109,9 @@
       "aliases": [
         "erweimashengcheng",
         "ewmsc",
+        "扫码",
+        "qr码",
+        "二维码图片",
         "qr code generator",
         "qr",
         "code",
@@ -142,6 +156,9 @@
       "aliases": [
         "shijianchuozhuanhuan",
         "sjczh",
+        "转格式",
+        "换格式",
+        "转成",
         "timestamp converter",
         "timestamp",
         "converter"
@@ -163,6 +180,12 @@
       "aliases": [
         "haxijisuan",
         "hxjs",
+        "验证",
+        "检查格式",
+        "对不对",
+        "摘要",
+        "指纹",
+        "校验值",
         "hash calculator",
         "hash",
         "calculator"
@@ -186,6 +209,8 @@
         "qmmsc",
         "qiangmimashengcheng",
         "qiangmima",
+        "口令",
+        "随机密码",
         "password generator",
         "password",
         "generator"
@@ -230,6 +255,13 @@
       "aliases": [
         "yansegeshizhuanhuan",
         "ysgszh",
+        "转格式",
+        "换格式",
+        "另存为",
+        "转成",
+        "配色",
+        "色值",
+        "色号",
         "color converter",
         "color",
         "converter"
@@ -251,9 +283,11 @@
       "aliases": [
         "wenbenduibi",
         "wbdb",
+        "比对",
+        "差异",
+        "diff",
         "text diff",
-        "text",
-        "diff"
+        "text"
       ]
     },
     {
@@ -378,6 +412,13 @@
       "aliases": [
         "tupiansuofang",
         "tpsf",
+        "照片",
+        "截图",
+        "图像",
+        "改尺寸",
+        "调大小",
+        "放大",
+        "缩小",
         "image resizer",
         "image",
         "resizer"
@@ -448,6 +489,8 @@
       "aliases": [
         "zhengzeceshiqi",
         "zzcsq",
+        "regexp",
+        "规则匹配",
         "regex tester",
         "regex",
         "tester"
@@ -469,6 +512,9 @@
       "aliases": [
         "mingmingfenggezhuanhuan",
         "mmfgzh",
+        "转格式",
+        "换格式",
+        "转成",
         "case converter",
         "case",
         "converter"
@@ -490,6 +536,9 @@
       "aliases": [
         "wenbenquzhongpaixu",
         "wbqzpx",
+        "重复项",
+        "删除重复",
+        "去重复",
         "dedupe & sort lines",
         "dedupe",
         "sort",
@@ -513,6 +562,9 @@
       "aliases": [
         "zishutongji",
         "zstj",
+        "多少字",
+        "字数多少",
+        "数一下字",
         "word count",
         "word",
         "count"
@@ -534,6 +586,9 @@
       "aliases": [
         "tupianzhuan",
         "tpz",
+        "照片",
+        "截图",
+        "图像",
         "image to base64",
         "image",
         "to",
@@ -559,6 +614,12 @@
       "aliases": [
         "yanseduibidujiancha",
         "ysdbdjc",
+        "配色",
+        "色值",
+        "色号",
+        "比对",
+        "差异",
+        "diff",
         "contrast checker",
         "contrast",
         "checker"
@@ -581,6 +642,9 @@
       "aliases": [
         "geshuijisuanqi",
         "gsjsq",
+        "扣税",
+        "到手工资",
+        "税后",
         "income tax calculator",
         "income",
         "tax",
@@ -604,6 +668,8 @@
       "aliases": [
         "danweihuansuan",
         "dwhs",
+        "度量衡",
+        "换算",
         "unit converter",
         "unit",
         "converter"
@@ -626,6 +692,9 @@
       "aliases": [
         "erweimajiexi",
         "ewmjx",
+        "扫码",
+        "qr码",
+        "二维码图片",
         "qr code reader",
         "qr",
         "code",
@@ -652,6 +721,14 @@
       "aliases": [
         "hebingchaifen",
         "hbcf",
+        "拼起来",
+        "合起来",
+        "合成一个",
+        "连起来",
+        "拆开",
+        "切开",
+        "一分为二",
+        "分成两个",
         "pdf merge & split",
         "pdf",
         "merge",
@@ -680,6 +757,8 @@
       "aliases": [
         "fangdaijisuanqi",
         "fdjsq",
+        "月供",
+        "贷款计算",
         "mortgage calculator",
         "mortgage",
         "calculator"
@@ -703,6 +782,9 @@
       "aliases": [
         "shiquzhuanhuan",
         "sqzh",
+        "转格式",
+        "换格式",
+        "转成",
         "time zone converter",
         "time",
         "zone",
@@ -726,6 +808,12 @@
       "aliases": [
         "tupianzhuan",
         "tpz",
+        "转格式",
+        "换格式",
+        "转成",
+        "照片",
+        "截图",
+        "图像",
         "images to pdf",
         "images",
         "to",
@@ -753,6 +841,9 @@
       "aliases": [
         "zhaopianyuanshujuboli",
         "zpysjbl",
+        "照片",
+        "截图",
+        "图像",
         "photo metadata stripper",
         "photo",
         "metadata",
@@ -784,6 +875,13 @@
       "aliases": [
         "tupiangeshizhuanhuan",
         "tpgszh",
+        "转格式",
+        "换格式",
+        "另存为",
+        "转成",
+        "照片",
+        "截图",
+        "图像",
         "image converter",
         "image",
         "converter"
@@ -813,6 +911,9 @@
         "yinxingkaxiaoyan",
         "yxkxy",
         "sfzyxkxy",
+        "验证",
+        "检查格式",
+        "对不对",
         "id & card validator",
         "id",
         "card",
@@ -836,6 +937,12 @@
       "aliases": [
         "tupiancaijian",
         "tpcj",
+        "照片",
+        "截图",
+        "图像",
+        "裁切",
+        "切图",
+        "剪切",
         "image cropper",
         "image",
         "cropper"
@@ -863,6 +970,12 @@
       "aliases": [
         "wenjianhaxixiaoyan",
         "wjhxxy",
+        "验证",
+        "检查格式",
+        "对不对",
+        "摘要",
+        "指纹",
+        "校验值",
         "file hash checker",
         "file",
         "hash",

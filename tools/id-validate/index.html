@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"身份证 / 银行卡校验","description":"批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别","url":"https://toolhub.bot.cd/tools/id-validate/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"校验通过就能证明这个身份证是真的吗？","acceptedAnswer":{"@type":"Answer","text":"不能。校验码只能证明「这 18 位符合编码规则」，也就是大概率不是随手编的、没有抄错一位。号码是否真实存在、是否注销、是否与姓名匹配，只有公安实名核验接口能回答。"}},{"@type":"Question","name":"15 位老身份证还能校验吗？","acceptedAnswer":{"@type":"Answer","text":"15 位没有校验码，工具只能解析出生日期和性别，并提示建议升位。15 位升级到 18 位的规则是：插入世纪「19」、补校验码。"}},{"@type":"Question","name":"银行卡号 Luhn 通过就一定能扣款成功吗？","acceptedAnswer":{"@type":"Answer","text":"不一定。Luhn 只能拦住约九成的单字符输错，无法判断卡号是否存在、是否过期、是否支持该卡组织。正式扣款前仍需走银行或支付机构的鉴权。"}},{"@type":"Question","name":"校验位是怎么算出来的？","acceptedAnswer":{"@type":"Answer","text":"身份证按 GB 11643 的加权模 11 算法：前 17 位分别乘固定权重后求和，对 11 取模，用余数查表得到第 18 位（可能是 X）。银行卡走 Luhn：从右往左隔位乘 2，大于 9 就减 9，总和能被 10 整除即通过。两者都只能发现录入错误，不能证明号码真实存在。"}},{"@type":"Question","name":"输入的号码会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会。校验是纯数学运算，在浏览器里完成。但身份证号属于敏感个人信息，即使工具不上传，也建议不要在公共电脑、共享屏幕或录屏状态下操作——剪贴板历史和应用层记录都不在工具的控制范围内。"}}]}</script>

@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片格式转换","description":"PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码","url":"https://toolhub.bot.cd/tools/image-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"WebP 兼容性如何？","acceptedAnswer":{"@type":"Answer","text":"Chrome、Edge、Firefox、Safari 14 以上都支持。仍在用 IE 或某些老旧内嵌浏览器（部分后台系统、邮件客户端）的地方会打不开，这类场景请输出 JPEG。"}},{"@type":"Question","name":"为什么转完反而变大了？","acceptedAnswer":{"@type":"Answer","text":"把已经高度压缩的 JPEG 转成 PNG，会从有损编码变成无损编码，体积通常涨好几倍。反过来，把带大量纯色区域的 PNG 转成 JPEG 也可能更大或出现色块。转换前先想清楚目的：要小说体积，别往 PNG 转。"}},{"@type":"Question","name":"透明背景为什么变成了白底或黑底？","acceptedAnswer":{"@type":"Answer","text":"JPEG 格式根本没有透明通道，WebP 有损模式同样不支持。工具会在绘制前先按你选的颜色铺满画布，所以透明区域变成你选的颜色。要保留透明，只能输出 PNG。"}},{"@type":"Question","name":"支持 AVIF 吗？","acceptedAnswer":{"@type":"Answer","text":"编码不支持，解码看浏览器。AVIF 压缩率比 WebP 再好 20% 左右，但编码慢一个数量级，在浏览器里实时转几十张不现实。要 AVIF 目前还是用命令行（avifenc）或构建期处理更合适。"}},{"@type":"Question","name":"批量转换怎么用？","acceptedAnswer":{"@type":"Answer","text":"批量页可以一次拖进多张、统一目标格式、打包下载。混合格式一起转时要留意透明通道——PNG 和 WebP 有透明，转 JPEG 会丢，需要指定背景色，否则默认填白。"}}]}</script>

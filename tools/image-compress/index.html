@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片压缩","description":"在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器","url":"https://toolhub.bot.cd/tools/image-compress/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"压缩后图片会不会上传到服务器？","acceptedAnswer":{"@type":"Answer","text":"不会。本站使用浏览器 Canvas API 在本机完成编码，图片数据从头到尾都没有离开你的设备，可以放心处理含客户信息的截图。"}},{"@type":"Question","name":"为什么 PNG 压缩后体积几乎没变？","acceptedAnswer":{"@type":"Answer","text":"PNG 是无损格式，质量参数对它无效。要明显减小体积，应该转成 JPEG 或 WebP，或者先用调色板量化。"}},{"@type":"Question","name":"怎么压到指定大小，比如 200KB？","acceptedAnswer":{"@type":"Answer","text":"在首页搜索框直接说「把这张图压到 200KB」，会带着参数跳到工具里；也可以在工具内调质量滑杆，看实时体积读数往目标靠。注意有损压缩的体积和质量不是线性关系，同一张图多压 5% 体积可能只掉 1 KB，别为了凑整数把质量拉到底。"}},{"@type":"Question","name":"批量压缩怎么用？","acceptedAnswer":{"@type":"Answer","text":"顶部导航有批量页，可以一次拖进多张图、统一质量参数、打包成 ZIP 下载。批量走的是同一套 Canvas 编码，所以依然不上传。代价是几十张大图会占满浏览器内存，一次别超过 50 张。"}},{"@type":"Question","name":"WebP 和 JPEG 怎么选？","acceptedAnswer":{"@type":"Answer","text":"同样观感下 WebP 通常比 JPEG 小 25%–35%，还支持透明；代价是老版本 Safari（iOS 14 以前）和部分 Windows 图片查看器不认。要发给不确定环境的对象，JPEG 更稳；放在自己的站点上，WebP 更好。"}}]}</script>

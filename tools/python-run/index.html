@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Python 运行器","description":"浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机","url":"https://toolhub.bot.cd/tools/python-run/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MPL-2.0"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"能访问本地文件或网络吗？","acceptedAnswer":{"@type":"Answer","text":"不能，这是沙箱的安全边界。需要外部数据时，请把内容粘贴进代码作为字符串常量。"}},{"@type":"Question","name":"为什么第一次运行特别慢？","acceptedAnswer":{"@type":"Answer","text":"需要下载约 10MB 的解释器运行时并初始化。同一次会话内后续运行几乎是瞬时的，刷新页面后需要重新加载。"}},{"@type":"Question","name":"能用 numpy、pandas 吗？","acceptedAnswer":{"@type":"Answer","text":"不能直接 import。默认环境只带标准库，numpy/pandas 要额外加载几十 MB 的 wheel，首屏代价太大。要做数据计算，用站内的「数值统计」和「CSV 数据体检」——它们背后是专门优化过的实现。"}},{"@type":"Question","name":"和本地装的 Python 版本一致吗？","acceptedAnswer":{"@type":"Answer","text":"不完全一致。这里跑的是编译成 WebAssembly 的 CPython，版本固定在某个主版本上，某些依赖 C 扩展、多线程、fork 的库无法工作。语法和标准库行为基本一致，平台相关的能力差异很大。"}},{"@type":"Question","name":"运行环境和代码会被保存吗？","acceptedAnswer":{"@type":"Answer","text":"不会。解释器加载在页面里，代码在你自己的标签页内存中执行，没有远端执行环节，刷新就没了。反过来说也别拿它当记事本——重要代码自己存好。"}}]}</script>

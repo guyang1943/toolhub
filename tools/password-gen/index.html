@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"强密码生成","description":"crypto 安全随机源生成强密码，本机生成不上传","url":"https://toolhub.bot.cd/tools/password-gen/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"多长的密码才算安全？","acceptedAnswer":{"@type":"Answer","text":"一般账号 12 位以上，重要账号（邮箱、云服务、金融）建议 16-20 位并使用完整字符集。"}},{"@type":"Question","name":"生成过程会把密码发到服务器吗？","acceptedAnswer":{"@type":"Answer","text":"不会。全部在浏览器内用 crypto.getRandomValues 生成，没有任何网络请求。"}},{"@type":"Question","name":"生成的密码关了页面还记得吗？","acceptedAnswer":{"@type":"Answer","text":"不记得。密码只在当前页面的内存里，刷新就没了，localStorage 和 Cookie 都没写。这是故意的——工具的价值在于「连我们自己都拿不到」，代价是你必须当场存进密码管理器。"}},{"@type":"Question","name":"随机数是怎么来的，够不够随机？","acceptedAnswer":{"@type":"Answer","text":"用的是 crypto.getRandomValues()，也就是操作系统的密码学随机源。很多简易生成器用 Math.random()，那是可预测的伪随机，拿来生成密码等于没生成。"}},{"@type":"Question","name":"怎么判断一个密码够不够强？","acceptedAnswer":{"@type":"Answer","text":"看的是「猜中它需要多少次尝试」，不是看有没有特殊符号。长度的影响远大于字符集：12 位纯小写字母约 56 bit，8 位大小写数字符号混排也只有约 52 bit。优先加长度。"}}]}</script>

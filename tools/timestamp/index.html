@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"时间戳转换","description":"Unix 时间戳与可读时间互转，多时区支持","url":"https://toolhub.bot.cd/tools/timestamp/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么同一条日志里的时间和我看到的不一样？","acceptedAnswer":{"@type":"Answer","text":"服务器通常运行在 UTC 时区。查看时请把时区切到 UTC 对一遍，或直接加上 8 小时换算成北京时间。"}},{"@type":"Question","name":"2038 年问题是什么？","acceptedAnswer":{"@type":"Answer","text":"32 位有符号整数最大约 21 亿秒，对应 2038-01-19。使用 64 位存储或在系统层面迁移到 64 位时间戳即可避免。"}},{"@type":"Question","name":"怎么区分秒和毫秒时间戳？","acceptedAnswer":{"@type":"Answer","text":"看位数：10 位是秒（约到 2286 年），13 位是毫秒。混用是最常见的 bug——把毫秒传给只认秒的接口，时间会跑到五万年后。工具里两种都认，会按位数自动判断。"}},{"@type":"Question","name":"能一次转换一整列吗？","acceptedAnswer":{"@type":"Answer","text":"能，粘贴多行时间戳会逐行输出。日志排查时特别省事：把 grep 出来的时间戳列整段贴进来，直接得到可读时间。每行独立处理，不会因为中间一行格式不对就整体失败。"}},{"@type":"Question","name":"转换结果是按哪个时区显示的？","acceptedAnswer":{"@type":"Answer","text":"同时给出 UTC 和你的本地时区，因为这两个最容易被混淆。服务器日志默认 UTC，你看到的「时间对不上」多半就是这个原因。要看别的时区，用「时区转换」工具填 IANA 名称更准。"}}]}</script>

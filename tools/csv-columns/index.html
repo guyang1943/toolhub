@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"CSV 选列与重排","description":"CSV 列太多？选列、拖动排序、按列值过滤后导出新表","url":"https://toolhub.bot.cd/tools/csv-columns/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"列名里本身带逗号，「保留的列」怎么写？","acceptedAnswer":{"@type":"Answer","text":"用序号更稳：先看预览表头，要第 5 列就写 5。列名和序号可以混着写，例如「3, 姓名, 1」，输出顺序就按你写的先后。"}},{"@type":"Question","name":"为什么粘进来只解析出 1 列？","acceptedAnswer":{"@type":"Answer","text":"分隔符和实际内容不一致。工具会检查内容里是否出现了别的候选分隔符，并提示改成哪一个；改完列名标签会立刻重新出现。"}},{"@type":"Question","name":"导出的文件用 Excel 打开中文乱码？","acceptedAnswer":{"@type":"Answer","text":"导出是 UTF-8 编码。老版本 Excel 双击 CSV 时按系统本地编码解析，中文就乱了。改用「数据 → 从文本/CSV」导入并指定 UTF-8，或者用新版 Excel 打开。"}},{"@type":"Question","name":"按列名选还是按序号选？","acceptedAnswer":{"@type":"Answer","text":"两种都支持。按列名可读性好、抗列序变化；按序号在列名重复或含特殊字符时更可靠。列名里带逗号时要用引号包起来，否则会被当成分隔符——这也是「只解析出一列」的常见原因。"}},{"@type":"Question","name":"能重排列顺序后导出吗？","acceptedAnswer":{"@type":"Answer","text":"能。选好的列按你填写的顺序输出，所以同一份操作既做了筛选也做了重排。导出仍由浏览器生成并下载，文件不经过服务器，原始 CSV 不会被留存。"}}]}</script>

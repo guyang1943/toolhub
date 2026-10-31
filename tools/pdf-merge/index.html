@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PDF 合并拆分","description":"多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传","url":"https://toolhub.bot.cd/tools/pdf-merge/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"合并会改变原文件的内容吗？","acceptedAnswer":{"@type":"Answer","text":"不会。合并只是把各文件的页面按顺序复制到一个新文档中，页面内容、尺寸、方向保持不变。需要注意 pdf-lib 的限制：书签、表单域、部分批注和附件不会带入新文件，只保留可见的页面内容。"}},{"@type":"Question","name":"加密的 PDF 能处理吗？","acceptedAnswer":{"@type":"Answer","text":"不能。带打开密码的 PDF 需要先解密（用阅读器打开后另存为无加密文件），带权限限制但能打开的 PDF 通常可以直接处理。工具遇到加密文件会给出明确提示。"}},{"@type":"Question","name":"支持多大的文件？","acceptedAnswer":{"@type":"Answer","text":"取决于本机内存。日常几十兆的文档没有问题；超过几百兆的扫描件建议分批处理。所有解析和生成都在本机进行，没有服务端的体积限制，但浏览器标签页的内存上限是真实存在的。"}},{"@type":"Question","name":"能不能压缩或 OCR 扫描件？","acceptedAnswer":{"@type":"Answer","text":"不能。这里用的是 pdf-lib，只做结构层面的操作（合并、拆分、调页序），不重新编码页面内容，所以既不会压缩图片也不会做文字识别。扫描件体积大是里面的图片大，要压缩得用专门的 PDF 压缩工具。"}},{"@type":"Question","name":"合并后书签、表单、批注还在吗？","acceptedAnswer":{"@type":"Answer","text":"页面内容完整保留，但跨文档的书签层级和表单字段同名时会冲突——两个文件都有「姓名」字段时，合并后可能只剩一套。批注一般会保留。要保留完整交互表单，用 Acrobat 之类的专业工具更稳。"}}]}</script>

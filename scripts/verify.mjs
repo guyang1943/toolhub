@@ -830,6 +830,21 @@ check('工具页 FAQ 深度（SEO）', () => {
   return `${local.tools.length} 个工具页共 ${n} 条问答`;
 });
 
+// v3.11：口语词表是「配置」，最难查的不是写错，是写了却不生效——
+// 主词如果不在任何工具名/标签里，这条映射永远命中不了；变体如果没重跑生成器，
+// 就别指望搜索能搜到。这两种都只有机器能发现，所以让机器盯着。
+checkAsync('搜索口语词表（v3.11）', async () => {
+  const { SPOKEN } = await import(pathToFileURL(join(root, 'scripts', 'lib', 'search-lexicon.mjs')).href);
+  const dead = Object.keys(SPOKEN).filter((k) => !all.some((t) => (t.name + ' ' + (t.tags || []).join(' ')).includes(k)));
+  assert(!dead.length, `主词不在任何工具名/标签里（映射永不生效，属于死配置）：${dead.join('、')}`);
+  const missing = [];
+  for (const variants of Object.values(SPOKEN)) {
+    for (const v of variants) if (!all.some((t) => (t.aliases || []).includes(v))) missing.push(v);
+  }
+  assert(!missing.length, `变体没写进别名（忘了重跑 gen-search-aliases + sync-tools？）：${missing.slice(0, 10).join('、')}`);
+  return `${Object.keys(SPOKEN).length} 组 / ${Object.values(SPOKEN).flat().length} 个口语词已并入 ${all.length} 个工具`;
+});
+
 checkAsync('意图解析规则（E4）', async () => {
   const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
   const cases = [

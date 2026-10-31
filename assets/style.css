@@ -518,6 +518,18 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
   display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
   gap: 6px 10px; margin-top: 8px; font-size: 11.5px; color: var(--muted);
 }
+/* v3.11：「也许你要」直达条。贴着输入框出现，是「搜索」与「问答」之间的那条缝——
+   用户没说清自己在找什么的时候，替他先说一句。 */
+.hero-intent {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin: 10px 0 0; padding: 9px 14px; text-align: left; cursor: pointer;
+  border: 1px solid var(--accent); border-radius: var(--radius); background: var(--accent-soft);
+}
+.hero-intent[hidden] { display: none; }
+.hero-intent .hi-tag { font-size: 11.5px; color: var(--accent); }
+.hero-intent b { font-size: 14px; color: var(--text); }
+.hero-intent .hi-params { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.hero-intent .hi-go { margin-left: auto; font-size: 12px; color: var(--accent); }
 /* ===== 四个入口（v3.4：改成一整行，每个板块一个徽章 + 一个标签） =====
    原来是 3 列网格，4 张卡永远剩一张孤零零占第二行；这里按板块数直接给 4 列 */
 .route-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0 8px; }

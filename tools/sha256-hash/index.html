@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"哈希计算","description":"SHA-256/384/512 哈希，基于 WebCrypto 安全实现","url":"https://toolhub.bot.cd/tools/sha256-hash/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"怎么验证下载的文件没被篡改？","acceptedAnswer":{"@type":"Answer","text":"在发布方官网找到官方摘要值，用本工具计算你手上文件的摘要，两者完全一致才说明未被修改。"}},{"@type":"Question","name":"SHA-1 还能用吗？","acceptedAnswer":{"@type":"Answer","text":"不能用于安全场景。SHA-1 已被证实可构造碰撞，仅在兼容老旧系统时保留，新项目请用 SHA-256 及以上。"}},{"@type":"Question","name":"和「文件哈希校验」工具有什么区别？","acceptedAnswer":{"@type":"Answer","text":"这个算的是你粘进来的文本，那个算的是磁盘上的文件。文本适合校验口令、配置片段、API 签名串；文件动辄几百 MB，需要分片流式读取，走另一个入口才不会把内存吃光。"}},{"@type":"Question","name":"哈希是在本地算的吗？","acceptedAnswer":{"@type":"Answer","text":"是。用的是浏览器内置的 WebCrypto（crypto.subtle.digest），输入不出这台设备。这一点可以自证：断网之后照样能算出正确结果，因为算法就在浏览器里。"}},{"@type":"Question","name":"同样的输入为什么每次结果都一样？","acceptedAnswer":{"@type":"Answer","text":"确定性正是哈希的用途——一样的输入必须得到一样的输出，否则没法用来比对。MD5 被说成「不安全」指的是抗碰撞性被攻破：能故意造出两个不同文件得到同一个 MD5。做完整性校验请用 SHA-256 起步。"}}]}</script>

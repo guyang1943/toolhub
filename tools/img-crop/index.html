@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"图片裁剪","description":"拖出选区或填空坐标裁剪图片，支持等比锁定与圆角","url":"https://toolhub.bot.cd/tools/img-crop/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"裁剪后文件反而比原图大，是不是工具出错了？","acceptedAnswer":{"@type":"Answer","text":"不是。JPEG 是有损格式，导出时会按质量 0.92 重编码一次；如果原图是从聊天软件转存来的、本身只用了很低的压缩质量，那么裁出一小块也可能比整张原图更大。想要更小的体积可以选 WebP，或者直接用「图片压缩」而不是裁剪。"}},{"@type":"Question","name":"圆角裁剪后导出 JPEG，四个角变成了白色方块？","acceptedAnswer":{"@type":"Answer","text":"JPEG 没有透明通道，圆角以外的区域只能填色，工具默认填白。需要透明背景请把导出格式改成 PNG 或 WebP，圆角外就是透明的。"}},{"@type":"Question","name":"裁剪框填得比图片还大怎么办？","acceptedAnswer":{"@type":"Answer","text":"宽高越过右/下边缘时会自动收缩到图内，并在结果上方提示收缩后的实际尺寸——不会产出一张带空白边的图。如果起点本身就落在图片外面，会直接报错并告诉你图片的真实尺寸。"}},{"@type":"Question","name":"固定比例和自由裁剪怎么选？","acceptedAnswer":{"@type":"Answer","text":"要发到固定版位（头像、封面、商品主图）用固定比例，能保证不被平台二次裁切；只是想去掉多余部分用自由裁剪。平台规格经常变，拿不准时按最严格的方形裁，其他地方用留白补。"}},{"@type":"Question","name":"原图会被覆盖吗？","acceptedAnswer":{"@type":"Answer","text":"不会。裁剪结果作为新文件下载，原图始终在你磁盘上不动。这一点很重要——浏览器拿不到写回原文件的权限，任何声称能「原地修改」的网页工具都只是在让你重新下载。"}}]}</script>

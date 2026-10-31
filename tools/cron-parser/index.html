@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Cron 解析","description":"用人话解释 cron 表达式，并算出接下来 5 次执行时间","url":"https://toolhub.bot.cd/tools/cron-parser/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么我写的 * 在分钟位不生效？","acceptedAnswer":{"@type":"Answer","text":"* 表示该字段的每一个值。分钟位写 * 就是每分钟执行一次，如果配合其他字段为 *，就是每分钟都在跑，容易被误认为没生效。"}},{"@type":"Question","name":"0 和 7 都表示周日吗？","acceptedAnswer":{"@type":"Answer","text":"在标准 cron 中是的，两者都指向周日；1 表示周一，依次类推到 6 表示周六。"}},{"@type":"Question","name":"能算出下次执行时间吗？","acceptedAnswer":{"@type":"Answer","text":"能，解析结果里会给出接下来几次触发时刻。这是排查 cron 最有效的一步——表达式「看着对」和「真的会在明天凌晨 3 点跑」是两件事，有具体时间点才不会上线后才发现写错。"}},{"@type":"Question","name":"L、W、# 这些特殊字符支持吗？","acceptedAnswer":{"@type":"Answer","text":"不支持。那是 Quartz 的扩展语法（Linux crontab 没有），混用会在两边都出错。本站按标准 5 段 crontab 解析，遇到这些字符会直接报错而不是猜你的意思。"}},{"@type":"Question","name":"为什么和 Kubernetes 的 cron 对不上？","acceptedAnswer":{"@type":"Answer","text":"K8s 的 CronJob 遵循标准 5 段，但时区默认取控制面容器的时区（通常是 UTC），不是你的本地时间。同一个表达式在本地看着 3 点跑，在集群里可能是 11 点。要在 spec 里显式写 timeZone 字段。"}}]}</script>

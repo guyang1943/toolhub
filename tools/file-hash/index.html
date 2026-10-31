@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"文件哈希校验","description":"拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对","url":"https://toolhub.bot.cd/tools/file-hash/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么大文件要分片算，不能一次性读进来吗？","acceptedAnswer":{"@type":"Answer","text":"浏览器自带的 crypto.subtle.digest 必须一次拿到完整数据，算 1GB 文件会先占掉 1GB 以上内存，低配机器直接卡死。本工具改用增量算法，每次只读 4MB，算完就丢，内存恒定在几 MB。"}},{"@type":"Question","name":"MD5 已经不安全了，为什么还提供？","acceptedAnswer":{"@type":"Answer","text":"「不安全」指的是能被人工构造出碰撞——两份不同内容得到同一个 MD5。用来校验下载完整性仍然够用，而且大量老发布页只提供 MD5，没有它就没法比对。新发布的文件建议优先看 SHA-256。"}},{"@type":"Question","name":"校验值一致就说明文件一定安全吗？","acceptedAnswer":{"@type":"Answer","text":"只能说明「和你填的这个校验值一致」。如果发布页本身被篡改，哈希也会被一起改掉。它防的是传输损坏和用别的文件替换，防不了官方渠道被攻破。"}},{"@type":"Question","name":"支持哪些算法？","acceptedAnswer":{"@type":"Answer","text":"MD5、SHA-1、SHA-256、SHA-512 都能算。校验用途选 SHA-256；老系统只提供 MD5 时也能对着比，但要清楚 MD5 只能防传输损坏，不能防恶意伪造。"}},{"@type":"Question","name":"和网上的在线校验站有什么区别？","acceptedAnswer":{"@type":"Answer","text":"最大的区别是文件不出本机。在线校验站要把整个文件上传，等于把文件内容交给第三方——而这通常是内部构建产物、安装包，甚至带密钥的备份。本地算慢一点，但没有这个暴露面。"}}]}</script>

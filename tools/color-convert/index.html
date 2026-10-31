@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"颜色格式转换","description":"HEX / RGB / HSL 互转，附色块预览与 CSS 变量","url":"https://toolhub.bot.cd/tools/color-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么同一个颜色在 RGB 和 HSL 里数值完全不同？","acceptedAnswer":{"@type":"Answer","text":"这是两套坐标系的换算结果。RGB 描述三原色强度，HSL 描述色相角度与明暗饱和度，指的都是同一个颜色。"}},{"@type":"Question","name":"如何保证文字可读性？","acceptedAnswer":{"@type":"Answer","text":"粗略标准：文字与背景的 HSL 亮度差大于 40% 基本可读；严格场景应该用 WCAG 对比度工具，正文要求 4.5:1 以上。"}},{"@type":"Question","name":"8 位 HEX 里的最后两位是什么？","acceptedAnswer":{"@type":"Answer","text":"是 alpha 通道，00 全透明、FF 全不透明。顺带一个坑：4 位简写 #RGBA 的每个字符会被复制一遍，所以 #F008 等于 #FF000088，而不是 #F0080000。"}},{"@type":"Question","name":"CSS 里该用 hsl 还是 oklch？","acceptedAnswer":{"@type":"Answer","text":"要调明度和饱和度做设计系统，用 OKLCH——它的 L 通道感知均匀，改 L 不会连带改变色相观感。HSL 的 L 是数学亮度，同样 L=50% 的黄色和蓝色看起来亮度差很远。老浏览器不支持 OKLCH 时再退回 HEX。"}},{"@type":"Question","name":"为什么我选的色在别人屏幕上不一样？","acceptedAnswer":{"@type":"Answer","text":"因为设备色域和校色状态不同。sRGB 是网页的默认约定，P3 屏会把饱和色显示得更艳。要跨设备一致，得依赖色彩管理（ICC），而网页只能保证 sRGB 近似。"}}]}</script>

@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"二维码生成","description":"把文本/网址变成二维码，可下载 PNG","url":"https://toolhub.bot.cd/tools/qrcode/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"二维码中间放 logo 会影响识别吗？","acceptedAnswer":{"@type":"Answer","text":"只要不超过约 20% 面积且使用容错级别 M 及以上，通常仍可正常识别。本工具默认使用 M 级容错。"}},{"@type":"Question","name":"生成的二维码会过期吗？","acceptedAnswer":{"@type":"Answer","text":"不会。本工具生成的是静态二维码，内容直接编码在图形里，不依赖任何服务器，永久有效。"}},{"@type":"Question","name":"最多能放多少内容？","acceptedAnswer":{"@type":"Answer","text":"理论上限取决于纠错级别和字符类型：数字约 7089 位、字母数字约 4296 位、字节模式约 2953 字节。实际用到几百字符时二维码已经很密，手机在光线差的环境里会扫不动——长文本建议改用短链接。"}},{"@type":"Question","name":"扫不出来怎么排查？","acceptedAnswer":{"@type":"Answer","text":"先看尺寸：小于 2cm 见方、或者离得太远都会失败。再看对比度，浅灰底配深灰码是最常见的坑。最后看纠错级别，中间放 logo 时应选 H（30% 容错），选 L（7%）时遮住中心几乎必然扫不出。"}},{"@type":"Question","name":"生成的二维码会在我看不见的地方被存下来吗？","acceptedAnswer":{"@type":"Answer","text":"不会。二维码是在浏览器里现场编码、画到 Canvas 上的，没有任何请求带出内容。也正因为如此它不会「过期」——图片存下来就永久有效，除非你把里面指向的那个链接关掉了。"}}]}</script>

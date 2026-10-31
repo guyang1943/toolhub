@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"文本对比","description":"两段文本行级差异对比，新增/删除一目了然","url":"https://toolhub.bot.cd/tools/text-diff/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么明明只改了一个字，却显示整段都变了？","acceptedAnswer":{"@type":"Answer","text":"多半是换行符不一致（Windows 的 CRLF 与 Unix 的 LF），或者行首缩进被统一替换。统一换行符后重新对比即可。"}},{"@type":"Question","name":"支持多大的文本？","acceptedAnswer":{"@type":"Answer","text":"本工具上限约 2000 行/侧（受浏览器内存约束），更大的文件建议用本地 git diff 或专用工具。"}},{"@type":"Question","name":"是按行比对还是按字符比对？","acceptedAnswer":{"@type":"Answer","text":"按行比对，行内再标字符级差异。这个组合最适合代码和配置——纯字符比对在长文本上会产出一大堆碎片化高亮，反而看不清改了哪几行。"}},{"@type":"Question","name":"能忽略空格和大小写吗？","acceptedAnswer":{"@type":"Answer","text":"目前是严格比对，空格和大小写都算差异。这是有意的默认值：格式化前后、缩进变化在代码评审里也是要看见的改动。确实只想看语义变化时，先统一格式再比。"}},{"@type":"Question","name":"两边的文本会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会，diff 算法在浏览器里跑。合同、配置、带密钥的 env 文件都可以直接贴。不过更稳妥的习惯是：任何敏感内容先脱敏再贴，哪怕工具声明不上传。"}}]}</script>

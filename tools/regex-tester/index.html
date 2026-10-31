@@ -41,6 +41,12 @@
   <link rel="stylesheet" href="/assets/style.css" />
   
   
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"正则测试器","description":"实时高亮正则匹配结果，列出分组与位置","url":"https://toolhub.bot.cd/tools/regex-tester/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么在工具里能匹配，代码里却不行？","acceptedAnswer":{"@type":"Answer","text":"常见原因是修饰符不一致（尤其 g 标志会影响 lastIndex 与重复调用结果），或代码里对反斜杠做了额外转义。测试与实现要保持同一份模式字符串。"}},{"@type":"Question","name":"贪婪和非贪婪有什么区别？","acceptedAnswer":{"@type":"Answer","text":".* 会尽可能多地匹配，.*? 尽可能少。做标签提取这类任务时，非贪婪通常更符合直觉。"}},{"@type":"Question","name":"支持 PCRE 还是 JS 方言？","acceptedAnswer":{"@type":"Answer","text":"跑的是 JavaScript 正则，也就是浏览器原生引擎。它不支持 PCRE 的递归、条件断言、\\K，也不支持 Python 的命名组写法 (?P<name>)。在 Python 里能用的表达式，这里可能直接报错。"}},{"@type":"Question","name":"怎么发现回溯爆炸？","acceptedAnswer":{"@type":"Answer","text":"典型症状是「文本一长就卡住不动」。嵌套量词 (a+)+ 配上不匹配的输入会指数级回溯。改造方法是用更具体的字符类替代点号、把重叠的量词拆开，或者改用占有量词/原子组。测试时先拿短输入跑通再上长文本。"}},{"@type":"Question","name":"替换和分组引用怎么用？","acceptedAnswer":{"@type":"Answer","text":"捕获组用 $1、$2 引用，命名组用 $<name>。注意替换串里的 $ 是特殊字符，要匹配字面美元符号得写 $。这里的规则和 String.prototype.replace 完全一致，复制到代码里行为相同。"}}]}</script>
