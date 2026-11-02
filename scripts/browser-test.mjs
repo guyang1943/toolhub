@@ -361,6 +361,29 @@ async function feedFile(selector, dataUrl, name, type) {
   check('全部工具页按分类分组', (await evaluate(`document.querySelectorAll('#page-body .res-group-title').length`)) >= 9);
   await shot('16-all-tools');
 
+  // ---- 1.55c 折腾指南（v3.15）----
+  // 第三层内容：和「点开即用」的工具分开，验的是「导航点得到、页面真的渲染出步骤与回退」。
+  await goto('/');
+  const guideNavHref = await evaluate(`(document.querySelector('#main-nav a[data-nav="guides"]') || {getAttribute: () => ''}).getAttribute('href') || ''`);
+  check('导航有指南入口', guideNavHref === '/guides/', guideNavHref);
+  await evaluate(`document.querySelector('#main-nav a[data-nav="guides"]').click()`);
+  await waitText('#page-body', '折腾指南', 8000);
+  const guideIdxPath = await evaluate(`location.pathname`);
+  const guideRows = await evaluate(`document.querySelectorAll('#page-body a.fl-row').length`);
+  const GUIDE_N = JSON.parse(readFileSync(join(root, 'content/guides.json'), 'utf8')).guides.length;
+  check('点导航进入指南总览', guideIdxPath === '/guides/', guideIdxPath);
+  check('指南总览列全篇目', guideRows === GUIDE_N, guideRows + ' 篇');
+  await evaluate(`document.querySelector('#page-body a.fl-row').click()`);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  const guidePath = await evaluate(`location.pathname`);
+  const stepN = await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`);
+  check('指南详情页是真 URL', /^\/guides\/[\w-]+\/$/.test(guidePath), guidePath);
+  check('指南详情页渲染全部步骤', stepN === 8, stepN + ' 步');
+  check('指南页有风险提示与元信息条', await evaluate(`!!document.querySelector('.guide-risk') && !!document.querySelector('.guide-meta')`));
+  check('指南页互链站内工具', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 2);
+  await shot('17-guide');
+  await goto('/');
+
   // ---- 1.56 评测列表（v3.13 改为行式列表）----
   await goto('/evaluations/');
   await waitText('#page-body', '工具评测', 8000);
@@ -890,6 +913,22 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const heroPh = await evaluate(`document.getElementById('hero-search').placeholder`);
   check('窄屏占位文案已缩短', ph === '搜索工具…' && heroPh === '搜索工具或资源…', `${ph} | ${heroPh}`);
   await shot('04-mobile');
+  // v3.15：导航从 5 项变 6 项。这一行在 375px 最紧——它是横向布局里唯一会随内容变长的东西，
+  // 后面加任何入口都要先过这一关，否则会用「多了一个字」把整站顶出横向滚动条。
+  await cdp.send('Emulation.setDeviceMetricsOverride', { width: 375, height: 780, deviceScaleFactor: 2, mobile: true });
+  await goto('/');
+  const navFit = await evaluate(`document.querySelector('#main-nav').scrollWidth - document.querySelector('#main-nav').clientWidth`);
+  check('375px 导航一行放得下', navFit <= 1, '溢出 ' + navFit + 'px');
+  const overflow375 = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('375px 无横向溢出', overflow375 <= 1, 'overflow ' + overflow375 + 'px');
+  // 步骤列带序号圆点与 40px 缩进，长段落最容易在这里把版心挤出去
+  await goto('/guides/tv-box-server/');
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  const guideOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('指南页窄屏无横向溢出', guideOverflow <= 1, 'overflow ' + guideOverflow + 'px');
+  await shot('17b-guide-mobile');
+  await cdp.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await goto('/');
   // v3.11：直达条是首屏最新的浮动块，窄屏最容易把它撑破——单独量一次
   await typeHero('把图片压到 200KB');
   await waitEl('#hero-intent:not([hidden])', 8000);

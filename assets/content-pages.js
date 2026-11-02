@@ -9,6 +9,8 @@ export function bindContentPages(deps) {
   ({ $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE } = deps);
   return {
     tools: openTools,
+    guides: openGuides,
+    guide: openGuide,
     categories: openCategories,
     category: openCategory,
     topics: openTopics,
@@ -183,6 +185,128 @@ async function openTools() {
         )
         .join('')}
       <div class="crumb" style="margin-top:24px"><a data-spa href="/categories/">按分类浏览</a> · <a data-spa href="/">← 返回首页</a></div>
+    </div>`;
+  bindSpaLinks('#page-body');
+}
+
+/* ---------- 折腾指南（v3.15）---------- */
+// 和工具分类同一套取数方式：总览只拉轻量索引，进具体一篇才取正文。
+// 指南正文比分类文案大一个量级（步骤 + 坑 + 回退），整份下发会让总览页白白多拉几十 KB。
+let GUIDE_INDEX = null;
+async function loadGuideIndex() {
+  if (GUIDE_INDEX) return GUIDE_INDEX;
+  try {
+    GUIDE_INDEX = (await (await fetch('/guides/index.json')).json()).guides || [];
+  } catch {
+    GUIDE_INDEX = [];
+  }
+  return GUIDE_INDEX;
+}
+const GUIDE_COPY = new Map();
+async function loadGuide(slug) {
+  if (GUIDE_COPY.has(slug)) return GUIDE_COPY.get(slug);
+  let d = null;
+  try {
+    const r = await fetch('/guides/' + slug + '.json');
+    if (r.ok) d = await r.json();
+  } catch {
+    d = null;
+  }
+  GUIDE_COPY.set(slug, d);
+  return d;
+}
+const GUIDE_RISK = { low: ['低', 'ok'], mid: ['中', 'warn'], high: ['高', 'danger'] };
+
+async function openGuides() {
+  await loadI18n();
+  const idx = await loadGuideIndex();
+  setView('page');
+  document.title = `折腾指南 · ${SITE}`;
+  renderNavActive('/guides');
+  const rows = idx
+    .map(
+      (g) => `<a class="fl-row" data-spa href="/guides/${g.slug}/">
+        <span class="rank">${g.icon}</span>
+        <div class="f-body"><div class="f-name">${esc(g.title)}</div><div class="f-desc">${esc(g.tagline)}</div></div>
+        <span class="f-meta">${esc(g.difficulty)} · ${g.minutes} 分钟</span>
+      </a>`
+    )
+    .join('');
+  $('#page-body').innerHTML = `
+    <div class="page" style="max-width:880px">
+      <h1>折腾指南</h1>
+      <p class="lead">要先装、先刷、先配才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，指南是一条要走完的路。</p>
+      ${rows}
+      <h2 class="res-group-title">这一类内容的三条纪律</h2>
+      <ul>
+        <li><b>先写前置条件。</b>芯片型号对不上、U 盘容量不够、没有网线——这些没写清楚，人会在第三步才发现白忙一场。</li>
+        <li><b>风险要写在动作前面。</b>「会覆盖原系统」这句话放在最后一段，等于没写。</li>
+        <li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的教程，是在催人做不可逆的事。</li>
+      </ul>
+      <div class="crumb" style="margin-top:24px"><a data-spa href="/tools/">← 全部工具</a> · <a data-spa href="/">返回首页</a></div>
+    </div>`;
+  bindSpaLinks('#page-body');
+}
+
+async function openGuide(slug) {
+  const [g, reg] = await Promise.all([loadGuide(slug), loadRegistry()]);
+  await loadI18n();
+  setView('page');
+  if (!g) {
+    document.title = `指南不存在 · ${SITE}`;
+    $('#page-body').innerHTML = stateHTML('empty', { title: '这篇指南不存在', detail: '地址可能拼错了，回指南总览重新选一篇。' });
+    return;
+  }
+  document.title = `${g.title} · 折腾指南 · ${SITE}`;
+  renderNavActive('/guides');
+  const [label, cls] = GUIDE_RISK[g.risk] || GUIDE_RISK.mid;
+  const nameOf = (id) => {
+    const t = reg.tools.find((x) => x.id === id);
+    return t ? toolMeta(t).name : id;
+  };
+  const ans = (f) => f.a || f.body;
+  $('#page-body').innerHTML = `
+    <div class="page" style="max-width:880px">
+      <div class="crumb" style="margin-bottom:10px"><a data-spa href="/guides/">折腾指南</a> / ${esc(g.title)}</div>
+      <h1>${g.icon} ${esc(g.title)}</h1>
+      <div class="guide-meta">
+        <span>难度 <b>${esc(g.difficulty)}</b></span>
+        <span>约 <b>${g.minutes}</b> 分钟</span>
+        <span class="gm-risk gm-${cls}">风险 <b>${label}</b></span>
+        <span>最后核对 <b>${esc(g.lastChecked)}</b></span>
+      </div>
+      ${g.risk === 'high' ? `<div class="guide-risk"><b>动手之前先看这段。</b>${esc(g.riskNote)}</div>` : ''}
+      <div class="res-intro">${esc(g.intro)}</div>
+      <h2 class="res-group-title">为什么值得折腾</h2><ul>${g.why.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      <h2 class="res-group-title">开工前要有的</h2><ul>${g.prereqs.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      <h2 class="res-group-title">步骤</h2><ol class="guide-steps">${g.steps
+        .map((s) => `<li><b>${esc(s.title)}</b><p>${esc(s.body)}</p></li>`)
+        .join('')}</ol>
+      <h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback">${g.fallback.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+      <h2 class="res-group-title">容易踩的坑</h2>${g.pitfalls
+        .map((p) => `<div class="res-item"><div class="res-item-head"><b>${esc(p.title)}</b></div><div class="res-item-note">${esc(p.body)}</div></div>`)
+        .join('')}
+      ${
+        g.tools?.length
+          ? `<h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row">${g.tools
+              .map((id) => `<a class="related-chip" data-spa href="/tools/${id}/">${esc(nameOf(id))} →</a>`)
+              .join('')}</div>`
+          : ''
+      }
+      ${
+        g.links?.length
+          ? `<h2 class="res-group-title">参考链接</h2>${g.links
+              .map(
+                (l) =>
+                  `<div class="res-item"><div class="res-item-head"><a class="guide-link" href="${esc(l.url)}" target="_blank" rel="noopener nofollow">${esc(l.name)}</a></div><div class="res-item-note">${esc(l.note)}</div></div>`
+              )
+              .join('')}`
+          : ''
+      }
+      <h2 class="res-group-title">常见问题</h2>${g.faq
+        .map((f) => `<div class="res-item"><div class="res-item-head"><b>${esc(f.q)}</b></div><div class="res-item-note">${esc(ans(f))}</div></div>`)
+        .join('')}
+      <div class="crumb" style="margin-top:24px"><a data-spa href="/guides/">← 全部指南</a> · <a data-spa href="/">返回首页</a></div>
     </div>`;
   bindSpaLinks('#page-body');
 }

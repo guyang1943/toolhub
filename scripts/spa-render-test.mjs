@@ -222,6 +222,23 @@ check(
 // 序号全局连续，最后一个必须是总数的两位数 —— 分组渲染最容易在这里错位
 check('全部工具页序号连续', allHtml.includes(`>${String(allTools.length).padStart(2, '0')}<`), `末位 ${String(allTools.length).padStart(2, '0')}`);
 
+// 1c) 折腾指南（v3.15）：第三层内容。它和工具页的区别必须在页面上看得出来，
+// 否则用户点进来会以为「又是一个工具清单」。
+const guideData = JSON.parse(readFileSync(join(root, 'content/guides.json'), 'utf8')).guides;
+await go('/guides');
+const gIdxHtml = document.getElementById('page-body').innerHTML;
+check('指南总览列出全部篇目', (gIdxHtml.match(/class="fl-row"/g) || []).length === guideData.length, `${guideData.length} 篇`);
+check('指南总览讲清与工具页的区别', gIdxHtml.includes('门槛完全不同'));
+
+const g0 = guideData[0];
+await go('/guides/' + g0.slug);
+const gHtml = document.getElementById('page-body').innerHTML;
+check('指南页渲染全部步骤', (gHtml.match(/<li><b>/g) || []).length === g0.steps.length, `${g0.steps.length} 步`);
+check('指南页含元信息条', gHtml.includes('guide-meta') && gHtml.includes('最后核对'));
+check('高风险指南有风险提示块', g0.risk !== 'high' || gHtml.includes('guide-risk'));
+check('指南页含回退章节', gHtml.includes('翻车了怎么办'));
+check('指南页互链站内工具', (g0.tools || []).every((id) => gHtml.includes('/tools/' + id + '/')));
+
 // 2) 评测详情页
 await go('/evaluations/pdf-tools');
 const detailHtml = document.getElementById('page-body').innerHTML;

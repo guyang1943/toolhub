@@ -36,7 +36,9 @@ const keep = (out) =>
   out
     .split('\n')
     .map((l) => l.trim())
-    .filter((l) => l && (l.includes('❌') || /^✅/.test(l)));
+    // 把 ⚠️ 与「合计」也留下：audit 的中低优问题不算失败（它只对 high 退 1），
+    // 但「不算失败」不等于「可以看不见」——v3.15 就是在这里漏读了一条真实的可点区域问题。
+    .filter((l) => l && (l.includes('❌') || /^✅/.test(l) || /^⚠️/.test(l) || /^合计/.test(l)));
 
 function run(s) {
   const started = Date.now();
@@ -49,9 +51,19 @@ function run(s) {
   const out = `${r.stdout || ''}\n${r.stderr || ''}`;
   const lines = keep(out);
   const bad = lines.filter((l) => l.includes('❌'));
+  // 有的脚本最后一行是分隔线，按「最后一行」取汇总会取空。优先取真正的结论行：
+  // 先找 ✅ 开头的结论，没有再退到 audit 的「合计 N 条」。
+  const summary =
+    [...lines].reverse().find((l) => /^✅/.test(l)) ||
+    [...lines].reverse().find((l) => /^合计/.test(l)) ||
+    lines[lines.length - 1] ||
+    '(无输出)';
+  // 软警告只认 audit 那种 ⚠️ 前缀，以及「合计 N 条」里 N 不为 0 的情况。
+  // 不能把所有「合计」都当警告：perf-budget 的预算明细最后一行也叫「合计」，那是正常输出。
+  const warns = lines.filter((l) => /^⚠️/.test(l));
+  const soft = warns.length > 0 || (/^合计/.test(summary) && !/合计\s*0\s*条/.test(summary));
   const ok = r.status === 0 && !bad.length;
-  const summary = lines.length ? lines[lines.length - 1] : '(无输出)';
-  return { ok, summary, bad, ms: Date.now() - started, code: r.status };
+  return { ok, summary, bad, warns, soft, ms: Date.now() - started, code: r.status };
 }
 
 async function waitServer(timeoutMs = 20000) {
@@ -83,7 +95,10 @@ for (const s of picked) {
   const r = run(s);
   const secs = `${(r.ms / 1000).toFixed(1)}s`;
   if (r.ok) {
-    console.log(`✅ ${s.name.padEnd(6, '　')} ${r.summary.replace(/^✅\s*/, '')}  (${secs})`);
+    // 通过但有中低优提示：用 ⚠️ 打头，别让「✅ 全站体检」把一条真问题盖过去
+    const mark = r.soft ? '⚠️' : '✅';
+    console.log(`${mark} ${s.name.padEnd(6, '　')} ${r.summary.replace(/^✅\s*/, '')}  (${secs})`);
+    for (const l of r.warns.slice(0, 6)) console.log(`     ${l}`);
   } else {
     failed++;
     console.log(`❌ ${s.name.padEnd(6, '　')} 退出码 ${r.code}  (${secs})`);

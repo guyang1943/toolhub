@@ -134,7 +134,9 @@ const rules = blocks.flatMap(expand);
 
 /* ---------- 判断 ---------- */
 // 动态拼出来的类名前缀：永远算 base
-const FORCE_BASE = [/\.pv-/];
+// v3.15：指南页的风险徽章是 `gm-${cls}` 拼出来的。当前只有 high 一篇（gm-danger），
+// gm-ok / gm-warn 是给低/中风险预留的，纯文本搜必然搜不到——按上面的约定进白名单。
+const FORCE_BASE = [/\.pv-/, /\.gm-/];
 
 const tokensOf = (s) => {
   const out = new Set();

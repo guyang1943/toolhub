@@ -311,6 +311,10 @@ const PAGES = ONLY_TOOLS
       '/resources/',
       // v3.13：分类是独立页面，总览 + 一个分类详情各抽一条（9 个分类页模板相同）
       '/categories/',
+      // v3.15：指南总览 + 一篇正文。指南页的正文最长（8 段步骤 + 5 条 FAQ），
+      // 排版问题（行宽、序号圆点、长表格）最可能在这一页暴露。
+      '/guides/',
+      '/guides/tv-box-server/',
       '/tools/',
       '/categories/image/',
     ];

@@ -1412,7 +1412,7 @@ function setView(name) {
 
 // 导航高亮（按当前路径标记）
 function renderNavActive(path) {
-  const map = { '/': 'tools', '/tools': 'tools', '/resources': 'resources', '/compare': 'compare', '/about': 'about' };
+  const map = { '/': 'tools', '/tools': 'tools', '/guides': 'guides', '/resources': 'resources', '/compare': 'compare', '/about': 'about' };
   const key = map[path] || '';
   $$('#main-nav a').forEach((a) => a.classList.toggle('active', a.dataset.nav === key));
 }
@@ -1628,6 +1628,10 @@ function route() {
   if (p === '/categories') return openContent('categories');
   const catSlug = p.match(/^\/categories\/([\w-]+)$/);
   if (catSlug) return openContent('category', catSlug[1]);
+  // 折腾指南（v3.15）：第三层内容，和「点开即用」的工具清单分开
+  if (p === '/guides') return openContent('guides');
+  const guideSlug = p.match(/^\/guides\/([\w-]+)$/);
+  if (guideSlug) return openContent('guide', guideSlug[1]);
   if (p === '/changelog') return openContent('changelog');
   if (p === '/evaluations') return openContent('evaluations');
   const evalSlug = p.match(/^\/evaluations\/([\w-]+)$/);

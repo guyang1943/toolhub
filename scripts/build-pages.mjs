@@ -61,6 +61,22 @@ const CAT_QUERY = CAT_URL;
   const missing = [...new Set([...tools, ...dirTools].map((t) => t.category))].filter((c) => !CAT_SLUG.has(c));
   if (missing.length) throw new Error(`分类缺文案：${missing.join('、')} —— 请在 content/categories.json 补一条`);
 }
+// v3.15：第三层内容「折腾指南」。工具页回答「点开就能用」，指南页回答「要装、要刷、要配」。
+// 两者的门槛完全不同，混在一起会让「标本地=文件不出你的电脑、打开即用」这个承诺失真。
+const GUIDES = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8')).guides;
+{
+  const ids = new Set(tools.map((t) => t.id));
+  // 指南里引用的站内工具必须真实存在：拼错一个 id 就是一条 404 死链，
+  // 而它埋在正文中间，靠人工点检发现不了。
+  const badTools = [...new Set(GUIDES.flatMap((g) => g.tools || []))].filter((id) => !ids.has(id));
+  if (badTools.length) throw new Error(`指南引用了不存在的工具：${badTools.join('、')}`);
+  // 风险等级只有三档，写错会让页面上的风险提示静默消失
+  const badRisk = GUIDES.filter((g) => !['low', 'mid', 'high'].includes(g.risk)).map((g) => g.slug);
+  if (badRisk.length) throw new Error(`指南风险等级非法（只允许 low/mid/high）：${badRisk.join('、')}`);
+  const slugs = GUIDES.map((g) => g.slug);
+  const dup = slugs.filter((s, i) => slugs.indexOf(s) !== i);
+  if (dup.length) throw new Error(`指南 slug 重复：${dup.join('、')}`);
+}
 const changelog = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8'));
 // 目录工具正文（人工撰写，每篇 ≥400 字）：与目录数据分离，改文案不用碰代码
 const dirCopyPath = join(root, 'content', 'directory-copy.json');
@@ -825,6 +841,159 @@ for (const p of staticPages) {
   }
 }
 
+// 3.5e) 折腾指南：/guides/ 总览 + 每篇一页（v3.15）
+// 这一层和 /tools/ 的分工必须写在脸上：工具是「点开就能用」，指南是「先装、先刷、先配」。
+// 硬塞进工具清单的代价不是多一个条目，而是把「标本地=打开即用、文件不出电脑」的承诺稀释掉。
+// 所以指南页的固定结构是：能做什么 → 为什么要折腾 → 开工前的门槛 → 步骤 → 翻车了怎么办 → 坑。
+// 「翻车了怎么办」不是礼貌性章节：这类内容一旦省略回退路径，就是把人往不可逆的操作上推。
+{
+  const gDir = join(root, 'guides');
+  mkdirSync(gDir, { recursive: true });
+  const byId = new Map(tools.map((t) => [t.id, t]));
+  const RISK = { low: { label: '低', cls: 'ok' }, mid: { label: '中', cls: 'warn' }, high: { label: '高', cls: 'danger' } };
+
+  const guideRow = (g) =>
+    `<a class="fl-row" href="/guides/${g.slug}/">
+        <span class="rank">${g.icon}</span>
+        <div class="f-body"><div class="f-name">${g.title}</div><div class="f-desc">${g.tagline}</div></div>
+        <span class="f-meta">${g.difficulty} · ${g.minutes} 分钟</span>
+      </a>`;
+
+  // --- 总览页 ---
+  {
+    const url = `${BASE}/guides/`;
+    const body =
+      `<div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，指南是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div>` +
+      `<h2 class="res-group-title">全部指南 · ${GUIDES.length} 篇</h2>` +
+      GUIDES.map(guideRow).join('') +
+      `<h2 class="res-group-title">这一类内容的三条纪律</h2>` +
+      `<ul>` +
+      `<li><b>先写前置条件。</b>芯片型号对不上、U 盘容量不够、没有网线——这些没写清楚，人会在第三步才发现白忙一场。</li>` +
+      `<li><b>风险要写在动作前面。</b>「会覆盖原系统」这句话放在最后一段，等于没写。</li>` +
+      `<li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的教程，是在催人做不可逆的事。</li>` +
+      `</ul>` +
+      `<h2 class="res-group-title">还没写成指南的</h2>` +
+      `<div class="res-intro">把网盘挂成本地盘（OpenList 一类自建服务）、把手机旧机器改成监控探头、把路由器刷成可装插件的系统——这些都在候选里。写成一篇的门槛是一样的：我自己得先跑通，并且能写清楚失败之后怎么办。</div>` +
+      `<div class="crumb" style="margin-top:24px"><a href="/tools/">← 全部工具</a> · <a href="/">返回首页</a></div>`;
+
+    let html = fillMeta(tpl, {
+      title: `折腾指南 · ${GUIDES.length} 篇 · ToolHub`,
+      desc: '刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。',
+      url,
+      botInject: `window.__PAGE__='guides';`,
+      jsonld: {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'ToolHub 折腾指南',
+        url,
+        hasPart: GUIDES.map((g) => ({ '@type': 'TechArticle', name: g.title, url: `${BASE}/guides/${g.slug}/` })),
+      },
+    });
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '折腾指南', desc: '要先装、先刷、先配才能用起来的东西', extra: body })}`);
+    writeFileSync(join(gDir, 'index.html'), html, 'utf8');
+    // 总览的轻量索引：SPA 只取标题与三个数字，不为整篇正文买单
+    writeFileSync(
+      join(gDir, 'index.json'),
+      JSON.stringify({
+        guides: GUIDES.map((g) => ({ slug: g.slug, icon: g.icon, title: g.title, tagline: g.tagline, difficulty: g.difficulty, minutes: g.minutes })),
+      }),
+      'utf8'
+    );
+    count++;
+  }
+
+  // --- 每篇指南 ---
+  for (const g of GUIDES) {
+    const dir = join(gDir, g.slug);
+    mkdirSync(dir, { recursive: true });
+    const curl = `${BASE}/guides/${g.slug}/`;
+    const risk = RISK[g.risk];
+    const ans = (f) => f.a || f.body; // 早期条目用 a，新条目用 body，两种都收
+    const desc = g.tagline.replace(/"/g, '&quot;');
+
+    const meta =
+      `<div class="guide-meta">` +
+      `<span>难度 <b>${g.difficulty}</b></span>` +
+      `<span>约 <b>${g.minutes}</b> 分钟</span>` +
+      `<span class="gm-risk gm-${risk.cls}">风险 <b>${risk.label}</b></span>` +
+      `<span>最后核对 <b>${g.lastChecked}</b></span>` +
+      `</div>`;
+
+    const body =
+      `<div class="crumb" style="margin-bottom:10px"><a href="/guides/">折腾指南</a> / ${g.title}</div>` +
+      meta +
+      (g.risk === 'high' ? `<div class="guide-risk"><b>动手之前先看这段。</b>${g.riskNote}</div>` : '') +
+      `<div class="res-intro">${g.intro}</div>` +
+      `<h2 class="res-group-title">为什么值得折腾</h2><ul>${g.why.map((s) => `<li>${s}</li>`).join('')}</ul>` +
+      `<h2 class="res-group-title">开工前要有的</h2><ul>${g.prereqs.map((s) => `<li>${s}</li>`).join('')}</ul>` +
+      `<h2 class="res-group-title">步骤</h2><ol class="guide-steps">${g.steps
+        .map((s) => `<li><b>${s.title}</b><p>${s.body}</p></li>`)
+        .join('')}</ol>` +
+      `<h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback">${g.fallback.map((s) => `<li>${s}</li>`).join('')}</ul>` +
+      `<h2 class="res-group-title">容易踩的坑</h2>${g.pitfalls
+        .map((p) => `<div class="res-item"><div class="res-item-head"><b>${p.title}</b></div><div class="res-item-note">${p.body}</div></div>`)
+        .join('')}` +
+      (g.tools?.length
+        ? `<h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row">${g.tools
+            .map((id) => `<a class="related-chip" href="/tools/${id}/">${byId.get(id).name} →</a>`)
+            .join('')}</div>`
+        : '') +
+      (g.links?.length
+        ? `<h2 class="res-group-title">参考链接</h2>` +
+          g.links
+            .map(
+              (l) =>
+                `<div class="res-item"><div class="res-item-head"><a class="guide-link" href="${l.url}" target="_blank" rel="noopener nofollow">${l.name}</a></div><div class="res-item-note">${l.note}</div></div>`
+            )
+            .join('')
+        : '') +
+      `<h2 class="res-group-title">常见问题</h2>${g.faq
+        .map((f) => `<div class="res-item"><div class="res-item-head"><b>${f.q}</b></div><div class="res-item-note">${ans(f)}</div></div>`)
+        .join('')}` +
+      `<div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部指南</a> · <a href="/">返回首页</a></div>`;
+
+    let html = fillMeta(tpl, {
+      title: `${g.title} · 折腾指南 · ToolHub`,
+      desc,
+      url: curl,
+      botInject: `window.__GUIDE__=${JSON.stringify(g.slug)};`,
+      jsonld: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'HowTo',
+            name: g.title,
+            description: g.tagline,
+            // 时长用 ISO 8601，写 "40 分钟" 机器读不懂
+            totalTime: `PT${g.minutes}M`,
+            dateModified: g.lastChecked,
+            supply: g.prereqs.map((p) => ({ '@type': 'HowToSupply', name: p })),
+            step: g.steps.map((s, i) => ({ '@type': 'HowToStep', position: i + 1, name: s.title, text: s.body })),
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: '首页', item: `${BASE}/` },
+              { '@type': 'ListItem', position: 2, name: '折腾指南', item: `${BASE}/guides/` },
+              { '@type': 'ListItem', position: 3, name: g.title, item: curl },
+            ],
+          },
+          {
+            '@type': 'FAQPage',
+            mainEntity: g.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: ans(f) } })),
+          },
+        ],
+      },
+    });
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: `${g.icon} ${g.title}`, desc: g.tagline, extra: body })}`);
+    writeFileSync(join(dir, 'index.html'), html, 'utf8');
+    // SPA 用的单篇数据：正文按篇取，不整份下发
+    writeFileSync(join(gDir, g.slug + '.json'), JSON.stringify(g), 'utf8');
+    count++;
+  }
+  console.log(`   ↻ 折腾指南：1 个总览 + ${GUIDES.length} 篇`);
+}
+
 // 3.6) 专题合集（索引 + 各专题）
 {
   const dir = join(root, 'topics');
@@ -1065,6 +1234,10 @@ const urls = [
   { loc: `${BASE}/evaluations/`, pri: '0.7', freq: 'weekly' },
   ...evaluations.evaluations.map((ev) => ({ loc: `${BASE}/evaluations/${ev.slug}/`, pri: '0.6', freq: 'monthly' })),
   { loc: `${BASE}/changelog/`, pri: '0.5', freq: 'weekly' },
+  // 指南页承接的是「电视盒子刷 armbian」这类长尾词：搜索量大、竞争小，
+  // 但有时效性（固件与项目会变），所以频率给 monthly 而不是 weekly。
+  { loc: `${BASE}/guides/`, pri: '0.7', freq: 'monthly' },
+  ...GUIDES.map((g) => ({ loc: `${BASE}/guides/${g.slug}/`, pri: '0.7', freq: 'monthly' })),
 ];
 const today = new Date().toISOString().slice(0, 10);
 writeFileSync(

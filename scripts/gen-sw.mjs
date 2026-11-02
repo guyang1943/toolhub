@@ -109,6 +109,8 @@ export function buildSw({ quiet = false } = {}) {
     // 比 /about/ 该进得多。
     '/tools/',
     '/categories/',
+    // v3.15：指南总览。断网时从导航点进来同样是白页。
+    '/guides/',
   ];
   for (const p of PAGES) full.add(p);
   // 按需加载的应用模块（batch / drop / zip / 加密分享 / 意图解析 …）也必须进包：
@@ -141,6 +143,15 @@ export function buildSw({ quiet = false } = {}) {
     for (const f of readdirSync(join(root, 'categories'))) {
       if (f.endsWith('.json')) full.add('/categories/' + f);
       else if (existsSync(join(root, 'categories', f, 'index.html'))) full.add(`/categories/${f}/`);
+    }
+  }
+
+  // 指南（v3.15）：与分类同一套道理——SPA 进指南页要先取 /guides/<slug>.json，
+  // 正文缺席比页面缺席更难察觉：页头、面包屑都在，正文是空的。
+  if (existsSync(join(root, 'guides'))) {
+    for (const f of readdirSync(join(root, 'guides'))) {
+      if (f.endsWith('.json')) full.add('/guides/' + f);
+      else if (existsSync(join(root, 'guides', f, 'index.html'))) full.add(`/guides/${f}/`);
     }
   }
 

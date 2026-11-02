@@ -964,6 +964,43 @@ check('全部工具页（v3.14）', () => {
   return `${rows} 个工具 / ${groups} 组`;
 });
 
+check('折腾指南（v3.15）', () => {
+  // 这一层的价值不在「多了一个页面」，而在「回退路径有没有写」。
+  // 所以除了完整性，额外钉死两件事：风险等级高的必须有显式风险块，
+  // 每篇必须带「翻车了怎么办」——缺了它，教程就是在催人做不可逆的操作。
+  const g = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8')).guides;
+  assert(g.length, 'guides.json 是空的');
+  const rootIdx = join(root, 'guides', 'index.html');
+  assert(existsSync(rootIdx), '缺 guides/index.html');
+  assert(existsSync(join(root, 'guides', 'index.json')), '缺 guides/index.json（总览的轻量索引）');
+  const idxHtml = readFileSync(rootIdx, 'utf8');
+  const ids = new Set([...local.tools, ...dir.tools].map((t) => t.id));
+
+  for (const x of g) {
+    const p = join(root, 'guides', x.slug, 'index.html');
+    assert(existsSync(p), `${x.slug} 没有静态页`);
+    const html = readFileSync(p, 'utf8');
+    // 步骤以 li 承载，数量必须与数据源一致：漏渲染一步，读者就卡在那一步
+    const steps = (html.match(/<li><b>/g) || []).length;
+    assert(steps === x.steps.length, `${x.slug} 渲染了 ${steps} 步，数据里是 ${x.steps.length} 步`);
+    for (const k of ['HowTo', 'HowToStep', 'BreadcrumbList', 'FAQPage']) assert(html.includes(`"${k}"`), `${x.slug} 缺 ${k}`);
+    assert(html.includes(`PT${x.minutes}M`), `${x.slug} 的 HowTo 时长不是 ISO 8601`);
+    assert(html.includes('翻车了怎么办'), `${x.slug} 没有回退章节`);
+    assert(html.includes('最后核对'), `${x.slug} 没有标注最后核对日期`);
+    if (x.risk === 'high') assert(html.includes('guide-risk'), `${x.slug} 风险为 high 但没有风险提示块`);
+    // 站内工具引用必须真的渲染出链接，并且 id 存在（构建期已校验，这里查产物）
+    for (const id of x.tools || []) {
+      assert(ids.has(id), `${x.slug} 引用了不存在的工具 ${id}`);
+      assert(html.includes(`href="/tools/${id}/"`), `${x.slug} 没有把 ${id} 渲染成链接`);
+    }
+    assert(existsSync(join(root, 'guides', x.slug + '.json')), `${x.slug} 缺单篇 JSON`);
+    assert(idxHtml.includes(`/guides/${x.slug}/`), `总览页没有列出 ${x.slug}`);
+  }
+  const listed = (idxHtml.match(/class="fl-row"/g) || []).length;
+  assert(listed === g.length, `总览列了 ${listed} 篇，数据里 ${g.length} 篇`);
+  return `${g.length} 篇 / ${g.reduce((n, x) => n + x.steps.length, 0)} 步`;
+});
+
 checkAsync('意图解析规则（E4）', async () => {
   const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
   const cases = [

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>折腾指南 · 1 篇 · ToolHub</title>
+  <meta name="description" content="刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/" />
+  <meta property="og:title" content="折腾指南 · 1 篇 · ToolHub" />
+  <meta property="og:description" content="刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"ToolHub 折腾指南","url":"https://toolhub.bot.cd/guides/","hasPart":[{"@type":"TechArticle","name":"旧电视盒子改成小型服务器","url":"https://toolhub.bot.cd/guides/tv-box-server/"}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools">工具</a>
+      <a href="/guides/" data-nav="guides">指南</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>折腾指南</h1><p>要先装、先刷、先配才能用起来的东西</p><div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，指南是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div><h2 class="res-group-title">全部指南 · 1 篇</h2><a class="fl-row" href="/guides/tv-box-server/">
+        <span class="rank">📺</span>
+        <div class="f-body"><div class="f-name">旧电视盒子改成小型服务器</div><div class="f-desc">30 元级的闲置机顶盒刷成 Armbian，当低功耗下载机、家庭文件服务和全屋去广告 DNS。</div></div>
+        <span class="f-meta">中等 · 40 分钟</span>
+      </a><h2 class="res-group-title">这一类内容的三条纪律</h2><ul><li><b>先写前置条件。</b>芯片型号对不上、U 盘容量不够、没有网线——这些没写清楚，人会在第三步才发现白忙一场。</li><li><b>风险要写在动作前面。</b>「会覆盖原系统」这句话放在最后一段，等于没写。</li><li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的教程，是在催人做不可逆的事。</li></ul><h2 class="res-group-title">还没写成指南的</h2><div class="res-intro">把网盘挂成本地盘（OpenList 一类自建服务）、把手机旧机器改成监控探头、把路由器刷成可装插件的系统——这些都在候选里。写成一篇的门槛是一样的：我自己得先跑通，并且能写清楚失败之后怎么办。</div><div class="crumb" style="margin-top:24px"><a href="/tools/">← 全部工具</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__PAGE__='guides';</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

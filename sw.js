@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.14 · 预缓存 194 个地址 · 约 2.9 MB
-const VERSION = "toolhub-v3.14";
+// 版本：toolhub-v3.15 · 预缓存 198 个地址 · 约 3.0 MB
+const VERSION = "toolhub-v3.15";
 const CORE = [
   "/",
   "/index.html",
@@ -127,6 +127,7 @@ const FULL = [
   "/evaluations/",
   "/tools/",
   "/categories/",
+  "/guides/",
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
@@ -213,7 +214,10 @@ const FULL = [
   "/categories/text/",
   "/categories/text.json",
   "/categories/web/",
-  "/categories/web.json"
+  "/categories/web.json",
+  "/guides/index.json",
+  "/guides/tv-box-server/",
+  "/guides/tv-box-server.json"
 ];
 
 self.addEventListener('install', (e) => {
