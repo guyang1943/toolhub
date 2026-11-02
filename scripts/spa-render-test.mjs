@@ -210,6 +210,18 @@ check('分类页列出全部同类工具', (catHtml.match(/class="fl-row"/g) || 
 check('分类页含挑选建议与常见问题', catHtml.includes('怎么挑') && catHtml.includes('res-item-note'));
 check('分类页互链其余分类', (catHtml.match(/\/categories\//g) || []).length >= catCopy.length);
 
+// 1b) 全部工具页（v3.14）：导航「工具」与首页入口卡的落地页
+await go('/tools');
+const allHtml = document.getElementById('page-body').innerHTML;
+check('全部工具页列全', (allHtml.match(/class="fl-row"/g) || []).length === allTools.length, `${allTools.length} 个`);
+check(
+  '全部工具页按分类分组',
+  (allHtml.match(/class="res-group-title"/g) || []).length >= catCopy.length,
+  `${(allHtml.match(/class="res-group-title"/g) || []).length} 组`
+);
+// 序号全局连续，最后一个必须是总数的两位数 —— 分组渲染最容易在这里错位
+check('全部工具页序号连续', allHtml.includes(`>${String(allTools.length).padStart(2, '0')}<`), `末位 ${String(allTools.length).padStart(2, '0')}`);
+
 // 2) 评测详情页
 await go('/evaluations/pdf-tools');
 const detailHtml = document.getElementById('page-body').innerHTML;
@@ -244,6 +256,10 @@ await go('/');
 const cardsHtml = document.getElementById('route-cards').innerHTML;
 check('首页路由卡 4 张', (cardsHtml.match(/route-card/g) || []).length === 4, `${(cardsHtml.match(/route-card/g) || []).length} 张`);
 check('首页含评测卡', cardsHtml.includes('/evaluations/'));
+// v3.14：工具箱那张卡原来 href="#tools-anchor" 加 onclick 抢默认行为，点了只是滚一下。
+// 现在它是真链接——链接语义、右键新开、cmd+点击才都还在。
+check('工具箱卡指向 /tools/', /class="route-card rc--tools" href="\/tools\/"[^>]*data-spa/.test(cardsHtml), '入口卡是真链接');
+check('入口卡不再只滚动', !cardsHtml.includes('data-scroll'));
 
 // 6) 本地工具页教程板块
 await go('/tools/json-format/');

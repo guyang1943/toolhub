@@ -747,6 +747,57 @@ for (const p of staticPages) {
     count++;
   }
   console.log(`   ↻ 分类页：1 个总览 + ${CATS.length} 个分类（含场景/挑选/FAQ 正文）`);
+
+// 3.5d 就放在 3.5c 这个块里面：它复用块内的 byCat / toolRow / catChips，不重算一遍分类映射。
+// 分类页解决的是「按用途找」，这一页解决另外两件事：
+//   1) 导航「工具」原来指回首页、首页入口卡只滚动到锚点——两个入口都没有自己的 URL，
+//      用户点完还停在首页，也分享不出去；
+//   2) 「就想从头看一遍全部工具」「把完整清单链给同事」这两种需求，首页那种带分页和
+//      筛选状态的视图表达不了（分享出去带着别人的筛选条件）。
+// 所以它是一份完整、稳定、可分享的清单：按分类分组，序号全局连续。
+{
+  const url = `${BASE}/tools/`;
+  const groups = CATS.map((c) => ({ c, xs: byCat.get(c.name) })).filter((g) => g.xs.length);
+  let seq = 0;
+  const body = groups
+    .map(({ c, xs }) => {
+      const rows = xs.map((t) => toolRow(t, seq++)).join('');
+      return `<h2 class="res-group-title"><a href="${CAT_URL(c.name)}">${c.icon} ${c.title}</a> · ${xs.length} 个</h2>${rows}`;
+    })
+    .join('');
+  let html = fillMeta(tpl, {
+    title: `全部工具 · ${TOTAL_TOOLS} 个开源工具 · ToolHub`,
+    desc: `ToolHub 全部 ${TOTAL_TOOLS} 个工具，按用途分成 ${CATS.length} 类逐条列出。标「本地」的在浏览器里执行，文件不出你的电脑；标「在线」的跳转第三方官方站点。无需安装、无需注册。`,
+    url,
+    jsonld: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        { '@type': 'CollectionPage', name: '全部工具', url, description: `ToolHub 收录的 ${TOTAL_TOOLS} 个工具` },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: '首页', item: `${BASE}/` },
+            { '@type': 'ListItem', position: 2, name: '全部工具', item: url },
+          ],
+        },
+      ],
+    },
+  });
+  html = html.replace(
+    /<main class="container"[^>]*>/,
+    `<main class="container" id="main-content" tabindex="-1">${seoBlock({
+      h1: '全部工具',
+      desc: `${TOTAL_TOOLS} 个工具，按用途分成 ${CATS.length} 类。想在浏览器里跑的，看标了「本地」的那些——文件不会离开你的电脑。`,
+      extra:
+        `<div class="chips">${catChips('')}</div>` +
+        body +
+        '<p><a href="/categories/">按分类浏览 →</a> · <a href="/">← 返回首页</a></p>',
+    })}`
+  );
+  writeFileSync(join(root, 'tools', 'index.html'), html, 'utf8');
+  count++;
+  console.log(`   ↻ 全部工具页：${TOTAL_TOOLS} 个工具 / ${groups.length} 组`);
+  }
 }
 
 // 3.6) 专题合集（索引 + 各专题）
@@ -949,7 +1000,7 @@ for (const p of staticPages) {
       <link>${BASE}/tools/${t.id}/</link>
       <guid>${BASE}/tools/${t.id}/</guid>
       <description>${escapeXml(t.desc)}</description>
-      <pubDate>${new Date().toUTCString()}</pubDate>
+      <pubDate>${new Date(new Date().toISOString().slice(0, 10) + 'T00:00:00Z').toUTCString()}</pubDate>
     </item>`
     )
     .join('\n');
@@ -976,6 +1027,8 @@ function escapeXml(str) {
 const urls = [
   { loc: `${BASE}/`, pri: '1.0', freq: 'daily' },
   ...[...tools, ...dirTools].map((t) => ({ loc: `${BASE}/tools/${t.id}/`, pri: '0.8', freq: 'weekly' })),
+  // 全部工具页比单个工具更值钱：它是「开源工具大全」这类词的落地页
+  { loc: `${BASE}/tools/`, pri: '0.9', freq: 'weekly' },
   ...staticPages.map((p) => ({ loc: `${BASE}/${p.path}/`, pri: '0.4', freq: 'monthly' })),
   // 分类页与工具页同级：它们承接「图片压缩工具」这类最值钱的品类词
   { loc: `${BASE}/categories/`, pri: '0.8', freq: 'weekly' },
@@ -1030,7 +1083,7 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   // 现在合成一行：每张卡以一个数字打头，精选工具/本地执行/分类/资源/数据上传/评测
   // 六个数全部落进卡片，不再单独占一行。
   const routeCards = `
-    <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
+    <a class="route-card rc--tools" href="/tools/">
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
       <b><span class="rc-num">${TOTAL_TOOLS}</span>个工具</b>
       <span class="rc-desc">${tools.length} 个纯本地执行 · ${cats.length} 个分类</span>

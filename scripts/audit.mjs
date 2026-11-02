@@ -311,6 +311,7 @@ const PAGES = ONLY_TOOLS
       '/resources/',
       // v3.13：分类是独立页面，总览 + 一个分类详情各抽一条（9 个分类页模板相同）
       '/categories/',
+      '/tools/',
       '/categories/image/',
     ];
 const TOOL_PAGES = reg.tools.map((t) => `/tools/${t.id}/`);

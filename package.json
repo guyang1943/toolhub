@@ -1,10 +1,11 @@
 {
   "name": "toolhub",
-  "version": "3.13.0",
+  "version": "3.14.0",
   "private": true,
   "description": "ToolHub · 把开源工具变成打开即用的在线工具（零依赖静态站）",
   "scripts": {
     "build": "node scripts/build-pages.mjs",
+    "build:prod": "node scripts/build-pages.mjs https://toolhub.bot.cd",
     "lint": "node scripts/lint-tools.mjs",
     "verify": "node scripts/verify.mjs",
     "test:spa": "node scripts/spa-render-test.mjs",
@@ -14,7 +15,10 @@
     "serve": "node scripts/serve.mjs",
     "perf": "node scripts/perf-budget.mjs",
     "health": "node scripts/health-check.mjs",
-    "audit": "node scripts/audit.mjs"
+    "audit": "node scripts/audit.mjs",
+    "check": "node scripts/check-all.mjs",
+    "idem": "node scripts/check-idempotent.mjs",
+    "online": "node scripts/verify-online.mjs"
   },
   "engines": {
     "node": ">=22"

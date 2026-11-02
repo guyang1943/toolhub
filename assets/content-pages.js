@@ -8,6 +8,7 @@ let $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, nav
 export function bindContentPages(deps) {
   ({ $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE } = deps);
   return {
+    tools: openTools,
     categories: openCategories,
     category: openCategory,
     topics: openTopics,
@@ -140,6 +141,48 @@ async function openCategory(slug) {
         .map((c) => `<a class="chip${c.slug === slug ? ' active' : ''}" data-spa href="/categories/${c.slug}/">${c.icon} ${c.name}</a>`)
         .join('')}</div>
       <div class="crumb" style="margin-top:24px"><a data-spa href="/categories/">← 全部分类</a> · <a data-spa href="/">返回首页</a></div>
+    </div>`;
+  bindSpaLinks('#page-body');
+}
+
+/* ---------- 全部工具页（v3.14）---------- */
+// 导航「工具」原来指回首页、首页入口卡只滚动到锚点，两个入口都停在首页。
+// 这一页就是它们的落地页：按分类分组列全，序号全局连续，不依赖首页的筛选状态。
+async function openTools() {
+  const [reg, idx] = await Promise.all([loadRegistry(), loadCatIndex()]);
+  await loadI18n();
+  const groups = idx.map((c) => ({ c, xs: reg.tools.filter((t) => t.category === c.name) })).filter((g) => g.xs.length);
+  // 万一某个工具的 category 还没写进分类文案（构建期会拦，但别让页面在这里断），
+  // 单独列一组，也不要静默少几个工具。
+  const known = new Set(idx.map((c) => c.name));
+  const rest = reg.tools.filter((t) => !known.has(t.category));
+  if (rest.length) groups.push({ c: { name: '其他', icon: '📦', title: '其他工具', slug: '' }, xs: rest });
+  let n = 0;
+  const row = (t) => `<a class="fl-row" data-spa href="/tools/${t.id}/">
+      <span class="rank">${String(++n).padStart(2, '0')}</span>
+      <div class="f-body"><div class="f-name">${esc(toolMeta(t).name)}</div><div class="f-desc">${esc(toolMeta(t).desc)}</div></div>
+      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : '🌐 在线'}</span>
+    </a>`;
+  setView('page');
+  document.title = `全部工具 · ${SITE}`;
+  renderNavActive('/tools');
+  $('#page-body').innerHTML = `
+    <div class="page" style="max-width:880px">
+      <div class="crumb" style="margin-bottom:10px"><a data-spa href="/">首页</a> / 全部工具</div>
+      <h1>全部工具</h1>
+      <p class="lead">${reg.tools.length} 个工具，按用途分成 ${groups.length} 类。标「本地」的在浏览器里执行，文件不出你的电脑。</p>
+      <div class="chips">${idx
+        .map((c) => `<a class="chip" data-spa href="/categories/${c.slug}/">${c.icon} ${c.name}</a>`)
+        .join('')}<a class="chip" data-spa href="/categories/">🗂️ 分类总览 →</a></div>
+      ${groups
+        .map(
+          ({ c, xs }) =>
+            `<h2 class="res-group-title">${
+              c.slug ? `<a data-spa href="/categories/${c.slug}/">${c.icon} ${c.title}</a>` : `${c.icon} ${c.title}`
+            } · ${xs.length} 个</h2>${xs.map(row).join('')}`
+        )
+        .join('')}
+      <div class="crumb" style="margin-top:24px"><a data-spa href="/categories/">按分类浏览</a> · <a data-spa href="/">← 返回首页</a></div>
     </div>`;
   bindSpaLinks('#page-body');
 }

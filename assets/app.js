@@ -722,7 +722,7 @@ function renderRouteCards(reg, res, evals) {
   // v3.9：每张卡以数字打头，原来单独一行的六项统计（工具/本地/分类/资源/上传/评测）全并进来。
   //       这四个板块本来就是中文硬编码（没走 i18n），保持原状，别在这里引入半套翻译。
   box.innerHTML = `
-    <a class="route-card rc--tools" href="#tools-anchor" data-scroll="grid">
+    <a class="route-card rc--tools" href="/tools/" data-spa>
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
       <b><span class="rc-num">${reg.counts.local + reg.counts.dir}</span>个工具</b>
       <span class="rc-desc">${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类</span>
@@ -746,13 +746,9 @@ function renderRouteCards(reg, res, evals) {
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a>`;
-  const scrollCard = box.querySelector('[data-scroll]');
-  if (scrollCard) {
-    scrollCard.onclick = (e) => {
-      e.preventDefault();
-      document.getElementById('grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-  }
+  // v3.14：工具箱那张卡改成真链接（/tools/）。原来它 onclick 抢掉默认行为，
+  // 只把页面滚到 #grid —— 用户点完还停在首页，也分享不出去。
+  bindSpaLinks('#route-cards');
 }
 
 /* ---------- 命令面板（⌘K / Ctrl+K） ---------- */
@@ -1416,7 +1412,7 @@ function setView(name) {
 
 // 导航高亮（按当前路径标记）
 function renderNavActive(path) {
-  const map = { '/': 'tools', '/resources': 'resources', '/compare': 'compare', '/about': 'about' };
+  const map = { '/': 'tools', '/tools': 'tools', '/resources': 'resources', '/compare': 'compare', '/about': 'about' };
   const key = map[path] || '';
   $$('#main-nav a').forEach((a) => a.classList.toggle('active', a.dataset.nav === key));
 }
@@ -1626,6 +1622,9 @@ function route() {
   if (p === '/') return renderHome();
   const tool = p.match(/^\/tools\/([\w-]+)$/);
   if (tool) return openTool(tool[1]);
+  // /tools 是全部工具清单页（v3.14）。它是导航「工具」与首页入口卡的落地页，
+  // 跟上面那条详情页正则不冲突：详情页必须带 id。
+  if (p === '/tools') return openContent('tools');
   if (p === '/categories') return openContent('categories');
   const catSlug = p.match(/^\/categories\/([\w-]+)$/);
   if (catSlug) return openContent('category', catSlug[1]);

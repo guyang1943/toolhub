@@ -943,6 +943,25 @@ checkAsync('搜索口语词表（v3.11）', async () => {
   return `${Object.keys(SPOKEN).length} 组 / ${Object.values(SPOKEN).flat().length} 个口语词已并入 ${all.length} 个工具`;
 });
 
+check('全部工具页（v3.14）', () => {
+  // 导航「工具」和首页入口卡原来都只是回到首页、滚到工具区：点完还在首页，也分享不出去。
+  // 这一页是它们的落地页，所以最要紧的是「列全」——少列一个工具，就少一条入口。
+  const p = join(root, 'tools', 'index.html');
+  assert(existsSync(p), '缺 tools/index.html');
+  const html = readFileSync(p, 'utf8');
+  const total = local.tools.length + dir.tools.length;
+  const cats = read('content/categories.json').categories;
+  const rows = (html.match(/class="fl-row"/g) || []).length;
+  assert(rows === total, `列了 ${rows} 个，清单里是 ${total} 个`);
+  const groups = (html.match(/class="res-group-title"/g) || []).length;
+  assert(groups >= cats.length, `只分了 ${groups} 组，分类有 ${cats.length} 个`);
+  assert(html.includes('全部工具'), '标题里没有「全部工具」');
+  for (const k of ['CollectionPage', 'BreadcrumbList']) assert(html.includes(`"${k}"`), `缺 ${k}`);
+  const links = (html.match(/class="fl-row" href="\/tools\/[\w-]+\/"/g) || []).length;
+  assert(links === rows, `${rows} 行里只有 ${links} 行带工具链接`);
+  return `${rows} 个工具 / ${groups} 组`;
+});
+
 checkAsync('意图解析规则（E4）', async () => {
   const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
   const cases = [

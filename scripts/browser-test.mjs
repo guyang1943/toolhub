@@ -343,6 +343,24 @@ async function feedFile(selector, dataUrl, name, type) {
   await shot('14-category');
   await goto('/');
 
+  // ---- 1.55b 全部工具页（v3.14）----
+  // 导航「工具」和首页「99 个工具」入口卡以前都只是回首页、滚到工具区：点完地址栏没变，
+  // 也没法把这一屏发给别人。这一页是它们的落地页，验的是「真换了页面、真的列全」。
+  await goto('/');
+  const toolsCardHref = await evaluate(`(document.querySelector('.route-card.rc--tools') || {getAttribute: () => ''}).getAttribute('href') || ''`);
+  check('首页工具箱卡是真链接', toolsCardHref === '/tools/', toolsCardHref);
+  await evaluate(`document.querySelector('.route-card.rc--tools').click()`);
+  await waitText('#page-body', '全部工具', 8000);
+  const allToolsPath = await evaluate(`location.pathname`);
+  const allToolsRows = await evaluate(`document.querySelectorAll('#page-body a.fl-row').length`);
+  const ALL_N =
+    JSON.parse(readFileSync(join(root, 'tools/tools.json'), 'utf8')).tools.length +
+    JSON.parse(readFileSync(join(root, 'tools/directory.json'), 'utf8')).tools.length;
+  check('点工具箱卡进入全部工具页', allToolsPath === '/tools/', allToolsPath);
+  check('全部工具页列全', allToolsRows === ALL_N, `${allToolsRows} / ${ALL_N}`);
+  check('全部工具页按分类分组', (await evaluate(`document.querySelectorAll('#page-body .res-group-title').length`)) >= 9);
+  await shot('16-all-tools');
+
   // ---- 1.56 评测列表（v3.13 改为行式列表）----
   await goto('/evaluations/');
   await waitText('#page-body', '工具评测', 8000);
@@ -892,6 +910,11 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   await waitText('#page-body', '适合这些场景', 8000);
   const catOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
   check('分类页窄屏无横向溢出', catOverflow <= 1, 'overflow ' + catOverflow + 'px');
+  // v3.14：全部工具页行数最多（99 行），右侧还有「本地/在线」徽章，窄屏最容易挤破
+  await goto('/tools/');
+  await waitText('#page-body', '全部工具', 8000);
+  const allToolsOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('全部工具页窄屏无横向溢出', allToolsOverflow <= 1, 'overflow ' + allToolsOverflow + 'px');
   await goto('/evaluations/');
   await waitText('#page-body', '工具评测', 8000);
   const evOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);

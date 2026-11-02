@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.13 · 预缓存 173 个地址 · 约 2.6 MB
-const VERSION = "toolhub-v3.13";
+// 版本：toolhub-v3.14 · 预缓存 194 个地址 · 约 2.9 MB
+const VERSION = "toolhub-v3.14";
 const CORE = [
   "/",
   "/index.html",
@@ -125,6 +125,8 @@ const FULL = [
   "/resources/",
   "/topics/",
   "/evaluations/",
+  "/tools/",
+  "/categories/",
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
@@ -192,7 +194,26 @@ const FULL = [
   "/evaluations/photocraft-review/",
   "/evaluations/photocraft-review.json",
   "/evaluations/voicestudio-review/",
-  "/evaluations/voicestudio-review.json"
+  "/evaluations/voicestudio-review.json",
+  "/categories/data/",
+  "/categories/data.json",
+  "/categories/design/",
+  "/categories/design.json",
+  "/categories/dev/",
+  "/categories/dev.json",
+  "/categories/docs/",
+  "/categories/docs.json",
+  "/categories/image/",
+  "/categories/image.json",
+  "/categories/index.json",
+  "/categories/media/",
+  "/categories/media.json",
+  "/categories/productivity/",
+  "/categories/productivity.json",
+  "/categories/text/",
+  "/categories/text.json",
+  "/categories/web/",
+  "/categories/web.json"
 ];
 
 self.addEventListener('install', (e) => {

@@ -94,7 +94,22 @@ export function buildSw({ quiet = false } = {}) {
     full.add(`/tools/${t.id}/run.js`);
   }
   for (const v of VENDOR) if (existsSync(join(root, 'assets', 'vendor', v))) full.add(`/assets/vendor/${v}`);
-  const PAGES = ['/privacy/', '/batch/', '/offline/', '/about/', '/submit/', '/compare/', '/changelog/', '/resources/', '/topics/', '/evaluations/'];
+  const PAGES = [
+    '/privacy/',
+    '/batch/',
+    '/offline/',
+    '/about/',
+    '/submit/',
+    '/compare/',
+    '/changelog/',
+    '/resources/',
+    '/topics/',
+    '/evaluations/',
+    // v3.14：这两个入口原来没进包。断网时导航点「工具」直接 404 —— 它们是最主路径，
+    // 比 /about/ 该进得多。
+    '/tools/',
+    '/categories/',
+  ];
   for (const p of PAGES) full.add(p);
   // 按需加载的应用模块（batch / drop / zip / 加密分享 / 意图解析 …）也必须进包：
   // 它们在断网时会被 import() 到，缺席就是「离线打开批量页，点一下没反应」。
@@ -118,6 +133,14 @@ export function buildSw({ quiet = false } = {}) {
     for (const f of readdirSync(join(root, 'evaluations'))) {
       if (f.endsWith('.json')) full.add('/evaluations/' + f);
       else if (existsSync(join(root, 'evaluations', f, 'index.html'))) full.add(`/evaluations/${f}/`);
+    }
+  }
+  // 分类（v3.13 建的，v3.14 才补进包）：断网时「按用途找」是主路径之一，
+  // 而 SPA 进分类页必须先取 /categories/<slug>.json，缺席就是空白页。
+  if (existsSync(join(root, 'categories'))) {
+    for (const f of readdirSync(join(root, 'categories'))) {
+      if (f.endsWith('.json')) full.add('/categories/' + f);
+      else if (existsSync(join(root, 'categories', f, 'index.html'))) full.add(`/categories/${f}/`);
     }
   }
 
