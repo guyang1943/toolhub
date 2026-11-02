@@ -112,6 +112,14 @@ export function buildSw({ quiet = false } = {}) {
       if (f.endsWith('.json')) full.add('/articles/' + f);
     }
   }
+  // 评测（v3.12）：正文拆成单篇后，详情页要按需 fetch evaluations/<slug>.json，
+  // 离线时这一下会打空。所以正文 JSON 与详情页一起进包——8 篇合计约 200 KB。
+  if (existsSync(join(root, 'evaluations'))) {
+    for (const f of readdirSync(join(root, 'evaluations'))) {
+      if (f.endsWith('.json')) full.add('/evaluations/' + f);
+      else if (existsSync(join(root, 'evaluations', f, 'index.html'))) full.add(`/evaluations/${f}/`);
+    }
+  }
 
   // 只收录真的存在于磁盘上的路径：install 里的 addAll 是「全有或全无」，一个 404 会让整个装包失败
   const CORE = CORE_ALL.filter(onDisk);

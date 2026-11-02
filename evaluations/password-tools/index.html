@@ -47,8 +47,13 @@
   
   
   
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Review","name":"密码工具横评：生成器只是起点，管理才是终点","description":"对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。","url":"https://toolhub.bot.cd/evaluations/password-tools/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"Bitwarden","url":"https://bitwarden.com/password-generator/"},{"@type":"SoftwareApplication","name":"1Password","url":"https://1password.com"},{"@type":"SoftwareApplication","name":"本站 · 强密码生成","url":"/tools/password-gen/"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Review","name":"密码工具横评：生成器只是起点，管理才是终点","description":"对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。","url":"https://toolhub.bot.cd/evaluations/password-tools/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"Bitwarden","url":"https://bitwarden.com/password-generator/"},{"@type":"SoftwareApplication","name":"1Password","url":"https://1password.com"},{"@type":"SoftwareApplication","name":"本站 · 强密码生成","url":"/tools/password-gen/"}]}]}</script>
 </head>
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -71,7 +76,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>密码工具横评：生成器只是起点，管理才是终点</h1><p>对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。</p><p><b>结论：</b>用密码管理器的内置生成器（Bitwarden 免费档就够用）；本站密码生成器的价值是「完全本地、可离线」——适合生成一次性密码和不想装 App 的场景。</p><h2>对比项</h2><ul><li><b>Bitwarden</b>（密码管理器 · 隐私：端到端加密）</li><li><b>1Password</b>（密码管理器 · 隐私：端到端加密）</li><li><b>本站 · 强密码生成</b>（纯本地生成器 · 隐私：完全本地）</li></ul><h2>详细解读</h2><p>先纠正一个常见误区：密码安不安全，90% 取决于「存在哪、怎么同步」，生成算法反而是次要的——只要是密码学安全随机源（crypto.getRandomValues 或同等级别），生成器之间的差距可以忽略。所以横评的重点是管理链路，不是生成那一刻。</p><p>密码管理器的核心价值是「生成即入库 + 自动填充」的闭环：每个站点用独立强密码，你只需要记住主密码。Bitwarden 在开源、免费、可自托管三点上同时成立，个人用户免费档没有实质限制，是这类工具的默认答案。1Password 体验更好但闭源且只有订阅制，适合愿意为体验付费的用户。</p><p>本站的密码生成器是另一条路：它不管存储，只负责在本地生成。这个定位适合三类场景——一次性密码（注册个什么账号、临时共享个文件）、离线环境（内网机器没网）、以及「我就是不想装 App」的时刻。用 crypto 安全随机源意味着它和服务端生成的一样不可预测，生成的密码直接复制走，设备上不留痕。</p><p>真正危险的做法是「用大脑管理密码」：一套密码走天下、或者按规律变形（P@ssw0rd1、P@ssw0rd2）。前者的后果是撞库全面失守，后者在懂行的人眼里等于明文。如果只能记住一条建议：重要账号（邮箱、支付、社交）必须独立强密码 + 管理器，次要账号才考虑规律记忆。</p><p>收尾建议：装一个密码管理器（Bitwarden 起步），把高频密码交给它；本站生成器作为补充，应付一次性和离线场景。两者不冲突，覆盖的场景正好互补。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>密码工具横评：生成器只是起点，管理才是终点</h1><p>对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。</p><p><b>结论：</b>用密码管理器的内置生成器（Bitwarden 免费档就够用）；本站密码生成器的价值是「完全本地、可离线」——适合生成一次性密码和不想装 App 的场景。</p><h2>对比项</h2><h3>Bitwarden（密码管理器 · 隐私：端到端加密）</h3><p><b>优势</b>：开源 + 免费档够用（无限密码、无限设备）；生成即入库，自动填充闭环；GPL-3.0，可自托管</p><p><b>短板</b>：要装客户端/插件才有完整体验；免费档不含高级报告（密码泄露检测等）</p><h3>1Password（密码管理器 · 隐私：端到端加密）</h3><p><b>优势</b>：体验最顺滑，家庭/团队版功能全；Watchtower 监控泄露；跨平台覆盖最广</p><p><b>短板</b>：闭源，只有订阅制；免费试用到期后价格不低；数据在第三方服务（虽为零知识加密）</p><h3>本站 · 强密码生成（纯本地生成器 · 隐私：完全本地）</h3><p><b>优势</b>：crypto 安全随机源，不依赖任何服务；不装 App、不登录、可离线；适合生成一次性密码、Wi-Fi 密码、注册临时密码</p><p><b>短板</b>：不管存储——生成完要自己保管；无自动填充，日常高频密码不如管理器顺手</p><h2>详细解读</h2><p>先纠正一个常见误区：密码安不安全，90% 取决于「存在哪、怎么同步」，生成算法反而是次要的——只要是密码学安全随机源（crypto.getRandomValues 或同等级别），生成器之间的差距可以忽略。所以横评的重点是管理链路，不是生成那一刻。</p><p>密码管理器的核心价值是「生成即入库 + 自动填充」的闭环：每个站点用独立强密码，你只需要记住主密码。Bitwarden 在开源、免费、可自托管三点上同时成立，个人用户免费档没有实质限制，是这类工具的默认答案。1Password 体验更好但闭源且只有订阅制，适合愿意为体验付费的用户。</p><p>本站的密码生成器是另一条路：它不管存储，只负责在本地生成。这个定位适合三类场景——一次性密码（注册个什么账号、临时共享个文件）、离线环境（内网机器没网）、以及「我就是不想装 App」的时刻。用 crypto 安全随机源意味着它和服务端生成的一样不可预测，生成的密码直接复制走，设备上不留痕。</p><p>真正危险的做法是「用大脑管理密码」：一套密码走天下、或者按规律变形（P@ssw0rd1、P@ssw0rd2）。前者的后果是撞库全面失守，后者在懂行的人眼里等于明文。如果只能记住一条建议：重要账号（邮箱、支付、社交）必须独立强密码 + 管理器，次要账号才考虑规律记忆。</p><p>收尾建议：装一个密码管理器（Bitwarden 起步），把高频密码交给它；本站生成器作为补充，应付一次性和离线场景。两者不冲突，覆盖的场景正好互补。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -110,7 +115,7 @@
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
       <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b><span class="rc-num">5</span>篇评测</b>
+      <b><span class="rc-num">8</span>篇评测</b>
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a><!--/hs:route-cards--></div>

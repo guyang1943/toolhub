@@ -47,8 +47,13 @@
   
   
   
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Review","name":"图片压缩工具横评：本地派 vs 上传派","description":"同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。","url":"https://toolhub.bot.cd/evaluations/image-compress-shootout/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"本站 · 图片压缩","url":"/tools/image-compress/"},{"@type":"SoftwareApplication","name":"Squoosh","url":"https://squoosh.app"},{"@type":"SoftwareApplication","name":"BentoPDF","url":"https://bentopdf.com"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Review","name":"图片压缩工具横评：本地派 vs 上传派","description":"同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。","url":"https://toolhub.bot.cd/evaluations/image-compress-shootout/","datePublished":"2026-10-24","itemReviewed":[{"@type":"SoftwareApplication","name":"本站 · 图片压缩","url":"/tools/image-compress/"},{"@type":"SoftwareApplication","name":"Squoosh","url":"https://squoosh.app"},{"@type":"SoftwareApplication","name":"BentoPDF","url":"https://bentopdf.com"}]}]}</script>
 </head>
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
@@ -71,7 +76,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩工具横评：本地派 vs 上传派</h1><p>同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。</p><p><b>结论：</b>优先用浏览器本地压缩（本站图片压缩或 Squoosh）——速度相当，但数据不出设备；上传型站点处理完应立即关闭页面，敏感图不要用。</p><h2>对比项</h2><ul><li><b>本站 · 图片压缩</b>（浏览器本地 · 隐私：完全本地）</li><li><b>Squoosh</b>（浏览器本地 · 隐私：完全本地）</li><li><b>BentoPDF</b>（浏览器本地 · 隐私：完全本地）</li><li><b>上传型在线压缩站（常见模式）</b>（上传到服务器 · 隐私：需上传）</li></ul><h2>详细解读</h2><p>压缩的本质是在「体积」和「画质」之间找平衡点，所以横评的核心不是谁压得最小，而是谁能在不牺牲可控性的前提下把活干完。四类方案跑下来，本地派和上传派的体验差距比参数差距大得多。</p><p>实测感受：一张 3MB 的 4K 截图，本站工具和 Squoosh 都能在 1 秒内出结果，压到 400KB 左右画质肉眼无差；上传型站点因为多了上传和排队时间，同样一张图要等 3-5 秒，还没算选文件的功夫。批量场景下上传派依然快，但它快在「不用你一张张操作」，不是处理本身快。</p><p>画质方面有个反直觉的结论：盲目追求最小体积没意义。把质量拉到 30 以下，压缩率提升有限，但文字边缘的振铃效应会明显到没法看。建议的用法是——照片类 75-80、截图类 60-70、图标类转 WebP，每一档用对比预览确认后再批量。</p><p>隐私是这次横评最该强调的。上传型站点的图片会经过第三方服务器，服务条款里写什么、保留多久、被谁看过，用户完全不可控。含人脸、身份证、公司内部信息的图，即使用完立刻删，也不应该走这条路。本地派把编码过程放进浏览器的意义就在这里：文件从头到尾没离开过你的设备。</p><p>最终建议：日常单张压缩用本地工具（本站或 Squoosh）；需要精细调编码参数用 Squoosh；PDF 相关操作用 BentoPDF；上传型站点留给「不敏感 + 批量 + 特殊格式」三个条件同时成立的场景。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩工具横评：本地派 vs 上传派</h1><p>同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。</p><p><b>结论：</b>优先用浏览器本地压缩（本站图片压缩或 Squoosh）——速度相当，但数据不出设备；上传型站点处理完应立即关闭页面，敏感图不要用。</p><h2>对比项</h2><h3>本站 · 图片压缩（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：Canvas API 本机编码，图片零上传；压缩完直接下载，无套路；和站内缩放、Base64 工具串成工作流</p><p><b>短板</b>：只有质量与尺寸两个参数，调不了编码细节；一次一张，不适合几百张的批量活</p><h3>Squoosh（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：Google 出品，压缩算法最全（MozJPEG / OxiPNG / WebP）；左右滑杆实时对比画质，参数不靠猜；同样是 WASM 本地处理，不上传</p><p><b>短板</b>：一次一张；国内访问偶有加载慢（静态资源在 Google CDN）</p><h3>BentoPDF（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：PDF 场景全家桶：压缩、合并、拆分一站式；MIT 协议，可自托管</p><p><b>短板</b>：PDF 压缩是文件级操作，对单张图片不如前两者直观；功能多导致首页有点密</p><h3>上传型在线压缩站（常见模式）（上传到服务器 · 隐私：需上传）</h3><p><b>优势</b>：支持批量几十张；部分支持 HEIC 等特殊格式</p><p><b>短板</b>：图片离你的设备，隐私全看对方良心；限速、限大小、弹广告是常态；多数不告诉你文件保留多久</p><h2>详细解读</h2><p>压缩的本质是在「体积」和「画质」之间找平衡点，所以横评的核心不是谁压得最小，而是谁能在不牺牲可控性的前提下把活干完。四类方案跑下来，本地派和上传派的体验差距比参数差距大得多。</p><p>实测感受：一张 3MB 的 4K 截图，本站工具和 Squoosh 都能在 1 秒内出结果，压到 400KB 左右画质肉眼无差；上传型站点因为多了上传和排队时间，同样一张图要等 3-5 秒，还没算选文件的功夫。批量场景下上传派依然快，但它快在「不用你一张张操作」，不是处理本身快。</p><p>画质方面有个反直觉的结论：盲目追求最小体积没意义。把质量拉到 30 以下，压缩率提升有限，但文字边缘的振铃效应会明显到没法看。建议的用法是——照片类 75-80、截图类 60-70、图标类转 WebP，每一档用对比预览确认后再批量。</p><p>隐私是这次横评最该强调的。上传型站点的图片会经过第三方服务器，服务条款里写什么、保留多久、被谁看过，用户完全不可控。含人脸、身份证、公司内部信息的图，即使用完立刻删，也不应该走这条路。本地派把编码过程放进浏览器的意义就在这里：文件从头到尾没离开过你的设备。</p><p>最终建议：日常单张压缩用本地工具（本站或 Squoosh）；需要精细调编码参数用 Squoosh；PDF 相关操作用 BentoPDF；上传型站点留给「不敏感 + 批量 + 特殊格式」三个条件同时成立的场景。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -110,7 +115,7 @@
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
       <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b><span class="rc-num">5</span>篇评测</b>
+      <b><span class="rc-num">8</span>篇评测</b>
       <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
       <em>读评测 →</em>
     </a><!--/hs:route-cards--></div>

@@ -1,0 +1,107 @@
+{
+  "slug": "photocraft-review",
+  "title": "PhotoCraft 测评：用纯 Rust 重写 Photoshop，76k 星之后还差什么",
+  "icon": "🖌️",
+  "date": "2026-11-02",
+  "method": "依据 storytold/photocraft 仓库 v0.19.0（2026-11-01）的 README、作者自己公开的 parity 评估与 roadmap、Release 资产清单核实。文中「还差什么」引用作者自述，不是推测。未在本机运行桌面版。",
+  "summary": "2026-09-30 才建仓的纯 Rust 项目，一个月 75,942 星。图层、蒙版、调整图层、图层样式、文字、矢量、真 PSD 往返——Photoshop 最难的那层地基它都做了，还不用订阅、不上传。但它自己写着 early alpha。",
+  "verdict": "值得装一个放在机器上，别急着当主力——开 PSD、调色、做图层合成已经能用；AI 功能、15 个缺失工具、排版深度与插件兼容仍是缺口，交付级的工作还得回 PS。",
+  "items": [
+    {
+      "name": "PhotoCraft",
+      "url": "https://github.com/storytold/photocraft",
+      "type": "桌面程序（另有 Web 包）",
+      "privacy": "完全本地",
+      "pros": [
+        "真 PSD 读写：图层、蒙版、智能对象、图层样式都能往返",
+        "16 个调整图层 + 27 种混合模式，原像素不被破坏",
+        "wgpu GPU 合成（Metal / Vulkan / DX12 / WebGPU），不是 Electron",
+        "Windows / macOS / Linux / FreeBSD 都有安装包，另有 12.8MB 的 Web 包",
+        "MIT 或 Apache-2.0 双许可，可自托管、可改"
+      ],
+      "cons": [
+        "官方标注 early alpha，自述「不是日常专业工作的替代品」",
+        "缺 15 个工具、AI 生成功能与插件兼容",
+        "3,755 个 open issue，粗糙边缘不少",
+        "Wayland 会话下拖放不工作，需用 File › Open 或 Ctrl+V",
+        "分数缩放（125%/150%）下 XWayland 窗口会发糊"
+      ]
+    },
+    {
+      "name": "本站 · 图片裁剪 / 压缩 / 转格式",
+      "url": "/tools/img-crop/",
+      "type": "浏览器本地",
+      "privacy": "完全本地",
+      "pros": [
+        "零安装，改尺寸、裁剪、压缩、转格式这些日常活打开就干",
+        "和去 EXIF、转 PDF 串成链，处理完直接下载"
+      ],
+      "cons": [
+        "没有图层、蒙版、调整图层，不是修图软件",
+        "一次一张，不适合批量重活"
+      ]
+    },
+    {
+      "name": "Photoshop（商业订阅）",
+      "url": null,
+      "type": "桌面程序",
+      "privacy": "本地处理但需授权",
+      "pros": [
+        "功能完整性、插件生态、印刷与 CMYK 工作流的行业标准",
+        "AI 填充、主体抠图这类能力目前没有同等开源替代"
+      ],
+      "cons": [
+        "订阅制，长期成本高",
+        "启动重、吃内存，换机器要重新授权"
+      ]
+    }
+  ],
+  "body": [
+    "storytold/photocraft 2026-09-30 建仓，11 月初 75,942 星、13,461 个 fork，最新 v0.19.0（2026-11-01）。它的自我介绍很狂：clean-room 重写的 Photoshop，纯 Rust，不用 Electron、不用 WebView。狂得有底气——本地原生、GPU 合成，而且它能打开真正的 PSD。",
+    "判断这类项目，别看功能列表长度，看三件事。一是 PSD 能不能往返：图层、蒙版、调整图层、图层样式、文字层、智能对象，存回去还在不在。二是编辑是不是非破坏的：调整图层加蒙版让原像素不动，这是专业修图和滤镜软件的分水岭。三是合成走不走 GPU：wgpu 后端覆盖 Metal、Vulkan、DX12 和 WebGPU，同样一张五千万像素的图，滚动画布不该卡。三件它都做了。",
+    "但它自己把话说得很直。README 里加粗写着：PhotoCraft 处于 early alpha，它还不是日常专业工作的 Photoshop 替代品；缺口是 AI 与生成式功能、15 个缺失工具、排版深度、专业工作流、插件兼容。后面还补了一句很关键的：每个 PS 菜单项都接上了命令，但那衡量的是「接线」，不是「行为」。这句话值得所有做工具的人抄下来——菜单点得动，不等于功能对。",
+    "数字也对得上这个阶段：3,755 个 open issue，对一个月大的项目来说，这既是热度也是摩擦。已知的具体坑包括 Wayland 会话下往窗口里拖文件不工作（上游 winit 的问题），以及 125% 这类分数缩放下 XWayland 窗口会被合成器放大发糊。",
+    "有意思的是它给了 Web 包。Release 里有个 photocraft-web-0.19.0.zip，12.8MB，靠 WebGPU 在浏览器里跑。这意味着将来完全可能有一个「打开网页就能开 PSD」的入口——这类把桌面级软件搬进浏览器的能力，正是本站一直在收集的方向。现在它还是 alpha，不适合放上来给所有人点，但值得盯着。",
+    "建议分两层。想找一个不订阅、不联网、能改 PSD 的备用修图工具——装，Windows 的 msi 102MB、macOS 的 dmg 234MB，代价不大。想用它替掉工作机上的 Photoshop——现在还不行，作者自己都说不行。等项目从 alpha 出来，再谈替换。"
+  ],
+  "usage": [
+    {
+      "name": "装",
+      "steps": [
+        "Windows：photocraft-0.19.0-windows-x64.msi（102MB），或 windows-x64-portable.zip 免安装",
+        "macOS：photocraft-0.19.0-macos-universal.dmg（234MB，已签名并公证）",
+        "Linux：AppImage / .deb / .rpm / Flatpak 任选；Flatpak 需先装 Flathub 的运行时",
+        "Web：下 photocraft-web-0.19.0.zip（12.8MB）自托管，需要支持 WebGPU 的浏览器"
+      ]
+    },
+    {
+      "name": "开一个 PSD 改色",
+      "steps": [
+        "File › Open 打开 PSD，图层面板会保留原来的分组、蒙版与混合模式",
+        "加调整图层（Levels / Curves / Vibrance / Hue-Saturation 等 16 种），原像素不动",
+        "只想改局部：先做选区（选框、套索、魔棒，或 Quick Selection / Select Subject），再建调整图层，选区会自动变成蒙版",
+        "存回 PSD，图层结构跟着走；也可以直接导出 PNG / JPG 交付"
+      ]
+    },
+    {
+      "name": "Linux 上的两个坑",
+      "steps": [
+        "Wayland 下拖放还没接通：用 File › Open，或在文件管理器里复制后 Ctrl+V 粘贴",
+        "分数缩放下发糊：设置里把 Linux 显示服务器切成 X11，或改用整数缩放"
+      ]
+    },
+    {
+      "name": "从源码跑（可选）",
+      "steps": [
+        "git clone https://github.com/storytold/photocraft && cd photocraft",
+        "cargo run --release -p photocraft -- image.psd 直接开图",
+        "cargo test --workspace 跑测试；自带 CLI 用 --cli --help，或 --cli mcp 起 MCP 服务"
+      ]
+    }
+  ],
+  "relatedTools": [
+    "img-crop",
+    "image-compress",
+    "exif-strip"
+  ]
+}

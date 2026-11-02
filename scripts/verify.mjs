@@ -185,19 +185,35 @@ check('评测数据结构', () => {
   assert(evals.evaluations?.length >= 1, '没有评测');
   const bad = [];
   for (const ev of evals.evaluations) {
-    if (!ev.slug || !ev.title || !ev.summary || !ev.verdict || !ev.date) bad.push(ev.slug + '(缺字段)');
-    if (!ev.items || ev.items.length < 2) bad.push(ev.slug + '(对比项 <2)');
-    if (!ev.body || ev.body.length < 2) bad.push(ev.slug + '(正文 <2 段)');
+    if (!ev.slug || !ev.title || !ev.summary || !ev.date) bad.push(ev.slug + '(索引缺字段)');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(ev.date || '')) bad.push(ev.slug + '(日期格式)');
-    for (const it of ev.items || []) {
-      if (!it.name || !it.type || !it.privacy) bad.push(`${ev.slug}(${it.name || '?'} 缺字段)`);
-    }
-    const miss = (ev.relatedTools || []).filter((id) => !ids.has(id));
-    if (miss.length) bad.push(`${ev.slug}(引用不存在: ${miss.join(',')})`);
+    if (typeof ev.itemCount !== 'number' || ev.itemCount < 2) bad.push(ev.slug + '(对比项 <2)');
     if (!existsSync(join(root, 'evaluations', ev.slug, 'index.html'))) bad.push(ev.slug + '(缺静态页)');
+    const bodyPath = join(root, 'evaluations', ev.slug + '.json');
+    if (!existsSync(bodyPath)) {
+      bad.push(ev.slug + '(缺正文)');
+      continue;
+    }
+    const full = read('evaluations/' + ev.slug + '.json');
+    // 索引与正文必须指的是同一篇：两边标题对不上，说明改了正文忘了重建索引
+    if (full.title !== ev.title) bad.push(ev.slug + '(索引与正文标题不一致)');
+    if (!full.verdict) bad.push(ev.slug + '(缺结论)');
+    if (!full.items || full.items.length !== ev.itemCount) bad.push(ev.slug + '(对比项数不一致)');
+    if (!full.body || full.body.length < 2) bad.push(ev.slug + '(正文 <2 段)');
+    for (const it of full.items || []) {
+      if (!it.name || !it.type || !it.privacy) bad.push(`${ev.slug}(${it.name || '?'} 缺字段)`);
+      if (!Array.isArray(it.pros) || !Array.isArray(it.cons)) bad.push(`${ev.slug}(${it.name || '?'} 缺优劣)`);
+    }
+    // 「怎么用」一旦给了，就得是能照着做的：每块至少 2 步
+    for (const u of full.usage || []) {
+      if (!u.name || !Array.isArray(u.steps) || u.steps.length < 2) bad.push(`${ev.slug}(使用说明不完整: ${u.name || '?'})`);
+    }
+    if ((full.usage || []).length && !full.method) bad.push(ev.slug + '(有使用说明但没写测试方式)');
+    const miss = (full.relatedTools || []).filter((id) => !ids.has(id));
+    if (miss.length) bad.push(`${ev.slug}(引用不存在: ${miss.join(',')})`);
   }
   assert(!bad.length, bad.join('; '));
-  return `${evals.evaluations.length} 篇评测`;
+  return `${evals.evaluations.length} 篇评测（索引 ${Math.round(statSync(join(root, 'evaluations.json')).size / 1024)} KB）`;
 });
 
 check('更新日志结构', () => {

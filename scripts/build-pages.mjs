@@ -32,7 +32,20 @@ const tools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')
 const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
 const i18n = JSON.parse(readFileSync(join(root, 'i18n.json'), 'utf8')).en;
 const articles = JSON.parse(readFileSync(join(root, 'articles.json'), 'utf8'));
-const evaluations = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8'));
+// v3.12：评测拆成「索引 + 单篇」。索引给列表页和搜索面板（几个短字段），
+// 正文提到 evaluations/<slug>.json，页面要用时才取。起因很实在：三篇长测评
+// 让 evaluations.json 从 8 KB 涨到 16.7 KB gzip，而它是首屏启动数据之一——
+// 首页根本不显示正文，却要为此多付 8 KB。构建时在这里合并回完整对象，
+// 下面的渲染代码一行都不用改。
+const evIndex = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8'));
+const evaluations = {
+  ...evIndex,
+  evaluations: evIndex.evaluations.map((ev) => {
+    const bodyPath = join(root, 'evaluations', ev.slug + '.json');
+    if (!existsSync(bodyPath)) throw new Error(`评测缺少正文文件：evaluations/${ev.slug}.json`);
+    return { ...ev, ...JSON.parse(readFileSync(bodyPath, 'utf8')) };
+  }),
+};
 const resources = JSON.parse(readFileSync(join(root, 'resources.json'), 'utf8'));
 const topics = JSON.parse(readFileSync(join(root, 'topics.json'), 'utf8'));
 const changelog = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8'));
@@ -608,12 +621,14 @@ for (const p of staticPages) {
   const list = evaluations.evaluations
     .map(
       (ev) =>
-        `<h2>${ev.icon} ${ev.title}</h2><p>${ev.summary}</p><p>实测日期：${ev.date} · <a href="/evaluations/${ev.slug}/">阅读全文 →</a></p>`
+        `<h2>${ev.icon} <a href="/evaluations/${ev.slug}/">${ev.title}</a></h2><p>${ev.summary}</p><p>${ev.date} · 对比 ${ev.items.length} 款${
+          (ev.usage || []).length ? ' · 含使用说明' : ''
+        } · <a href="/evaluations/${ev.slug}/">阅读全文 →</a></p>`
     )
     .join('');
   let html = fillMeta(tpl, {
-    title: '工具评测 · 同类工具横向实测 · ToolHub',
-    desc: '同类开源工具横向实测对比：隐私边界、速度体验、功能取舍，每篇标注测试日期，结论随版本更新。',
+    title: '工具评测 · 单款深度测评与横向实测 · ToolHub',
+    desc: '开源工具怎么选：既有同类工具横向实测，也有单款深度测评与可照着做的使用说明。每篇标注测试方式与日期，结论随版本更新。',
     url,
     botInject: `window.__PAGE__='evaluations';`,
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ToolHub 工具评测', url },
@@ -622,7 +637,7 @@ for (const p of staticPages) {
     /<main class="container"[^>]*>/,
     `<main class="container" id="main-content" tabindex="-1">${seoBlock({
       h1: '工具评测',
-      desc: '同类工具横向实测：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚。',
+      desc: '横向实测加单款深挖：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚，该给使用说明的地方就给到能照着做的程度。',
       extra: list + '<p><a href="/">← 返回首页</a></p>',
     })}`
   );
@@ -633,6 +648,17 @@ for (const p of staticPages) {
     const edir = join(root, 'evaluations', ev.slug);
     mkdirSync(edir, { recursive: true });
     const eurl = `${BASE}/evaluations/${ev.slug}/`;
+    // v3.12：单款深度测评带「怎么测的」与「怎么用」。前者是为了不把资料核实写成实测，
+    // 后者是「测评报告」和「使用说明」的分界——只讲好不好用，读者还是不知道该点哪里。
+    const usage = ev.usage || [];
+    const howTo = usage.length
+      ? {
+          '@type': 'HowTo',
+          name: `怎么用 ${(ev.items[0] || {}).name || ev.title}`,
+          description: ev.summary,
+          step: usage.flatMap((u) => u.steps).map((s, i) => ({ '@type': 'HowToStep', position: i + 1, text: s })),
+        }
+      : null;
     let ehtml = fillMeta(tpl, {
       title: `${ev.title} · 工具评测 · ToolHub`,
       desc: ev.summary,
@@ -640,12 +666,17 @@ for (const p of staticPages) {
       botInject: `window.__EVAL__=${JSON.stringify(ev.slug)};`,
       jsonld: {
         '@context': 'https://schema.org',
-        '@type': 'Review',
-        name: ev.title,
-        description: ev.summary,
-        url: eurl,
-        datePublished: ev.date,
-        itemReviewed: ev.items.filter((x) => x.url).map((x) => ({ '@type': 'SoftwareApplication', name: x.name, url: x.url })),
+        '@graph': [
+          {
+            '@type': 'Review',
+            name: ev.title,
+            description: ev.summary,
+            url: eurl,
+            datePublished: ev.date,
+            itemReviewed: ev.items.filter((x) => x.url).map((x) => ({ '@type': 'SoftwareApplication', name: x.name, url: x.url })),
+          },
+          ...(howTo ? [howTo] : []),
+        ],
       },
     });
     ehtml = ehtml.replace(
@@ -655,7 +686,19 @@ for (const p of staticPages) {
         desc: ev.summary,
         extra:
           `<p><b>结论：</b>${ev.verdict}</p>` +
-          `<h2>对比项</h2><ul>${ev.items.map((x) => `<li><b>${x.name}</b>（${x.type} · 隐私：${x.privacy}）</li>`).join('')}</ul>` +
+          (ev.method ? `<p><b>怎么测的：</b>${ev.method}</p>` : '') +
+          `<h2>对比项</h2>` +
+          ev.items
+            .map(
+              (x) =>
+                `<h3>${x.name}（${x.type} · 隐私：${x.privacy}）</h3>` +
+                `<p><b>优势</b>：${x.pros.join('；')}</p><p><b>短板</b>：${x.cons.join('；')}</p>`
+            )
+            .join('') +
+          (usage.length
+            ? `<h2>怎么用</h2>` +
+              usage.map((u) => `<h3>${u.name}</h3><ol>${u.steps.map((s) => `<li>${s}</li>`).join('')}</ol>`).join('')
+            : '') +
           `<h2>详细解读</h2>${ev.body.map((p) => `<p>${p}</p>`).join('')}` +
           `<p><a href="/evaluations/">← 全部评测</a></p>`,
       })}`

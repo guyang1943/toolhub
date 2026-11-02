@@ -816,6 +816,15 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const intentOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
   check('移动端直达条不撑破布局', intentOverflow <= 1, 'overflow ' + intentOverflow + 'px');
   await shot('04b-intent-mobile');
+  // v3.12：评测页的使用说明里塞了命令行与安装包文件名（photocraft-0.19.0-windows-x64.msi 这类
+  // 中间没空格的串），窄屏最容易把 ol 撑破。首页不溢出不代表这里不溢出，单独量。
+  await goto('/evaluations/filee-review/');
+  await waitText('#page-body', '怎么用', 8000);
+  const revOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('评测页窄屏无横向溢出', revOverflow <= 1, 'overflow ' + revOverflow + 'px');
+  const stepGroups = await evaluate(`document.querySelectorAll('#page-body ol').length`);
+  check('评测页使用说明分组渲染', stepGroups >= 4, stepGroups + ' 组');
+  await shot('12-review-mobile');
   await cdp.send('Emulation.clearDeviceMetricsOverride');
 
   // ---- 13. 深色主题：无 app.js 时也必须是深色（验证首帧无白闪）----

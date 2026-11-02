@@ -1,0 +1,83 @@
+{
+  "slug": "json-tools",
+  "title": "JSON 工具横评：格式化只是入门，可视化才是分水岭",
+  "icon": "🧾",
+  "date": "2026-10-24",
+  "summary": "本站 JSON 格式化、JSON Hero、JSON Crack、CyberChef 四款工具同场竞技：扁平 JSON 谁都行，深层嵌套和「既要转换又要看」的场景才见高下。",
+  "verdict": "日常校验格式：本站格式化；看深层嵌套结构：JSON Crack；查字段含义和做多种变换：JSON Hero；编码/加密/解压全家桶：CyberChef。",
+  "items": [
+    {
+      "name": "本站 · JSON 格式化",
+      "url": "/tools/json-format/",
+      "type": "浏览器本地",
+      "privacy": "完全本地",
+      "pros": [
+        "本机解析校验，错误位置精确到行列",
+        "格式化/压缩双向，大 JSON 也不卡",
+        "和站内 CSV↔JSON、Base64 工具联动"
+      ],
+      "cons": [
+        "只有文本视图，深层嵌套靠折叠",
+        "无字段搜索"
+      ]
+    },
+    {
+      "name": "JSON Crack",
+      "url": "https://jsoncrack.com",
+      "type": "可视化",
+      "privacy": "本地为主",
+      "pros": [
+        "JSON 变节点图谱，嵌套关系一眼看穿",
+        "支持导出图片，贴文档/PPT 好用",
+        "GPL-3.0 开源"
+      ],
+      "cons": [
+        "超大 JSON 图会很乱，需要手动整理",
+        "编辑器场景不如专业 IDE 插件"
+      ]
+    },
+    {
+      "name": "JSON Hero",
+      "url": "https://jsonhero.io",
+      "type": "可视化",
+      "privacy": "本地为主",
+      "pros": [
+        "颜值最高的 JSON 浏览器，字段类型/预览一目了然",
+        "支持 URL 直达、路径分享",
+        "MIT 开源，可自托管"
+      ],
+      "cons": [
+        "更偏向「查看」而非「编辑」",
+        "超大文件性能一般"
+      ]
+    },
+    {
+      "name": "CyberChef",
+      "url": "https://gchq.github.io/CyberChef/",
+      "type": "数据瑞士军刀",
+      "privacy": "完全本地",
+      "pros": [
+        "几百种操作串成「配方」：编解码、加密、解压、正则、哈希",
+        "英国 GCHQ 出品，Apache-2.0",
+        "日志分析、CTF、取证场景神器"
+      ],
+      "cons": [
+        "界面极客向，学习曲线陡",
+        "纯 JSON 场景杀鸡用牛刀"
+      ]
+    }
+  ],
+  "body": [
+    "JSON 工具看似红海，其实分四个生态位：格式化校验、结构可视化、字段浏览、通用数据变换。大部分工具只占一个位置，选型就是先认清自己在哪个场景。",
+    "本站 JSON 格式化占的是第一个位置：解析校验 + 排版。它的强项是错误定位——Unexpected token 这种报错直接给出行列号，比「SyntaxError」三个字有用一万倍。深层嵌套是它的短板：折叠视图超过四层就开始考验耐心，这时候就该换可视化工具了。",
+    "JSON Crack 把 JSON 铺成节点图，深层接口返回结构在它面前没有秘密——哪个数组套对象、哪层开始数据变空，看图比读文字快十倍。缺点是超大 JSON 生成的图像一团乱麻，需要手动删枝。JSON Hero 相反，它把焦点放在「字段」上：每个值的类型、长度、预览单独呈现，适合逐字段核对接口契约。",
+    "CyberChef 严格说不是 JSON 工具，是数据处理的瑞士军刀。但当你面对「这段 Base64 解出来是 gzip，解开是 JSON，JSON 里还有个字段是时间戳」这种组合场景时，只有它的「配方」流水线能一次串完，不用在四五个工具间来回复制粘贴。GCHQ 出品、完全本地运行，安全和能力都拉满。",
+    "选型一句话：格式对不对 → 本站格式化；结构乱不乱 → JSON Crack；字段细不细 → JSON Hero；变换多不多 → CyberChef。四个工具都是本地优先，数据安全这件事上不用妥协。"
+  ],
+  "relatedTools": [
+    "json-format",
+    "csv-json",
+    "base64-url",
+    "regex-tester"
+  ]
+}

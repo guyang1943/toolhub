@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.11 · 预缓存 156 个地址 · 约 2.8 MB
-const VERSION = "toolhub-v3.11";
+// 版本：toolhub-v3.12 · 预缓存 172 个地址 · 约 3.0 MB
+const VERSION = "toolhub-v3.12";
 const CORE = [
   "/",
   "/index.html",
@@ -175,7 +175,23 @@ const FULL = [
   "/articles/timezone-convert.json",
   "/articles/unit-convert.json",
   "/articles/uuid-gen.json",
-  "/articles/word-count.json"
+  "/articles/word-count.json",
+  "/evaluations/filee-review/",
+  "/evaluations/filee-review.json",
+  "/evaluations/image-compress-shootout/",
+  "/evaluations/image-compress-shootout.json",
+  "/evaluations/json-tools/",
+  "/evaluations/json-tools.json",
+  "/evaluations/markdown-editors/",
+  "/evaluations/markdown-editors.json",
+  "/evaluations/password-tools/",
+  "/evaluations/password-tools.json",
+  "/evaluations/pdf-tools/",
+  "/evaluations/pdf-tools.json",
+  "/evaluations/photocraft-review/",
+  "/evaluations/photocraft-review.json",
+  "/evaluations/voicestudio-review/",
+  "/evaluations/voicestudio-review.json"
 ];
 
 self.addEventListener('install', (e) => {

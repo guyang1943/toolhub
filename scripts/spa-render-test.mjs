@@ -164,7 +164,11 @@ async function go(path) {
 await go('/evaluations');
 const listHtml = document.getElementById('page-body').innerHTML;
 check('评测列表页渲染', listHtml.includes('工具评测') && listHtml.includes('topic-card'), `#page-body ${listHtml.length} 字符`);
-check('列表含 5 篇评测卡', (listHtml.match(/topic-card/g) || []).length === 5, `${(listHtml.match(/topic-card/g) || []).length} 张卡`);
+// 数量跟索引比，不写死。写死的话每加一篇评测都要改测试，改的人图省事就会顺手放宽成 ≥N，
+// 断言也就废了。
+const evIndexCount = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8')).evaluations.length;
+const evCards = (listHtml.match(/topic-card/g) || []).length;
+check('评测卡数量与索引一致', evCards === evIndexCount, `${evCards} 张卡 / 索引 ${evIndexCount} 篇`);
 check('列表含日期', listHtml.includes('2026-10-24'));
 
 // 2) 评测详情页
@@ -176,6 +180,13 @@ check('详情页含隐私徽章', detailHtml.includes('pv-badge') && detailHtml.
 check('详情页含优势/短板', detailHtml.includes('eval-pros') && detailHtml.includes('eval-cons'));
 check('详情页含相关工具', detailHtml.includes('related-chip'));
 check('详情页外链 target=_blank', detailHtml.includes('target="_blank"'));
+
+// 2b) 单款深度测评（v3.12）：正文按篇取 + 使用说明与测试方式都要真的渲染出来
+await go('/evaluations/filee-review');
+const revHtml = document.getElementById('page-body').innerHTML;
+check('单款测评页取到按篇正文', revHtml.includes('Filee 测评') && revHtml.includes('拖拽转换器'), `#page-body ${revHtml.length} 字符`);
+check('单款测评标注测试方式', revHtml.includes('怎么测的'));
+check('单款测评渲染使用说明', revHtml.includes('怎么用') && (revHtml.match(/<ol/g) || []).length >= 3, `${(revHtml.match(/<ol/g) || []).length} 个步骤组`);
 
 // 3) 新专题页（含目录工具混合引用）
 await go('/topics/open-source-alternatives');

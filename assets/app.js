@@ -1250,6 +1250,20 @@ async function loadEvaluations() {
   }
   return EVALDATA;
 }
+// v3.12：评测正文按篇取。索引只有标题与摘要，列表页不用为八篇正文买单。
+const EVAL_BODY = new Map();
+async function loadEvalBody(slug) {
+  if (EVAL_BODY.has(slug)) return EVAL_BODY.get(slug);
+  try {
+    const r = await fetch(`/evaluations/${slug}.json`);
+    if (!r.ok) throw new Error(String(r.status));
+    const d = await r.json();
+    EVAL_BODY.set(slug, d);
+    return d;
+  } catch {
+    return null;
+  }
+}
 
 /* ---------- 工具教程（长尾正文：步骤 + 常见错误） ---------- */
 let ARTICLES = null;
@@ -1290,7 +1304,7 @@ async function openEvaluations() {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:1000px">
       <h1>🔬 工具评测</h1>
-      <p class="lead">同类工具横向实测：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚。每篇都标注测试日期，结论会随工具版本变化。</p>
+      <p class="lead">横向实测加单款深挖：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚，该给使用说明的地方就给到能照着做的程度。每篇都标注测试方式与日期，结论会随工具版本变化。</p>
       <div class="topic-grid">
         ${data.evaluations
           .map(
@@ -1298,7 +1312,7 @@ async function openEvaluations() {
               <span class="tp-icon">${ev.icon}</span>
               <b>${ev.title}</b>
               <span>${ev.summary}</span>
-              <em>${ev.date} · ${ev.items.length} 款对比 →</em>
+              <em>${ev.date} · ${ev.itemCount} 款对比${ev.hasUsage ? ' · 含使用说明' : ''} →</em>
             </a>`
           )
           .join('')}
@@ -1308,7 +1322,9 @@ async function openEvaluations() {
 
 async function openEvaluation(slug) {
   const data = await loadEvaluations();
-  const ev = data.evaluations.find((x) => x.slug === slug);
+  const idx = data.evaluations.find((x) => x.slug === slug);
+  const body = idx && (await loadEvalBody(slug));
+  const ev = idx && body ? { ...idx, ...body } : null;
   if (!ev) {
     $('#page-body').innerHTML = '<div class="empty">评测不存在</div>';
     return;
@@ -1325,11 +1341,11 @@ async function openEvaluation(slug) {
   };
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <div class="crumb" style="margin-bottom:10px"><a href="/evaluations/">← 全部评测</a></div>
       <h1>${ev.icon} ${ev.title}</h1>
       <p class="lead">${ev.summary}</p>
       <div class="res-intro" style="font-size:13px;color:var(--muted)">实测日期：${ev.date} · 对比 ${ev.items.length} 款工具</div>
       <div class="eval-verdict"><b>结论</b><p>${ev.verdict}</p></div>
+      ${ev.method ? `<p style="font-size:13px;color:var(--muted)"><b>怎么测的：</b>${ev.method}</p>` : ''}
 
       <h2 class="res-group-title">逐项对比</h2>
       <div class="eval-grid">
@@ -1349,6 +1365,19 @@ async function openEvaluation(slug) {
           )
           .join('')}
       </div>
+
+      ${
+        ev.usage?.length
+          ? `<h2 class="res-group-title">怎么用</h2><div style="font-size:14px;line-height:1.9">${ev.usage
+              .map(
+                (u) =>
+                  `<h3 style="font-size:15px;margin:18px 0 6px">${u.name}</h3><ol style="margin:0 0 0 20px;padding:0">${u.steps
+                    .map((s) => `<li>${s}</li>`)
+                    .join('')}</ol>`
+              )
+              .join('')}</div>`
+          : ''
+      }
 
       <h2 class="res-group-title">详细解读</h2>
       ${ev.body.map((p) => `<p class="res-intro">${p}</p>`).join('')}
