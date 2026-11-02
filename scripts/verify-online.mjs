@@ -16,7 +16,7 @@ const BASE = (args.find((a) => a.startsWith('http')) || 'https://toolhub.bot.cd'
 const waitIdx = args.indexOf('--wait');
 const WAIT = waitIdx >= 0 ? Number(args[waitIdx + 1] || 90) : 0;
 
-const PATHS = ['/', '/tools/', '/categories/', '/categories/image/', '/evaluations/', '/sw.js', '/assets/content-pages.js', '/sitemap.xml'];
+const PATHS = ['/', '/tools/', '/guides/', '/categories/', '/categories/image/', '/evaluations/', '/sw.js', '/assets/content-pages.js', '/sitemap.xml'];
 
 async function get(path, tries = 3) {
   for (let i = 0; i < tries; i++) {
