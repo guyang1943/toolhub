@@ -19,6 +19,15 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TOOLS = join(root, 'tools');
 const OUT = join(TOOLS, 'tools.json');
 const REG = join(TOOLS, 'registry.json');
+const CAT_COPY = join(root, 'content', 'categories.json');
+
+/** 分类名 → URL slug。缺文案时返回空对象，构建期那边有硬闸门会直接报错 */
+function readCategorySlugs() {
+  if (!existsSync(CAT_COPY)) return {};
+  const list = JSON.parse(readFileSync(CAT_COPY, 'utf8')).categories || [];
+  return Object.fromEntries(list.map((c) => [c.name, c.slug]));
+}
+const categorySlugs = readCategorySlugs();
 
 /** 读取 tools/ 下所有带 tool.json 的目录（目录名就是工具 id） */
 export function readToolShards() {
@@ -82,7 +91,10 @@ export function buildToolsJson() {
     return out;
   });
   return {
-    payload: { version: reg.version, categories: reg.categories, featured: reg.featured, tools },
+    // v3.13：分类页有独立 URL 后，前端需要「分类名 → slug」的映射组链接。
+    // 放在这里而不是 app.js 里硬编码，是为了让 content/categories.json 保持唯一真相：
+    // 加一个分类时改那一份文案就够了，前端与构建期都跟着走。
+    payload: { version: reg.version, categories: reg.categories, categorySlugs, featured: reg.featured, tools },
     order,
     unknown: rest,
     shardCount: shards.length,

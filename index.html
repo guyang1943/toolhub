@@ -51,6 +51,15 @@
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <!--hs:home-ld--><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://toolhub.bot.cd/#website","name":"ToolHub","alternateName":"ToolHub 开源工具","url":"https://toolhub.bot.cd/","description":"收录开源在线工具，能在本地跑的都在浏览器里跑，文件不上传服务器。","inLanguage":"zh-CN","publisher":{"@id":"https://toolhub.bot.cd/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://toolhub.bot.cd/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://toolhub.bot.cd/#org","name":"ToolHub","url":"https://toolhub.bot.cd/","logo":{"@type":"ImageObject","url":"https://toolhub.bot.cd/assets/icon-512.png","width":512,"height":512}}]}</script><!--/hs:home-ld-->
 </head>
 <body data-view="home">
@@ -184,7 +193,7 @@
       </div>
 
       <div class="task-row" id="task-row"></div>
-      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><button class="chip " data-cat="文本">文本</button><button class="chip " data-cat="图片">图片</button><button class="chip " data-cat="文档">文档</button><button class="chip " data-cat="数据">数据</button><button class="chip " data-cat="开发">开发</button><button class="chip " data-cat="设计">设计</button><button class="chip " data-cat="音视频">音视频</button><button class="chip " data-cat="效率">效率</button><button class="chip " data-cat="网络">网络</button><!--/hs:chips--></div>
+      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><a class="chip" href="/categories/text/">📝 文本</a><a class="chip" href="/categories/image/">🖼️ 图片</a><a class="chip" href="/categories/docs/">📄 文档</a><a class="chip" href="/categories/data/">📊 数据</a><a class="chip" href="/categories/dev/">⚙️ 开发</a><a class="chip" href="/categories/design/">🎨 设计</a><a class="chip" href="/categories/media/">🎵 音视频</a><a class="chip" href="/categories/productivity/">⚡ 效率</a><a class="chip" href="/categories/web/">🌐 网络</a><a class="chip" href="/categories/">🗂️ 分类总览 →</a><!--/hs:chips--></div>
       <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 99 个</span><!--/hs:filterbar--></div>
       <div class="recent-row" id="recent-row" style="display:none"></div>
       <div class="grid" id="grid"></div>

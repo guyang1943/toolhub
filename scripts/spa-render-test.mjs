@@ -81,7 +81,17 @@ const document = {
   },
 };
 const listeners = {};
-const location = { pathname: '/', hash: '', search: '' };
+// href 必须是会跟着 pathname/search 变的 getter：syncUrlState 用 new URL(location.href)
+// 读写查询参数，桩里给它一个定值会让「翻页写进 URL」永远测不出来
+const location = {
+  pathname: '/',
+  hash: '',
+  search: '',
+  origin: 'http://localhost',
+  get href() {
+    return this.origin + this.pathname + this.search + this.hash;
+  },
+};
 const window = {
   location,
   addEventListener: (t, fn) => { (listeners[t] = listeners[t] || []).push(fn); },
@@ -128,8 +138,11 @@ const relFetch = (url) => {
     return Promise.reject(new Error('test fetch 404: ' + url));
   }
 };
+// content-pages.js / tool-page.js 这些子模块是真的 ESM，拿不到上面注入的 fetch 参数，
+// 只能改全局这份；否则它们会去请求真实的 /evaluations/x.json 然后 404。
+globalThis.fetch = relFetch;
 const fn = new Function('document', 'window', 'location', 'localStorage', 'navigator', 'fetch', 'URLSearchParams', 'history', 'AbortSignal', 'setTimeout', srcWithStubs);
-await fn(document, window, location, localStorage, navigator, relFetch, URLSearchParams, { pushState() {} }, AbortSignal, setTimeout);
+await fn(document, window, location, localStorage, navigator, relFetch, URLSearchParams, { pushState() {}, replaceState() {} }, AbortSignal, setTimeout);
 
 const results = [];
 function check(name, cond, detail = '') {
@@ -151,25 +164,51 @@ async function go(path) {
   location.pathname = path;
   location.hash = '';
   location.search = '';
+  // 先清掉上一页的 DOM：子模块是异步 import + fetch，不清的话「上一页还有内容」
+  // 会让下面的等待循环立刻退出，断言读到的是前一页
+  const pb = document.getElementById('page-body');
+  if (pb) pb.innerHTML = '';
   routeFn && routeFn();
-  // 等异步渲染完成（fetch + 微任务）
-  for (let i = 0; i < 40; i++) {
+  // 等渲染稳定：连续两次读到相同内容才算完成。只判「非空」不够——内容页要动态
+  // import 子模块，上一页的异步渲染可能比这一页晚落地，读到的是别人的内容。
+  let last = '';
+  for (let i = 0; i < 80; i++) {
     await sleep(50);
     const el = document.getElementById('page-body');
-    if (el && el.innerHTML && el.innerHTML.length > 200) break;
+    const h = (el && el.innerHTML) || '';
+    if (h.length > 200 && h === last) break;
+    last = h;
   }
-  await sleep(150);
+  await sleep(50);
 }
-// 1) 评测列表页
+// 1) 评测列表页（v3.13 起是列表行，不再是卡片网格）
 await go('/evaluations');
 const listHtml = document.getElementById('page-body').innerHTML;
-check('评测列表页渲染', listHtml.includes('工具评测') && listHtml.includes('topic-card'), `#page-body ${listHtml.length} 字符`);
+check('评测列表页渲染', listHtml.includes('工具评测') && listHtml.includes('list-row'), `#page-body ${listHtml.length} 字符`);
 // 数量跟索引比，不写死。写死的话每加一篇评测都要改测试，改的人图省事就会顺手放宽成 ≥N，
 // 断言也就废了。
 const evIndexCount = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8')).evaluations.length;
-const evCards = (listHtml.match(/topic-card/g) || []).length;
-check('评测卡数量与索引一致', evCards === evIndexCount, `${evCards} 张卡 / 索引 ${evIndexCount} 篇`);
+const evCards = (listHtml.match(/class="list-row"/g) || []).length;
+check('评测列表行数与索引一致', evCards === evIndexCount, `${evCards} 行 / 索引 ${evIndexCount} 篇`);
 check('列表含日期', listHtml.includes('2026-10-24'));
+
+// 1.5) 工具分类页（v3.13 新增：分类从首页筛选参数升级成独立页面）
+const catCopy = JSON.parse(readFileSync(join(root, 'content/categories.json'), 'utf8')).categories;
+const allTools = [
+  ...JSON.parse(readFileSync(join(root, 'tools/tools.json'), 'utf8')).tools,
+  ...JSON.parse(readFileSync(join(root, 'tools/directory.json'), 'utf8')).tools,
+];
+await go('/categories');
+const catIndexHtml = document.getElementById('page-body').innerHTML;
+check('分类总览渲染', catIndexHtml.includes('工具分类') && catIndexHtml.includes('image'), `#page-body ${catIndexHtml.length} 字符`);
+check('分类总览一行一类', (catIndexHtml.match(/class="fl-row"/g) || []).length === catCopy.length, `${catCopy.length} 个分类`);
+await go('/categories/image');
+const catHtml = document.getElementById('page-body').innerHTML;
+const imgCount = allTools.filter((t) => t.category === '图片').length;
+check('分类页渲染标题与导语', catHtml.includes('图片工具') && catHtml.includes('适合这些场景'));
+check('分类页列出全部同类工具', (catHtml.match(/class="fl-row"/g) || []).length === imgCount, `${imgCount} 个`);
+check('分类页含挑选建议与常见问题', catHtml.includes('怎么挑') && catHtml.includes('res-item-note'));
+check('分类页互链其余分类', (catHtml.match(/\/categories\//g) || []).length >= catCopy.length);
 
 // 2) 评测详情页
 await go('/evaluations/pdf-tools');

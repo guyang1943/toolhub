@@ -309,6 +309,9 @@ const PAGES = ONLY_TOOLS
       '/topics/',
       '/evaluations/',
       '/resources/',
+      // v3.13：分类是独立页面，总览 + 一个分类详情各抽一条（9 个分类页模板相同）
+      '/categories/',
+      '/categories/image/',
     ];
 const TOOL_PAGES = reg.tools.map((t) => `/tools/${t.id}/`);
 // 目录工具页抽样（60 个全跑太慢，取每 10 个一个）

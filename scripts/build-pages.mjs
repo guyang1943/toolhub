@@ -48,6 +48,19 @@ const evaluations = {
 };
 const resources = JSON.parse(readFileSync(join(root, 'resources.json'), 'utf8'));
 const topics = JSON.parse(readFileSync(join(root, 'topics.json'), 'utf8'));
+// v3.13：分类从「首页的一个筛选参数」升级成独立页面。文案放在 content/categories.json，
+// name 必须与 tools.json 的 category 一致——下面立刻校验，缺文案就构建失败，
+// 免得新加的分类悄悄指向 /categories//（一个回首页的死链）。
+const CATS = JSON.parse(readFileSync(join(root, 'content', 'categories.json'), 'utf8')).categories;
+const CAT_SLUG = new Map(CATS.map((c) => [c.name, c.slug]));
+const CAT_URL = (name) => `/categories/${CAT_SLUG.get(name) || ''}/`;
+// 分类内链：v3.13 起指向独立分类页，不再回到首页带 ?cat= 参数。
+// 首页仍然认 ?cat=，那是给旧链接与 bookmark 兜底的，不是主路径。
+const CAT_QUERY = CAT_URL;
+{
+  const missing = [...new Set([...tools, ...dirTools].map((t) => t.category))].filter((c) => !CAT_SLUG.has(c));
+  if (missing.length) throw new Error(`分类缺文案：${missing.join('、')} —— 请在 content/categories.json 补一条`);
+}
 const changelog = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8'));
 // 目录工具正文（人工撰写，每篇 ≥400 字）：与目录数据分离，改文案不用碰代码
 const dirCopyPath = join(root, 'content', 'directory-copy.json');
@@ -65,7 +78,14 @@ const FEATURED_MAX = 10;
 // SPA 路径由 app.js 的 ensureCss() 先取到再画——两条路径都靠「rel + href」认亲。
 const TOOL_CSS_LINK = '  <link rel="stylesheet" href="/assets/style.tool.css" />';
 const rawTpl = readFileSync(join(root, 'index.html'), 'utf8');
-const tpl = rawTpl
+// 读回来的 index.html 是上一轮的构建产物，里面已经带着首页静态化区块与首页 JSON-LD
+// （WebSite / Organization / SearchAction）。不清掉的话，它们会跟着模板扩散到每一个页面 ——
+// v3.13 就是这样发现全站 140 多个页面都在声明首页的 WebSite，每个页面都嵌一份 SearchAction。
+// 剥掉之后剩下的正好是空容器（<div id="chips"></div> 这种），下面首页注入逻辑要的就是这个形态。
+// 连同行首缩进与换行一起剥：只剥注释标记的话，每次构建都会在 </head> 前多留一个空行，
+// 连跑两次 index.html 就差三字节，diff 永远不干净。
+const stripped = rawTpl.replace(/[ \t]*<!--hs:[\w-]+-->[\s\S]*?<!--\/hs:[\w-]+-->[ \t]*\n?/g, '');
+const tpl = stripped
   .replace(/\d+(?= 个精选开源工具)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 个开源工具)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 个工具 ·)/g, TOTAL_TOOLS)
@@ -197,7 +217,7 @@ for (const tool of tools) {
     kinDir.map((x) => `<li><a href="/tools/${x.id}/">${x.name}</a> —— 同类第三方工具（官方在线版）</li>`).join('') +
     kinTopics.map((tp) => `<li><a href="/topics/${tp.slug}/">${tp.title}</a> —— 专题工具包</li>`).join('') +
     kinEvals.map((ev) => `<li><a href="/evaluations/${ev.slug}/">${ev.title}</a> —— 横评对比</li>`).join('') +
-    `<li><a href="/?cat=${encodeURIComponent(tool.category)}">全部${tool.category}类工具</a> —— 按分类浏览</li>` +
+    `<li><a href="${CAT_QUERY(tool.category)}">全部${tool.category}类工具</a> —— 按分类浏览</li>` +
     `</ul>`;
 
   html = html.replace(
@@ -207,9 +227,7 @@ for (const tool of tools) {
       desc: tool.desc,
       article: article || null,
       extra:
-        `<p>来源：${tool.source} · License: ${tool.license} · 分类：<a href="/?cat=${encodeURIComponent(
-          tool.category
-        )}">${tool.category}</a></p>` +
+        `<p>来源：${tool.source} · License: ${tool.license} · 分类：<a href="${CAT_QUERY(tool.category)}">${tool.category}</a></p>` +
         related +
         `<p><a href="/">← 返回 ToolHub 全部工具</a></p>`,
     })}`
@@ -247,7 +265,6 @@ for (const ev of evaluations.evaluations || []) {
     evalsByTool.get(m[1]).push({ href: `/evaluations/${ev.slug}/`, label: ev.title });
   }
 }
-const CAT_QUERY = (c) => `/?cat=${encodeURIComponent(c)}`;
 const plain = (h) => h.replace(/<[^>]+>/g, '');
 const shortCopy = [];
 
@@ -568,6 +585,170 @@ for (const p of staticPages) {
   }
 }
 
+// 3.5c) 工具分类页：/categories/ 总览 + 每个分类一页（v3.13）
+// 之前分类只是首页的一个筛选参数（/?cat=图片），三个问题绕不过去：
+//   1) 搜索结果里没有落地页，长尾词「图片压缩工具」没有可排名的 URL；
+//   2) 别的站点想链过来，只能链到「首页 + 一个筛选状态」；
+//   3) 用户点分类后仍停留在首页，不知道自己在哪，也没有办法把这一屏分享出去。
+// 所以给它独立 URL + 自有正文（场景、挑选建议、常见问题），并进 sitemap。
+{
+  const allTools = [...tools.map((t) => ({ ...t, isLocal: t.runtime !== 'link' })), ...dirTools.map((t) => ({ ...t, isLocal: false }))];
+  const catsDir = join(root, 'categories');
+  mkdirSync(catsDir, { recursive: true });
+
+  // 分类 -> 工具，构建期算一次，总览页与详情页共用
+  const byCat = new Map(CATS.map((c) => [c.name, allTools.filter((t) => t.category === c.name)]));
+  // 分类 -> 相关专题（专题里至少引用了 2 个该分类的工具才算相关，1 个是巧合）
+  const topicsOfCat = (name) =>
+    topics.topics.filter((tp) => tp.tools.filter((id) => byCat.get(name).some((t) => t.id === id)).length >= 2);
+
+  const toolRow = (t, i) => `<a class="fl-row" href="/tools/${t.id}/">
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
+        <div class="f-body"><div class="f-name">${t.name}</div><div class="f-desc">${t.desc}</div></div>
+        <span class="f-meta">${t.isLocal ? '🔒 本地' : '🌐 在线'}</span>
+      </a>`;
+
+  const catChips = (active) =>
+    CATS.map((c) => `<a class="chip${c.name === active ? ' active' : ''}" href="${CAT_URL(c.name)}">${c.icon} ${c.name}</a>`).join('');
+
+  // --- 总览页 ---
+  {
+    const url = `${BASE}/categories/`;
+    const rows = CATS.map((c) => {
+      const xs = byCat.get(c.name);
+      const nLocal = xs.filter((t) => t.isLocal).length;
+      return `<a class="fl-row" href="${CAT_URL(c.name)}">
+        <span class="rank">${c.icon}</span>
+        <div class="f-body"><div class="f-name">${c.title}</div><div class="f-desc">${c.tagline}</div></div>
+        <span class="f-meta">${nLocal} 本地 / ${xs.length - nLocal} 在线</span>
+      </a>`;
+    }).join('');
+    let html = fillMeta(tpl, {
+      title: '工具分类 · 按用途浏览全部开源工具 · ToolHub',
+      desc: '按用途浏览：文本、图片、文档、数据、开发、设计、音视频、效率、网络。每个分类都标出哪些工具在浏览器内执行、哪些跳转官方在线版。',
+      url,
+      botInject: `window.__PAGE__='categories';`,
+      jsonld: {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'ToolHub 工具分类',
+        url,
+        hasPart: CATS.map((c) => ({ '@type': 'CollectionPage', name: c.title, url: `${BASE}${CAT_URL(c.name)}` })),
+      },
+    });
+    html = html.replace(
+      /<main class="container"[^>]*>/,
+      `<main class="container" id="main-content" tabindex="-1">${seoBlock({
+        h1: '工具分类',
+        desc: `按用途把 ${TOTAL_TOOLS} 个工具分成 ${CATS.length} 类。每个分类页里都写清楚了它的典型场景、本地执行与在线版的区别，以及挑选时该看哪几项。`,
+        extra: rows + '<p><a href="/">← 返回首页</a></p>',
+      })}`
+    );
+    writeFileSync(join(catsDir, 'index.html'), html, 'utf8');
+    // SPA 用的轻量索引：只有列表页要的四个字段。不带 intro/faq，那部分进单类 JSON。
+    writeFileSync(
+      join(catsDir, 'index.json'),
+      JSON.stringify({ categories: CATS.map((c) => ({ name: c.name, slug: c.slug, icon: c.icon, title: c.title, tagline: c.tagline })) }),
+      'utf8'
+    );
+    count++;
+  }
+
+  // --- 每个分类 ---
+  for (const c of CATS) {
+    const dir = join(catsDir, c.slug);
+    mkdirSync(dir, { recursive: true });
+    const curl = `${BASE}/categories/${c.slug}/`;
+    const xs = byCat.get(c.name);
+    const localXs = xs.filter((t) => t.isLocal);
+    const linkXs = xs.filter((t) => !t.isLocal);
+    const relTopics = topicsOfCat(c.name);
+    const desc = c.tagline.replace(/"/g, '&quot;');
+
+    const body =
+      `<div class="crumb" style="margin-bottom:10px"><a href="/categories/">工具分类</a> / ${c.name}</div>` +
+      `<div class="res-intro">${c.intro}</div>` +
+      `<h2 class="res-group-title">适合这些场景</h2><ul>${c.scenarios.map((s) => `<li>${s}</li>`).join('')}</ul>` +
+      (localXs.length
+        ? `<h2 class="res-group-title">浏览器内执行 · ${localXs.length} 个</h2>${localXs.map((t, i) => toolRow(t, i)).join('')}`
+        : '') +
+      (linkXs.length
+        ? `<h2 class="res-group-title">第三方官方在线版 · ${linkXs.length} 个</h2>${linkXs.map((t, i) => toolRow(t, i + localXs.length)).join('')}`
+        : '') +
+      `<h2 class="res-group-title">怎么挑</h2><ul>${c.howto.map((s) => `<li>${s}</li>`).join('')}</ul>` +
+      `<h2 class="res-group-title">常见问题</h2>${c.faq
+        .map((f) => `<div class="res-item"><div class="res-item-head"><b>${f.q}</b></div><div class="res-item-note">${f.a}</div></div>`)
+        .join('')}` +
+      (relTopics.length
+        ? `<h2 class="res-group-title">相关专题</h2><div class="related-row">${relTopics
+            .map((tp) => `<a class="related-chip" href="/topics/${tp.slug}/">${tp.icon} ${tp.title}</a>`)
+            .join('')}</div>`
+        : '') +
+      `<h2 class="res-group-title">其他分类</h2><div class="chips">${catChips(c.name)}</div>` +
+      `<div class="crumb" style="margin-top:24px"><a href="/categories/">← 全部分类</a> · <a href="/">返回首页</a></div>`;
+
+    let html = fillMeta(tpl, {
+      title: `${c.title} · ${xs.length} 个开源工具 · ToolHub`,
+      desc,
+      url: curl,
+      botInject: `window.__CAT__=${JSON.stringify(c.slug)};`,
+      jsonld: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          { '@type': 'CollectionPage', name: c.title, description: c.tagline, url: curl },
+          {
+            '@type': 'ItemList',
+            name: `${c.name}工具`,
+            numberOfItems: xs.length,
+            itemListElement: xs.map((t, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: t.name,
+              url: `${BASE}/tools/${t.id}/`,
+            })),
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: '首页', item: `${BASE}/` },
+              { '@type': 'ListItem', position: 2, name: '工具分类', item: `${BASE}/categories/` },
+              { '@type': 'ListItem', position: 3, name: c.title, item: curl },
+            ],
+          },
+          {
+            '@type': 'FAQPage',
+            mainEntity: c.faq.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.a },
+            })),
+          },
+        ],
+      },
+    });
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: `${c.icon} ${c.title}`, desc: c.tagline, extra: body })}`);
+    writeFileSync(join(dir, 'index.html'), html, 'utf8');
+    // SPA 接管时只取这一类的文案（~2 KB），不为另外八类买单
+    writeFileSync(
+      join(catsDir, c.slug + '.json'),
+      JSON.stringify({
+        name: c.name,
+        slug: c.slug,
+        icon: c.icon,
+        title: c.title,
+        tagline: c.tagline,
+        intro: c.intro,
+        scenarios: c.scenarios,
+        howto: c.howto,
+        faq: c.faq,
+      }),
+      'utf8'
+    );
+    count++;
+  }
+  console.log(`   ↻ 分类页：1 个总览 + ${CATS.length} 个分类（含场景/挑选/FAQ 正文）`);
+}
+
 // 3.6) 专题合集（索引 + 各专题）
 {
   const dir = join(root, 'topics');
@@ -618,12 +799,18 @@ for (const p of staticPages) {
   const dir = join(root, 'evaluations');
   mkdirSync(dir, { recursive: true });
   const url = `${BASE}/evaluations/`;
+  // 列表而不是卡片：评测的摘要是正文，卡片网格会把四行字压成碎片，
+  // 读者扫不到「这篇在讲哪一款、结论是什么」。
   const list = evaluations.evaluations
     .map(
-      (ev) =>
-        `<h2>${ev.icon} <a href="/evaluations/${ev.slug}/">${ev.title}</a></h2><p>${ev.summary}</p><p>${ev.date} · 对比 ${ev.items.length} 款${
-          (ev.usage || []).length ? ' · 含使用说明' : ''
-        } · <a href="/evaluations/${ev.slug}/">阅读全文 →</a></p>`
+      (ev) => `<a class="list-row" href="/evaluations/${ev.slug}/">
+        <span class="lr-ico">${ev.icon}</span>
+        <div>
+          <h2 class="lr-title">${ev.title}${(ev.usage || []).length ? '<span class="badge">含使用说明</span>' : ''}</h2>
+          <div class="lr-desc">${ev.summary}</div>
+        </div>
+        <span class="lr-meta">${ev.date}<br>对比 ${ev.items.length} 款</span>
+      </a>`
     )
     .join('');
   let html = fillMeta(tpl, {
@@ -790,6 +977,9 @@ const urls = [
   { loc: `${BASE}/`, pri: '1.0', freq: 'daily' },
   ...[...tools, ...dirTools].map((t) => ({ loc: `${BASE}/tools/${t.id}/`, pri: '0.8', freq: 'weekly' })),
   ...staticPages.map((p) => ({ loc: `${BASE}/${p.path}/`, pri: '0.4', freq: 'monthly' })),
+  // 分类页与工具页同级：它们承接「图片压缩工具」这类最值钱的品类词
+  { loc: `${BASE}/categories/`, pri: '0.8', freq: 'weekly' },
+  ...CATS.map((c) => ({ loc: `${BASE}${CAT_URL(c.name)}`, pri: '0.8', freq: 'weekly' })),
   { loc: `${BASE}/resources/`, pri: '0.7', freq: 'weekly' },
   ...resources.collections.map((c) => ({ loc: `${BASE}/resources/${c.slug}/`, pri: '0.7', freq: 'weekly' })),
   { loc: `${BASE}/topics/`, pri: '0.7', freq: 'weekly' },
@@ -893,9 +1083,12 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
     )
     .join('');
 
-  const chips = [{ key: '全部', label: '全部' }, ...cats.map((c) => ({ key: c, label: c }))]
-    .map((c) => `<button class="chip ${c.key === '全部' ? 'active' : ''}" data-cat="${esc(c.key)}">${esc(c.label)}</button>`)
-    .join('');
+  // v3.13：分类不再只是筛选按钮，改成指向 /categories/<slug>/ 的链接。
+  // 「全部」仍是按钮（它就是「不筛选」），分类则是有正文的独立页面。
+  const chips =
+    `<button class="chip active" data-cat="全部">全部</button>` +
+    CATS.map((c) => `<a class="chip" href="${CAT_URL(c.name)}">${c.icon} ${esc(c.name)}</a>`).join('') +
+    `<a class="chip" href="/categories/">🗂️ 分类总览 →</a>`;
 
   const filterbar =
     `<span class="fb-label">运行方式</span>` +
@@ -996,7 +1189,7 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   }
 }
 
-if (tpl !== rawTpl) console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);
+if (tpl !== stripped) console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);
 console.log(`✅ 生成 ${count} 个静态页面、${urls.length} 条 sitemap 记录（含长尾正文与 JSON-LD）`);
 console.log(`   BASE_URL = ${BASE}`);
 console.log(`   域名绑定后请重新运行：node scripts/build-pages.mjs https://你的域名`);

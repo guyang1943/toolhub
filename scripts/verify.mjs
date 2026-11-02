@@ -216,6 +216,88 @@ check('评测数据结构', () => {
   return `${evals.evaluations.length} 篇评测（索引 ${Math.round(statSync(join(root, 'evaluations.json')).size / 1024)} KB）`;
 });
 
+// 全站 HTML 清单。几条「某个东西不许出现在某些页面」的检查都要用，扫一次省得各写一遍。
+const HTML_FILES = (() => {
+  const out = [];
+  const skip = new Set(['assets', '.git', 'node_modules', '.workbuddy']);
+  const walk = (d) => {
+    for (const f of readdirSync(d, { withFileTypes: true })) {
+      const p = join(d, f.name);
+      if (f.isDirectory()) {
+        if (!skip.has(f.name)) walk(p);
+        continue;
+      }
+      if (f.name.endsWith('.html')) out.push(p);
+    }
+  };
+  walk(root);
+  return out;
+})();
+
+check('工具分类页（v3.13）', () => {
+  // 分类从「首页筛选参数」变成独立页面后，最容易出的问题是三处对不上：
+  // 文案里的 name 与 tools.json 的 category、静态页上的工具清单与真实归属、
+  // 以及 SPA 那份单类 JSON 没生成。任何一处漏了，页面上就会少工具或整页空白。
+  const copy = read('content/categories.json').categories;
+  const allTools = [...local.tools, ...dir.tools];
+  const cats = [...new Set(allTools.map((t) => t.category))];
+  assert(copy.length === cats.length, `文案 ${copy.length} 条 ≠ 实际分类 ${cats.length} 个`);
+  const bad = [];
+  const seen = new Set();
+  for (const c of copy) {
+    if (seen.has(c.slug)) bad.push(`${c.slug}(slug 重复)`);
+    seen.add(c.slug);
+    if (!cats.includes(c.name)) bad.push(`${c.slug}(分类名对不上 tools.json)`);
+    if (!c.title || !c.tagline || !c.intro) bad.push(`${c.slug}(缺标题/导语)`);
+    if ((c.scenarios || []).length < 3) bad.push(`${c.slug}(场景 <3)`);
+    if ((c.howto || []).length < 3) bad.push(`${c.slug}(挑选建议 <3)`);
+    if ((c.faq || []).length < 3) bad.push(`${c.slug}(FAQ <3)`);
+    const page = join(root, 'categories', c.slug, 'index.html');
+    if (!existsSync(page)) {
+      bad.push(`${c.slug}(缺静态页)`);
+      continue;
+    }
+    const h = readFileSync(page, 'utf8');
+    for (const t of ['CollectionPage', 'ItemList', 'BreadcrumbList', 'FAQPage']) {
+      if (!h.includes(`"@type":"${t}"`)) bad.push(`${c.slug}(缺 ${t})`);
+    }
+    const mine = allTools.filter((t) => t.category === c.name);
+    const linked = mine.filter((t) => h.includes(`href="/tools/${t.id}/"`)).length;
+    if (linked !== mine.length) bad.push(`${c.slug}(工具内链 ${linked}/${mine.length})`);
+    if (!existsSync(join(root, 'categories', c.slug + '.json'))) bad.push(`${c.slug}(缺单类 JSON)`);
+  }
+  if (!existsSync(join(root, 'categories', 'index.html'))) bad.push('缺分类总览页');
+  if (!existsSync(join(root, 'categories', 'index.json'))) bad.push('缺分类总览 JSON');
+  assert(!bad.length, bad.join('; '));
+  return `${copy.length} 个分类页（场景/挑选/FAQ + 四类结构化数据）`;
+});
+
+check('分类内链不再回首页', () => {
+  // /?cat=xxx 会把用户丢回首页的一个筛选状态：分类页白做，链接也没法被单独分享
+  const bad = [];
+  for (const p of HTML_FILES) {
+    // 只认真正的链接：更新日志里会原样引用「href="/?cat=」这句话，按纯文本匹配会误报
+    if (/<a[^>]+href="\/\?cat=/.test(readFileSync(p, 'utf8'))) bad.push(p.slice(root.length + 1).replace(/\\/g, '/'));
+  }
+  assert(!bad.length, `仍有 ?cat= 内链：${bad.slice(0, 3).join(', ')}`);
+  return '全站分类链接均指向 /categories/<slug>/';
+});
+
+check('首页结构化数据不外溢', () => {
+  // index.html 既是页面、又是其他页面的模板。它的 WebSite/Organization/SearchAction
+  // 一旦被当成模板内容带出去，全站每个页面都会声明「我是那个网站」——十几个页面各嵌一份
+  // SearchAction，语义上说不通，也是白塞的体积。v3.13 修的就是这个。
+  const bad = [];
+  for (const p of HTML_FILES) {
+    if (p === join(root, 'index.html')) continue;
+    if (readFileSync(p, 'utf8').includes('"#website"')) bad.push(p.slice(root.length + 1).replace(/\\/g, '/'));
+  }
+  assert(!bad.length, `首页 ld+json 出现在：${bad.slice(0, 3).join(', ')}`);
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  assert(home.includes('"SearchAction"'), '首页反而丢了 SearchAction');
+  return `${HTML_FILES.length - 1} 个非首页页均无首页 ld+json`;
+});
+
 check('更新日志结构', () => {
   assert(changelog.entries?.length >= 1, '没有记录');
   const bad = changelog.entries.filter((e) => !e.version || !e.date || !e.items?.length);

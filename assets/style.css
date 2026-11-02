@@ -128,7 +128,8 @@ body[data-view='home'] #search-open { display: inline-flex; }
 .fl-row .f-meta { font-size: 11px; color: var(--accent); white-space: nowrap; }
 
 /* ===== 工具列表：宽屏 5 列 ===== */
-.grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+/* 翻页后 scrollIntoView 会停在吸顶头下面，留出 76px 才看得见第一行 */
+.grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; scroll-margin-top: 76px; }
 @media (max-width: 1250px) { .grid { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 760px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
@@ -152,6 +153,22 @@ body[data-view='home'] #search-open { display: inline-flex; }
 .pg-btn:disabled { opacity: .45; cursor: not-allowed; }
 .pg-gap { min-width: 20px; text-align: center; color: var(--muted); font-size: 13px; }
 .pg-info { flex-basis: 100%; text-align: center; font-size: 12px; color: var(--muted); margin-top: 4px; }
+/* 内容型列表（评测）：一行一条，摘要是正文而不是卡片装饰，所以给两行空间 */
+.list-row {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 2px 12px; align-items: start;
+  padding: 14px 12px; border-bottom: 1px solid var(--border); border-radius: 10px;
+  transition: background .12s;
+}
+.list-row:hover { background: var(--accent-soft); }
+.list-row .lr-ico { font-size: 19px; line-height: 1.5; }
+.list-row .lr-title { font-size: 15px; font-weight: 650; line-height: 1.5; margin: 0; }
+.list-row .lr-title .badge { font-size: 11px; font-weight: 400; margin-left: 8px; vertical-align: 2px; }
+.list-row .lr-desc { font-size: 12.5px; color: var(--muted); line-height: 1.7; margin-top: 4px; }
+.list-row .lr-meta { font-size: 11.5px; color: var(--accent); line-height: 1.7; text-align: right; white-space: nowrap; padding-top: 2px; }
+@media (max-width: 560px) {
+  .list-row { grid-template-columns: 26px minmax(0, 1fr); }
+  .list-row .lr-meta { grid-column: 2; text-align: left; }
+}
 .card {
   background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 16px 14px; cursor: pointer; transition: transform .12s, box-shadow .12s, border-color .12s;

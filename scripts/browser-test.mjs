@@ -325,6 +325,35 @@ async function feedFile(selector, dataUrl, name, type) {
   check('/?q= 真实筛出了结果', qCount > 0 && qCount < 24, qCount + ' 张');
   await goto('/');
 
+  // ---- 1.55 分类二级页（v3.13）----
+  // 分类以前只是首页的筛选参数，点完还停在首页；现在是带正文的独立页面。
+  // 这里验的是「点下去真的换了页面」，而不是「首页筛了一下」。
+  const CAT_N = JSON.parse(readFileSync(join(root, 'content', 'categories.json'), 'utf8')).categories.length;
+  const chipHref = await evaluate(`(document.querySelector('#chips a.chip[href^="/categories/"]') || {getAttribute: () => ''}).getAttribute('href') || ''`);
+  check('首页分类 chip 指向独立页面', /^\/categories\/[\w-]+\/$/.test(chipHref), chipHref);
+  const chipCount = await evaluate(`document.querySelectorAll('#chips a.chip[href^="/categories/"]').length`);
+  check('分类 chip 覆盖全部分类 + 总览', chipCount === CAT_N + 1, chipCount + ' 个');
+  await evaluate(`document.querySelector('#chips a.chip[href="/categories/image/"]').click()`);
+  await waitText('#page-body', '适合这些场景', 8000);
+  const catPath = await evaluate(`location.pathname`);
+  const catRows = await evaluate(`document.querySelectorAll('#page-body a.fl-row').length`);
+  check('点分类进入二级页面', catPath === '/categories/image/', catPath);
+  check('分类页列出同类工具', catRows >= 10, catRows + ' 行');
+  check('分类页带挑选建议与常见问题', await evaluate(`document.querySelectorAll('#page-body .res-item').length >= 3`));
+  await shot('14-category');
+  await goto('/');
+
+  // ---- 1.56 评测列表（v3.13 改为行式列表）----
+  await goto('/evaluations/');
+  await waitText('#page-body', '工具评测', 8000);
+  const evRows = await evaluate(`document.querySelectorAll('#page-body a.list-row').length`);
+  const evIndexN = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8')).evaluations.length;
+  check('评测列表是行式列表', evRows === evIndexN, evRows + ' 行');
+  check('评测行带摘要与日期', await evaluate(`!!document.querySelector('#page-body .list-row .lr-desc') && !!document.querySelector('#page-body .list-row .lr-meta')`));
+  await shot('15-evaluations');
+  // 回到首页：下一段（口语搜索）默认站在首页，别把上下文留给评测页
+  await goto('/');
+
   // ---- 1.6 口语、多词、容错与意图直达（v3.11）----
   // 这组断言守的是三条链：口语词表 → 生成器 → 别名；分词 → 打分；规则表 → 直达条 → 表单回填。
   // 任何一环断了，用户看到的都是「搜不到」，而单看代码是看不出来的。
@@ -577,6 +606,39 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   await sleep(600);
   const page1First = await evaluate(`document.querySelector('#grid .card').dataset.id`);
   check('翻页后首卡不同（真的换了内容）', page1First !== page2First, `${page1First} vs ${page2First}`);
+  // v3.13 分页：信息要能看出「还剩多少」，键盘也要能翻
+  const pgInfo = await evaluate(`(document.querySelector('#pager .pg-info') || {}).textContent || ''`);
+  check('分页信息标明第几页/共几页', /第 \d+\/\d+ 页/.test(pgInfo), pgInfo.trim());
+  await evaluate(`document.querySelector('#pager .pg-btn[data-page="1"]').click()`);
+  await sleep(500);
+  await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))`);
+  await sleep(600);
+  const kbPage = await evaluate(`document.getElementById('grid').dataset.page`);
+  check('键盘 → 翻到下一页', kbPage === '2', 'page ' + kbPage);
+  await evaluate(`document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }))`);
+  await sleep(600);
+  const kbPageBack = await evaluate(`document.getElementById('grid').dataset.page`);
+  check('键盘 ← 回上一页', kbPageBack === '1', 'page ' + kbPageBack);
+  // 搜索会把页码打回 1，URL 里的 page 也得跟着消失，否则刷新回来是空页
+  await evaluate(`document.querySelector('#pager .pg-btn[data-page="2"]').click()`);
+  await sleep(500);
+  await evaluate(`(() => {
+    const s = document.getElementById('search');
+    s.focus(); s.value = 'pdf';
+    s.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  })()`);
+  await sleep(500);
+  const qsAfterSearch = await evaluate(`location.search`);
+  check('搜索后 URL 不残留 page', !qsAfterSearch.includes('page='), qsAfterSearch || '(空)');
+  await evaluate(`(() => {
+    const s = document.getElementById('search');
+    s.value = '';
+    s.dispatchEvent(new Event('input', { bubbles: true }));
+    s.blur();
+    return true;
+  })()`);
+  await sleep(400);
   await evaluate(`document.querySelector('#filterbar [data-rt="local"]').click()`);
   await sleep(600);
   const localNum = await gridTotal();
@@ -825,6 +887,16 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const stepGroups = await evaluate(`document.querySelectorAll('#page-body ol').length`);
   check('评测页使用说明分组渲染', stepGroups >= 4, stepGroups + ' 组');
   await shot('12-review-mobile');
+  // v3.13：分类页是新模板，工具行右侧带「n 本地 / m 在线」，窄屏最容易挤破
+  await goto('/categories/image/');
+  await waitText('#page-body', '适合这些场景', 8000);
+  const catOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('分类页窄屏无横向溢出', catOverflow <= 1, 'overflow ' + catOverflow + 'px');
+  await goto('/evaluations/');
+  await waitText('#page-body', '工具评测', 8000);
+  const evOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
+  check('评测列表窄屏无横向溢出', evOverflow <= 1, 'overflow ' + evOverflow + 'px');
+  await shot('13b-evaluations-mobile');
   await cdp.send('Emulation.clearDeviceMetricsOverride');
 
   // ---- 13. 深色主题：无 app.js 时也必须是深色（验证首帧无白闪）----

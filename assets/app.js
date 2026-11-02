@@ -256,19 +256,32 @@ async function loadRegistry() {
 const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
 
 /* ---------- 首页 ---------- */
+// 分类页地址。取不到 slug 时退回旧的 ?cat= 筛选（tools.json 没更新也不会给出死链）
+function catUrl(c) {
+  const slug = REGISTRY && REGISTRY.categorySlugs && REGISTRY.categorySlugs[c];
+  return slug ? '/categories/' + slug + '/' : '/?cat=' + encodeURIComponent(c);
+}
+
 function renderChips(categories) {
   const hasFav = favs().length > 0;
   const hasUsage = Object.keys(usageMap()).length > 0;
-  const labels = [
+  // v3.13：左边三个是「筛选状态」，右边九个分类是「去哪一页」——分类已经有独立页面，
+  // 再做成筛选按钮，用户永远不知道那张清单可以被单独分享或被搜到。
+  const filters = [
     { key: '全部', label: t('全部', 'all') },
     ...(hasUsage ? [{ key: '🔥 最常用', label: t('🔥 最常用', 'mostUsed') }] : []),
     ...(hasFav ? [{ key: '⭐ 收藏', label: t('⭐ 收藏', 'favorites') }] : []),
-    ...categories.map((c) => ({ key: c, label: catName(c) })),
   ];
-  $('#chips').innerHTML = labels
-    .map((c) => `<button class="chip ${c.key === activeCategory ? 'active' : ''}" data-cat="${c.key}">${c.label}</button>`)
-    .join('');
-  $$('#chips .chip').forEach((el) => {
+  $('#chips').innerHTML =
+    filters
+      .map((c) => `<button class="chip ${c.key === activeCategory ? 'active' : ''}" data-cat="${c.key}">${c.label}</button>`)
+      .join('') +
+    categories
+      .map((c) => `<a class="chip ${c === activeCategory ? 'active' : ''}" data-spa href="${catUrl(c)}">${CAT_ICONS[c] || ''} ${catName(c)}</a>`)
+      .join('') +
+    // 收尾给一个总览入口，否则 /categories/ 只有分类页之间互链才到得了
+    `<a class="chip" data-spa href="/categories/">${t('🗂️ 分类总览 →', 'catAll')}</a>`;
+  $$('#chips .chip[data-cat]').forEach((el) => {
     el.onclick = () => {
       activeCategory = el.dataset.cat;
       curPage = 1; // 换分类回到第一页，否则可能停在已不存在的第 4 页
@@ -276,6 +289,8 @@ function renderChips(categories) {
       renderHome();
     };
   });
+  // 走 SPA 跳转：整页刷新会白屏一次，而分类页的正文本来就在内存里能拼出来
+  bindSpaLinks('#chips');
 }
 
 // 筛选、排序、分类、页码一并写入 URL（不产生历史记录，刷新/分享后保持）
@@ -369,6 +384,17 @@ function kbLink(el, handler) {
     }
   });
   return el;
+}
+
+// 只接管标了 data-spa 的站内链接。不做全站 a 拦截：外部链接、下载链接、
+// target=_blank 都在同一个文档里，一个粗暴的委托很容易把不该拦的也拦掉。
+function bindSpaLinks(scope) {
+  $$(scope + ' a[data-spa]').forEach((el) => {
+    el.onclick = (e) => {
+      e.preventDefault();
+      navigate(el.getAttribute('href'));
+    };
+  });
 }
 
 function bindCards(container) {
@@ -633,6 +659,9 @@ function renderGrid(tools, keyword) {
   gridEl.innerHTML = pageList.map((tool) => cardHTML(tool)).join('');
   bindCards(gridEl);
   renderPager(total, pages, start);
+  // 页码也要跟着写回 URL：以前只有分类/筛选会写，搜索把 curPage 打回 1 却不写，
+  // 于是「第 3 页 → 输入关键词 → 刷新」会回到第 3 页的空结果。
+  syncUrlState();
 }
 
 // 分页条：页码窗口最多 7 个（1 … 3 4 5 … 12），两头留「跳到首/末页」
@@ -659,12 +688,16 @@ function renderPager(total, pages, start) {
   const shownTo = Math.min(start + PAGE_SIZE, total);
   const prevLabel = LANG === 'en' ? 'Previous page' : '上一页';
   const nextLabel = LANG === 'en' ? 'Next page' : '下一页';
-  const info = LANG === 'en' ? `${shownFrom}–${shownTo} of ${total}` : `第 ${shownFrom}–${shownTo} 个，共 ${total} 个`;
+  // 带上「第几页 / 共几页」：只给「1–24 个」看不出还剩多少，读者不敢按下一条
+  const info =
+    LANG === 'en'
+      ? `Page ${curPage}/${pages} · ${shownFrom}–${shownTo} of ${total}`
+      : `第 ${curPage}/${pages} 页 · ${shownFrom}–${shownTo}，共 ${total} 个`;
   box.innerHTML =
     `<button type="button" class="pg-btn" data-page="${curPage - 1}"${curPage === 1 ? ' disabled' : ''} aria-label="${prevLabel}">‹</button>` +
     nums.join('') +
     `<button type="button" class="pg-btn" data-page="${curPage + 1}"${curPage === pages ? ' disabled' : ''} aria-label="${nextLabel}">›</button>` +
-    `<span class="pg-info">${info}</span>`;
+    `<span class="pg-info" role="status" aria-live="polite">${info}</span>`;
   $$('#pager .pg-btn[data-page]').forEach((el) => {
     el.onclick = () => goPage(parseInt(el.dataset.page, 10));
   });
@@ -679,117 +712,6 @@ function goPage(n) {
   syncUrlState();
   renderGrid(REGISTRY.tools, $('#search').value);
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* ---------- 资源库 ---------- */
-let RES = null;
-async function loadResources() {
-  if (RES) return RES;
-  try {
-    RES = await (await fetch('/resources.json')).json();
-  } catch {
-    RES = { collections: [], groups: [], policy: '' };
-  }
-  return RES;
-}
-
-function resCard(c) {
-  return `<a class="res-card" href="/resources/${c.slug}/">
-    <div class="res-card-icon">${c.icon || '📚'}</div>
-    <div class="res-card-body">
-      <b>${c.title}</b>
-      <span>${c.desc}</span>
-      <em>${c.items.length} 个来源</em>
-    </div>
-  </a>`;
-}
-
-async function openResources() {
-  const res = await loadResources();
-  await loadI18n();
-  setView('page');
-  document.title = `资源库 · ${SITE}`;
-  renderNavActive('/resources');
-  const groups = res.groups || [];
-  const sections = groups
-    .map((g) => {
-      const list = res.collections.filter((c) => c.group === g.key);
-      if (!list.length) return '';
-      return `<h2 class="res-group-title">${g.label}</h2><div class="res-grid">${list.map(resCard).join('')}</div>`;
-    })
-    .join('');
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:1000px">
-      <h1>📚 资源库</h1>
-      <p class="lead">精选的免费可用资源：图标、字体、配色、学习路线。与工具的区别是——工具用来「做事」，资源用来「拿来用、下载或参考」。</p>
-      <div class="res-policy">⚖️ <b>授权说明</b>　${res.policy}</div>
-      ${sections}
-      <p class="cmp-tip">收录标准：免费可用 · 授权清晰（每条都标注） · 长期可访问。不收需要注册才能看内容、授权不明或带诱导广告的站点。</p>
-    </div>`;
-}
-
-async function openResourceCollection(slug) {
-  const res = await loadResources();
-  await loadI18n();
-  const c = res.collections.find((x) => x.slug === slug);
-  if (!c) {
-    $('#page-body').innerHTML = '<div class="empty">合集不存在</div>';
-    return;
-  }
-  setView('page');
-  document.title = `${c.title} · 资源库 · ToolHub`;
-  renderNavActive('/resources');
-
-  const rec = c.items.filter((x) => x.recommended);
-  const others = c.items.filter((x) => !x.recommended);
-  const itemRow = (it) => `
-    <div class="res-item">
-      <div class="res-item-head">
-        <a href="${esc(it.url)}" target="_blank" rel="noopener" class="res-item-name">${it.name} ↗</a>
-        <span class="res-license">${it.license}</span>
-      </div>
-      <div class="res-item-note">${it.note}</div>
-      <div class="res-item-meta">${(it.tags || []).map((x) => `<span class="badge">${x}</span>`).join('')}<span class="res-src">${it.source}</span></div>
-    </div>`;
-
-  // 相关工具
-  const reg = await loadRegistry();
-  const relTools = (c.relatedTools || [])
-    .map((id) => reg.tools.find((x) => x.id === id))
-    .filter(Boolean);
-
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:1000px">
-      <div class="crumb" style="margin-bottom:10px"><a href="/resources/">← 资源库</a></div>
-      <h1>${c.icon || '📚'} ${c.title}</h1>
-      <p class="lead">${c.desc}</p>
-      <div class="res-intro">${c.intro}</div>
-
-      ${rec.length ? `<h2 class="res-group-title">✦ 编辑精选</h2><div class="res-list">${rec.map(itemRow).join('')}</div>` : ''}
-
-      <h2 class="res-group-title">全部来源（${c.items.length}）</h2>
-      <div class="res-list">${(rec.length ? others : c.items).map(itemRow).join('')}</div>
-
-      ${
-        c.choices?.length
-          ? `<h2 class="res-group-title">怎么选</h2><ul class="res-choices">${c.choices.map((x) => `<li>${x}</li>`).join('')}</ul>`
-          : ''
-      }
-
-      ${
-        relTools.length
-          ? `<h2 class="res-group-title">配套工具</h2><div class="related-row">${relTools
-              .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
-              .join('')}</div>`
-          : ''
-      }
-
-      <div class="res-policy">⚖️ <b>授权说明</b>　${res.policy}</div>
-    </div>`;
-
-  $('#page-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {
-    kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
-  });
 }
 
 /* ---------- 内容路由卡（首页三类内容） ---------- */
@@ -1123,6 +1045,14 @@ document.addEventListener('keydown', (e) => {
     kbMove(e.key === 'j' ? 1 : -1);
     return;
   }
+  // 左右翻页：只在列表真的分了页时接管，否则会抢掉浏览器的横向滚动
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    const total = parseInt(($('#grid') || {}).dataset?.total || '0', 10) || 0;
+    if (total <= PAGE_SIZE) return;
+    e.preventDefault();
+    goPage(curPage + (e.key === 'ArrowRight' ? 1 : -1));
+    return;
+  }
   if (e.key === 'Enter' && KB.idx >= 0 && document.activeElement) {
     const cur = document.activeElement;
     if (cur.dataset && cur.dataset.id) {
@@ -1148,98 +1078,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-/* ---------- 专题合集 ---------- */
-let TOPICS = null;
-async function loadTopics() {
-  if (TOPICS) return TOPICS;
-  try {
-    TOPICS = await (await fetch('/topics.json')).json();
-  } catch {
-    TOPICS = { topics: [] };
-  }
-  return TOPICS;
-}
-
-async function openTopics() {
-  const data = await loadTopics();
-  const reg = await loadRegistry();
-  await loadI18n();
-  setView('page');
-  document.title = `专题合集 · ${SITE}`;
-  renderNavActive('');
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:1000px">
-      <h1>🧩 专题合集</h1>
-      <p class="lead">按「要完成的事」打包好的工具组合，不用自己从 ${reg.tools.length} 个工具里挑。每个专题都包含使用顺序、关联资源与常见问题。</p>
-      <div class="topic-grid">
-        ${data.topics
-          .map(
-            (t) => `<a class="topic-card" href="/topics/${t.slug}/">
-              <span class="tp-icon">${t.icon}</span>
-              <b>${t.title}</b>
-              <span>${t.desc}</span>
-              <em>${t.tools.length} 个工具${t.resources?.length ? ' · ' + t.resources.length + ' 个资源合集' : ''} →</em>
-            </a>`
-          )
-          .join('')}
-      </div>
-    </div>`;
-}
-
-async function openTopic(slug) {
-  const data = await loadTopics();
-  const reg = await loadRegistry();
-  await loadI18n();
-  const tp = data.topics.find((x) => x.slug === slug);
-  if (!tp) {
-    $('#page-body').innerHTML = '<div class="empty">专题不存在</div>';
-    return;
-  }
-  const res = await loadResources();
-  setView('page');
-  document.title = `${tp.title} · 专题 · ToolHub`;
-  renderNavActive('');
-  const tools = tp.tools.map((id) => reg.tools.find((x) => x.id === id)).filter(Boolean);
-  const cols = (tp.resources || []).map((s) => res.collections.find((c) => c.slug === s)).filter(Boolean);
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:1000px">
-      <div class="crumb" style="margin-bottom:10px"><a href="/topics/">← 全部专题</a></div>
-      <h1>${tp.icon} ${tp.title}</h1>
-      <p class="lead">${tp.desc}</p>
-      <div class="res-intro">${tp.intro}</div>
-
-      <h2 class="res-group-title">按顺序用</h2>
-      <div class="topic-steps">
-        ${tools
-          .map(
-            (x, i) => `<a class="topic-step" href="/tools/${x.id}/">
-              <span class="ts-num">${i + 1}</span>
-              <span class="ts-body"><b>${toolMeta(x).name}</b><em>${toolMeta(x).desc}</em></span>
-              <span class="ts-badge">${x.runtime === 'link' ? '官网' : '本地'}</span>
-            </a>`
-          )
-          .join('')}
-      </div>
-
-      ${
-        cols.length
-          ? `<h2 class="res-group-title">配套资源</h2><div class="related-row">${cols
-              .map((c) => `<a class="related-chip" href="/resources/${c.slug}/">${c.icon || '📚'} ${c.title}</a>`)
-              .join('')}</div>`
-          : ''
-      }
-
-      ${
-        tp.guides?.length
-          ? `<h2 class="res-group-title">常见问题</h2>${tp.guides
-              .map((g) => `<div class="res-item"><div class="res-item-head"><b>${g.title}</b></div><div class="res-item-note">${g.body}</div></div>`)
-              .join('')}`
-          : ''
-      }
-    </div>`;
-}
-
-/* ---------- 工具评测 ---------- */
 let EVALDATA = null;
 async function loadEvaluations() {
   if (EVALDATA) return EVALDATA;
@@ -1250,19 +1088,39 @@ async function loadEvaluations() {
   }
   return EVALDATA;
 }
-// v3.12：评测正文按篇取。索引只有标题与摘要，列表页不用为八篇正文买单。
-const EVAL_BODY = new Map();
-async function loadEvalBody(slug) {
-  if (EVAL_BODY.has(slug)) return EVAL_BODY.get(slug);
+// 资源库数据：首页的入口卡与命令面板都要用它，所以留在主模块（渲染在 content-pages.js）
+let RES = null;
+async function loadResources() {
+  if (RES) return RES;
   try {
-    const r = await fetch(`/evaluations/${slug}.json`);
-    if (!r.ok) throw new Error(String(r.status));
-    const d = await r.json();
-    EVAL_BODY.set(slug, d);
-    return d;
+    RES = await (await fetch('/resources.json')).json();
   } catch {
-    return null;
+    RES = { collections: [], groups: [], policy: '' };
   }
+  return RES;
+}
+
+/* 内容页渲染已搬到 assets/content-pages.js（v3.13 按需加载）：
+   专题、评测、资源库、分类、更新日志。这里只留一个统一入口 openContent。
+   搬走的理由是体积：这五类页面占了近 400 行，首页一个都不渲染，
+   但每个访客都要下载并解析它们——首屏脚本因此从 31.2 降到约 27 KB。 */
+let CONTENT_PAGES = null;
+async function openContent(kind, arg) {
+  if (!CONTENT_PAGES) {
+    try {
+      CONTENT_PAGES = (await import('/assets/content-pages.js')).bindContentPages({
+        $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate,
+        bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources,
+        loadEvaluations, SITE,
+      });
+    } catch (e) {
+      // 模块取不到（老版本缓存 / 网络断）时给出明确提示，不要留白屏
+      $('#page-body').innerHTML = stateHTML('error', { title: '内容模块加载失败', detail: e.message });
+      return;
+    }
+  }
+  const fn = CONTENT_PAGES[kind];
+  if (fn) return fn(arg);
 }
 
 /* ---------- 工具教程（长尾正文：步骤 + 常见错误） ---------- */
@@ -1293,141 +1151,6 @@ async function loadArticle(id) {
   if (!art) art = (await loadArticles())[id] || null;
   ARTICLE_CACHE.set(id, art);
   return art;
-}
-
-async function openEvaluations() {
-  const data = await loadEvaluations();
-  await loadI18n();
-  setView('page');
-  document.title = `工具评测 · ${SITE}`;
-  renderNavActive('');
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:1000px">
-      <h1>🔬 工具评测</h1>
-      <p class="lead">横向实测加单款深挖：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚，该给使用说明的地方就给到能照着做的程度。每篇都标注测试方式与日期，结论会随工具版本变化。</p>
-      <div class="topic-grid">
-        ${data.evaluations
-          .map(
-            (ev) => `<a class="topic-card" href="/evaluations/${ev.slug}/">
-              <span class="tp-icon">${ev.icon}</span>
-              <b>${ev.title}</b>
-              <span>${ev.summary}</span>
-              <em>${ev.date} · ${ev.itemCount} 款对比${ev.hasUsage ? ' · 含使用说明' : ''} →</em>
-            </a>`
-          )
-          .join('')}
-      </div>
-    </div>`;
-}
-
-async function openEvaluation(slug) {
-  const data = await loadEvaluations();
-  const idx = data.evaluations.find((x) => x.slug === slug);
-  const body = idx && (await loadEvalBody(slug));
-  const ev = idx && body ? { ...idx, ...body } : null;
-  if (!ev) {
-    $('#page-body').innerHTML = '<div class="empty">评测不存在</div>';
-    return;
-  }
-  await loadI18n();
-  const reg = await loadRegistry();
-  setView('page');
-  document.title = `${ev.title} · 工具评测 · ${SITE}`;
-  renderNavActive('');
-  const pvClass = (p) => {
-    if (p === '完全本地' || p === '本地优先') return 'ok';
-    if (p === '需上传' || p === '服务器' || p === '部分上传') return 'warn';
-    return 'mid';
-  };
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:880px">
-      <h1>${ev.icon} ${ev.title}</h1>
-      <p class="lead">${ev.summary}</p>
-      <div class="res-intro" style="font-size:13px;color:var(--muted)">实测日期：${ev.date} · 对比 ${ev.items.length} 款工具</div>
-      <div class="eval-verdict"><b>结论</b><p>${ev.verdict}</p></div>
-      ${ev.method ? `<p style="font-size:13px;color:var(--muted)"><b>怎么测的：</b>${ev.method}</p>` : ''}
-
-      <h2 class="res-group-title">逐项对比</h2>
-      <div class="eval-grid">
-        ${ev.items
-          .map(
-            (it) => `<div class="eval-card">
-            <div class="eval-card-head">
-              ${it.url ? `<a href="${it.url}"${it.url.startsWith('/') ? '' : ' target="_blank" rel="noopener"'}><b>${it.name}</b></a>` : `<b>${it.name}</b>`}
-              <span class="eval-type">${it.type}</span>
-            </div>
-            <div class="eval-meta"><span class="pv-badge pv-${pvClass(it.privacy)}">隐私：${it.privacy}</span></div>
-            <div class="eval-pc">
-              <div class="eval-pros"><b>✓ 优势</b><ul>${it.pros.map((x) => `<li>${x}</li>`).join('')}</ul></div>
-              <div class="eval-cons"><b>✗ 短板</b><ul>${it.cons.map((x) => `<li>${x}</li>`).join('')}</ul></div>
-            </div>
-          </div>`
-          )
-          .join('')}
-      </div>
-
-      ${
-        ev.usage?.length
-          ? `<h2 class="res-group-title">怎么用</h2><div style="font-size:14px;line-height:1.9">${ev.usage
-              .map(
-                (u) =>
-                  `<h3 style="font-size:15px;margin:18px 0 6px">${u.name}</h3><ol style="margin:0 0 0 20px;padding:0">${u.steps
-                    .map((s) => `<li>${s}</li>`)
-                    .join('')}</ol>`
-              )
-              .join('')}</div>`
-          : ''
-      }
-
-      <h2 class="res-group-title">详细解读</h2>
-      ${ev.body.map((p) => `<p class="res-intro">${p}</p>`).join('')}
-
-      ${
-        ev.relatedTools?.length
-          ? `<h2 class="res-group-title">文中提到的工具</h2><div class="related-row">${ev.relatedTools
-              .map((id) => {
-                const tool = reg.tools.find((x) => x.id === id);
-                if (!tool) return '';
-                return `<a class="related-chip" href="/tools/${id}/">${toolMeta(tool).name}</a>`;
-              })
-              .join('')}</div>`
-          : ''
-      }
-      <div class="crumb" style="margin-top:24px"><a href="/evaluations/">← 全部评测</a></div>
-    </div>`;
-}
-
-/* ---------- 更新日志 ---------- */
-let LOGDATA = null;
-async function loadLog() {
-  if (LOGDATA) return LOGDATA;
-  try {
-    LOGDATA = await (await fetch('/changelog.json')).json();
-  } catch {
-    LOGDATA = { entries: [] };
-  }
-  return LOGDATA;
-}
-
-async function openChangelog() {
-  const data = await loadLog();
-  setView('page');
-  document.title = `更新日志 · ${SITE}`;
-  renderNavActive('');
-  $('#page-body').innerHTML = `
-    <div class="page" style="max-width:820px">
-      <h1>📝 更新日志</h1>
-      <p class="lead">这个平台在持续迭代。每一步改动都记录在这里，也提供 <a href="/feed.xml">RSS 订阅</a>。</p>
-      ${data.entries
-        .map(
-          (e) => `<div class="log-entry">
-            <div class="log-head"><b>${e.version}</b><span>${e.date}</span></div>
-            <div class="log-title">${e.title}</div>
-            <ul>${e.items.map((x) => `<li>${x}</li>`).join('')}</ul>
-          </div>`
-        )
-        .join('')}
-    </div>`;
 }
 
 /* ---------- 工具对比 ---------- */
@@ -1903,16 +1626,19 @@ function route() {
   if (p === '/') return renderHome();
   const tool = p.match(/^\/tools\/([\w-]+)$/);
   if (tool) return openTool(tool[1]);
-  if (p === '/changelog') return openChangelog();
-  if (p === '/evaluations') return openEvaluations();
+  if (p === '/categories') return openContent('categories');
+  const catSlug = p.match(/^\/categories\/([\w-]+)$/);
+  if (catSlug) return openContent('category', catSlug[1]);
+  if (p === '/changelog') return openContent('changelog');
+  if (p === '/evaluations') return openContent('evaluations');
   const evalSlug = p.match(/^\/evaluations\/([\w-]+)$/);
-  if (evalSlug) return openEvaluation(evalSlug[1]);
-  if (p === '/topics') return openTopics();
+  if (evalSlug) return openContent('evaluation', evalSlug[1]);
+  if (p === '/topics') return openContent('topics');
   const topicSlug = p.match(/^\/topics\/([\w-]+)$/);
-  if (topicSlug) return openTopic(topicSlug[1]);
-  if (p === '/resources') return openResources();
+  if (topicSlug) return openContent('topic', topicSlug[1]);
+  if (p === '/resources') return openContent('resources');
   const resSlug = p.match(/^\/resources\/([\w-]+)$/);
-  if (resSlug) return openResourceCollection(resSlug[1]);
+  if (resSlug) return openContent('resource', resSlug[1]);
   if (p === '/compare') {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);

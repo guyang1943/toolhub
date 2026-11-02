@@ -11,6 +11,17 @@
     "效率",
     "网络"
   ],
+  "categorySlugs": {
+    "文本": "text",
+    "图片": "image",
+    "文档": "docs",
+    "数据": "data",
+    "开发": "dev",
+    "设计": "design",
+    "音视频": "media",
+    "效率": "productivity",
+    "网络": "web"
+  },
   "featured": [
     "image-compress",
     "pdf-merge",

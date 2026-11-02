@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文本工具 · 6 个开源工具 · ToolHub</title>
+  <meta name="description" content="JSON 格式化、编码解码、文本对比与去重：规则确定，适合在本地跑完就丢。" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/categories/text/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/categories/text/" />
+  <meta property="og:title" content="文本工具 · 6 个开源工具 · ToolHub" />
+  <meta property="og:description" content="JSON 格式化、编码解码、文本对比与去重：规则确定，适合在本地跑完就丢。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 99 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","name":"文本工具","description":"JSON 格式化、编码解码、文本对比与去重：规则确定，适合在本地跑完就丢。","url":"https://toolhub.bot.cd/categories/text/"},{"@type":"ItemList","name":"文本工具","numberOfItems":6,"itemListElement":[{"@type":"ListItem","position":1,"name":"JSON 格式化","url":"https://toolhub.bot.cd/tools/json-format/"},{"@type":"ListItem","position":2,"name":"Base64 / URL 编解码","url":"https://toolhub.bot.cd/tools/base64-url/"},{"@type":"ListItem","position":3,"name":"文本对比","url":"https://toolhub.bot.cd/tools/text-diff/"},{"@type":"ListItem","position":4,"name":"Markdown 预览","url":"https://toolhub.bot.cd/tools/markdown-preview/"},{"@type":"ListItem","position":5,"name":"文本去重排序","url":"https://toolhub.bot.cd/tools/text-dedupe/"},{"@type":"ListItem","position":6,"name":"字数统计","url":"https://toolhub.bot.cd/tools/word-count/"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"工具分类","item":"https://toolhub.bot.cd/categories/"},{"@type":"ListItem","position":3,"name":"文本工具","item":"https://toolhub.bot.cd/categories/text/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Base64 算加密吗？","acceptedAnswer":{"@type":"Answer","text":"不算。Base64 是编码，任何人拿到都能还原，只是让二进制能放进文本协议里。要保护内容得用加密，站内分享结果时可以选择口令加密。"}},{"@type":"Question","name":"Markdown 预览会不会执行里面的脚本？","acceptedAnswer":{"@type":"Answer","text":"不会。渲染结果会过一遍 DOMPurify，script 标签、on* 事件属性、javascript: 链接都会被剔除，预览区也不会拿到同源权限。"}},{"@type":"Question","name":"输入的内容会被保存吗？","acceptedAnswer":{"@type":"Answer","text":"不会被保存到服务器。这些工具在浏览器内执行，处理完随页面释放；刷新后输入框是空的，草稿只有你主动点保存时才写进本机 localStorage。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/" data-nav="tools">工具</a>
+      <a href="/resources/" data-nav="resources">资源库</a>
+      <a href="/topics/" data-nav="topics">专题</a>
+      <a href="/evaluations/" data-nav="evaluations">评测</a>
+      <a href="/compare/" data-nav="compare">对比</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>📝 文本工具</h1><p>JSON 格式化、编码解码、文本对比与去重：规则确定，适合在本地跑完就丢。</p><div class="crumb" style="margin-bottom:10px"><a href="/categories/">工具分类</a> / 文本</div><div class="res-intro">文本类工具处理的往往是最不该外传的东西——接口返回、服务日志、客户名单、配置文件。而它们的运算量都很轻，格式化一份 JSON、比对两段文本，浏览器里几十毫秒就有结果。既然本地能算，就没有理由把内容发到别人的服务器上排队。</div><h2 class="res-group-title">适合这些场景</h2><ul><li>排查接口问题时，把一坨压缩过的 JSON 展开看清层级</li><li>两版配置做行级对比，找出到底改了哪一行</li><li>从日志里粘出几千行，去重、排序、去空行后再交给同事</li></ul><h2 class="res-group-title">浏览器内执行 · 6 个</h2><a class="fl-row" href="/tools/json-format/">
+        <span class="rank">01</span>
+        <div class="f-body"><div class="f-name">JSON 格式化</div><div class="f-desc">美化/压缩 JSON，自动校验语法错误</div></div>
+        <span class="f-meta">🔒 本地</span>
+      </a><a class="fl-row" href="/tools/base64-url/">
+        <span class="rank">02</span>
+        <div class="f-body"><div class="f-name">Base64 / URL 编解码</div><div class="f-desc">Base64 与 URL 编码互转，支持中文</div></div>
+        <span class="f-meta">🔒 本地</span>
+      </a><a class="fl-row" href="/tools/text-diff/">
+        <span class="rank">03</span>
+        <div class="f-body"><div class="f-name">文本对比</div><div class="f-desc">两段文本行级差异对比，新增/删除一目了然</div></div>
+        <span class="f-meta">🔒 本地</span>
+      </a><a class="fl-row" href="/tools/markdown-preview/">
+        <span class="rank">04</span>
+        <div class="f-body"><div class="f-name">Markdown 预览</div><div class="f-desc">实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS</div></div>
+        <span class="f-meta">🔒 本地</span>
+      </a><a class="fl-row" href="/tools/text-dedupe/">
+        <span class="rank">05</span>
+        <div class="f-body"><div class="f-name">文本去重排序</div><div class="f-desc">按行去重、排序、去空行，适合清洗名单与日志</div></div>
+        <span class="f-meta">🔒 本地</span>
+      </a><a class="fl-row" href="/tools/word-count/">
+        <span class="rank">06</span>
+        <div class="f-body"><div class="f-name">字数统计</div><div class="f-desc">中英文字数、字符、段落与阅读时长统计</div></div>
+        <span class="f-meta">🔒 本地</span>
+      </a><h2 class="res-group-title">怎么挑</h2><ul><li>JSON 报错先看行列号：格式化失败会指出出错位置，多数是一个多余的逗号，或字符串里没转义的双引号。</li><li>解码中文乱码先确认编码：Base64 里的中文要按 UTF-8 解，按 Latin-1 解出来就是乱码，不是数据坏了。</li><li>上万行文本先清洗再对比：直接 diff 会让你在无关的空白差异里找重点，先去重去空行，差异才显眼。</li></ul><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>Base64 算加密吗？</b></div><div class="res-item-note">不算。Base64 是编码，任何人拿到都能还原，只是让二进制能放进文本协议里。要保护内容得用加密，站内分享结果时可以选择口令加密。</div></div><div class="res-item"><div class="res-item-head"><b>Markdown 预览会不会执行里面的脚本？</b></div><div class="res-item-note">不会。渲染结果会过一遍 DOMPurify，script 标签、on* 事件属性、javascript: 链接都会被剔除，预览区也不会拿到同源权限。</div></div><div class="res-item"><div class="res-item-head"><b>输入的内容会被保存吗？</b></div><div class="res-item-note">不会被保存到服务器。这些工具在浏览器内执行，处理完随页面释放；刷新后输入框是空的，草稿只有你主动点保存时才写进本机 localStorage。</div></div><h2 class="res-group-title">相关专题</h2><div class="related-row"><a class="related-chip" href="/topics/frontend-debug/">🧪 前端调试工具包</a><a class="related-chip" href="/topics/data-cleanup/">📊 数据清洗与转换</a><a class="related-chip" href="/topics/writing-toolkit/">✍️ 写作工具箱</a><a class="related-chip" href="/topics/api-debug/">🔌 接口联调试探</a><a class="related-chip" href="/topics/work-efficiency/">💼 职场效率工具包</a></div><h2 class="res-group-title">其他分类</h2><div class="chips"><a class="chip active" href="/categories/text/">📝 文本</a><a class="chip" href="/categories/image/">🖼️ 图片</a><a class="chip" href="/categories/docs/">📄 文档</a><a class="chip" href="/categories/data/">📊 数据</a><a class="chip" href="/categories/dev/">⚙️ 开发</a><a class="chip" href="/categories/design/">🎨 设计</a><a class="chip" href="/categories/media/">🎵 音视频</a><a class="chip" href="/categories/productivity/">⚡ 效率</a><a class="chip" href="/categories/web/">🌐 网络</a></div><div class="crumb" style="margin-top:24px"><a href="/categories/">← 全部分类</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-grid">
+          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
+          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
+          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 提交工具） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__CAT__="text";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
