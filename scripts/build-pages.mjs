@@ -759,9 +759,17 @@ for (const p of staticPages) {
   const url = `${BASE}/tools/`;
   const groups = CATS.map((c) => ({ c, xs: byCat.get(c.name) })).filter((g) => g.xs.length);
   let seq = 0;
+  // 顺手把显示顺序记下来给 ItemList 用：结构化数据的条目顺序应当和页面上看到的一致，
+  // 另算一遍排序迟早会和渲染分叉。
+  const ordered = [];
   const body = groups
     .map(({ c, xs }) => {
-      const rows = xs.map((t) => toolRow(t, seq++)).join('');
+      const rows = xs
+        .map((t) => {
+          ordered.push(t);
+          return toolRow(t, seq++);
+        })
+        .join('');
       return `<h2 class="res-group-title"><a href="${CAT_URL(c.name)}">${c.icon} ${c.title}</a> · ${xs.length} 个</h2>${rows}`;
     })
     .join('');
@@ -772,7 +780,24 @@ for (const p of staticPages) {
     jsonld: {
       '@context': 'https://schema.org',
       '@graph': [
-        { '@type': 'CollectionPage', name: '全部工具', url, description: `ToolHub 收录的 ${TOTAL_TOOLS} 个工具` },
+        {
+          '@type': 'CollectionPage',
+          name: '全部工具',
+          url,
+          description: `ToolHub 收录的 ${TOTAL_TOOLS} 个工具`,
+          // 99 条完整清单不配 ItemList 是浪费：「开源工具大全」这类查询最认的就是它。
+          // 分类页当时带了，这一页没有，属于补齐而不是新增能力。
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: ordered.length,
+            itemListElement: ordered.map((t, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: t.name,
+              url: `${BASE}/tools/${t.id}/`,
+            })),
+          },
+        },
         {
           '@type': 'BreadcrumbList',
           itemListElement: [

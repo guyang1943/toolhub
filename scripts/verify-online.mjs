@@ -34,8 +34,10 @@ async function get(path, tries = 3) {
 function localVersion() {
   const cl = JSON.parse(readFileSync(join(root, 'changelog.json'), 'utf8'));
   const list = cl.entries || cl;
-  const v = list[0].version || list[0].v;
-  return v;
+  // changelog 里存的是 "v3.14"，sw.js 里是 "toolhub-v3.14"。统一在这里收口成完整 token，
+  // 免得调用处再拼一次前缀（v3.14 首次上线时就这样比出了 "toolhub-vv3.14"，误报未到位）。
+  const v = String(list[0].version || list[0].v || '').replace(/^v/, '');
+  return 'toolhub-v' + v;
 }
 
 function gitHead(kind) {
@@ -56,7 +58,7 @@ if (WAIT) {
   const probe = await get('/sw.js', 1);
   const txt = probe ? await probe.text() : '';
   const v = (txt.match(/toolhub-v[\d.]+/) || [])[0];
-  if (!first || first.status !== 200 || v !== `toolhub-v${localVersion()}`) {
+  if (!first || first.status !== 200 || v !== localVersion()) {
     console.log(`   首次探测：${first ? first.status : '超时'} / ${v || '无版本号'}，等 ${WAIT}s 再验（Pages 构建有滞后）`);
     await new Promise((res) => setTimeout(res, WAIT * 1000));
   }
@@ -70,7 +72,7 @@ for (const p of PATHS) {
 const sw = await get('/sw.js');
 const swText = sw ? await sw.text() : '';
 const online = (swText.match(/toolhub-v[\d.]+/) || ['(读不到)'])[0];
-const local = `toolhub-v${localVersion()}`;
+const local = localVersion();
 const head = gitHead('local');
 const remote = gitHead('remote');
 

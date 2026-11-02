@@ -956,7 +956,9 @@ check('全部工具页（v3.14）', () => {
   const groups = (html.match(/class="res-group-title"/g) || []).length;
   assert(groups >= cats.length, `只分了 ${groups} 组，分类有 ${cats.length} 个`);
   assert(html.includes('全部工具'), '标题里没有「全部工具」');
-  for (const k of ['CollectionPage', 'BreadcrumbList']) assert(html.includes(`"${k}"`), `缺 ${k}`);
+  for (const k of ['CollectionPage', 'BreadcrumbList', 'ItemList']) assert(html.includes(`"${k}"`), `缺 ${k}`);
+  // ItemList 的条数必须和页面上真的行数一致：99 条清单写少一个，搜索引擎与用户看到的就是两份东西。
+  assert(html.includes(`"numberOfItems":${rows}`), `ItemList 条数与页面 ${rows} 行对不上`);
   const links = (html.match(/class="fl-row" href="\/tools\/[\w-]+\/"/g) || []).length;
   assert(links === rows, `${rows} 行里只有 ${links} 行带工具链接`);
   return `${rows} 个工具 / ${groups} 组`;
