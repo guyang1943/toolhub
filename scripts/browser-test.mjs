@@ -347,6 +347,36 @@ async function feedFile(selector, dataUrl, name, type) {
   // 导航「工具」和首页「99 个工具」入口卡以前都只是回首页、滚到工具区：点完地址栏没变，
   // 也没法把这一屏发给别人。这一页是它们的落地页，验的是「真换了页面、真的列全」。
   await goto('/');
+  // v3.16：导航收敛成四栏，入口卡必须与之同序——两边顺序不一致是最容易悄悄发生的错位
+  const navLabels = await evaluate(`[...document.querySelectorAll('#main-nav a')].map((a) => a.textContent.trim()).join('/')`);
+  check('导航四栏且顺序为 工具/资源/教程/测评', navLabels === '工具/资源/教程/测评', navLabels);
+  const cardOrder = await evaluate(`[...document.querySelectorAll('#route-cards .route-card')].map((a) => a.getAttribute('href')).join(',')`);
+  check('入口卡与导航同序', cardOrder === '/tools/,/resources/,/guides/,/evaluations/', cardOrder);
+  check(
+    '信任区不再是卡片',
+    await evaluate(`!!document.querySelector('.trust-strip') && !document.querySelector('.trust-item, .trust-grid')`)
+  );
+
+  // ---- 1.55b2 首页双语（v3.16）----
+  // 语言按钮原来只翻了搜索框提示与工具卡片：导航、入口卡、信任区仍是中文。
+  // 半套翻译比不翻更糟——读到第二屏突然换语言，读者会以为页面坏了。
+  await evaluate(`document.querySelector('#lang-btn').click()`);
+  let enHome = '';
+  for (let i = 0; i < 40; i++) {
+    await sleep(100);
+    enHome = await evaluate(`[...document.querySelectorAll('#main-nav a')].map((a) => a.textContent.trim()).join('/')`);
+    if (enHome.startsWith('Tools/Resources/Guides/Reviews')) break;
+  }
+  check('切英文后导航变英文', enHome === 'Tools/Resources/Guides/Reviews', enHome);
+  const enCard = await evaluate(`
+    (document.querySelector('.rc--tools .rc-tag') || {}).textContent.trim() +
+    '/' + [...document.querySelectorAll('.trust-strip span')].slice(1, 2).map((x) => x.textContent).join('')`);
+  check('切英文后入口卡与信任区也是英文', /^Toolbox\//.test(enCard) && !/[\u4e00-\u9fa5]/.test(enCard), enCard);
+  await shot('17-home-en');
+  // 切回中文：后面的用例一律按中文文案断言，别把语言状态留给他们
+  await evaluate(`document.querySelector('#lang-btn').click()`);
+  await sleep(700);
+  check('切回中文生效', (await evaluate(`document.querySelector('#main-nav a').textContent.trim()`)) === '工具');
   const toolsCardHref = await evaluate(`(document.querySelector('.route-card.rc--tools') || {getAttribute: () => ''}).getAttribute('href') || ''`);
   check('首页工具箱卡是真链接', toolsCardHref === '/tools/', toolsCardHref);
   await evaluate(`document.querySelector('.route-card.rc--tools').click()`);
@@ -361,32 +391,32 @@ async function feedFile(selector, dataUrl, name, type) {
   check('全部工具页按分类分组', (await evaluate(`document.querySelectorAll('#page-body .res-group-title').length`)) >= 9);
   await shot('16-all-tools');
 
-  // ---- 1.55c 折腾指南（v3.15）----
+  // ---- 1.55c 教程（v3.15；v3.16 改名）----
   // 第三层内容：和「点开即用」的工具分开，验的是「导航点得到、页面真的渲染出步骤与回退」。
   await goto('/');
   const guideNavHref = await evaluate(`(document.querySelector('#main-nav a[data-nav="guides"]') || {getAttribute: () => ''}).getAttribute('href') || ''`);
-  check('导航有指南入口', guideNavHref === '/guides/', guideNavHref);
+  check('导航有教程入口', guideNavHref === '/guides/', guideNavHref);
   await evaluate(`document.querySelector('#main-nav a[data-nav="guides"]').click()`);
-  await waitText('#page-body', '折腾指南', 8000);
+  await waitText('#page-body', '教程', 8000);
   const guideIdxPath = await evaluate(`location.pathname`);
   const guideRows = await evaluate(`document.querySelectorAll('#page-body a.fl-row').length`);
   const GUIDE_N = JSON.parse(readFileSync(join(root, 'content/guides.json'), 'utf8')).guides.length;
-  check('点导航进入指南总览', guideIdxPath === '/guides/', guideIdxPath);
-  check('指南总览列全篇目', guideRows === GUIDE_N, guideRows + ' 篇');
+  check('点导航进入教程总览', guideIdxPath === '/guides/', guideIdxPath);
+  check('教程总览列全篇目', guideRows === GUIDE_N, guideRows + ' 篇');
   await evaluate(`document.querySelector('#page-body a.fl-row').click()`);
   await waitText('#page-body', '翻车了怎么办', 8000);
   const guidePath = await evaluate(`location.pathname`);
   const stepN = await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`);
-  check('指南详情页是真 URL', /^\/guides\/[\w-]+\/$/.test(guidePath), guidePath);
-  check('指南详情页渲染全部步骤', stepN === 8, stepN + ' 步');
-  check('指南页有风险提示与元信息条', await evaluate(`!!document.querySelector('.guide-risk') && !!document.querySelector('.guide-meta')`));
-  check('指南页互链站内工具', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 2);
+  check('教程详情页是真 URL', /^\/guides\/[\w-]+\/$/.test(guidePath), guidePath);
+  check('教程详情页渲染全部步骤', stepN === 8, stepN + ' 步');
+  check('教程页有风险提示与元信息条', await evaluate(`!!document.querySelector('.guide-risk') && !!document.querySelector('.guide-meta')`));
+  check('教程页互链站内工具', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 2);
   await shot('17-guide');
   await goto('/');
 
   // ---- 1.56 评测列表（v3.13 改为行式列表）----
   await goto('/evaluations/');
-  await waitText('#page-body', '工具评测', 8000);
+  await waitText('#page-body', '工具测评', 8000);
   const evRows = await evaluate(`document.querySelectorAll('#page-body a.list-row').length`);
   const evIndexN = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8')).evaluations.length;
   check('评测列表是行式列表', evRows === evIndexN, evRows + ' 行');
@@ -925,7 +955,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   await goto('/guides/tv-box-server/');
   await waitText('#page-body', '翻车了怎么办', 8000);
   const guideOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
-  check('指南页窄屏无横向溢出', guideOverflow <= 1, 'overflow ' + guideOverflow + 'px');
+  check('教程页窄屏无横向溢出', guideOverflow <= 1, 'overflow ' + guideOverflow + 'px');
   await shot('17b-guide-mobile');
   await cdp.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
   await goto('/');
@@ -955,7 +985,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const allToolsOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
   check('全部工具页窄屏无横向溢出', allToolsOverflow <= 1, 'overflow ' + allToolsOverflow + 'px');
   await goto('/evaluations/');
-  await waitText('#page-body', '工具评测', 8000);
+  await waitText('#page-body', '工具测评', 8000);
   const evOverflow = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
   check('评测列表窄屏无横向溢出', evOverflow <= 1, 'overflow ' + evOverflow + 'px');
   await shot('13b-evaluations-mobile');

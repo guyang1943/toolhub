@@ -221,7 +221,7 @@ async function openGuides() {
   await loadI18n();
   const idx = await loadGuideIndex();
   setView('page');
-  document.title = `折腾指南 · ${SITE}`;
+  document.title = `教程 · ${SITE}`;
   renderNavActive('/guides');
   const rows = idx
     .map(
@@ -234,8 +234,8 @@ async function openGuides() {
     .join('');
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <h1>折腾指南</h1>
-      <p class="lead">要先装、先刷、先配才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，指南是一条要走完的路。</p>
+      <h1>📖 教程</h1>
+      <p class="lead">要先装、先刷、先配才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，教程是一条要走完的路。</p>
       ${rows}
       <h2 class="res-group-title">这一类内容的三条纪律</h2>
       <ul>
@@ -253,11 +253,11 @@ async function openGuide(slug) {
   await loadI18n();
   setView('page');
   if (!g) {
-    document.title = `指南不存在 · ${SITE}`;
-    $('#page-body').innerHTML = stateHTML('empty', { title: '这篇指南不存在', detail: '地址可能拼错了，回指南总览重新选一篇。' });
+    document.title = `教程不存在 · ${SITE}`;
+    $('#page-body').innerHTML = stateHTML('empty', { title: '这篇教程不存在', detail: '地址可能拼错了，回教程总览重新选一篇。' });
     return;
   }
-  document.title = `${g.title} · 折腾指南 · ${SITE}`;
+  document.title = `${g.title} · 教程 · ${SITE}`;
   renderNavActive('/guides');
   const [label, cls] = GUIDE_RISK[g.risk] || GUIDE_RISK.mid;
   const nameOf = (id) => {
@@ -267,7 +267,7 @@ async function openGuide(slug) {
   const ans = (f) => f.a || f.body;
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <div class="crumb" style="margin-bottom:10px"><a data-spa href="/guides/">折腾指南</a> / ${esc(g.title)}</div>
+      <div class="crumb" style="margin-bottom:10px"><a data-spa href="/guides/">教程</a> / ${esc(g.title)}</div>
       <h1>${g.icon} ${esc(g.title)}</h1>
       <div class="guide-meta">
         <span>难度 <b>${esc(g.difficulty)}</b></span>
@@ -306,7 +306,7 @@ async function openGuide(slug) {
       <h2 class="res-group-title">常见问题</h2>${g.faq
         .map((f) => `<div class="res-item"><div class="res-item-head"><b>${esc(f.q)}</b></div><div class="res-item-note">${esc(ans(f))}</div></div>`)
         .join('')}
-      <div class="crumb" style="margin-top:24px"><a data-spa href="/guides/">← 全部指南</a> · <a data-spa href="/">返回首页</a></div>
+      <div class="crumb" style="margin-top:24px"><a data-spa href="/guides/">← 全部教程</a> · <a data-spa href="/">返回首页</a></div>
     </div>`;
   bindSpaLinks('#page-body');
 }
@@ -422,12 +422,21 @@ async function openEvaluations() {
   const data = await loadEvaluations();
   await loadI18n();
   setView('page');
-  document.title = `工具评测 · ${SITE}`;
-  renderNavActive('');
+  document.title = `工具测评 · ${SITE}`;
+  renderNavActive('/evaluations');
+  // v3.16：对比从顶级导航撤下来，改在这一页第一屏给出入口。
+  // 理由：对比本身就是「平行比较」，和测评回答的是同一个问题；单独占一栏，
+  // 反而让人以为它是一份独立的数据库。放在这里，读过一篇测评正好顺手下场自己比。
+  const cmpCta = `<a class="cmp-cta" data-spa href="/compare/">
+      <span aria-hidden="true">⇄</span>
+      <div><b>同类工具并排对比</b><span>挑 2–4 款放在一起看：要不要上传数据、能不能离线用、协议开不开源、来源在哪。</span></div>
+      <em>开始对比 →</em>
+    </a>`;
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <h1>🔬 工具评测</h1>
+      <h1>🔬 工具测评</h1>
       <p class="lead">横向实测加单款深挖：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚，该给使用说明的地方就给到能照着做的程度。每篇都标注测试方式与日期，结论会随工具版本变化。</p>
+      ${cmpCta}
       ${data.evaluations
         .map(
           (ev) => `<a class="list-row" data-spa href="/evaluations/${ev.slug}/">
@@ -456,8 +465,8 @@ async function openEvaluation(slug) {
   await loadI18n();
   const reg = await loadRegistry();
   setView('page');
-  document.title = `${ev.title} · 工具评测 · ${SITE}`;
-  renderNavActive('');
+  document.title = `${ev.title} · 工具测评 · ${SITE}`;
+  renderNavActive('/evaluations');
   const pvClass = (p) => {
     if (p === '完全本地' || p === '本地优先') return 'ok';
     if (p === '需上传' || p === '服务器' || p === '部分上传') return 'warn';
@@ -517,7 +526,7 @@ async function openEvaluation(slug) {
               .join('')}</div>`
           : ''
       }
-      <div class="crumb" style="margin-top:24px"><a href="/evaluations/">← 全部评测</a></div>
+      <div class="crumb" style="margin-top:24px"><a href="/evaluations/">← 全部测评</a></div>
     </div>`;
 }
 

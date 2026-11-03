@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>密码工具横评：生成器只是起点，管理才是终点 · 工具评测 · ToolHub</title>
+  <title>密码工具横评：生成器只是起点，管理才是终点 · 工具测评 · ToolHub</title>
   <meta name="description" content="对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
@@ -24,7 +24,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/evaluations/password-tools/" />
   <link rel="canonical" href="https://toolhub.bot.cd/evaluations/password-tools/" />
-  <meta property="og:title" content="密码工具横评：生成器只是起点，管理才是终点 · 工具评测 · ToolHub" />
+  <meta property="og:title" content="密码工具横评：生成器只是起点，管理才是终点 · 工具测评 · ToolHub" />
   <meta property="og:description" content="对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -67,26 +67,24 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
-      <a href="/tools/" data-nav="tools">工具</a>
-      <a href="/guides/" data-nav="guides">指南</a>
-      <a href="/resources/" data-nav="resources">资源库</a>
-      <a href="/topics/" data-nav="topics">专题</a>
-      <a href="/evaluations/" data-nav="evaluations">评测</a>
-      <a href="/compare/" data-nav="compare">对比</a>
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
     <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
       <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具" data-zh-aria="推荐一个开源工具" data-en-aria="Suggest an open-source tool">➕</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>密码工具横评：生成器只是起点，管理才是终点</h1><p>对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。</p><p><b>结论：</b>用密码管理器的内置生成器（Bitwarden 免费档就够用）；本站密码生成器的价值是「完全本地、可离线」——适合生成一次性密码和不想装 App 的场景。</p><h2>对比项</h2><h3>Bitwarden（密码管理器 · 隐私：端到端加密）</h3><p><b>优势</b>：开源 + 免费档够用（无限密码、无限设备）；生成即入库，自动填充闭环；GPL-3.0，可自托管</p><p><b>短板</b>：要装客户端/插件才有完整体验；免费档不含高级报告（密码泄露检测等）</p><h3>1Password（密码管理器 · 隐私：端到端加密）</h3><p><b>优势</b>：体验最顺滑，家庭/团队版功能全；Watchtower 监控泄露；跨平台覆盖最广</p><p><b>短板</b>：闭源，只有订阅制；免费试用到期后价格不低；数据在第三方服务（虽为零知识加密）</p><h3>本站 · 强密码生成（纯本地生成器 · 隐私：完全本地）</h3><p><b>优势</b>：crypto 安全随机源，不依赖任何服务；不装 App、不登录、可离线；适合生成一次性密码、Wi-Fi 密码、注册临时密码</p><p><b>短板</b>：不管存储——生成完要自己保管；无自动填充，日常高频密码不如管理器顺手</p><h2>详细解读</h2><p>先纠正一个常见误区：密码安不安全，90% 取决于「存在哪、怎么同步」，生成算法反而是次要的——只要是密码学安全随机源（crypto.getRandomValues 或同等级别），生成器之间的差距可以忽略。所以横评的重点是管理链路，不是生成那一刻。</p><p>密码管理器的核心价值是「生成即入库 + 自动填充」的闭环：每个站点用独立强密码，你只需要记住主密码。Bitwarden 在开源、免费、可自托管三点上同时成立，个人用户免费档没有实质限制，是这类工具的默认答案。1Password 体验更好但闭源且只有订阅制，适合愿意为体验付费的用户。</p><p>本站的密码生成器是另一条路：它不管存储，只负责在本地生成。这个定位适合三类场景——一次性密码（注册个什么账号、临时共享个文件）、离线环境（内网机器没网）、以及「我就是不想装 App」的时刻。用 crypto 安全随机源意味着它和服务端生成的一样不可预测，生成的密码直接复制走，设备上不留痕。</p><p>真正危险的做法是「用大脑管理密码」：一套密码走天下、或者按规律变形（P@ssw0rd1、P@ssw0rd2）。前者的后果是撞库全面失守，后者在懂行的人眼里等于明文。如果只能记住一条建议：重要账号（邮箱、支付、社交）必须独立强密码 + 管理器，次要账号才考虑规律记忆。</p><p>收尾建议：装一个密码管理器（Bitwarden 起步），把高频密码交给它；本站生成器作为补充，应付一次性和离线场景。两者不冲突，覆盖的场景正好互补。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>密码工具横评：生成器只是起点，管理才是终点</h1><p>对比 Bitwarden、1Password 和本站的本地密码生成器。结论可能和你想的相反：生成器本身不重要，重要的是生成之后密码存在哪、怎么同步。</p><p><b>结论：</b>用密码管理器的内置生成器（Bitwarden 免费档就够用）；本站密码生成器的价值是「完全本地、可离线」——适合生成一次性密码和不想装 App 的场景。</p><h2>对比项</h2><h3>Bitwarden（密码管理器 · 隐私：端到端加密）</h3><p><b>优势</b>：开源 + 免费档够用（无限密码、无限设备）；生成即入库，自动填充闭环；GPL-3.0，可自托管</p><p><b>短板</b>：要装客户端/插件才有完整体验；免费档不含高级报告（密码泄露检测等）</p><h3>1Password（密码管理器 · 隐私：端到端加密）</h3><p><b>优势</b>：体验最顺滑，家庭/团队版功能全；Watchtower 监控泄露；跨平台覆盖最广</p><p><b>短板</b>：闭源，只有订阅制；免费试用到期后价格不低；数据在第三方服务（虽为零知识加密）</p><h3>本站 · 强密码生成（纯本地生成器 · 隐私：完全本地）</h3><p><b>优势</b>：crypto 安全随机源，不依赖任何服务；不装 App、不登录、可离线；适合生成一次性密码、Wi-Fi 密码、注册临时密码</p><p><b>短板</b>：不管存储——生成完要自己保管；无自动填充，日常高频密码不如管理器顺手</p><h2>详细解读</h2><p>先纠正一个常见误区：密码安不安全，90% 取决于「存在哪、怎么同步」，生成算法反而是次要的——只要是密码学安全随机源（crypto.getRandomValues 或同等级别），生成器之间的差距可以忽略。所以横评的重点是管理链路，不是生成那一刻。</p><p>密码管理器的核心价值是「生成即入库 + 自动填充」的闭环：每个站点用独立强密码，你只需要记住主密码。Bitwarden 在开源、免费、可自托管三点上同时成立，个人用户免费档没有实质限制，是这类工具的默认答案。1Password 体验更好但闭源且只有订阅制，适合愿意为体验付费的用户。</p><p>本站的密码生成器是另一条路：它不管存储，只负责在本地生成。这个定位适合三类场景——一次性密码（注册个什么账号、临时共享个文件）、离线环境（内网机器没网）、以及「我就是不想装 App」的时刻。用 crypto 安全随机源意味着它和服务端生成的一样不可预测，生成的密码直接复制走，设备上不留痕。</p><p>真正危险的做法是「用大脑管理密码」：一套密码走天下、或者按规律变形（P@ssw0rd1、P@ssw0rd2）。前者的后果是撞库全面失守，后者在懂行的人眼里等于明文。如果只能记住一条建议：重要账号（邮箱、支付、社交）必须独立强密码 + 管理器，次要账号才考虑规律记忆。</p><p>收尾建议：装一个密码管理器（Bitwarden 起步），把高频密码交给它；本站生成器作为补充，应付一次性和离线场景。两者不冲突，覆盖的场景正好互补。</p><p><a href="/evaluations/">← 全部测评</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -98,8 +96,8 @@
             <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
           </div>
           <div class="hero-search-hint">
-            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+            <span data-zh="99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册" data-en="99 tools · 50 resources · drop a file or paste text · no sign-up">99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
           </div>
         </div>
       </div>
@@ -107,12 +105,12 @@
       <div class="route-cards" id="route-cards"></div>
 
       <div class="featured-section" id="featured-section" style="">
-        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
         <div class="featured-list" id="featured-grid"></div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -124,11 +122,24 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
-        <div class="trust-grid">
-          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
-          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
-          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器" data-en="bytes uploaded">字节上传服务器</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
         </div>
       </div>
     </section>
@@ -181,11 +192,11 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="提交工具" data-en="Submit">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>
 
   <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，

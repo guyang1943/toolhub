@@ -184,7 +184,13 @@ async function go(path) {
 // 1) 评测列表页（v3.13 起是列表行，不再是卡片网格）
 await go('/evaluations');
 const listHtml = document.getElementById('page-body').innerHTML;
-check('评测列表页渲染', listHtml.includes('工具评测') && listHtml.includes('list-row'), `#page-body ${listHtml.length} 字符`);
+check('测评列表页渲染', listHtml.includes('工具测评') && listHtml.includes('list-row'), `#page-body ${listHtml.length} 字符`);
+// v3.16：对比从顶级导航撤下，测评页第一屏必须给出它的入口，而且要排在那 8 篇之前
+check(
+  '测评页第一屏有对比入口',
+  listHtml.indexOf('cmp-cta') > -1 && listHtml.indexOf('cmp-cta') < listHtml.indexOf('list-row') && listHtml.includes('href="/compare/"'),
+  '对比入口排在列表之前'
+);
 // 数量跟索引比，不写死。写死的话每加一篇评测都要改测试，改的人图省事就会顺手放宽成 ≥N，
 // 断言也就废了。
 const evIndexCount = JSON.parse(readFileSync(join(root, 'evaluations.json'), 'utf8')).evaluations.length;

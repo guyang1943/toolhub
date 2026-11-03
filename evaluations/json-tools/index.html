@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JSON 工具横评：格式化只是入门，可视化才是分水岭 · 工具评测 · ToolHub</title>
+  <title>JSON 工具横评：格式化只是入门，可视化才是分水岭 · 工具测评 · ToolHub</title>
   <meta name="description" content="本站 JSON 格式化、JSON Hero、JSON Crack、CyberChef 四款工具同场竞技：扁平 JSON 谁都行，深层嵌套和「既要转换又要看」的场景才见高下。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
@@ -24,7 +24,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/evaluations/json-tools/" />
   <link rel="canonical" href="https://toolhub.bot.cd/evaluations/json-tools/" />
-  <meta property="og:title" content="JSON 工具横评：格式化只是入门，可视化才是分水岭 · 工具评测 · ToolHub" />
+  <meta property="og:title" content="JSON 工具横评：格式化只是入门，可视化才是分水岭 · 工具测评 · ToolHub" />
   <meta property="og:description" content="本站 JSON 格式化、JSON Hero、JSON Crack、CyberChef 四款工具同场竞技：扁平 JSON 谁都行，深层嵌套和「既要转换又要看」的场景才见高下。" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -67,26 +67,24 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
-      <a href="/tools/" data-nav="tools">工具</a>
-      <a href="/guides/" data-nav="guides">指南</a>
-      <a href="/resources/" data-nav="resources">资源库</a>
-      <a href="/topics/" data-nav="topics">专题</a>
-      <a href="/evaluations/" data-nav="evaluations">评测</a>
-      <a href="/compare/" data-nav="compare">对比</a>
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
     <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
       <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具" data-zh-aria="推荐一个开源工具" data-en-aria="Suggest an open-source tool">➕</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>JSON 工具横评：格式化只是入门，可视化才是分水岭</h1><p>本站 JSON 格式化、JSON Hero、JSON Crack、CyberChef 四款工具同场竞技：扁平 JSON 谁都行，深层嵌套和「既要转换又要看」的场景才见高下。</p><p><b>结论：</b>日常校验格式：本站格式化；看深层嵌套结构：JSON Crack；查字段含义和做多种变换：JSON Hero；编码/加密/解压全家桶：CyberChef。</p><h2>对比项</h2><h3>本站 · JSON 格式化（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：本机解析校验，错误位置精确到行列；格式化/压缩双向，大 JSON 也不卡；和站内 CSV↔JSON、Base64 工具联动</p><p><b>短板</b>：只有文本视图，深层嵌套靠折叠；无字段搜索</p><h3>JSON Crack（可视化 · 隐私：本地为主）</h3><p><b>优势</b>：JSON 变节点图谱，嵌套关系一眼看穿；支持导出图片，贴文档/PPT 好用；GPL-3.0 开源</p><p><b>短板</b>：超大 JSON 图会很乱，需要手动整理；编辑器场景不如专业 IDE 插件</p><h3>JSON Hero（可视化 · 隐私：本地为主）</h3><p><b>优势</b>：颜值最高的 JSON 浏览器，字段类型/预览一目了然；支持 URL 直达、路径分享；MIT 开源，可自托管</p><p><b>短板</b>：更偏向「查看」而非「编辑」；超大文件性能一般</p><h3>CyberChef（数据瑞士军刀 · 隐私：完全本地）</h3><p><b>优势</b>：几百种操作串成「配方」：编解码、加密、解压、正则、哈希；英国 GCHQ 出品，Apache-2.0；日志分析、CTF、取证场景神器</p><p><b>短板</b>：界面极客向，学习曲线陡；纯 JSON 场景杀鸡用牛刀</p><h2>详细解读</h2><p>JSON 工具看似红海，其实分四个生态位：格式化校验、结构可视化、字段浏览、通用数据变换。大部分工具只占一个位置，选型就是先认清自己在哪个场景。</p><p>本站 JSON 格式化占的是第一个位置：解析校验 + 排版。它的强项是错误定位——Unexpected token 这种报错直接给出行列号，比「SyntaxError」三个字有用一万倍。深层嵌套是它的短板：折叠视图超过四层就开始考验耐心，这时候就该换可视化工具了。</p><p>JSON Crack 把 JSON 铺成节点图，深层接口返回结构在它面前没有秘密——哪个数组套对象、哪层开始数据变空，看图比读文字快十倍。缺点是超大 JSON 生成的图像一团乱麻，需要手动删枝。JSON Hero 相反，它把焦点放在「字段」上：每个值的类型、长度、预览单独呈现，适合逐字段核对接口契约。</p><p>CyberChef 严格说不是 JSON 工具，是数据处理的瑞士军刀。但当你面对「这段 Base64 解出来是 gzip，解开是 JSON，JSON 里还有个字段是时间戳」这种组合场景时，只有它的「配方」流水线能一次串完，不用在四五个工具间来回复制粘贴。GCHQ 出品、完全本地运行，安全和能力都拉满。</p><p>选型一句话：格式对不对 → 本站格式化；结构乱不乱 → JSON Crack；字段细不细 → JSON Hero；变换多不多 → CyberChef。四个工具都是本地优先，数据安全这件事上不用妥协。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>JSON 工具横评：格式化只是入门，可视化才是分水岭</h1><p>本站 JSON 格式化、JSON Hero、JSON Crack、CyberChef 四款工具同场竞技：扁平 JSON 谁都行，深层嵌套和「既要转换又要看」的场景才见高下。</p><p><b>结论：</b>日常校验格式：本站格式化；看深层嵌套结构：JSON Crack；查字段含义和做多种变换：JSON Hero；编码/加密/解压全家桶：CyberChef。</p><h2>对比项</h2><h3>本站 · JSON 格式化（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：本机解析校验，错误位置精确到行列；格式化/压缩双向，大 JSON 也不卡；和站内 CSV↔JSON、Base64 工具联动</p><p><b>短板</b>：只有文本视图，深层嵌套靠折叠；无字段搜索</p><h3>JSON Crack（可视化 · 隐私：本地为主）</h3><p><b>优势</b>：JSON 变节点图谱，嵌套关系一眼看穿；支持导出图片，贴文档/PPT 好用；GPL-3.0 开源</p><p><b>短板</b>：超大 JSON 图会很乱，需要手动整理；编辑器场景不如专业 IDE 插件</p><h3>JSON Hero（可视化 · 隐私：本地为主）</h3><p><b>优势</b>：颜值最高的 JSON 浏览器，字段类型/预览一目了然；支持 URL 直达、路径分享；MIT 开源，可自托管</p><p><b>短板</b>：更偏向「查看」而非「编辑」；超大文件性能一般</p><h3>CyberChef（数据瑞士军刀 · 隐私：完全本地）</h3><p><b>优势</b>：几百种操作串成「配方」：编解码、加密、解压、正则、哈希；英国 GCHQ 出品，Apache-2.0；日志分析、CTF、取证场景神器</p><p><b>短板</b>：界面极客向，学习曲线陡；纯 JSON 场景杀鸡用牛刀</p><h2>详细解读</h2><p>JSON 工具看似红海，其实分四个生态位：格式化校验、结构可视化、字段浏览、通用数据变换。大部分工具只占一个位置，选型就是先认清自己在哪个场景。</p><p>本站 JSON 格式化占的是第一个位置：解析校验 + 排版。它的强项是错误定位——Unexpected token 这种报错直接给出行列号，比「SyntaxError」三个字有用一万倍。深层嵌套是它的短板：折叠视图超过四层就开始考验耐心，这时候就该换可视化工具了。</p><p>JSON Crack 把 JSON 铺成节点图，深层接口返回结构在它面前没有秘密——哪个数组套对象、哪层开始数据变空，看图比读文字快十倍。缺点是超大 JSON 生成的图像一团乱麻，需要手动删枝。JSON Hero 相反，它把焦点放在「字段」上：每个值的类型、长度、预览单独呈现，适合逐字段核对接口契约。</p><p>CyberChef 严格说不是 JSON 工具，是数据处理的瑞士军刀。但当你面对「这段 Base64 解出来是 gzip，解开是 JSON，JSON 里还有个字段是时间戳」这种组合场景时，只有它的「配方」流水线能一次串完，不用在四五个工具间来回复制粘贴。GCHQ 出品、完全本地运行，安全和能力都拉满。</p><p>选型一句话：格式对不对 → 本站格式化；结构乱不乱 → JSON Crack；字段细不细 → JSON Hero；变换多不多 → CyberChef。四个工具都是本地优先，数据安全这件事上不用妥协。</p><p><a href="/evaluations/">← 全部测评</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -98,8 +96,8 @@
             <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
           </div>
           <div class="hero-search-hint">
-            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+            <span data-zh="99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册" data-en="99 tools · 50 resources · drop a file or paste text · no sign-up">99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
           </div>
         </div>
       </div>
@@ -107,12 +105,12 @@
       <div class="route-cards" id="route-cards"></div>
 
       <div class="featured-section" id="featured-section" style="">
-        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
         <div class="featured-list" id="featured-grid"></div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -124,11 +122,24 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
-        <div class="trust-grid">
-          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
-          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
-          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器" data-en="bytes uploaded">字节上传服务器</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
         </div>
       </div>
     </section>
@@ -181,11 +192,11 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="提交工具" data-en="Submit">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>
 
   <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，

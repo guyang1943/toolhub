@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.15 · 预缓存 198 个地址 · 约 3.0 MB
-const VERSION = "toolhub-v3.15";
+// 版本：toolhub-v3.16 · 预缓存 199 个地址 · 约 3.2 MB
+const VERSION = "toolhub-v3.16";
 const CORE = [
   "/",
   "/index.html",
@@ -140,6 +140,7 @@ const FULL = [
   "/assets/tool-page.js",
   "/assets/toolbuilder.js",
   "/assets/style.batch.css",
+  "/assets/style.compare.css",
   "/assets/style.offline.css",
   "/assets/style.submit.css",
   "/assets/style.tool.css",

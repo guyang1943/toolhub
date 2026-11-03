@@ -105,7 +105,10 @@
       "emptyRuntime": "No tools match this filter — try switching back to All",
       "handoffNote": "Loaded the previous step's result",
       "handoffHint": "check the options, then hit Run",
-      "filesUnit": "files"
+      "filesUnit": "files",
+      "catAll": "🗂️ All categories →",
+      "sourcesUnit": "sources →",
+      "footerCount": "tools curated"
     },
     "cats": {
       "文本": "Text",
@@ -489,6 +492,32 @@
       "csv-columns": {
         "name": "CSV Column Picker",
         "desc": "Pick, reorder and filter CSV columns, then export a fresh CSV"
+      }
+    },
+    "res": {
+      "icons": {
+        "title": "Free icon sets",
+        "desc": "The icon sources you reach for most, all free with clear licences"
+      },
+      "fonts": {
+        "title": "Free commercial fonts",
+        "desc": "Chinese and Latin fonts free for commercial use, with licence notes"
+      },
+      "colors": {
+        "title": "Palettes & colour systems",
+        "desc": "Ready-made colour systems, data-viz palettes and inspiration"
+      },
+      "learning": {
+        "title": "Learning paths & free courses",
+        "desc": "Free material from beginner to advanced: roadmaps, open courses, tutorials"
+      },
+      "open-source": {
+        "title": "Open-source projects worth bookmarking",
+        "desc": "Channels that keep surfacing good projects — better than scrolling Trending"
+      },
+      "templates": {
+        "title": "Templates & design assets",
+        "desc": "Slides, posters, résumés and flowcharts — note that licensing here is the messiest"
       }
     }
   }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>折腾指南 · 1 篇 · ToolHub</title>
+  <title>教程 · 1 篇 · ToolHub</title>
   <meta name="description" content="刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
@@ -24,7 +24,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/guides/" />
   <link rel="canonical" href="https://toolhub.bot.cd/guides/" />
-  <meta property="og:title" content="折腾指南 · 1 篇 · ToolHub" />
+  <meta property="og:title" content="教程 · 1 篇 · ToolHub" />
   <meta property="og:description" content="刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -62,35 +62,33 @@
   
   
   
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"ToolHub 折腾指南","url":"https://toolhub.bot.cd/guides/","hasPart":[{"@type":"TechArticle","name":"旧电视盒子改成小型服务器","url":"https://toolhub.bot.cd/guides/tv-box-server/"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"ToolHub 教程","url":"https://toolhub.bot.cd/guides/","hasPart":[{"@type":"TechArticle","name":"旧电视盒子改成小型服务器","url":"https://toolhub.bot.cd/guides/tv-box-server/"}]}</script>
 </head>
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
-      <a href="/tools/" data-nav="tools">工具</a>
-      <a href="/guides/" data-nav="guides">指南</a>
-      <a href="/resources/" data-nav="resources">资源库</a>
-      <a href="/topics/" data-nav="topics">专题</a>
-      <a href="/evaluations/" data-nav="evaluations">评测</a>
-      <a href="/compare/" data-nav="compare">对比</a>
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
     <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
       <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具" data-zh-aria="推荐一个开源工具" data-en-aria="Suggest an open-source tool">➕</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>折腾指南</h1><p>要先装、先刷、先配才能用起来的东西</p><div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，指南是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div><h2 class="res-group-title">全部指南 · 1 篇</h2><a class="fl-row" href="/guides/tv-box-server/">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>教程</h1><p>要先装、先刷、先配才能用起来的东西</p><div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，教程是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div><h2 class="res-group-title">全部教程 · 1 篇</h2><a class="fl-row" href="/guides/tv-box-server/">
         <span class="rank">📺</span>
         <div class="f-body"><div class="f-name">旧电视盒子改成小型服务器</div><div class="f-desc">30 元级的闲置机顶盒刷成 Armbian，当低功耗下载机、家庭文件服务和全屋去广告 DNS。</div></div>
         <span class="f-meta">中等 · 40 分钟</span>
-      </a><h2 class="res-group-title">这一类内容的三条纪律</h2><ul><li><b>先写前置条件。</b>芯片型号对不上、U 盘容量不够、没有网线——这些没写清楚，人会在第三步才发现白忙一场。</li><li><b>风险要写在动作前面。</b>「会覆盖原系统」这句话放在最后一段，等于没写。</li><li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的教程，是在催人做不可逆的事。</li></ul><h2 class="res-group-title">还没写成指南的</h2><div class="res-intro">把网盘挂成本地盘（OpenList 一类自建服务）、把手机旧机器改成监控探头、把路由器刷成可装插件的系统——这些都在候选里。写成一篇的门槛是一样的：我自己得先跑通，并且能写清楚失败之后怎么办。</div><div class="crumb" style="margin-top:24px"><a href="/tools/">← 全部工具</a> · <a href="/">返回首页</a></div></div>
+      </a><h2 class="res-group-title">这一类内容的三条纪律</h2><ul><li><b>先写前置条件。</b>芯片型号对不上、U 盘容量不够、没有网线——这些没写清楚，人会在第三步才发现白忙一场。</li><li><b>风险要写在动作前面。</b>「会覆盖原系统」这句话放在最后一段，等于没写。</li><li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的教程，是在催人做不可逆的事。</li></ul><h2 class="res-group-title">还没写成教程的</h2><div class="res-intro">把网盘挂成本地盘（OpenList 一类自建服务）、把手机旧机器改成监控探头、把路由器刷成可装插件的系统——这些都在候选里。写成一篇的门槛是一样的：我自己得先跑通，并且能写清楚失败之后怎么办。</div><div class="crumb" style="margin-top:24px"><a href="/tools/">← 全部工具</a> · <a href="/">返回首页</a></div></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -102,8 +100,8 @@
             <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
           </div>
           <div class="hero-search-hint">
-            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+            <span data-zh="99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册" data-en="99 tools · 50 resources · drop a file or paste text · no sign-up">99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
           </div>
         </div>
       </div>
@@ -111,12 +109,12 @@
       <div class="route-cards" id="route-cards"></div>
 
       <div class="featured-section" id="featured-section" style="">
-        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
         <div class="featured-list" id="featured-grid"></div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -128,11 +126,24 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
-        <div class="trust-grid">
-          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
-          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
-          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器" data-en="bytes uploaded">字节上传服务器</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
         </div>
       </div>
     </section>
@@ -185,11 +196,11 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="提交工具" data-en="Submit">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>
 
   <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，

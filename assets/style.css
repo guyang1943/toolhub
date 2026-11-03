@@ -169,6 +169,12 @@ body[data-view='home'] #search-open { display: inline-flex; }
   .list-row { grid-template-columns: 26px minmax(0, 1fr); }
   .list-row .lr-meta { grid-column: 2; text-align: left; }
 }
+/* 测评页顶部的对比入口（v3.16）：对比不再是独立导航项，但它是测评最该被先看到的那一半 ——
+   拿掉了顶部导航的位置，就在这一页把它放到第一屏。 */
+.cmp-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 0 0 20px; }
+.cmp-cta b { display: block; font-size: 14.5px; margin-bottom: 2px; }
+.cmp-cta span { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+.cmp-cta em { margin-left: auto; white-space: nowrap; font-style: normal; font-size: 13px; font-weight: 600; color: var(--accent); }
 .card {
   background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 16px 14px; cursor: pointer; transition: transform .12s, box-shadow .12s, border-color .12s;
@@ -366,16 +372,15 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 [data-theme='dark'] .task-chip { background: #141a26; border-color: #2a3448; color: #a9bce6; }
 [data-theme='dark'] .task-chip:hover { background: var(--accent); color: #fff; }
 
-/* ===== 信任区（品牌差异化） ===== */
+/* ===== 信任区（品牌差异化） =====
+   v3.16：从三张卡改成一条带状陈述，靠 flex-wrap 自适应，不写窄屏断点。 */
 .trust-section { margin: 0 0 22px; }
-.trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-@media (max-width: 780px) { .trust-grid { grid-template-columns: 1fr; } }
-.trust-item {
-  background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--ok);
-  border-radius: 10px; padding: 14px 16px;
-}
-.trust-item b { display: block; font-size: 14px; margin-bottom: 4px; }
-.trust-item span { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+.trust-strip { display: flex; flex-wrap: wrap; border-block: 1px solid var(--border); padding: 15px 0; }
+.trust-strip > div { flex: 1 1 190px; padding: 0 18px; border-left: 1px solid var(--border); }
+.trust-strip > div:first-child { flex: 0 0 auto; padding-left: 0; border-left: 0; text-align: center; }
+.trust-strip b { display: block; font-size: 13.5px; margin-bottom: 3px; }
+.trust-strip span { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+.trust-strip .ts-stat b { font-size: 30px; line-height: 1.15; color: var(--ok); }
 
 /* ===== 对比表 ===== */
 .cmp-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 10px 0 6px; }
@@ -412,30 +417,9 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .cmp-bar .btn { padding: 7px 16px; font-size: 13px; }
 
 /* ===== 对比页 ===== */
-.cmp-pickers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0 20px; }
-@media (max-width: 780px) { .cmp-pickers { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .cmp-pickers { grid-template-columns: 1fr; } }
-.cmp-pick {
-  padding: 9px 10px; border: 1px solid var(--border); border-radius: 9px;
-  background: var(--panel); color: var(--text); font-size: 13px; outline: none;
-  /* select 内在宽度由最长 option 决定，不压窄会撑破页面 */
-  width: 100%; min-width: 0;
-}
-/* 窄屏让表格在容器内横滑，别把整页顶宽 */
-#cmp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
-.cmp-page-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 460px; }
-.cmp-page-table th, .cmp-page-table td {
-  border: 1px solid var(--border); padding: 9px 10px; text-align: left; vertical-align: top;
-}
-.cmp-page-table thead th { background: var(--accent-soft); }
-.cmp-page-table tbody th { background: var(--bg); color: var(--muted); font-weight: 500; width: 148px; white-space: nowrap; }
-.cmp-page-table td.yes { color: var(--ok); }
-.cmp-page-table td.no { color: #c2570a; }
-.cmp-head { font-size: 13.5px; font-weight: 600; }
-.cmp-link { color: var(--accent); }
 .cmp-tip { font-size: 12.5px; color: var(--muted); margin-top: 14px; }
+/* 表格/选择器只在 /compare/ 用，已搬去 style.compare.css 按需加载（v3.16） */
 .share-btn.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-[data-theme='dark'] .cmp-pick { background: #10141b; color: var(--text); }
 [data-theme='dark'] .cmp-bar-inner { box-shadow: 0 -6px 24px rgba(0, 0, 0, .5); }
 
 /* ===== 资源库 ===== */
@@ -559,11 +543,11 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
   transition: transform .12s, box-shadow .12s, border-color .12s;
 }
 .route-card.rc--res { --rc: #0f766e; --rc-soft: #e0f5f2; }
-.route-card.rc--compare { --rc: #6d28d9; --rc-soft: #f0eaff; }
+.route-card.rc--guide { --rc: #6d28d9; --rc-soft: #f0eaff; }
 .route-card.rc--eval { --rc: #92400e; --rc-soft: #fbeedd; }
 [data-theme='dark'] .route-card { --rc: #93b8ff; --rc-soft: rgba(255, 255, 255, .07); }
 [data-theme='dark'] .route-card.rc--res { --rc: #5eead4; }
-[data-theme='dark'] .route-card.rc--compare { --rc: #c4b5fd; }
+[data-theme='dark'] .route-card.rc--guide { --rc: #c4b5fd; }
 [data-theme='dark'] .route-card.rc--eval { --rc: #fcd34d; }
 .route-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .08); border-color: var(--rc); }
 .rc-badge {

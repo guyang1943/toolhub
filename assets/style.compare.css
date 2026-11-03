@@ -1,0 +1,27 @@
+/* 对比页专用样式（v3.16 从 style.css 拆出）
+   只在 /compare/ 用：选择器、表格与暗色覆盖。首屏不加载这一份——
+   对比从一级导航撤下、挂到「测评」页之后，更没理由让每个人为它付字节。
+   颜色与圆角全部走 style.css 里的变量，这里不重复定义。 */
+
+.cmp-pickers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0 20px; }
+@media (max-width: 780px) { .cmp-pickers { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .cmp-pickers { grid-template-columns: 1fr; } }
+.cmp-pick {
+  padding: 9px 10px; border: 1px solid var(--border); border-radius: 9px;
+  background: var(--panel); color: var(--text); font-size: 13px; outline: none;
+  /* select 内在宽度由最长 option 决定，不压窄会撑破页面 */
+  width: 100%; min-width: 0;
+}
+/* 窄屏让表格在容器内横滑，别把整页顶宽 */
+#cmp-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.cmp-page-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 460px; }
+.cmp-page-table th, .cmp-page-table td {
+  border: 1px solid var(--border); padding: 9px 10px; text-align: left; vertical-align: top;
+}
+.cmp-page-table thead th { background: var(--accent-soft); }
+.cmp-page-table tbody th { background: var(--bg); color: var(--muted); font-weight: 500; width: 148px; white-space: nowrap; }
+.cmp-page-table td.yes { color: var(--ok); }
+.cmp-page-table td.no { color: #c2570a; }
+.cmp-head { font-size: 13.5px; font-weight: 600; }
+.cmp-link { color: var(--accent); }
+[data-theme='dark'] .cmp-pick { background: #10141b; color: var(--text); }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>图片压缩工具横评：本地派 vs 上传派 · 工具评测 · ToolHub</title>
+  <title>图片压缩工具横评：本地派 vs 上传派 · 工具测评 · ToolHub</title>
   <meta name="description" content="同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
@@ -24,7 +24,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/evaluations/image-compress-shootout/" />
   <link rel="canonical" href="https://toolhub.bot.cd/evaluations/image-compress-shootout/" />
-  <meta property="og:title" content="图片压缩工具横评：本地派 vs 上传派 · 工具评测 · ToolHub" />
+  <meta property="og:title" content="图片压缩工具横评：本地派 vs 上传派 · 工具测评 · ToolHub" />
   <meta property="og:description" content="同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
@@ -67,26 +67,24 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small>开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
-      <a href="/tools/" data-nav="tools">工具</a>
-      <a href="/guides/" data-nav="guides">指南</a>
-      <a href="/resources/" data-nav="resources">资源库</a>
-      <a href="/topics/" data-nav="topics">专题</a>
-      <a href="/evaluations/" data-nav="evaluations">评测</a>
-      <a href="/compare/" data-nav="compare">对比</a>
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
     <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、评测、页面）">🔍</button>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
       <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具">➕</a>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具" data-zh-aria="推荐一个开源工具" data-en-aria="Suggest an open-source tool">➕</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩工具横评：本地派 vs 上传派</h1><p>同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。</p><p><b>结论：</b>优先用浏览器本地压缩（本站图片压缩或 Squoosh）——速度相当，但数据不出设备；上传型站点处理完应立即关闭页面，敏感图不要用。</p><h2>对比项</h2><h3>本站 · 图片压缩（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：Canvas API 本机编码，图片零上传；压缩完直接下载，无套路；和站内缩放、Base64 工具串成工作流</p><p><b>短板</b>：只有质量与尺寸两个参数，调不了编码细节；一次一张，不适合几百张的批量活</p><h3>Squoosh（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：Google 出品，压缩算法最全（MozJPEG / OxiPNG / WebP）；左右滑杆实时对比画质，参数不靠猜；同样是 WASM 本地处理，不上传</p><p><b>短板</b>：一次一张；国内访问偶有加载慢（静态资源在 Google CDN）</p><h3>BentoPDF（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：PDF 场景全家桶：压缩、合并、拆分一站式；MIT 协议，可自托管</p><p><b>短板</b>：PDF 压缩是文件级操作，对单张图片不如前两者直观；功能多导致首页有点密</p><h3>上传型在线压缩站（常见模式）（上传到服务器 · 隐私：需上传）</h3><p><b>优势</b>：支持批量几十张；部分支持 HEIC 等特殊格式</p><p><b>短板</b>：图片离你的设备，隐私全看对方良心；限速、限大小、弹广告是常态；多数不告诉你文件保留多久</p><h2>详细解读</h2><p>压缩的本质是在「体积」和「画质」之间找平衡点，所以横评的核心不是谁压得最小，而是谁能在不牺牲可控性的前提下把活干完。四类方案跑下来，本地派和上传派的体验差距比参数差距大得多。</p><p>实测感受：一张 3MB 的 4K 截图，本站工具和 Squoosh 都能在 1 秒内出结果，压到 400KB 左右画质肉眼无差；上传型站点因为多了上传和排队时间，同样一张图要等 3-5 秒，还没算选文件的功夫。批量场景下上传派依然快，但它快在「不用你一张张操作」，不是处理本身快。</p><p>画质方面有个反直觉的结论：盲目追求最小体积没意义。把质量拉到 30 以下，压缩率提升有限，但文字边缘的振铃效应会明显到没法看。建议的用法是——照片类 75-80、截图类 60-70、图标类转 WebP，每一档用对比预览确认后再批量。</p><p>隐私是这次横评最该强调的。上传型站点的图片会经过第三方服务器，服务条款里写什么、保留多久、被谁看过，用户完全不可控。含人脸、身份证、公司内部信息的图，即使用完立刻删，也不应该走这条路。本地派把编码过程放进浏览器的意义就在这里：文件从头到尾没离开过你的设备。</p><p>最终建议：日常单张压缩用本地工具（本站或 Squoosh）；需要精细调编码参数用 Squoosh；PDF 相关操作用 BentoPDF；上传型站点留给「不敏感 + 批量 + 特殊格式」三个条件同时成立的场景。</p><p><a href="/evaluations/">← 全部评测</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片压缩工具横评：本地派 vs 上传派</h1><p>同样的截图分别过四类图片压缩方案：本站本地工具、Squoosh、BentoPDF、以及最常见的「上传型在线压缩站」。测完一个明确的结论：日常压缩用本地派，只有批量处理特殊格式才考虑上传派。</p><p><b>结论：</b>优先用浏览器本地压缩（本站图片压缩或 Squoosh）——速度相当，但数据不出设备；上传型站点处理完应立即关闭页面，敏感图不要用。</p><h2>对比项</h2><h3>本站 · 图片压缩（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：Canvas API 本机编码，图片零上传；压缩完直接下载，无套路；和站内缩放、Base64 工具串成工作流</p><p><b>短板</b>：只有质量与尺寸两个参数，调不了编码细节；一次一张，不适合几百张的批量活</p><h3>Squoosh（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：Google 出品，压缩算法最全（MozJPEG / OxiPNG / WebP）；左右滑杆实时对比画质，参数不靠猜；同样是 WASM 本地处理，不上传</p><p><b>短板</b>：一次一张；国内访问偶有加载慢（静态资源在 Google CDN）</p><h3>BentoPDF（浏览器本地 · 隐私：完全本地）</h3><p><b>优势</b>：PDF 场景全家桶：压缩、合并、拆分一站式；MIT 协议，可自托管</p><p><b>短板</b>：PDF 压缩是文件级操作，对单张图片不如前两者直观；功能多导致首页有点密</p><h3>上传型在线压缩站（常见模式）（上传到服务器 · 隐私：需上传）</h3><p><b>优势</b>：支持批量几十张；部分支持 HEIC 等特殊格式</p><p><b>短板</b>：图片离你的设备，隐私全看对方良心；限速、限大小、弹广告是常态；多数不告诉你文件保留多久</p><h2>详细解读</h2><p>压缩的本质是在「体积」和「画质」之间找平衡点，所以横评的核心不是谁压得最小，而是谁能在不牺牲可控性的前提下把活干完。四类方案跑下来，本地派和上传派的体验差距比参数差距大得多。</p><p>实测感受：一张 3MB 的 4K 截图，本站工具和 Squoosh 都能在 1 秒内出结果，压到 400KB 左右画质肉眼无差；上传型站点因为多了上传和排队时间，同样一张图要等 3-5 秒，还没算选文件的功夫。批量场景下上传派依然快，但它快在「不用你一张张操作」，不是处理本身快。</p><p>画质方面有个反直觉的结论：盲目追求最小体积没意义。把质量拉到 30 以下，压缩率提升有限，但文字边缘的振铃效应会明显到没法看。建议的用法是——照片类 75-80、截图类 60-70、图标类转 WebP，每一档用对比预览确认后再批量。</p><p>隐私是这次横评最该强调的。上传型站点的图片会经过第三方服务器，服务条款里写什么、保留多久、被谁看过，用户完全不可控。含人脸、身份证、公司内部信息的图，即使用完立刻删，也不应该走这条路。本地派把编码过程放进浏览器的意义就在这里：文件从头到尾没离开过你的设备。</p><p>最终建议：日常单张压缩用本地工具（本站或 Squoosh）；需要精细调编码参数用 Squoosh；PDF 相关操作用 BentoPDF；上传型站点留给「不敏感 + 批量 + 特殊格式」三个条件同时成立的场景。</p><p><a href="/evaluations/">← 全部测评</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -98,8 +96,8 @@
             <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
           </div>
           <div class="hero-search-hint">
-            <span>99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具">🎲 随便看看</button>
+            <span data-zh="99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册" data-en="99 tools · 50 resources · drop a file or paste text · no sign-up">99 个工具 · 50 条资源 · 文件拖进来、内容粘进来都能用 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
           </div>
         </div>
       </div>
@@ -107,12 +105,12 @@
       <div class="route-cards" id="route-cards"></div>
 
       <div class="featured-section" id="featured-section" style="">
-        <div class="section-title">⚡ <span>高频推荐</span><em>大家都在用 · 优先试试这些</em></div>
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
         <div class="featured-list" id="featured-grid"></div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span>资源库精选</span><em>免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -124,11 +122,24 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span>为什么本地执行更放心</span><em>这一条是我们和多数工具站的根本区别</em></div>
-        <div class="trust-grid">
-          <div class="trust-item"><b>数据不出设备</b><span>图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span></div>
-          <div class="trust-item"><b>没有账号体系</b><span>不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span></div>
-          <div class="trust-item"><b>可离线使用</b><span>安装为桌面/手机应用后，断网也能运行全部本地工具</span></div>
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器" data-en="bytes uploaded">字节上传服务器</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
         </div>
       </div>
     </section>
@@ -181,11 +192,11 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · 开源项目工具化平台 · <span id="foot-count"></span></div>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/">资源库</a> · <a href="/topics/">专题</a> · <a href="/evaluations/">评测</a> · <a href="/compare/">对比</a> · <a href="/changelog/">更新日志</a> · <a href="/batch/">批量</a> · <a href="/about/">关于</a> · <a href="/privacy/">隐私</a> · <a href="/feedback/">反馈</a> · <a href="/submit/">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键">快捷键</button></div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="提交工具" data-en="Submit">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>
 
   <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，

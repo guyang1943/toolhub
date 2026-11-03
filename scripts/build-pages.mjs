@@ -61,7 +61,7 @@ const CAT_QUERY = CAT_URL;
   const missing = [...new Set([...tools, ...dirTools].map((t) => t.category))].filter((c) => !CAT_SLUG.has(c));
   if (missing.length) throw new Error(`分类缺文案：${missing.join('、')} —— 请在 content/categories.json 补一条`);
 }
-// v3.15：第三层内容「折腾指南」。工具页回答「点开就能用」，指南页回答「要装、要刷、要配」。
+// v3.15：第三层内容「教程」。工具页回答「点开就能用」，教程页回答「要装、要刷、要配」。
 // 两者的门槛完全不同，混在一起会让「标本地=文件不出你的电脑、打开即用」这个承诺失真。
 const GUIDES = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8')).guides;
 {
@@ -497,6 +497,7 @@ const staticPages = [
     title: '工具对比 · ToolHub',
     desc: '把同类开源工具放在一起对比：数据是否上传、能否离线、是否需要注册、开源协议与来源，帮你在几个相似工具里做选择。',
     h1: '工具对比',
+    extraCss: '/assets/style.compare.css',
     content:
       '<h2>为什么需要对比同类工具</h2><p>同一个需求往往有好几个工具可选，差别在于数据处理方式、是否要装环境、协议与维护状况。把关键属性并排放，比逐个打开试要快得多。</p>' +
       '<h2>对比维度</h2><p>运行方式（浏览器内执行 / 第三方官网）、数据流向（是否上传）、离线可用性、是否需要注册、输入输出、开源协议与来源。</p>',
@@ -841,10 +842,10 @@ for (const p of staticPages) {
   }
 }
 
-// 3.5e) 折腾指南：/guides/ 总览 + 每篇一页（v3.15）
-// 这一层和 /tools/ 的分工必须写在脸上：工具是「点开就能用」，指南是「先装、先刷、先配」。
+// 3.5e) 教程：/guides/ 总览 + 每篇一页（v3.15；v3.16 从「折腾指南」改名「教程」）
+// 这一层和 /tools/ 的分工必须写在脸上：工具是「点开就能用」，教程是「先装、先刷、先配」。
 // 硬塞进工具清单的代价不是多一个条目，而是把「标本地=打开即用、文件不出电脑」的承诺稀释掉。
-// 所以指南页的固定结构是：能做什么 → 为什么要折腾 → 开工前的门槛 → 步骤 → 翻车了怎么办 → 坑。
+// 所以教程页的固定结构是：能做什么 → 为什么要折腾 → 开工前的门槛 → 步骤 → 翻车了怎么办 → 坑。
 // 「翻车了怎么办」不是礼貌性章节：这类内容一旦省略回退路径，就是把人往不可逆的操作上推。
 {
   const gDir = join(root, 'guides');
@@ -863,8 +864,8 @@ for (const p of staticPages) {
   {
     const url = `${BASE}/guides/`;
     const body =
-      `<div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，指南是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div>` +
-      `<h2 class="res-group-title">全部指南 · ${GUIDES.length} 篇</h2>` +
+      `<div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，教程是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div>` +
+      `<h2 class="res-group-title">全部教程 · ${GUIDES.length} 篇</h2>` +
       GUIDES.map(guideRow).join('') +
       `<h2 class="res-group-title">这一类内容的三条纪律</h2>` +
       `<ul>` +
@@ -872,24 +873,24 @@ for (const p of staticPages) {
       `<li><b>风险要写在动作前面。</b>「会覆盖原系统」这句话放在最后一段，等于没写。</li>` +
       `<li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的教程，是在催人做不可逆的事。</li>` +
       `</ul>` +
-      `<h2 class="res-group-title">还没写成指南的</h2>` +
+      `<h2 class="res-group-title">还没写成教程的</h2>` +
       `<div class="res-intro">把网盘挂成本地盘（OpenList 一类自建服务）、把手机旧机器改成监控探头、把路由器刷成可装插件的系统——这些都在候选里。写成一篇的门槛是一样的：我自己得先跑通，并且能写清楚失败之后怎么办。</div>` +
       `<div class="crumb" style="margin-top:24px"><a href="/tools/">← 全部工具</a> · <a href="/">返回首页</a></div>`;
 
     let html = fillMeta(tpl, {
-      title: `折腾指南 · ${GUIDES.length} 篇 · ToolHub`,
+      title: `教程 · ${GUIDES.length} 篇 · ToolHub`,
       desc: '刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。',
       url,
       botInject: `window.__PAGE__='guides';`,
       jsonld: {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: 'ToolHub 折腾指南',
+        name: 'ToolHub 教程',
         url,
         hasPart: GUIDES.map((g) => ({ '@type': 'TechArticle', name: g.title, url: `${BASE}/guides/${g.slug}/` })),
       },
     });
-    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '折腾指南', desc: '要先装、先刷、先配才能用起来的东西', extra: body })}`);
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '教程', desc: '要先装、先刷、先配才能用起来的东西', extra: body })}`);
     writeFileSync(join(gDir, 'index.html'), html, 'utf8');
     // 总览的轻量索引：SPA 只取标题与三个数字，不为整篇正文买单
     writeFileSync(
@@ -902,7 +903,7 @@ for (const p of staticPages) {
     count++;
   }
 
-  // --- 每篇指南 ---
+  // --- 每篇教程 ---
   for (const g of GUIDES) {
     const dir = join(gDir, g.slug);
     mkdirSync(dir, { recursive: true });
@@ -920,7 +921,7 @@ for (const p of staticPages) {
       `</div>`;
 
     const body =
-      `<div class="crumb" style="margin-bottom:10px"><a href="/guides/">折腾指南</a> / ${g.title}</div>` +
+      `<div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / ${g.title}</div>` +
       meta +
       (g.risk === 'high' ? `<div class="guide-risk"><b>动手之前先看这段。</b>${g.riskNote}</div>` : '') +
       `<div class="res-intro">${g.intro}</div>` +
@@ -950,10 +951,10 @@ for (const p of staticPages) {
       `<h2 class="res-group-title">常见问题</h2>${g.faq
         .map((f) => `<div class="res-item"><div class="res-item-head"><b>${f.q}</b></div><div class="res-item-note">${ans(f)}</div></div>`)
         .join('')}` +
-      `<div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部指南</a> · <a href="/">返回首页</a></div>`;
+      `<div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div>`;
 
     let html = fillMeta(tpl, {
-      title: `${g.title} · 折腾指南 · ToolHub`,
+      title: `${g.title} · 教程 · ToolHub`,
       desc,
       url: curl,
       botInject: `window.__GUIDE__=${JSON.stringify(g.slug)};`,
@@ -974,7 +975,7 @@ for (const p of staticPages) {
             '@type': 'BreadcrumbList',
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: '首页', item: `${BASE}/` },
-              { '@type': 'ListItem', position: 2, name: '折腾指南', item: `${BASE}/guides/` },
+              { '@type': 'ListItem', position: 2, name: '教程', item: `${BASE}/guides/` },
               { '@type': 'ListItem', position: 3, name: g.title, item: curl },
             ],
           },
@@ -991,7 +992,7 @@ for (const p of staticPages) {
     writeFileSync(join(gDir, g.slug + '.json'), JSON.stringify(g), 'utf8');
     count++;
   }
-  console.log(`   ↻ 折腾指南：1 个总览 + ${GUIDES.length} 篇`);
+  console.log(`   ↻ 教程：1 个总览 + ${GUIDES.length} 篇`);
 }
 
 // 3.6) 专题合集（索引 + 各专题）
@@ -1059,16 +1060,16 @@ for (const p of staticPages) {
     )
     .join('');
   let html = fillMeta(tpl, {
-    title: '工具评测 · 单款深度测评与横向实测 · ToolHub',
+    title: '工具测评 · 单款深度测评与横向实测 · ToolHub',
     desc: '开源工具怎么选：既有同类工具横向实测，也有单款深度测评与可照着做的使用说明。每篇标注测试方式与日期，结论随版本更新。',
     url,
     botInject: `window.__PAGE__='evaluations';`,
-    jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ToolHub 工具评测', url },
+    jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'ToolHub 工具测评', url },
   });
   html = html.replace(
     /<main class="container"[^>]*>/,
     `<main class="container" id="main-content" tabindex="-1">${seoBlock({
-      h1: '工具评测',
+      h1: '工具测评',
       desc: '横向实测加单款深挖：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚，该给使用说明的地方就给到能照着做的程度。',
       extra: list + '<p><a href="/">← 返回首页</a></p>',
     })}`
@@ -1092,7 +1093,7 @@ for (const p of staticPages) {
         }
       : null;
     let ehtml = fillMeta(tpl, {
-      title: `${ev.title} · 工具评测 · ToolHub`,
+      title: `${ev.title} · 工具测评 · ToolHub`,
       desc: ev.summary,
       url: eurl,
       botInject: `window.__EVAL__=${JSON.stringify(ev.slug)};`,
@@ -1132,7 +1133,7 @@ for (const p of staticPages) {
               usage.map((u) => `<h3>${u.name}</h3><ol>${u.steps.map((s) => `<li>${s}</li>`).join('')}</ol>`).join('')
             : '') +
           `<h2>详细解读</h2>${ev.body.map((p) => `<p>${p}</p>`).join('')}` +
-          `<p><a href="/evaluations/">← 全部评测</a></p>`,
+          `<p><a href="/evaluations/">← 全部测评</a></p>`,
       })}`
     );
     writeFileSync(join(edir, 'index.html'), ehtml, 'utf8');
@@ -1280,30 +1281,33 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   // v3.9：原来的「一行统计数字 + 一行入口卡」是两块说同一件事的皮（97 出现两次），
   // 现在合成一行：每张卡以一个数字打头，精选工具/本地执行/分类/资源/数据上传/评测
   // 六个数全部落进卡片，不再单独占一行。
+  // v3.16：导航收敛为「工具 / 资源 / 教程 / 测评」四栏，入口卡按同一顺序排。
+  // 对比台不再是独立入口——它挪到了测评页第一屏（见 content-pages.js 的 openEvaluations）。
+  const guideSteps = GUIDES.reduce((a, g) => a + g.steps.length, 0);
   const routeCards = `
     <a class="route-card rc--tools" href="/tools/">
-      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b><span class="rc-num">${TOTAL_TOOLS}</span>个工具</b>
-      <span class="rc-desc">${tools.length} 个纯本地执行 · ${cats.length} 个分类</span>
-      <em>浏览工具 →</em>
+      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
+      <b><span class="rc-num">${TOTAL_TOOLS}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
+      <span class="rc-desc" data-zh="${tools.length} 个纯本地执行 · ${cats.length} 个分类" data-en="${tools.length} run fully in-browser · ${cats.length} categories">${tools.length} 个纯本地执行 · ${cats.length} 个分类</span>
+      <em data-zh="浏览工具 →" data-en="Browse tools →">浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
-      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
-      <b><span class="rc-num">${TOTAL_RES}</span>条资源</b>
-      <span class="rc-desc">${resources.collections.length} 个合集：图标、字体、配色、学习路线</span>
-      <em>逛资源库 →</em>
+      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
+      <b><span class="rc-num">${TOTAL_RES}</span><span data-zh="条资源" data-en="links">条资源</span></b>
+      <span class="rc-desc" data-zh="${resources.collections.length} 个合集：图标、字体、配色、学习路线" data-en="${resources.collections.length} collections: icons, fonts, palettes, learning paths">${resources.collections.length} 个合集：图标、字体、配色、学习路线</span>
+      <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
-    <a class="route-card rc--compare" href="/compare/">
-      <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
-      <b><span class="rc-num">0</span>数据上传</b>
-      <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
-      <em>开始对比 →</em>
+    <a class="route-card rc--guide" href="/guides/" data-guides="${GUIDES.length}">
+      <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
+      <b><span class="rc-num">${guideSteps}</span><span data-zh="个步骤" data-en="steps">个步骤</span></b>
+      <span class="rc-desc" data-zh="${GUIDES.length} 篇动手教程 · 前置条件、风险标注、回退路径" data-en="${GUIDES.length} hands-on guide, with prerequisites, risk labels and a way back">${GUIDES.length} 篇动手教程 · 前置条件、风险标注、回退路径</span>
+      <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
-      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b><span class="rc-num">${evaluations.evaluations.length}</span>篇评测</b>
-      <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
-      <em>读评测 →</em>
+      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
+      <b><span class="rc-num">${evaluations.evaluations.length}</span><span data-zh="篇测评" data-en="reviews">篇测评</span></b>
+      <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
+      <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
     </a>`;
 
   // v3.4：13 → 8 条，并改成行式列表（卡片形式与下方工具网格太像，会被误认成同一份列表）

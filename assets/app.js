@@ -62,6 +62,9 @@ async function loadI18n() {
       D18N = {};
     }
   }
+  // 头部导航、页脚、logo 副标这些每页都有的静态文案走 data-zh / data-en 双写。
+  // 放在这里统一刷一遍：任何页面进到 loadI18n 都能拿到英文导航，不用每页各记一次。
+  applyBilingual();
 }
 // UI 文案：传中文原文，英文模式取翻译
 function t(zh, key) {
@@ -714,41 +717,44 @@ function goPage(n) {
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ---------- 内容路由卡（首页三类内容） ---------- */
+/* ---------- 内容路由卡（首页四类内容） ---------- */
 function renderRouteCards(reg, res, evals) {
   const box = document.getElementById('route-cards');
   if (!box) return;
-  // v3.4：四个板块并成一行，每块一个徽章 + 一个标签（颜色靠 rc--* 区分，不用再靠文字分辨）
-  // v3.9：每张卡以数字打头，原来单独一行的六项统计（工具/本地/分类/资源/上传/评测）全并进来。
-  //       这四个板块本来就是中文硬编码（没走 i18n），保持原状，别在这里引入半套翻译。
+  // v3.16：导航收敛成「工具 / 资源 / 教程 / 测评」四栏，这一排卡跟着同序，
+  //        对比台让位给教程 —— 对比不再是一个独立入口，而是测评页第一屏的那个入口。
+  // 教程的步数是构建期写进 DOM 的（首页不为了一个数字多取一份 JSON），这里读回来沿用。
+  const gSteps = box.querySelector('.rc--guide .rc-num')?.textContent?.trim() || '0';
+  const gCount = box.querySelector('.rc--guide')?.dataset.guides || '0';
   box.innerHTML = `
     <a class="route-card rc--tools" href="/tools/" data-spa>
-      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag">工具箱</span>
-      <b><span class="rc-num">${reg.counts.local + reg.counts.dir}</span>个工具</b>
-      <span class="rc-desc">${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类</span>
-      <em>浏览工具 →</em>
+      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
+      <b><span class="rc-num">${reg.counts.local + reg.counts.dir}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
+      <span class="rc-desc" data-zh="${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类" data-en="${reg.counts.local} run fully in-browser · ${reg.categories.length} categories">${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类</span>
+      <em data-zh="浏览工具 →" data-en="Browse tools →">浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
-      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag">资源库</span>
-      <b><span class="rc-num">${(res.collections || []).reduce((a, c) => a + c.items.length, 0)}</span>条资源</b>
-      <span class="rc-desc">${(res.collections || []).length} 个合集：图标、字体、配色、学习路线</span>
-      <em>逛资源库 →</em>
+      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
+      <b><span class="rc-num">${(res.collections || []).reduce((a, c) => a + c.items.length, 0)}</span><span data-zh="条资源" data-en="links">条资源</span></b>
+      <span class="rc-desc" data-zh="${(res.collections || []).length} 个合集：图标、字体、配色、学习路线" data-en="${(res.collections || []).length} collections: icons, fonts, palettes, learning paths">${(res.collections || []).length} 个合集：图标、字体、配色、学习路线</span>
+      <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
-    <a class="route-card rc--compare" href="/compare/">
-      <span class="rc-badge" aria-hidden="true">⇄</span><span class="rc-tag">对比台</span>
-      <b><span class="rc-num">0</span>数据上传</b>
-      <span class="rc-desc">同类并排看：是否上传数据、能否离线、协议与来源</span>
-      <em>开始对比 →</em>
+    <a class="route-card rc--guide" href="/guides/" data-spa data-guides="${gCount}">
+      <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
+      <b><span class="rc-num">${gSteps}</span><span data-zh="个步骤" data-en="steps">个步骤</span></b>
+      <span class="rc-desc" data-zh="${gCount} 篇动手教程 · 前置条件、风险标注、回退路径" data-en="${gCount} hands-on guide, with prerequisites, risk labels and a way back">${gCount} 篇动手教程 · 前置条件、风险标注、回退路径</span>
+      <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
-    <a class="route-card rc--eval" href="/evaluations/">
-      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag">评测室</span>
-      <b><span class="rc-num">${(evals?.evaluations || []).length}</span>篇评测</b>
-      <span class="rc-desc">横向实测：隐私、速度、功能边界一次讲清</span>
-      <em>读评测 →</em>
+    <a class="route-card rc--eval" href="/evaluations/" data-spa>
+      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
+      <b><span class="rc-num">${(evals?.evaluations || []).length}</span><span data-zh="篇测评" data-en="reviews">篇测评</span></b>
+      <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
+      <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
     </a>`;
   // v3.14：工具箱那张卡改成真链接（/tools/）。原来它 onclick 抢掉默认行为，
   // 只把页面滚到 #grid —— 用户点完还停在首页，也分享不出去。
   bindSpaLinks('#route-cards');
+  applyBilingual(); // 上面的 data-zh/data-en 要立刻生效，否则切到英文后重新渲染又变回中文
 }
 
 /* ---------- 命令面板（⌘K / Ctrl+K） ---------- */
@@ -1230,6 +1236,7 @@ async function openCompare(queryIds) {
   setView('page');
   document.title = `${t('工具对比', 'cmpTitle')} · ${SITE}`;
   renderNavActive('/compare');
+  ensureCss(PAGE_CSS.compare); // 对比页样式自 v3.16 起按需加载，不等它也能画，但别漏
 
   const manifests = await Promise.all(picked.map((x) => (x.runtime === 'link' ? null : getManifest(x.id))));
 
@@ -1411,8 +1418,18 @@ function setView(name) {
 }
 
 // 导航高亮（按当前路径标记）
+// v3.16：导航只有四栏，/compare 归到「测评」名下、/categories 归到「工具」名下 ——
+// 它们还是能独立访问的页面，只是不再各占一个顶级入口。
 function renderNavActive(path) {
-  const map = { '/': 'tools', '/tools': 'tools', '/guides': 'guides', '/resources': 'resources', '/compare': 'compare', '/about': 'about' };
+  const map = {
+    '/': 'tools',
+    '/tools': 'tools',
+    '/categories': 'tools',
+    '/resources': 'resources',
+    '/guides': 'guides',
+    '/evaluations': 'evaluations',
+    '/compare': 'evaluations',
+  };
   const key = map[path] || '';
   $$('#main-nav a').forEach((a) => a.classList.toggle('active', a.dataset.nav === key));
 }
@@ -1428,16 +1445,20 @@ async function renderResPreview() {
     return;
   }
   box.style.display = '';
+  // 合集的标题与说明只有 6 条，英文放在 i18n.json 的 res 里，不往 resources.json 里塞第二份正文
+  const resEn = (I18N && I18N.res) || {};
   document.getElementById('res-preview-grid').innerHTML = list
-    .map(
-      (c) => `<a class="res-preview-card" href="/resources/${c.slug}/">
+    .map((c) => {
+      const loc = LANG === 'en' && resEn[c.slug] ? resEn[c.slug] : c;
+      return `<a class="res-preview-card" href="/resources/${c.slug}/">
         <span class="rp-icon">${c.icon || '📚'}</span>
-        <span class="rp-title">${c.title}</span>
-        <span class="rp-desc">${c.desc}</span>
-        <span class="rp-count">${c.items.length} 个来源 →</span>
-      </a>`
-    )
+        <span class="rp-title">${loc.title}</span>
+        <span class="rp-desc">${loc.desc}</span>
+        <span class="rp-count">${c.items.length} ${t('个来源 →', 'sourcesUnit')}</span>
+      </a>`;
+    })
     .join('');
+  applyBilingual();
 }
 
 function renderHeroStats(reg) {
@@ -1519,6 +1540,7 @@ const PAGE_CSS = {
   batch: '/assets/style.batch.css',
   offline: '/assets/style.offline.css',
   submit: '/assets/style.submit.css',
+  compare: '/assets/style.compare.css',
 };
 
 async function openPage(name) {
