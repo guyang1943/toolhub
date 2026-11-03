@@ -308,6 +308,9 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .page h2 { font-size: 16px; margin: 26px 0 10px; }
 .page ul { line-height: 1.9; padding-left: 20px; color: var(--text); }
 .page p { line-height: 1.8; }
+/* 证据行：这条边界标注是谁、什么时候、用什么方式核的。字号比正文小一档，
+   因为它属于「这句话的可信度」，不是「这句话本身」。 */
+.page .evi { color: var(--muted); font-size: 13px; line-height: 1.7; margin: -2px 0 0; }
 .page pre {
   background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
   padding: 14px; font-family: var(--mono); font-size: 13px; line-height: 1.7; overflow: auto;

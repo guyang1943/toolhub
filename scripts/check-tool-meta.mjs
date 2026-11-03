@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { validateToolMeta, metaSummary, PRIVACY_KINDS, PRIVACY_LABEL } from './lib/tool-meta.mjs';
+import { evidenceLine } from './lib/evidence.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
@@ -21,7 +22,8 @@ if (errors.length) {
 }
 
 for (const w of warns) console.log(`⚠️ ${w}`);
-if (stats.oldestDays > 0) console.log(`   最久未复检：${stats.oldestDays} 天`);
+if (stats.evidence.oldest.link > 0) console.log(`   最久未探活：${stats.evidence.oldest.link} 天`);
+if (stats.evidence.oldest.boundary > 0) console.log(`   最久未核边界：${stats.evidence.oldest.boundary} 天`);
 
 const unknown = dirTools.filter((t) => t.privacy === 'unknown');
 if (unknown.length) {
@@ -39,5 +41,6 @@ const catLine = Object.entries(byCat)
   .join(' · ');
 
 console.log(`✅ 边界字段：${metaSummary(stats)}`);
+console.log(`   证据：${evidenceLine(stats.evidence)}`);
 console.log(`   各分类「本机处理 / 总数」：${catLine}`);
 console.log(`   枚举：${PRIVACY_KINDS.map((k) => `${k}=${PRIVACY_LABEL[k]}`).join(' ')}`);

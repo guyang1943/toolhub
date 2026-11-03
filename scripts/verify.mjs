@@ -11,6 +11,7 @@ import { buildToolsJson } from './sync-tools.mjs';
 import { sameJsonText } from './lib/eol.mjs';
 import { checkStorageKeys } from './lib/storage-keys.mjs';
 import { staticPaths, matchPage, pagePatterns } from './lib/pages-registry.mjs';
+import { PRIVACY_KINDS, validateToolMeta } from './lib/tool-meta.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -841,6 +842,57 @@ check('隐私说明与统计口径（D3）', () => {  const page = join(root, 'p
   const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
   assert(/ANALYTICS_OPT_OUT/.test(app), 'app.js 缺本机退出统计的实现');
   return '隐私页 + sitemap + 退出开关';
+});
+
+// ---------- v3.21 外链证据层 ----------
+// 已经人工核过的条目，id 写在这里。改回 imported 就是「把核过的又变回没核过」，
+// 等于让「0 字节上传服务器」这句话重新失去依据——所以只许加，不许减。
+const BOUNDARY_VERIFIED_BASELINE = ['excalidraw', 'filepizza', 'localsend', 'pairdrop'];
+
+check('外链证据：结构完整、旧字段已清除（v3.21）', () => {
+  const stale = dir.tools.filter((t) => 'checkedAt' in t);
+  assert(!stale.length, `仍有 ${stale.length} 条在用旧的 checkedAt：${stale.slice(0, 3).map((t) => t.id).join('、')}`);
+  const missing = dir.tools.filter((t) => !t.evidence?.link?.at || !t.evidence?.boundary?.at);
+  assert(!missing.length, `缺 evidence.link/boundary 的有 ${missing.length} 条：${missing.slice(0, 3).map((t) => t.id).join('、')}`);
+  // 探活只证明「站点活着」，不能拿去覆盖边界标注——这是整个模型的核心区分。
+  const wrong = dir.tools.filter((t) => t.evidence.boundary.method === 'probe');
+  assert(!wrong.length, `boundary.method 不允许是 probe（探活证明不了隐私边界）：${wrong.map((t) => t.id).join('、')}`);
+  const manual = dir.tools.filter((t) => t.evidence.boundary.method === 'manual').map((t) => t.id);
+  const dropped = BOUNDARY_VERIFIED_BASELINE.filter((id) => !manual.includes(id));
+  assert(!dropped.length, `这些条目曾人工核实过，现在退回了未核实：${dropped.join('、')}`);
+  return `${dir.tools.length} 条证据结构合法 · 边界已核 ${manual.length} 条 · 无检查探活冒充核实`;
+});
+
+check('外链证据：页面与数据一致（v3.21）', () => {
+  let n = 0;
+  for (const t of dir.tools) {
+    const p = join(root, 'tools', t.id, 'index.html');
+    assert(existsSync(p), `缺详情页 tools/${t.id}/index.html（先构建再校验）`);
+    const body = readFileSync(p, 'utf8');
+    assert(body.includes('class="evi"'), `${t.id} 详情页没有「证据：」行`);
+    const m = t.evidence.boundary.method;
+    // 三种方法对应三种说法，页面上必须说同一种——数据改了页面没改是这类站最典型的漂移。
+    const want = m === 'manual' ? '边界已核实' : m === 'inferred' ? '尚未逐页核实' : '尚未核实';
+    assert(body.includes(want), `${t.id} 页面证据与数据不符：method=${m}，页面上应出现「${want}」`);
+    n++;
+  }
+  return `${n} 个详情页的证据行与 boundary.method 一致`;
+});
+
+check('数据边界枚举与前端一致（v3.21）', () => {
+  // 枚举以 lib/tool-meta.mjs 为唯一来源，这里只是核对前端与 i18n 有没有跟上。
+  // 三处不同步的后果很隐蔽：徽标会静默退回「未核实」，页面看起来正常，只是在说谎。
+  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  for (const k of PRIVACY_KINDS) {
+    assert(new RegExp(`\\b${k}:\\s*\\['`).test(app), `app.js 的 PV 少了枚举值 ${k}`);
+  }
+  assert(en.ui.privacyP2P, 'i18n 缺 ui.privacyP2P（英文徽标会退回「未核实」）');
+  const used = new Set(dir.tools.map((t) => t.privacy));
+  const unknown = [...used].filter((k) => !PRIVACY_KINDS.includes(k));
+  assert(!unknown.length, `数据里出现枚举外的 privacy：${unknown.join('、')}`);
+  const { errors } = validateToolMeta(dir.tools, { localTools: local.tools });
+  assert(!errors.length, `边界字段校验不通过：${errors.slice(0, 3).join(' / ')}`);
+  return `${PRIVACY_KINDS.length} 个枚举值：前端 / i18n / 数据三处对齐`;
 });
 
 // ---------- v3.0 E1–E4 ----------

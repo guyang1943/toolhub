@@ -498,8 +498,37 @@ async function feedFile(selector, dataUrl, name, type) {
     /在线/.test(dirCard.text) && !/本地运行/.test(dirCard.text),
     dirCard.text.replace(/\s+/g, ' ').trim().slice(0, 40)
   );
-  check('卡片带数据边界（本机处理 / 会上传…）', /本机处理|会上传|看用法|未核实/.test(dirCard.text), dirCard.badge.trim());
+  check('卡片带数据边界（本机处理 / 会上传…）', /本机处理|点对点|会上传|看用法|未核实/.test(dirCard.text), dirCard.badge.trim());
   await shot('09-dir-privacy');
+
+  // ---- 1.7b 点对点必须与「本机处理」分开（v3.21）----
+  // PairDrop / LocalSend / FilePizza 在 v3.17 一直被标成「本机处理」，而它们传的是文件：
+  // 文件确实离开了这台电脑，只是去了另一台设备而不是厂商服务器。标错方向正好相反——
+  // 「本机处理」是对用户说「没出去」，实际是「出去了，但没给第三方」。这类错比漏标更糟。
+  const p2pCard = await evaluate(`(() => {
+    const el = document.getElementById('hero-search');
+    el.value = 'pairdrop';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    return new Promise((r) => setTimeout(() => {
+      const card = document.querySelector('#grid [data-id="pairdrop"]');
+      r({ text: card ? card.textContent : '' });
+    }, 500));
+  })()`);
+  check(
+    '点对点工具标「点对点」而不是「本机处理」',
+    /点对点/.test(p2pCard.text) && !/本机处理/.test(p2pCard.text),
+    p2pCard.text.replace(/\s+/g, ' ').trim().slice(0, 40)
+  );
+
+  // 详情页要把「这条边界凭什么成立」写出来：核过的说核过，没核的说没核。
+  await goto('/tools/pairdrop/');
+  const pdBody = await evaluate(`(document.body.innerText || '')`);
+  check('详情页写出证据来源（已核实 + 依据）', /证据：边界已核实/.test(pdBody) && /官方 FAQ/.test(pdBody));
+  check('详情页写清点对点中继', /TURN/.test(pdBody));
+  await goto('/tools/quicktype/');
+  const qtBody = await evaluate(`(document.body.innerText || '')`);
+  check('未核实的条目如实说「尚未核实」', /尚未核实/.test(qtBody) && !/边界已核实/.test(qtBody));
+  await goto('/');
 
   // 纯乱码（连错别字建议都没有）也必须给出口，否则用户只能看到一句「没找到」
   await evaluate(`(() => {

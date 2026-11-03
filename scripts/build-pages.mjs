@@ -6,9 +6,14 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintAll } from './lib/tool-lint.mjs';
 import { validateToolMeta, metaSummary, PRIVACY_LABEL } from './lib/tool-meta.mjs';
+import { evidenceLine } from './lib/evidence.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
 import { matchPage } from './lib/pages-registry.mjs';
+
+// 模块级 HTML 转义。注意本文件内部还有几处**函数内局部**的 `esc`（如目录页那个），
+// 它们在各自作用域里有效，模块级代码里直接用会 ReferenceError——v3.21 就踩了这一次。
+const escAttr = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').replace(/\/$/, '');
@@ -33,9 +38,9 @@ const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').repla
 const tools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
 const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
 
-// 0.5) 边界字段闸门（v3.17）：62 条外链必须有 runtime / privacy / checkedAt，
-//      非 local 的必须写 privacyNote。这些字段现在还没上界面，但它们是「0 字节上传服务器」
-//      这句话能站住的前提——数据缺一条，那句话就对某一条工具说了谎。
+// 0.5) 边界字段闸门（v3.17，v3.21 加证据层）：62 条外链必须有 runtime / privacy，
+//      非 local 的必须写 privacyNote，且每条都要说明这个边界标注凭什么成立。
+//      这些字段是「0 字节上传服务器」这句话能站住的前提——缺一条，那句话就对某一条工具说了谎。
 {
   const { errors, warns, stats } = validateToolMeta(dirTools, { localTools: tools });
   if (errors.length) {
@@ -46,6 +51,7 @@ const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 
   }
   for (const w of warns) console.log(`⚠️ ${w}`);
   console.log(`✅ 边界字段：${metaSummary(stats)}`);
+  console.log(`   证据：${evidenceLine(stats.evidence)}`);
 }
 const i18n = JSON.parse(readFileSync(join(root, 'i18n.json'), 'utf8')).en;
 const articles = JSON.parse(readFileSync(join(root, 'articles.json'), 'utf8'));
@@ -397,11 +403,24 @@ for (const tool of dirTools) {
         tool.runtime === 'web'
           ? '在浏览器内完成，内容不上传（可以有网络请求，但请求里不含你的数据）。'
           : '处理只在本机完成，内容不上传第三方服务器。';
-      const pvNote = tool.privacyNote || (tool.privacy === 'local' ? localNote : '');
+      const pvNote = tool.privacyNote || (tool.privacy === 'local' ? localNote : tool.privacy === 'p2p' ? '内容在两台设备之间直传，不经站点服务器。' : '');
+      // v3.21：把「这条边界凭什么成立」也写在页面上。不写的话，读者只能假设它是对的——
+      // 而 v3.17 那批 62 条的 privacy 其实是批量推断的，一条都没人打开页面看过。
+      // 这一行是整个「0 字节上传服务器」主张的成本明细：有多少条是真的核过的。
+      const bnd = (tool.evidence || {}).boundary || {};
+      const lnk = (tool.evidence || {}).link || {};
+      const bndTxt =
+        bnd.method === 'manual'
+          ? `已核实（${bnd.at}，${escAttr(bnd.by || '')}）`
+          : bnd.method === 'inferred'
+            ? `按机制推断，尚未逐页核实（${bnd.at}）`
+            : `取自上游清单，尚未核实（${bnd.at}）`;
+      const lnkTxt = tool.linkStatus === 'dead' ? '探活返回 404，可能已失效' : lnk.at ? `${lnk.at} 探活正常` : '尚未探活';
       return (
         `<h2>数据边界</h2>` +
         `<p>怎么用上：${accessLabel}（${rtLabel}，官网 ${host}）</p>` +
         `<p>数据边界：<b>${pvLabel}</b>${pvNote ? ` —— ${pvNote}` : ''}</p>` +
+        `<p class="evi">证据：边界${bndTxt} · 链接 ${lnkTxt}</p>` +
         `<p>跳转到对方站点后，适用对方的隐私政策，ToolHub 无法控制也不负责。敏感数据请先看<a href="/privacy/">隐私说明</a>。</p>`
       );
     })() +
@@ -523,7 +542,8 @@ const staticPages = [
     h1: '隐私说明',
     content:
       '<h2>一句话结论</h2><p>本地工具的<b>文件</b>输入不上传、不落盘，在浏览器内存里处理完即随页面释放；<b>文本</b>类输入会留一份 ≤4 KB 的草稿在你自己的浏览器里（刷新后能接着填），文件永远不进存储。本站没有后端数据库，也没有上传接口，这不是承诺而是架构上就不存在。</p>' +
-      '<h2>三类工具，三种数据流向</h2><p>本地执行类工具（含 Pyodide 驱动的 Python 工具）全部在浏览器内完成，服务端不接触输入；目录类工具是第三方开源项目的官方在线版，点击「打开官网」后进入对方站点，适用对方的隐私政策。</p>' +
+      '<h2>三类工具，三种数据流向</h2><p>本地执行类工具（含 Pyodide 驱动的 Python 工具）全部在浏览器内完成，服务端不接触输入；目录类工具是第三方开源项目的官方在线版，点击「打开官网」后进入对方站点，适用对方的隐私政策；还有一类是<b>点对点直传</b>（PairDrop、LocalSend、FilePizza），文件从你的设备直接发到另一台设备，不经过站点服务器——但它确实离开了这台机器，所以不归入「本机处理」。</p>' +
+      '<p>每个外链工具的详情页都标了数据边界，并写明这条标注<b>凭什么成立</b>：是人工打开页面核过的、按产品机制推断的、还是照抄上游清单的。三种说法的可信度不同，页面不会把它们混成一句「已核实」——写「尚未核实」的条目一样可以点开用，只是你得自己看一眼对方的隐私政策。</p>' +
       '<h2>浏览器里存了什么</h2><p>只有本地偏好与草稿，没有文件。完整键名清单：</p>' +
       '<ul><li><code>toolhub:theme</code> 深浅色偏好；<code>toolhub:lang</code> 中英文偏好</li>' +
       '<li><code>toolhub:favs</code> 收藏的工具 id；<code>toolhub:recent</code> 最近打开过的工具；<code>toolhub:usage</code> 每个工具在本机用过几次</li>' +

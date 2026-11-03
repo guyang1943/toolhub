@@ -258,9 +258,10 @@ async function loadRegistry() {
 
 const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
 
-// 目录工具的数据边界标注。顺序须与 scripts/lib/tool-meta.mjs 的 PRIVACY_KINDS 一致。
-const PV = [['本机处理', 'privacyLocal'], ['会上传', 'privacyUpload'], ['看用法', 'privacyOptional'], ['未核实', 'privacyUnknown']];
-const privBadge = (x) => { const p = PV[['local', 'upload', 'optional', 'unknown'].indexOf(x.privacy)] || PV[3]; return t(p[0], p[1]); };
+// 目录工具的数据边界标注。键名须与 scripts/lib/tool-meta.mjs 的 PRIVACY_KINDS 一致。
+// v3.21 加 p2p：文件在两台设备之间直传，和「本机处理」不是一回事——东西确实出了这台机器。
+const PV = { local: ['本机处理', 'privacyLocal'], p2p: ['点对点', 'privacyP2P'], upload: ['会上传', 'privacyUpload'], optional: ['看用法', 'privacyOptional'], unknown: ['未核实', 'privacyUnknown'] };
+const privBadge = (x) => { const p = PV[x.privacy] || PV.unknown; return t(p[0], p[1]); };
 
 /* ---------- 首页 ---------- */
 // 分类页地址。取不到 slug 时退回旧的 ?cat= 筛选（tools.json 没更新也不会给出死链）

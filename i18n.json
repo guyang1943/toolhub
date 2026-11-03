@@ -19,6 +19,7 @@
       "badgeLocal": "🔒 Runs locally",
       "badgeLink": "🌐 External site",
       "privacyLocal": "On-device",
+      "privacyP2P": "Device-to-device",
       "privacyUpload": "Uploads data",
       "privacyOptional": "Depends on usage",
       "privacyUnknown": "Unverified",

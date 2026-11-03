@@ -11,8 +11,21 @@
       "source": "github.com/excalidraw/excalidraw",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "optional",
+      "privacyNote": "不协作时全部在本机完成、自动存浏览器；一旦开实时协作或分享只读链接，画布会加密后上传。官方 README 把「Local-first support」和「Real-time collaboration / End-to-end encryption」并列。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "核对 Excalidraw 官方 README",
+          "method": "manual"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "白板",
         "画图",
@@ -34,8 +47,21 @@
       "source": "github.com/tldraw/tldraw",
       "license": "自定义源可用",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "optional",
+      "privacyNote": "自己画在本机；多人实时协作与云端存档要走它的同步服务，那时画布在对方服务器上。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "按同类白板工具的协作机制推断，未核当前版本页面",
+          "method": "inferred"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "白板",
         "画布"
@@ -55,8 +81,21 @@
       "source": "github.com/jgraph/drawio",
       "license": "Apache-2.0",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "optional",
+      "privacyNote": "默认在浏览器里处理；用 Google Drive / OneDrive 云盘保存、或开实时协作时，图才会传到对应服务。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "按 draw.io 的存储机制推断，未核当前版本页面",
+          "method": "inferred"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "流程图",
         "架构图"
@@ -75,7 +114,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "画图",
         "怀旧"
@@ -91,7 +142,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "svg",
         "矢量"
@@ -107,7 +170,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "3d",
         "three.js"
@@ -123,7 +198,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "颜色",
         "css"
@@ -144,7 +231,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "图片",
         "压缩"
@@ -172,7 +271,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "占位图",
         "开发"
@@ -188,7 +299,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "ocr",
         "文字识别"
@@ -211,7 +334,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "pdf",
         "隐私"
@@ -230,7 +365,19 @@
       "runtime": "selfhost",
       "privacy": "optional",
       "privacyNote": "官方现在主推云平台；要「文件不出机器」得自己 Docker 部署",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "pdf"
       ]
@@ -245,7 +392,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "pdf",
         "阅读"
@@ -262,7 +421,19 @@
       "runtime": "web",
       "privacy": "optional",
       "privacyNote": "默认存在浏览器本地；连 Google Drive / GitHub 同步才会把文档传出去",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "markdown",
         "编辑器"
@@ -278,7 +449,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "markdown"
       ]
@@ -294,7 +477,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "端到端加密后上传，服务器只存密文、读不到内容",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "文档",
         "协作",
@@ -319,7 +514,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "官方云实例的文档存在服务器上；想留在本机要自己部署 AFFiNE",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "笔记",
         "知识库"
@@ -337,7 +544,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "编码",
         "解码",
@@ -356,7 +575,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "格式转换"
       ],
@@ -378,7 +609,19 @@
       "runtime": "web",
       "privacy": "unknown",
       "privacyNote": "官网没有说明转换在哪一侧完成，暂按「未核实」处理",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "json",
         "类型",
@@ -398,7 +641,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "粘贴的 JSON 会存到对方服务器并生成可分享链接",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "json",
         "可视化"
@@ -413,8 +668,21 @@
       "source": "github.com/typicode/jsonplaceholder",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "upload",
+      "privacyNote": "请求发到它的服务器，回来的是假数据；别拿它传真实内容。同类的 httpbin 本来就是这样标的，这里原先写「本机处理」自相矛盾。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "按同站 httpbin 的一致性与 REST 假接口机制推断",
+          "method": "inferred"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "api",
         "mock"
@@ -431,7 +699,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "它本身就是回显服务——你发给它的请求内容会经它返回，别放真实数据",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "http",
         "调试"
@@ -448,7 +728,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "用途就是把请求发到它的服务器上查看，天然会上传",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "webhook",
         "调试"
@@ -464,7 +756,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "sql",
         "数据库"
@@ -480,7 +784,19 @@
       "license": "MPL-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "文档",
         "api"
@@ -498,7 +814,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "格式化",
         "代码"
@@ -514,7 +842,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "正则"
       ],
@@ -533,7 +873,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "图表",
         "uml"
@@ -551,7 +903,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "思维导图",
         "markdown"
@@ -572,7 +936,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "官方服务器渲染图，源码会发过去；隐私要求高就本地跑 jar",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "uml",
         "建模"
@@ -588,7 +964,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "ascii",
         "图"
@@ -605,7 +993,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "命令在服务器上解析，会把命令行发过去",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "linux",
         "命令行"
@@ -622,7 +1022,19 @@
       "license": "自定义",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "学习",
         "路线图"
@@ -638,7 +1050,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "图标",
         "svg"
@@ -654,7 +1078,19 @@
       "license": "ISC",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "图标"
       ]
@@ -669,7 +1105,19 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "音频",
         "剪辑"
@@ -685,8 +1133,21 @@
       "source": "github.com/schlagmichdoch/PairDrop",
       "license": "GPL-3.0",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "p2p",
+      "privacyNote": "文件在浏览器之间直连发到对方设备，不经过 PairDrop 服务器；两台设备不在同一网络时，文件会经它的 TURN 服务器中继（WebRTC 加密）。官方 FAQ：「The server is not involved in the file transfer.」",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "核对 pairdrop.net 与官方 FAQ（docs/faq.md）",
+          "method": "manual"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "传文件",
         "p2p"
@@ -708,8 +1169,21 @@
       "source": "github.com/localsend/localsend",
       "license": "Apache-2.0",
       "runtime": "desktop",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "p2p",
+      "privacyNote": "只在局域网内直传，不连互联网也不用第三方服务器，两台设备得在同一个 Wi-Fi 下。官方 README：「without needing an internet connection」，且「doesn’t require an internet connection or third-party servers」。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "核对 LocalSend 官方 README",
+          "method": "manual"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "传文件",
         "局域网"
@@ -730,8 +1204,21 @@
       "source": "github.com/kern/filepizza",
       "license": "BSD-3-Clause",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "p2p",
+      "privacyNote": "浏览器之间点对点直传，对方不在线就传不成；服务器只负责牵线，不存文件。首页原话：「Peer-to-peer file transfers in your browser.」",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "核对 file.pizza 首页",
+          "method": "manual"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "传文件"
       ],
@@ -752,7 +1239,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "加密后存到对方服务器；服务器读不到明文，但内容确实离开了设备",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "粘贴板",
         "加密"
@@ -772,7 +1271,19 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "密码"
       ],
@@ -793,7 +1304,19 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "打字",
         "练习"
@@ -808,8 +1331,21 @@
       "source": "github.com/librespeed/speedtest",
       "license": "LGPL-3.0",
       "runtime": "web",
-      "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "privacy": "upload",
+      "privacyNote": "测速必然要在你和测速服务器之间来回传数据；用官方公共服务器时，你的 IP 与测速流量都经过对方。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-04",
+          "by": "按测速工具的数据流推断，未核当前版本页面",
+          "method": "inferred"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "测速",
         "网络"
@@ -825,7 +1361,19 @@
       "license": "自定义",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "css",
         "学习"
@@ -841,7 +1389,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "css",
         "grid",
@@ -859,7 +1419,19 @@
       "runtime": "web",
       "privacy": "unknown",
       "privacyNote": "官网找不到隐私说明；导出是否走服务端渲染未经核实",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "代码截图",
         "分享"
@@ -877,7 +1449,19 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "json",
         "可视化"
@@ -895,7 +1479,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "正则",
         "可视化"
@@ -917,7 +1513,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "在线版把脑图存在对方账号里；想留在本机得自己部署",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "思维导图"
       ],
@@ -936,7 +1544,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "图表",
         "可视化"
@@ -952,7 +1572,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "svg",
         "优化",
@@ -976,7 +1608,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "占位图"
       ]
@@ -991,7 +1635,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "头像",
         "生成"
@@ -1007,7 +1663,19 @@
       "license": "CC0-1.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "图标",
         "svg"
@@ -1023,7 +1691,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "速查表",
         "文档"
@@ -1040,7 +1720,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "学习平台，提交的练习代码会上传并可能被导师看到",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "学习",
         "编程"
@@ -1056,7 +1748,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "颜色",
         "图表"
@@ -1078,7 +1782,19 @@
       "runtime": "web",
       "privacy": "upload",
       "privacyNote": "翻译走它的服务端转发，原文会经过它的服务器",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "翻译",
         "隐私"
@@ -1094,7 +1810,19 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "格式转换",
         "文件"
@@ -1116,7 +1844,19 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "工具箱",
         "哈希",
@@ -1146,7 +1886,19 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
-      "checkedAt": "2026-11-03",
+      "evidence": {
+        "link": {
+          "at": "2026-11-04",
+          "by": "check-links.mjs",
+          "method": "probe"
+        },
+        "boundary": {
+          "at": "2026-11-03",
+          "by": "v3.17 批量补录（未逐条打开页面）",
+          "method": "imported"
+        }
+      },
+      "linkStatus": "ok",
       "tags": [
         "视频",
         "转码",
