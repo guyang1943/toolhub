@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.17 · 预缓存 199 个地址 · 约 3.2 MB
-const VERSION = "toolhub-v3.17";
+// 版本：toolhub-v3.18 · 预缓存 204 个地址 · 约 3.2 MB
+const VERSION = "toolhub-v3.18";
 const CORE = [
   "/",
   "/index.html",
@@ -133,10 +133,13 @@ const FULL = [
   "/assets/drop.js",
   "/assets/lib/drop-route.js",
   "/assets/lib/intent.js",
+  "/assets/lib/json-schema.js",
   "/assets/lib/pages.js",
   "/assets/lib/secure-share.js",
   "/assets/lib/zip.js",
   "/assets/offline.js",
+  "/assets/submit-page.js",
+  "/assets/submit-resource.js",
   "/assets/tool-page.js",
   "/assets/toolbuilder.js",
   "/assets/style.batch.css",
@@ -218,7 +221,9 @@ const FULL = [
   "/categories/web.json",
   "/guides/index.json",
   "/guides/tv-box-server/",
-  "/guides/tv-box-server.json"
+  "/guides/tv-box-server.json",
+  "/schemas/resource.json",
+  "/tools/schema.json"
 ];
 
 self.addEventListener('install', (e) => {

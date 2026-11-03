@@ -1,0 +1,100 @@
+name: 推荐一条资源
+description: 图标库、字体、配色、学习路线、模板站——一条值得收藏的链接
+title: "[资源] "
+labels: ["submission", "resource"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        字段与 `schemas/resource.json` 一致。**站内有表单会在本地先帮你校验并查重**，
+        填完直接生成这条 issue：<https://toolhub.bot.cd/submit/#su-resource>
+
+        手工填写也行，下面几项都是必填。
+
+  - type: dropdown
+    id: collection
+    attributes:
+      label: 挂到哪个合集
+      description: 拿不准就选最接近的，维护时会被移到合适合集。
+      options:
+        - 免费图标库
+        - 免费商用字体
+        - 配色方案与调色板
+        - 学习路线与免费课程
+        - 值得收藏的开源项目清单
+        - 模板与设计素材站
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: 资源名称
+      description: 照官方写法，别加「超好用」「最强」这类形容词。
+      placeholder: Lucide
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: 网址
+      description: 官方地址，去掉 utm_ 之类的追踪参数。
+      placeholder: https://lucide.dev
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: 来源
+      description: 有开源仓库就填 `github.com/作者/仓库`（不带 https://）；没有仓库就填来源方名称。别填完整 URL——那和上一栏重复。
+      placeholder: github.com/lucide-icons/lucide 或 阿里巴巴
+    validations:
+      required: false
+
+  - type: input
+    id: license
+    attributes:
+      label: 授权方式
+      description: 照原站写法抄。只写「免费」不够——是免费使用还是免费商用，差很多。
+      placeholder: ISC / CC0-1.0 / 免费商用（xx 授权）
+    validations:
+      required: true
+
+  - type: textarea
+    id: note
+    attributes:
+      label: 为什么值得收藏
+      description: |
+        写清它解决了什么、适合谁、有什么代价。**复述官网介绍的一律不收**——
+        这一栏是唯一没法从别处抄来的东西，也是这条记录的全部价值。
+      placeholder: Feather 的社区延续版，线条干净、风格高度统一，产品界面首选；支持按需引入，不会拖大包体积。
+    validations:
+      required: true
+
+  - type: input
+    id: tags
+    attributes:
+      label: 标签
+      description: 1-4 个，逗号分隔。优先复用已有标签：线性 / 开源 / 中文 / 极简 / 需核授权 / 免费商用 / 模板。
+      placeholder: 线性, 开源
+
+  - type: dropdown
+    id: conflict
+    attributes:
+      label: 你和这条资源的关系
+      description: 本站不接联盟链接、不收推广费，所以必须知道推荐人与它的关系。选「有偿推荐」不会被收录，但请照实选。
+      options:
+        - 纯粹推荐，和我无关
+        - 我是作者 / 维护者
+        - 我参与了这个项目
+        - 有偿推荐
+    validations:
+      required: true
+
+  - type: input
+    id: submitter
+    attributes:
+      label: 怎么称呼你（可留空）
+      description: 只写进更新记录，不用于任何统计。留空即匿名收录。

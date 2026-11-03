@@ -489,6 +489,29 @@ check('短关键词不触发意图', !(document.getElementById('palette-results'
 palIn.value = '';
 await go('/');
 
+// 9e. 投稿页（v3.18）：一个入口，四类体例
+// 这里只验静态渲染部分——表单与生成器在浏览器里才 import 得到（Node 解不了 /assets/ 绝对路径），
+// 真实挂载由 browser-test 负责。分开验的好处是：模板链接挂了在这一层就能发现，
+// 不用等到跑真浏览器那一步才知道。
+await go('/submit');
+const subHtml = document.getElementById('page-body').innerHTML;
+check(
+  '投稿页给出四类入口',
+  ['su-resource', 'su-tool', 'su-guide', 'su-review'].every((k) => subHtml.includes(`id="${k}"`)) &&
+    (subHtml.match(/class="su-nav"/g) || []).length === 1,
+  '资源 / 工具 / 教程 / 测评'
+);
+// 投稿页以前标题是「推荐一个工具」，只覆盖工具一类。改了覆盖范围却留着旧标题，
+// 读者点进来会以为走错了地方。
+check('投稿页标题不再是「推荐一个工具」', !subHtml.includes('推荐一个工具') && subHtml.includes('➕ 投稿'));
+// 三个 Issue 模板链接必须真的指向仓库，且不是占位符
+const tplLinks = [...subHtml.matchAll(/github\.com\/[\w-]+\/[\w-]+\/issues\/new\?template=(\w+)\.yml/g)].map((m) => m[1]);
+check('投稿页链到教程与测评模板', tplLinks.includes('guide') && tplLinks.includes('review'), tplLinks.join(' / '));
+// 测评那一格必须写清「不收正文」，否则读者会以为点进去能投测评
+check('测评明确声明不收正文', subHtml.includes('不收正文'));
+// 资源表单的容器必须在（挂载失败时它会拿到错误态，但容器本身不能缺）
+check('资源表单容器就位', subHtml.includes('id="resource-submit"'));
+
 // 汇总
 let pass = 0;
 for (const r of results) {

@@ -48,6 +48,23 @@ const needServer = picked.some((s) => s.needsServer);
   if (line) console.log(line);
 }
 
+// 前置闸门（v3.18）：投稿规范与存量数据、前端表单、Issue 模板三处必须一致。
+// 漂移的症状是「用户填完过不了校验」或「走模板要填两遍」，而六套测试一条都抓不到。
+{
+  const g = spawnSync(process.execPath, [join(root, 'scripts', 'check-submit-schema.mjs')], {
+    cwd: root,
+    encoding: 'utf8',
+    timeout: 60000,
+  });
+  if (g.status !== 0) {
+    console.error('❌ 投稿规范闸门未过（schema / 表单 / 模板三处不同步）：\n');
+    console.error(`${g.stdout || ''}${g.stderr || ''}`);
+    process.exit(1);
+  }
+  const line = (g.stdout || '').split('\n').map((l) => l.trim()).find((l) => l.startsWith('✅'));
+  if (line) console.log(line);
+}
+
 // 只抓两类行：汇总（最后一行带 ✅ 的）和失败（带 ❌ 的）。其余全部丢弃。
 const keep = (out) =>
   out

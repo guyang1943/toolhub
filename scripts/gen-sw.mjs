@@ -36,7 +36,11 @@ const sizeOf = (p) => {
 };
 
 /** 只在构建期用、不会进浏览器的模块（不值得让用户为它们多下一个字节） */
-const BUILD_ONLY = new Set(['lib/json-schema.js', 'lib/security-headers.js']);
+// v3.18 修正：lib/json-schema.js 原来被列在这里，但它其实是**浏览器里**跑的——
+// toolbuilder.js 与 submit-resource.js 都 import 它做校验。排除的后果不是「省了一点流量」，
+// 而是「断网打开投稿页，表单和生成器一起挂」，而且控制台只报一个 module not found，
+// 看起来像网络问题。security-headers.js 才是真的只在构建期/Worker 用。
+const BUILD_ONLY = new Set(['lib/security-headers.js']);
 
 /** 扫 assets/ 与 assets/lib/ 下的应用模块（vendor 是第三方库，单独列） */
 function listAppModules() {
@@ -154,6 +158,16 @@ export function buildSw({ quiet = false } = {}) {
       else if (existsSync(join(root, 'guides', f, 'index.html'))) full.add(`/guides/${f}/`);
     }
   }
+
+  // 投稿规范（v3.18）：资源表单 fetch /schemas/resource.json，工具生成器 fetch /tools/schema.json。
+  // 这两份缺席不是「样式没加载」而是「表单整块加载失败」——离线打开投稿页会看到一句报错。
+  // 之前 tools/schema.json 就漏了，只是没人断网开过投稿页。
+  if (existsSync(join(root, 'schemas'))) {
+    for (const f of readdirSync(join(root, 'schemas'))) {
+      if (f.endsWith('.json')) full.add('/schemas/' + f);
+    }
+  }
+  if (onDisk('/tools/schema.json')) full.add('/tools/schema.json');
 
   // 只收录真的存在于磁盘上的路径：install 里的 addAll 是「全有或全无」，一个 404 会让整个装包失败
   const CORE = CORE_ALL.filter(onDisk);

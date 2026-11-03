@@ -148,9 +148,23 @@ export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_
   },
   submit: () => `
     <div class="page">
-      <h1>➕ 推荐一个工具</h1>
-      <p class="lead">两条路：推荐一个现成的开源项目加入目录，或者用下面的生成器直接造一个能在浏览器本地跑的新工具。</p>
-      <h2>✦ 方式一：推荐开源项目</h2>
+      <h1>➕ 投稿</h1>
+      <p class="lead">四类内容都能投，门槛完全不同：资源最快（填完当场校验），工具要写代码，教程要自己先跑通一遍，测评我们不收正文——只收选题和纠错。</p>
+
+      <div class="su-nav">
+        <a href="#su-resource"><b>📚 资源</b><span>一条值得收藏的链接</span><em>填完即校验</em></a>
+        <a href="#su-tool"><b>🧰 工具</b><span>推荐项目，或自己写一个</span><em>要跑得起来</em></a>
+        <a href="#su-guide"><b>🔧 教程</b><span>一条走完有结果的路</span><em>你得先走通</em></a>
+        <a href="#su-review"><b>🔬 测评</b><span>选题与事实纠错</span><em>正文编辑写</em></a>
+      </div>
+
+      <h2 id="su-resource">✦ 资源：一条收藏</h2>
+      <p>图标库、字体、配色、学习路线、模板站。这类收录的门槛不在「有没有用」，而在<b>写不写得出为什么值得收藏</b>——
+      复述官网介绍的一律不收。<code>note</code> 那一栏是唯一没法从别处抄来的东西，也是这条记录的全部价值。</p>
+      <div id="resource-submit"></div>
+
+      <h2 id="su-tool">✦ 工具：推荐项目，或自己写一个</h2>
+      <h3>方式一：推荐现成的开源项目</h3>
       <ul>
         <li>开源项目（有明确 License），优先 MIT / Apache / BSD</li>
         <li>能在浏览器中使用，或可被工具化为网页形态</li>
@@ -164,19 +178,43 @@ GitHub 仓库：
 一句话介绍：
 License：
 推荐理由（它解决什么问题）：</pre>
-      <h2>✦ 方式二：自己写一个本地工具</h2>
+      <h3>方式二：自己写一个本地工具</h3>
       <p>ToolHub 的工具由 Manifest 驱动：新增一个工具 = 一份 <code>tool.json</code> + 一个 <code>run.js</code>，平台代码零改动。
       下面的生成器把这两份文件（含表单清单与执行骨架）直接生成成压缩包，并用<b>与构建期完全相同</b>的规范做校验——这里通过，构建就不会拦你。</p>
       <div id="tool-builder"></div>
-      <h2>✦ 接入约定（必读）</h2>
+      <h3>接入约定（必读）</h3>
       <ul>
         <li><code>run()</code> 返回 <code>{ html, text?, files? }</code>，<code>files</code> 为 <code>[{ name, blob, kind }]</code></li>
         <li><b>禁止任何网络请求</b>（fetch / XMLHttpRequest / WebSocket / sendBeacon），本地工具必须断网可跑</li>
         <li>单工具体积 ≤ 200KB，不引入远程脚本</li>
         <li>本地验收：<code>lint-tools.mjs</code> → <code>build-pages.mjs</code> → <code>verify.mjs</code> 全绿再提 PR</li>
       </ul>
-      <h2>✦ 完整规范</h2>
+      <h3>完整规范</h3>
       <p>字段定义、默认值与选项规则、常见拒绝原因，见 <a href="/tools/schema.json" target="_blank" rel="noopener">tools/schema.json</a>（机器可读）与仓库里的 <code>docs/TOOL-CONTRACT.md</code>（人话版）。</p>
+
+      <h2 id="su-guide">✦ 教程：一条走完有结果的路</h2>
+      <p>教程和工具是两种东西：工具是「打开网页就能用」，教程是「先装、先刷、先配」。所以门槛不一样，也高得多。</p>
+      <ul>
+        <li><b>你得自己按写下来的步骤跑通过一次。</b>没跑通的稿子不收——不是不信任，是这类内容翻车的代价由读者承担（刷成砖的人不会来找你）。</li>
+        <li><b>前置条件写在动作前面。</b>芯片型号对不对、U 盘够不够大、有没有网线，写晚了人会在第三步才发现白忙一场。</li>
+        <li><b>风险写在动作前面。</b>「会覆盖原系统」放在最后一段，等于没写。</li>
+        <li><b>必须有回退路径。</b>只讲怎么往前冲、不讲怎么退回来的，是在催人做不可逆的事。</li>
+      </ul>
+      <p class="muted-note">投稿会记下你的署名与「已跑通」声明，一起进更新记录。</p>
+      <p><a class="btn ghost" href="https://github.com/guyang1943/toolhub/issues/new?template=guide.yml" target="_blank" rel="noopener">按模板投一篇教程</a></p>
+
+      <h2 id="su-review">✦ 测评：只收选题和纠错，不收正文</h2>
+      <p>这一条不是客气话，是硬规则。每篇测评里都写着 <code>method</code>——「依据哪个仓库、哪个版本、哪天的资料」。这句话是「不吹不黑」的全部依据，
+      而外部投稿的这句声明<b>没法验证</b>。一旦收了一篇软文，整个站的可信度就没了。</p>
+      <p>所以开放的是两件更有用的事：</p>
+      <ul>
+        <li><b>选题提议</b>：想知道哪几个工具横向比一比。被提到多的会排进计划。</li>
+        <li><b>事实纠错</b>：某个结论过期了、某个数字不对、某个工具已经不维护了。这类反馈比新稿子值钱。</li>
+      </ul>
+      <p>
+        <a class="btn ghost" href="https://github.com/guyang1943/toolhub/issues/new?template=review.yml" target="_blank" rel="noopener">提测评选题</a>
+        <a class="btn ghost" href="https://github.com/guyang1943/toolhub/issues/new?template=review.yml&title=%5B%E7%BA%A0%E9%94%99%5D%20" target="_blank" rel="noopener">报告一处错误</a>
+      </p>
     </div>`,
   feedback: () => {
     const tpl = `【ToolHub 反馈】

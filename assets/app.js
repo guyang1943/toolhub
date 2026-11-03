@@ -1552,7 +1552,7 @@ async function openPage(name) {
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   setView('page');
-  const titles = { about: '关于', submit: '推荐工具', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装' };
+  const titles = { about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
 
@@ -1608,17 +1608,16 @@ async function openPage(name) {
     }
   }
 
-  // 提交页的工具包生成器：按需加载（不进首屏包）
-  const builderBox = document.getElementById('tool-builder');
-  if (builderBox) {
+  // 提交页的两个挂载点（工具生成器 + 资源投稿表单）整体按需加载。
+  // v3.18 起从 app.js 搬去 assets/submit-page.js：首页不该为投稿页付解析成本。
+  // 加载失败只降级不炸页——投稿页的骨架（四类说明 + Issue 模板链接）是静态渲染的，
+  // 表单挂了还能走模板。所以这里兜住异常，让读者至少拿得到一条能走的路。
+  if (document.getElementById('tool-builder') || document.getElementById('resource-submit')) {
     try {
-      const { mountToolBuilder } = await import('/assets/toolbuilder.js');
-      await mountToolBuilder(builderBox);
+      const { mountSubmitPage } = await import('/assets/submit-page.js');
+      await mountSubmitPage({ loadResources, stateHTML });
     } catch (e) {
-      builderBox.innerHTML = stateHTML('error', {
-        title: '生成器加载失败',
-        detail: `${e.message}。可直接参考仓库里的 docs/TOOL-CONTRACT.md 手写。`,
-      });
+      console.warn('[ToolHub] 投稿页模块加载失败，可改用 Issue 模板提交', e);
     }
   }
 }

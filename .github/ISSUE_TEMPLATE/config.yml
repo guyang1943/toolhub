@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 站内投稿页（推荐先来这里）
+    url: https://toolhub.bot.cd/submit/
+    about: 资源与工具能在这里当场校验并查重，填完内容会直接预填进新 issue，不用手抄一遍。
+  - name: 意见反馈
+    url: https://toolhub.bot.cd/feedback/
+    about: 工具报错、界面问题、翻译错误——不属于上面四个模板的都走这里。
+  - name: 隐私说明
+    url: https://toolhub.bot.cd/privacy/
+    about: 本站不接收任何上传，数据都在你的浏览器里处理。投稿内容只来自你主动发送的部分。

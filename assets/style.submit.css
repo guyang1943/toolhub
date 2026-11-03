@@ -35,3 +35,50 @@
   .bfield { grid-template-columns: 1fr 1fr; }
   .bfield .bf-extra { grid-column: 1 / -1; }
 }
+
+/* ===== 四类内容导航（v3.18） =====
+   投稿页现在覆盖四类内容，顶部先给一张「哪类投什么、门槛在哪」的路由卡。
+   和首页入口卡同样的信息密度，但更小一号——这里是工具，不是展厅。 */
+.su-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 8px; }
+@media (max-width: 780px) { .su-nav { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .su-nav { grid-template-columns: 1fr; } }
+.su-nav a {
+  display: flex; flex-direction: column; gap: 2px; padding: 12px 13px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+  color: var(--text); text-decoration: none; min-height: 44px;
+}
+.su-nav a:hover { border-color: var(--accent); }
+.su-nav b { font-size: 13.5px; }
+.su-nav span { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.su-nav em { font-size: 11.5px; color: var(--accent); font-style: normal; margin-top: 2px; }
+
+/* ===== 资源投稿表单（v3.18） ===== */
+.su { border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 16px; margin: 14px 0 6px; background: var(--panel); }
+.su-head h2 { margin: 0 0 6px; font-size: 16px; }
+.su-head p { margin: 0 0 16px; font-size: 13px; color: var(--muted); line-height: 1.7; }
+.su-form { display: grid; gap: 14px; }
+.su-field { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; }
+.su-label { color: var(--muted); }
+.su-label em { font-style: normal; color: var(--accent); font-size: 11.5px; }
+.su-form input, .su-form select, .su-form textarea {
+  font: inherit; font-size: 13px; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text);
+  min-width: 0; width: 100%; resize: vertical;
+}
+.su-form input:focus, .su-form select:focus, .su-form textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.su-field[data-bad='1'] input, .su-field[data-bad='1'] select, .su-field[data-bad='1'] textarea { border-color: #c2410c; }
+.su-hint { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.su-err { font-size: 12px; color: #c2410c; line-height: 1.6; min-height: 0; }
+.su-err:empty { display: none; }
+/* 查重命中不是错误：这条网址已经在库里，提交后会合并。用中性色，别拿红色吓人。 */
+.su-err[data-dup='1'] { color: var(--muted); background: var(--bg); border-radius: 6px; padding: 6px 8px; }
+.su-count { align-self: flex-end; font-size: 11.5px; color: var(--muted); }
+.su-count[data-ok='1'] { color: var(--ok); }
+.su-actions { margin-top: 14px; }
+.su-out:empty { display: none; }
+.su-out { margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 14px; font-size: 13px; }
+.su-out .row { margin-top: 10px; }
+.su-tip { font-size: 12.5px; color: var(--muted); line-height: 1.7; margin: 6px 0 0; }
+.su-dup { font-size: 12.5px; color: var(--warn); line-height: 1.7; margin: 6px 0 0; }
+.su-preview { margin-top: 12px; }
+.su-preview summary { cursor: pointer; font-size: 12.5px; color: var(--accent); }

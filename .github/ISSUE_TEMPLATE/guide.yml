@@ -1,0 +1,117 @@
+name: 投一篇教程
+description: 先装、先刷、先配才能用起来的东西——一条要走完的路
+title: "[教程] "
+labels: ["submission", "guide"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        教程线现在只有 1 篇，很缺。但门槛比资源高，只因为一件事：**翻车的代价由读者承担。**
+
+        所以这里先收结构，合适的会联系你要全文。请先读完下面这段再填：
+        工具是「点开就能用」，教程是「先装、先刷、先配」。后者写错一步，前面全白做。
+
+  - type: input
+    id: title
+    attributes:
+      label: 教程标题
+      description: 讲清「对什么设备 / 软件、达成什么结果」，不要起「干货合集」这种。
+      placeholder: 把旧电视盒子刷成 Armbian，当 24 小时小服务器用
+    validations:
+      required: true
+
+  - type: input
+    id: target
+    attributes:
+      label: 目标设备 / 软件与版本
+      description: 型号对不上的人，会在第三步才发现白忙一场。
+      placeholder: 斐讯 N1（S905D）/ 原厂固件 2.28
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: 难度
+      options:
+        - 入门：跟着做，不需要额外知识
+        - 中等：要会看日志、会用命令行
+        - 进阶：涉及拆机、刷写、分区等不可逆操作
+    validations:
+      required: true
+
+  - type: dropdown
+    id: risk
+    attributes:
+      label: 风险等级
+      description: 风险要写在动作前面。「会覆盖原系统」这句话放在最后一段，等于没写。
+      options:
+        - 低：失败可以重来，不影响原有数据
+        - 中：可能丢数据，需要提前备份
+        - 高：可能变砖 / 丢数据 / 影响保修，且不一定能恢复
+    validations:
+      required: true
+
+  - type: textarea
+    id: riskNote
+    attributes:
+      label: 具体会发生什么
+      description: 别写「有一定风险」。写清哪一步会覆盖什么、能不能退回来。
+      placeholder: 写入 eMMC 会清空原厂系统与所有数据，且原厂固件官方不提供下载，备份不出来就再也回不去。
+    validations:
+      required: true
+
+  - type: textarea
+    id: prereqs
+    attributes:
+      label: 前置条件
+      description: 一次一行：硬件、系统版本、要提前准备的东西、需要的能力。
+      placeholder: |
+        - 一个 8GB 以上 U 盘（会被格式化）
+        - 网线，不能用 Wi-Fi
+        - 会用一个文本编辑器改配置文件
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 步骤概要
+      description: 每步一行，写清「做什么」和「做完怎么判断成功了」。全文可以后补，但这一步不能省——结构不对的教程写了也白写。
+      placeholder: |
+        1. 确认 SoC 型号，型号错、镜像错，刷完就是黑屏
+        2. 下载对应镜像并校验 sha256
+        3. 写入 U 盘，改配置文件里的 dtb
+        4. 插电启动，从路由器后台看有没有新设备上线
+    validations:
+      required: true
+
+  - type: textarea
+    id: fallback
+    attributes:
+      label: 出问题怎么退回来
+      description: 没有回退路径的教程，是在催人做不可逆的事。哪怕只是「拔电重来」也要写。
+      placeholder: |
+        黑屏：换 U 盘重新写入，先只插 U 盘不接 eMMC
+        进不去系统：短接 eMMC 触点强制从 U 盘启动
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: tested
+    attributes:
+      label: 已跑通声明
+      options:
+        - label: 我按上面写的步骤，在真实设备上完整跑通过一次
+          required: true
+        - label: 上面的风险与回退路径是实际遇到过的，不是我推测的
+          required: true
+
+  - type: input
+    id: submitter
+    attributes:
+      label: 署名与联系方式
+      description: 署名会进更新记录；联系方式只用于确认细节，不会公开。
+      placeholder: 你的名字 / id，以及邮箱或其他可联系到你的方式
+    validations:
+      required: true

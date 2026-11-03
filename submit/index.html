@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>开发并通过提交页发布一个工具 · ToolHub</title>
-  <meta name="description" content="两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。" />
+  <title>投稿 · 资源、工具、教程与测评 · ToolHub</title>
+  <meta name="description" content="四类内容都能投，门槛各不相同：资源填完当场校验并查重，工具用生成器直接产出可提交的工具包，教程要自己先跑通一遍，测评只收选题与纠错。全程在浏览器内完成，不上传任何数据。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
@@ -24,8 +24,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toolhub.bot.cd/submit/" />
   <link rel="canonical" href="https://toolhub.bot.cd/submit/" />
-  <meta property="og:title" content="开发并通过提交页发布一个工具 · ToolHub" />
-  <meta property="og:description" content="两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。" />
+  <meta property="og:title" content="投稿 · 资源、工具、教程与测评 · ToolHub" />
+  <meta property="og:description" content="四类内容都能投，门槛各不相同：资源填完当场校验并查重，工具用生成器直接产出可提交的工具包，教程要自己先跑通一遍，测评只收选题与纠错。全程在浏览器内完成，不上传任何数据。" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -62,7 +62,7 @@
   
   
   
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"开发并通过提交页发布一个工具 · ToolHub","description":"两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。","url":"https://toolhub.bot.cd/submit/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"投稿 · 资源、工具、教程与测评 · ToolHub","description":"四类内容都能投，门槛各不相同：资源填完当场校验并查重，工具用生成器直接产出可提交的工具包，教程要自己先跑通一遍，测评只收选题与纠错。全程在浏览器内完成，不上传任何数据。","url":"https://toolhub.bot.cd/submit/"}</script>
   <link rel="stylesheet" href="/assets/style.submit.css" />
 </head>
 <body data-view="page">
@@ -81,11 +81,11 @@
       <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
       <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
       <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="提交工具" aria-label="推荐一个开源工具" data-zh-aria="推荐一个开源工具" data-en-aria="Suggest an open-source tool">➕</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>推荐开源项目，或自己造一个工具</h1><p>两种贡献方式：推荐一个现成的开源项目加入目录，或者用页面上的生成器写一个能在浏览器本地跑的新工具，一次拿到可提交的工具包。</p><h2>方式一：推荐现成的开源项目</h2><p>开源且有明确 License，优先 MIT/Apache/BSD；能在浏览器中使用或可被工具化；站点长期可访问。需要注册才能用、含广告追踪、无法稳定访问的站点不收录。</p><h2>方式二：写一个本地工具</h2><p>ToolHub 的工具由 Manifest 驱动，新增一个工具只需要三样东西：<code>tool.json</code>（身份与收录信息）、<code>run.js</code>（表单清单 + 执行函数）、以及一份长尾正文。页面上的生成器会把这些骨架直接生成为可下载的压缩包，同时用与构建期相同的规范做校验。</p><h2>接入约定</h2><p>执行函数返回 <code>{ html, text, files }</code>；<b>禁止任何网络请求</b>（fetch / XHR / WebSocket / sendBeacon），本地工具必须断网可跑；单个体积不超过 200KB。违反约定的清单会在构建阶段被拒绝，不会流到线上。</p><h2>本地验收</h2><p>把工具目录放进仓库后，依次运行 <code>node scripts/lint-tools.mjs &lt;id&gt;</code>、<code>node scripts/build-pages.mjs</code>、<code>node scripts/verify.mjs</code>，三条都通过就可以提交 PR。</p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>投稿</h1><p>四类内容都能投，门槛各不相同：资源填完当场校验并查重，工具用生成器直接产出可提交的工具包，教程要自己先跑通一遍，测评只收选题与纠错。全程在浏览器内完成，不上传任何数据。</p><h2>四类内容，四种门槛</h2><p>资源填完当场校验并查重；工具要能在浏览器里跑起来；教程必须作者自己先跑通一遍；测评只收选题与事实纠正，不收正文。门槛不同是因为内容的可验证程度不同——资源的七个字段全部能自动校验，而一篇测评的结论无法由外部投稿保证。</p><h2>资源怎么投</h2><p>在页面上的表单里填来源、网址、协议与数据流向，粘完网址即提示是否已收录。合规内容一键生成预填好的提交链接，同时可导出 JSON，维护者审完直接并入数据。</p><h2>工具怎么投</h2><p>ToolHub 的工具由 Manifest 驱动，新增一个工具只需要三样东西：<code>tool.json</code>（身份与收录信息）、<code>run.js</code>（表单清单 + 执行函数）、以及一份长尾正文。页面上的生成器会把这些骨架直接生成为可下载的压缩包，同时用与构建期相同的规范做校验。</p><h2>接入约定</h2><p>执行函数返回 <code>{ html, text, files }</code>；<b>禁止任何网络请求</b>（fetch / XHR / WebSocket / sendBeacon），本地工具必须断网可跑；单个体积不超过 200KB。违反约定的清单会在构建阶段被拒绝，不会流到线上。</p><h2>本地验收</h2><p>把工具目录放进仓库后，依次运行 <code>node scripts/lint-tools.mjs &lt;id&gt;</code>、<code>node scripts/build-pages.mjs</code>、<code>node scripts/verify.mjs</code>，三条都通过就可以提交 PR。</p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">
@@ -151,7 +151,7 @@
       <div id="tool-body"></div>
     </section>
 
-    <!-- 静态内容页（关于 / 提交工具） -->
+    <!-- 静态内容页（关于 / 投稿） -->
     <section id="view-page" style="display:none">
       <div class="crumb" id="page-crumb">← 返回首页</div>
       <div id="page-body"></div>
@@ -197,7 +197,7 @@
     <div class="foot-note" id="foot-note">
       🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
     </div>
-    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="提交工具" data-en="Submit">提交工具</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>
 
   <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，

@@ -1,0 +1,57 @@
+name: 测评选题 / 事实纠错
+description: 想看哪几个工具横向比一比，或者某篇测评的结论过期了
+title: "[测评] "
+labels: ["review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **这里不收测评正文。** 不是客气话，是硬规则。
+
+        每篇测评里都写着 `method`——依据哪个仓库、哪个版本、哪天的资料。这句话是「不吹不黑」的全部依据，
+        而外部投稿的这句声明没法验证。收一篇软文，整个站的可信度就没了。
+
+        所以开放的是下面两件更有用的事。纠错比新稿子值钱。
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 这是哪一类
+      options:
+        - 选题提议：想看几个工具横评
+        - 事实纠错：某篇测评的结论 / 数字 / 链接不对
+        - 工具状态变化：某个工具已经不维护了 / 改协议了 / 关站了
+    validations:
+      required: true
+
+  - type: input
+    id: target
+    attributes:
+      label: 涉及哪些工具或哪一篇
+      description: 纠错请贴页面对应的小节标题，或者直接给链接。
+      placeholder: 《8 个图片压缩工具横评》里「Squoosh 支持批量」那一段
+    validations:
+      required: true
+
+  - type: textarea
+    id: detail
+    attributes:
+      label: 具体说明
+      description: 纠错请写清「原文怎么说的、实际是什么、你是怎么验证的」。没有验证方式的纠错会被搁置——不是不信你，是这次改了下次还会错。
+      placeholder: |
+        原文说支持批量处理，实际要一张一张拖，v3.2 之后才加了多选。
+        我在 Chrome 130 上试了 5 张图，仍然只能单张导出。
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: 信息来源
+      description: 官方文档、Release 页面、你自己的截图都可以。纠错必填。
+      placeholder: https://github.com/GoogleChromeLabs/squoosh/releases/tag/v2.5.0
+
+  - type: input
+    id: submitter
+    attributes:
+      label: 怎么称呼你（可留空）

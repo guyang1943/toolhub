@@ -922,6 +922,67 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('生成 run.js 且含 manifest/run 导出', /export const manifest/.test(genRun) && /export async function run/.test(genRun), genRun.slice(0, 40).replace(/\s+/g, ' '));
   }
 
+  // ---- 9.12 投稿页资源表单（v3.18）----
+  // 这一版的核心主张是「填完当场就知道行不行」，所以这里验的不是「表单渲染出来了」，
+  // 而是三条真正的行为：空表单被拦、已收过的网址被认出来、合规内容产出可用的提交链接。
+  {
+    await goto('/submit/');
+    const resMounted = await waitText('#resource-submit', '推荐一条资源', 12000);
+    check('投稿页加载出资源投稿表单', resMounted === true);
+
+    const fieldN = await evaluate(`document.querySelectorAll('#resource-submit [data-path]').length`);
+    check('资源表单字段与规范一致', fieldN === 9, fieldN + ' 个');
+
+    // 空表单直接点校验：必须被拦，不能放过去（否则「校验」两个字就是装饰）
+    await evaluate(`document.getElementById('su-check').click()`);
+    const emptyWarn = await waitText('#su-out', '要改', 8000);
+    check('空表单被拦下', emptyWarn === true);
+
+    // 填一条已经收过的网址：应识别为「已收录」而不是当成新资源
+    await evaluate(`(() => {
+      const el = document.querySelector('[data-path="item.url"]');
+      el.value = 'https://lucide.dev';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('blur', { bubbles: true }));
+    })()`);
+    const dupHit = await waitText('#resource-submit [data-err="item.url"]', '已收录过', 8000);
+    check('已收录的网址被当场认出来', dupHit === true);
+
+    // 填完整的一条合规内容
+    await evaluate(`(() => {
+      const set = (p, v) => {
+        const el = document.querySelector('[data-path="' + p + '"]');
+        el.value = v;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+      set('collection', 'icons');
+      set('item.name', '测试图标库');
+      set('item.url', 'https://example.org/icons-test');
+      set('item.license', 'MIT');
+      set('item.note', '这是一个用于验证投稿表单的测试条目，走完整流程但不该进库。');
+      set('item.tags', '线性, 开源');
+      set('conflict', 'none');
+      document.getElementById('su-check').click();
+    })()`);
+    const passed = await waitText('#su-out', '校验通过', 8000);
+    check('合规内容通过校验', passed === true);
+
+    const href = await evaluate(
+      `(() => { const a = document.querySelector('#su-out a[href*="issues/new"]'); return a ? a.getAttribute('href') : ''; })()`
+    );
+    check(
+      '产出可用的提交链接（标题与正文已预填）',
+      /^https:\/\/github\.com\/[\w-]+\/[\w-]+\/issues\/new\?/.test(href) && href.includes('body=') && decodeURIComponent(href).includes('测试图标库'),
+      href.slice(0, 60)
+    );
+    // 走的是无模板 new issue，所以 body 才不会被 issue form 吞掉
+    check('提交链接不走 template（否则正文会被吞）', !href.includes('template='));
+
+    await goto('/');
+  }
+
+
   // ---- 10. 刷新深链 + 返回按钮 ----
   await goto('/tools/mortgage-calc/');
   await cdp.send('Page.reload');

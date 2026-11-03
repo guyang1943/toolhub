@@ -1,0 +1,93 @@
+name: 推荐一个工具
+description: 推荐现成的开源项目；想自己写一个本地工具请用站内生成器
+title: "[工具] "
+labels: ["submission", "tool"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        想自己写一个能在浏览器本地跑的工具？别走这里——站内生成器会直接给你
+        `tool.json` + `run.js` 压缩包，且校验规则与构建期完全相同：
+        <https://toolhub.bot.cd/submit/#su-tool>
+
+        下面只用于**推荐现成的项目**。
+
+  - type: input
+    id: name
+    attributes:
+      label: 项目名称
+      placeholder: Excalidraw
+    validations:
+      required: true
+
+  - type: input
+    id: repo
+    attributes:
+      label: 仓库地址
+      placeholder: https://github.com/excalidraw/excalidraw
+    validations:
+      required: true
+
+  - type: input
+    id: online
+    attributes:
+      label: 官网 / 在线地址
+      description: 能直接在浏览器打开就填在这里，打不开就留空并在下面选「要装」。
+      placeholder: https://excalidraw.com
+
+  - type: input
+    id: license
+    attributes:
+      label: License
+      placeholder: MIT
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: 一句话介绍 + 推荐理由
+      description: 它解决什么问题、适合谁、有什么代价。只说「很好用」的会被搁置。
+      placeholder: 手绘风格的无限白板，导出的图带手绘质感；代价是没有模板库，从零开始画比 Figma 慢。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: 使用形态
+      description: 这一项决定它被归到「打开即用」还是「要装」——请照实选。
+      options:
+        - 网页即用（打开网址就能用）
+        - 要装桌面软件
+        - 要自己部署（Docker / 自建服务）
+        - 命令行工具
+        - 浏览器扩展
+        - 手机 App
+    validations:
+      required: true
+
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: 会不会上传你的内容
+      description: 本站首页写着「0 字节上传服务器」，所以每条收录都必须回答这一项。不确定就选「不清楚」，不要猜。
+      options:
+        - 本机处理，内容不出设备
+        - 会上传（含加密上传）
+        - 取决于怎么用（如自部署就是本地）
+        - 不清楚 / 没查到
+    validations:
+      required: true
+
+  - type: textarea
+    id: privacyNote
+    attributes:
+      label: 边界说明
+      description: 选了「会上传」必须写：传的是什么、存多久、明不明文。「加密后只存密文」和「明文上传」对读者的含义完全不同。
+      placeholder: 端到端加密后只把密文存到服务器，作者也解不开；但协作时对方能看到你编辑的内容。
+
+  - type: input
+    id: submitter
+    attributes:
+      label: 怎么称呼你（可留空）
