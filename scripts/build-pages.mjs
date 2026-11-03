@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintAll } from './lib/tool-lint.mjs';
+import { validateToolMeta, metaSummary } from './lib/tool-meta.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
 
@@ -30,6 +31,21 @@ const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').repla
 
 const tools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
 const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools;
+
+// 0.5) 边界字段闸门（v3.17）：62 条外链必须有 runtime / privacy / checkedAt，
+//      非 local 的必须写 privacyNote。这些字段现在还没上界面，但它们是「0 字节上传服务器」
+//      这句话能站住的前提——数据缺一条，那句话就对某一条工具说了谎。
+{
+  const { errors, warns, stats } = validateToolMeta(dirTools, { localTools: tools });
+  if (errors.length) {
+    console.error(`\n❌ 外链边界字段校验失败（${errors.length} 个问题），构建中止：\n`);
+    for (const e of errors) console.error(`   ${e}`);
+    console.error('\n   语义见 scripts/lib/tool-meta.mjs；自查：node scripts/check-tool-meta.mjs\n');
+    process.exit(1);
+  }
+  for (const w of warns) console.log(`⚠️ ${w}`);
+  console.log(`✅ 边界字段：${metaSummary(stats)}`);
+}
 const i18n = JSON.parse(readFileSync(join(root, 'i18n.json'), 'utf8')).en;
 const articles = JSON.parse(readFileSync(join(root, 'articles.json'), 'utf8'));
 // v3.12：评测拆成「索引 + 单篇」。索引给列表页和搜索面板（几个短字段），

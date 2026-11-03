@@ -1,6 +1,6 @@
 {
   "version": "0.2.0",
-  "note": "目录模式：知名开源项目的官方在线版，URL 已于 2026-10-24 批量拨测验证（全部 200 或知名稳定站）。点击在新标签打开官网。",
+  "note": "目录模式：知名开源项目的官方在线版，URL 已于 2026-10-24 批量拨测验证（全部 200 或知名稳定站）。runtime / privacy / checkedAt 是 v3.17 补的边界字段：privacy 描述「你输入的内容会不会离开设备」，不是「工具好不好」。非 local 的条目必须写 privacyNote，说明具体怎么个上传法。",
   "tools": [
     {
       "id": "excalidraw",
@@ -10,6 +10,9 @@
       "url": "https://excalidraw.com",
       "source": "github.com/excalidraw/excalidraw",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "白板",
         "画图",
@@ -30,6 +33,9 @@
       "url": "https://www.tldraw.com",
       "source": "github.com/tldraw/tldraw",
       "license": "自定义源可用",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "白板",
         "画布"
@@ -48,6 +54,9 @@
       "url": "https://app.diagrams.net",
       "source": "github.com/jgraph/drawio",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "流程图",
         "架构图"
@@ -64,6 +73,9 @@
       "url": "https://jspaint.app",
       "source": "github.com/1j01/jspaint",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "画图",
         "怀旧"
@@ -77,6 +89,9 @@
       "url": "https://svgedit.netlify.app",
       "source": "github.com/SVG-Edit/svgedit",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "svg",
         "矢量"
@@ -90,6 +105,9 @@
       "url": "https://threejs.org/editor/",
       "source": "github.com/mrdoob/three.js",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "3d",
         "three.js"
@@ -103,6 +121,9 @@
       "url": "https://oklch.com",
       "source": "github.com/evilmartians/oklch-picker",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "颜色",
         "css"
@@ -121,11 +142,13 @@
       "url": "https://squoosh.app",
       "source": "github.com/GoogleChromeLabs/squoosh",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "图片",
         "压缩"
       ],
-      "hot": true,
       "blurb": "Google 出品，最大的价值是能左右对比压缩前后画质——不用靠猜参数，拉一下滑杆就知道能压到多小。",
       "aliases": [
         "瘦身",
@@ -136,7 +159,8 @@
         "照片",
         "截图",
         "图像"
-      ]
+      ],
+      "hot": true
     },
     {
       "id": "picsum",
@@ -146,6 +170,9 @@
       "url": "https://picsum.photos",
       "source": "github.com/DMarby/picsum-photos",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "占位图",
         "开发"
@@ -159,17 +186,20 @@
       "url": "https://tesseract.projectnaptha.com",
       "source": "github.com/naptha/tesseract.js",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "ocr",
         "文字识别"
       ],
-      "hot": true,
       "blurb": "浏览器里跑 OCR，图片不上传就能提取文字；识别中文建议先选 chi_sim 语言包，准确率会明显提高。",
       "aliases": [
         "提取文字",
         "图片转文字",
         "认字"
-      ]
+      ],
+      "hot": true
     },
     {
       "id": "bentopdf",
@@ -179,12 +209,15 @@
       "url": "https://bentopdf.com",
       "source": "github.com/alam00000/bentopdf",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "pdf",
         "隐私"
       ],
-      "hot": true,
-      "blurb": "PDF 工具里少见的\"完全本地处理\"，合并、拆分、压缩都在浏览器完成，处理合同时不用担心文件外泄。"
+      "blurb": "PDF 工具里少见的\"完全本地处理\"，合并、拆分、压缩都在浏览器完成，处理合同时不用担心文件外泄。",
+      "hot": true
     },
     {
       "id": "stirlingpdf",
@@ -194,6 +227,10 @@
       "url": "https://stirlingpdf.com",
       "source": "github.com/Stirling-Tools/Stirling-PDF",
       "license": "MIT",
+      "runtime": "selfhost",
+      "privacy": "optional",
+      "privacyNote": "官方现在主推云平台；要「文件不出机器」得自己 Docker 部署",
+      "checkedAt": "2026-11-03",
       "tags": [
         "pdf"
       ]
@@ -206,6 +243,9 @@
       "url": "https://mozilla.github.io/pdf.js/web/viewer.html",
       "source": "github.com/mozilla/pdf.js",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "pdf",
         "阅读"
@@ -219,6 +259,10 @@
       "url": "https://stackedit.io",
       "source": "github.com/benweet/stackedit",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "optional",
+      "privacyNote": "默认存在浏览器本地；连 Google Drive / GitHub 同步才会把文档传出去",
+      "checkedAt": "2026-11-03",
       "tags": [
         "markdown",
         "编辑器"
@@ -232,6 +276,9 @@
       "url": "https://dillinger.io",
       "source": "github.com/joemccann/dillinger",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "markdown"
       ]
@@ -244,6 +291,10 @@
       "url": "https://cryptpad.fr",
       "source": "github.com/cryptpad/cryptpad",
       "license": "AGPL-3.0",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "端到端加密后上传，服务器只存密文、读不到内容",
+      "checkedAt": "2026-11-03",
       "tags": [
         "文档",
         "协作",
@@ -265,12 +316,16 @@
       "url": "https://app.affine.pro",
       "source": "github.com/toeverything/AFFiNE",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "官方云实例的文档存在服务器上；想留在本机要自己部署 AFFiNE",
+      "checkedAt": "2026-11-03",
       "tags": [
         "笔记",
         "知识库"
       ],
-      "hot": true,
-      "blurb": "开源版 Notion：文档、白板、表格在一个页面里，适合做个人知识库；支持本地 Docker 部署。"
+      "blurb": "开源版 Notion：文档、白板、表格在一个页面里，适合做个人知识库；支持本地 Docker 部署。",
+      "hot": true
     },
     {
       "id": "cyberchef",
@@ -280,13 +335,16 @@
       "url": "https://cyberchef.org/",
       "source": "github.com/gchq/CyberChef",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "编码",
         "解码",
         "安全"
       ],
-      "hot": true,
-      "blurb": "安全与数据处理的瑞士军刀，编码/加密/解压/正则几十种操作可以串成\"配方\"，处理 CTF 或日志分析效率极高。"
+      "blurb": "安全与数据处理的瑞士军刀，编码/加密/解压/正则几十种操作可以串成\"配方\"，处理 CTF 或日志分析效率极高。",
+      "hot": true
     },
     {
       "id": "transform",
@@ -296,6 +354,9 @@
       "url": "https://transform.tools",
       "source": "github.com/transform-tools/transform",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "格式转换"
       ],
@@ -314,13 +375,17 @@
       "url": "https://app.quicktype.io",
       "source": "github.com/glideapps/quicktype",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "unknown",
+      "privacyNote": "官网没有说明转换在哪一侧完成，暂按「未核实」处理",
+      "checkedAt": "2026-11-03",
       "tags": [
         "json",
         "类型",
         "代码生成"
       ],
-      "hot": true,
-      "blurb": "把一段 JSON 直接变成 TypeScript 接口定义，省掉手敲类型的时间，接口字段多时尤其省事。"
+      "blurb": "把一段 JSON 直接变成 TypeScript 接口定义，省掉手敲类型的时间，接口字段多时尤其省事。",
+      "hot": true
     },
     {
       "id": "jsonhero",
@@ -330,6 +395,10 @@
       "url": "https://jsonhero.io",
       "source": "github.com/jsonhero-io/jsonhero-web",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "粘贴的 JSON 会存到对方服务器并生成可分享链接",
+      "checkedAt": "2026-11-03",
       "tags": [
         "json",
         "可视化"
@@ -343,6 +412,9 @@
       "url": "https://jsonplaceholder.typicode.com",
       "source": "github.com/typicode/jsonplaceholder",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "api",
         "mock"
@@ -356,6 +428,10 @@
       "url": "https://httpbin.org",
       "source": "github.com/psf/requests (生态)",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "它本身就是回显服务——你发给它的请求内容会经它返回，别放真实数据",
+      "checkedAt": "2026-11-03",
       "tags": [
         "http",
         "调试"
@@ -369,6 +445,10 @@
       "url": "https://webhook.site",
       "source": "github.com/fredsted/webhook.site",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "用途就是把请求发到它的服务器上查看，天然会上传",
+      "checkedAt": "2026-11-03",
       "tags": [
         "webhook",
         "调试"
@@ -382,6 +462,9 @@
       "url": "https://shell.duckdb.org",
       "source": "github.com/duckdb/duckdb",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "sql",
         "数据库"
@@ -395,12 +478,15 @@
       "url": "https://devdocs.io",
       "source": "github.com/freeCodeCamp/devdocs",
       "license": "MPL-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "文档",
         "api"
       ],
-      "hot": true,
-      "blurb": "把几十种语言和框架的文档聚合在一个页面里搜索，前端查 API 不用在十个标签页之间来回切。"
+      "blurb": "把几十种语言和框架的文档聚合在一个页面里搜索，前端查 API 不用在十个标签页之间来回切。",
+      "hot": true
     },
     {
       "id": "prettier",
@@ -410,6 +496,9 @@
       "url": "https://prettier.io/playground/",
       "source": "github.com/prettier/prettier",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "格式化",
         "代码"
@@ -423,6 +512,9 @@
       "url": "https://regexper.com",
       "source": "github.com/javallone/regexper-static",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "正则"
       ],
@@ -439,12 +531,15 @@
       "url": "https://mermaid.live",
       "source": "github.com/mermaid-js/mermaid-live-editor",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "图表",
         "uml"
       ],
-      "hot": true,
-      "blurb": "用几行文本画流程图和时序图，改起来比拖拽工具快，还能直接放进 Markdown 和代码仓库里版本管理。"
+      "blurb": "用几行文本画流程图和时序图，改起来比拖拽工具快，还能直接放进 Markdown 和代码仓库里版本管理。",
+      "hot": true
     },
     {
       "id": "markmap",
@@ -454,6 +549,9 @@
       "url": "https://markmap.js.org/repl",
       "source": "github.com/markmap/markmap",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "思维导图",
         "markdown"
@@ -471,6 +569,10 @@
       "url": "https://www.plantuml.com/plantuml",
       "source": "github.com/plantuml/plantuml",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "官方服务器渲染图，源码会发过去；隐私要求高就本地跑 jar",
+      "checkedAt": "2026-11-03",
       "tags": [
         "uml",
         "建模"
@@ -484,6 +586,9 @@
       "url": "https://asciiflow.com",
       "source": "github.com/lewish/asciiflow",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "ascii",
         "图"
@@ -497,6 +602,10 @@
       "url": "https://explainshell.com",
       "source": "github.com/idank/explainshell",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "命令在服务器上解析，会把命令行发过去",
+      "checkedAt": "2026-11-03",
       "tags": [
         "linux",
         "命令行"
@@ -511,6 +620,9 @@
       "url": "https://roadmap.sh",
       "source": "github.com/kamranahmedse/developer-roadmap",
       "license": "自定义",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "学习",
         "路线图"
@@ -524,6 +636,9 @@
       "url": "https://icones.js.org",
       "source": "github.com/antfu/icones",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "图标",
         "svg"
@@ -537,6 +652,9 @@
       "url": "https://lucide.dev",
       "source": "github.com/lucide-icons/lucide",
       "license": "ISC",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "图标"
       ]
@@ -549,6 +667,9 @@
       "url": "https://audiomass.co",
       "source": "github.com/pkalogiros/audiomass",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "音频",
         "剪辑"
@@ -563,17 +684,20 @@
       "url": "https://pairdrop.net",
       "source": "github.com/schlagmichdoch/PairDrop",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "传文件",
         "p2p"
       ],
-      "hot": true,
       "blurb": "不用装 App 就能在手机和电脑之间传文件，同一 WiFi 下扫码即传，AirDrop 的开源替代。",
       "aliases": [
         "发文件",
         "传东西",
         "传输文件"
-      ]
+      ],
+      "hot": true
     },
     {
       "id": "localsend",
@@ -583,6 +707,9 @@
       "url": "https://localsend.org",
       "source": "github.com/localsend/localsend",
       "license": "Apache-2.0",
+      "runtime": "desktop",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "传文件",
         "局域网"
@@ -602,6 +729,9 @@
       "url": "https://file.pizza",
       "source": "github.com/kern/filepizza",
       "license": "BSD-3-Clause",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "传文件"
       ],
@@ -619,6 +749,10 @@
       "url": "https://privatebin.net",
       "source": "github.com/PrivateBin/PrivateBin",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "加密后存到对方服务器；服务器读不到明文，但内容确实离开了设备",
+      "checkedAt": "2026-11-03",
       "tags": [
         "粘贴板",
         "加密"
@@ -636,6 +770,9 @@
       "url": "https://bitwarden.com/password-generator/",
       "source": "github.com/bitwarden/clients",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "密码"
       ],
@@ -654,6 +791,9 @@
       "url": "https://monkeytype.com",
       "source": "github.com/monkeytypegame/monkeytype",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "打字",
         "练习"
@@ -667,6 +807,9 @@
       "url": "https://librespeed.org",
       "source": "github.com/librespeed/speedtest",
       "license": "LGPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "测速",
         "网络"
@@ -680,6 +823,9 @@
       "url": "https://flexboxfroggy.com",
       "source": "github.com/thomaspark/flexboxfroggy",
       "license": "自定义",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "css",
         "学习"
@@ -693,6 +839,9 @@
       "url": "https://grid.layoutit.com",
       "source": "github.com/Leniolabs/layoutit-grid",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "css",
         "grid",
@@ -707,12 +856,16 @@
       "url": "https://carbon.now.sh",
       "source": "github.com/carbon-app/carbon",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "unknown",
+      "privacyNote": "官网找不到隐私说明；导出是否走服务端渲染未经核实",
+      "checkedAt": "2026-11-03",
       "tags": [
         "代码截图",
         "分享"
       ],
-      "hot": true,
-      "blurb": "把代码变成好看的图片发到社交媒体或 PPT 里，主题和窗口样式都可调，写技术分享时很实用。"
+      "blurb": "把代码变成好看的图片发到社交媒体或 PPT 里，主题和窗口样式都可调，写技术分享时很实用。",
+      "hot": true
     },
     {
       "id": "jsoncrack",
@@ -722,12 +875,15 @@
       "url": "https://jsoncrack.com",
       "source": "github.com/jsoncrack-io/jsoncrack",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "json",
         "可视化"
       ],
-      "hot": true,
-      "blurb": "把嵌套很深的 JSON 变成可点击的节点图，排查复杂接口返回结构时比格式化直观得多。"
+      "blurb": "把嵌套很深的 JSON 变成可点击的节点图，排查复杂接口返回结构时比格式化直观得多。",
+      "hot": true
     },
     {
       "id": "regex-vis",
@@ -737,6 +893,9 @@
       "url": "https://regex-vis.com",
       "source": "github.com/Bowen7/regex-vis",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "正则",
         "可视化"
@@ -755,6 +914,10 @@
       "url": "https://wisemapping.com",
       "source": "github.com/wisemapping/wisemapping",
       "license": "自定义",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "在线版把脑图存在对方账号里；想留在本机得自己部署",
+      "checkedAt": "2026-11-03",
       "tags": [
         "思维导图"
       ],
@@ -771,6 +934,9 @@
       "url": "https://www.rawgraphs.io",
       "source": "github.com/rawgraphs/rawgraphs-app",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "图表",
         "可视化"
@@ -784,6 +950,9 @@
       "url": "https://jakearchibald.github.io/svgomg/",
       "source": "github.com/jakearchibald/svgomg",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "svg",
         "优化",
@@ -805,6 +974,9 @@
       "url": "https://placehold.co",
       "source": "github.com/kevin-smets/placehold.co",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "占位图"
       ]
@@ -817,6 +989,9 @@
       "url": "https://www.dicebear.com",
       "source": "github.com/dicebear/dicebear",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "头像",
         "生成"
@@ -830,6 +1005,9 @@
       "url": "https://simpleicons.org",
       "source": "github.com/simple-icons/simple-icons",
       "license": "CC0-1.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "图标",
         "svg"
@@ -843,6 +1021,9 @@
       "url": "https://quickref.me",
       "source": "github.com/jaywcjlove/quickref",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "速查表",
         "文档"
@@ -856,6 +1037,10 @@
       "url": "https://exercism.org",
       "source": "github.com/exercism/exercism",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "学习平台，提交的练习代码会上传并可能被导师看到",
+      "checkedAt": "2026-11-03",
       "tags": [
         "学习",
         "编程"
@@ -869,6 +1054,9 @@
       "url": "https://colorbrewer2.org",
       "source": "github.com/axismaps/colorbrewer",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "颜色",
         "图表"
@@ -887,6 +1075,10 @@
       "url": "https://simplytranslate.org",
       "source": "github.com/Simple-Translate",
       "license": "AGPL-3.0",
+      "runtime": "web",
+      "privacy": "upload",
+      "privacyNote": "翻译走它的服务端转发，原文会经过它的服务器",
+      "checkedAt": "2026-11-03",
       "tags": [
         "翻译",
         "隐私"
@@ -900,6 +1092,9 @@
       "url": "https://vert.sh",
       "source": "github.com/npezza93/vert",
       "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "格式转换",
         "文件"
@@ -919,6 +1114,9 @@
       "url": "https://it-tools.tech",
       "source": "github.com/CorentinTh/it-tools",
       "license": "GPL-3.0",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "工具箱",
         "哈希",
@@ -946,6 +1144,9 @@
       "url": "https://ffmpegwasm.netlify.app",
       "source": "github.com/ffmpegwasm/ffmpeg.wasm",
       "license": "MIT",
+      "runtime": "web",
+      "privacy": "local",
+      "checkedAt": "2026-11-03",
       "tags": [
         "视频",
         "转码",

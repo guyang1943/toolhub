@@ -31,6 +31,23 @@ if (!picked.length) {
 }
 const needServer = picked.some((s) => s.needsServer);
 
+// 前置闸门（v3.17）：外链的边界字段缺一条，六套测试全绿也救不回一句假承诺。
+// 它不算「一套」，所以不进 SUITES——但每次跑都先过它，过不了直接停。
+{
+  const g = spawnSync(process.execPath, [join(root, 'scripts', 'check-tool-meta.mjs')], {
+    cwd: root,
+    encoding: 'utf8',
+    timeout: 60000,
+  });
+  if (g.status !== 0) {
+    console.error('❌ 外链边界字段闸门未过，先修数据再跑测试：\n');
+    console.error(`${g.stdout || ''}${g.stderr || ''}`);
+    process.exit(1);
+  }
+  const line = (g.stdout || '').split('\n').map((l) => l.trim()).find((l) => l.startsWith('✅'));
+  if (line) console.log(line);
+}
+
 // 只抓两类行：汇总（最后一行带 ✅ 的）和失败（带 ❌ 的）。其余全部丢弃。
 const keep = (out) =>
   out
