@@ -373,7 +373,8 @@ npx wrangler deploy --config wrangler.toml
 | 工具功能 | `node scripts/new-tools-test.mjs` | 个税/房贷数学、单位精度、真实 PDF、真实 QR、图片转码、EXIF 解析与无损剥离 | 116 |
 | 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 + 内容抽查 | 73 |
 | 真浏览器 E2E | `node scripts/browser-test.mjs <base>` | CDP 驱动 Edge：真实 DOM、文件上传、剪贴板、视口、主题、新工具端到端、提交页生成器、安全头/CLS/LCP/CSP 违规 | 85 |
-| 边界字段 | `node scripts/check-tool-meta.mjs` | 62 条外链的 runtime / privacy 是否在枚举内、非 local 是否写了 privacyNote、checkedAt 时效（180 天警告 / 365 天失败）。build 与 check-all 都会先过这一关 | 62 条 |
+| 边界字段 | `node scripts/check-tool-meta.mjs` | 62 条外链的 runtime / privacy 是否在枚举内、非 local 是否写了 privacyNote、evidence 两维（link / boundary）结构与分档时效（imported 90/180 天、inferred 120/240、manual 365/730、link.probe 180/365）。build 与 check-all 都会先过这一关 | 62 条 |
+| 外链探活 | `node scripts/check-links.mjs [--write]` | 62 条外链四态判定（ok / alive / dead / unreachable），`--write` 写回 evidence.link。**不进发版必跑清单**：依赖外网、结果不稳。unreachable 不判死也不刷新证据——本机网络不通不等于站点没了 | 62 条 |
 | 性能预算 | `node scripts/perf-budget.mjs` | 首屏 gzip 体积、请求数、禁止第三方库回流首屏 | 6 项预算 |
 
 ### 测试矩阵（v3.3）
