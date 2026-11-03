@@ -471,6 +471,52 @@ async function feedFile(selector, dataUrl, name, type) {
   check('打错字时给出「是不是要找」', typoHint);
   await goto('/');
 
+  // ---- 1.7 数据边界上界面（v3.19）----
+  // 守三件事：目录工具不能被标成「本地」、卡片要带数据边界、死路要给出口。
+  // 第一条是这次真正修掉的 bug——runtime 从 'link' 扩成 web/desktop/… 之后，
+  // 首页精选的 `runtime !== 'link'` 恒为真，Tesseract / ffmpeg.wasm / IT-Tools /
+  // Excalidraw 四个第三方站全被标成了「🔒 本地」，跟首页信任区那句承诺直接矛盾。
+  const dirCard = await evaluate(`(() => {
+    const el = document.getElementById('hero-search');
+    el.value = 'excalidraw';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    return new Promise((r) => setTimeout(() => {
+      const card = document.querySelector('#grid [data-id="excalidraw"]');
+      r({ text: card ? card.textContent : '', badge: card && card.querySelector('.badge') ? card.querySelector('.badge').textContent : '' });
+    }, 500));
+  })()`);
+  check(
+    '目录工具卡片标「在线」而不是「本地」',
+    /在线/.test(dirCard.text) && !/本地运行/.test(dirCard.text),
+    dirCard.text.replace(/\s+/g, ' ').trim().slice(0, 40)
+  );
+  check('卡片带数据边界（本机处理 / 会上传…）', /本机处理|会上传|看用法|未核实/.test(dirCard.text), dirCard.badge.trim());
+  await shot('09-dir-privacy');
+
+  // 纯乱码（连错别字建议都没有）也必须给出口，否则用户只能看到一句「没找到」
+  await evaluate(`(() => {
+    const el = document.getElementById('hero-search');
+    el.value = 'zzzqqq';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  })()`);
+  const recs = await evaluate(`(async () => {
+    for (let i = 0; i < 30; i++) {
+      const row = document.querySelector('#grid .rec-row');
+      if (row) return { n: row.querySelectorAll('a').length, title: (document.querySelector('#grid .rec-title') || {}).textContent || '' };
+      await new Promise((r) => setTimeout(r, 100));
+    }
+    return { n: 0, title: '' };
+  })()`);
+  check('无结果时给出热门推荐', recs.n >= 1, recs.n + ' 个');
+  check('无结果推荐有引导语', /试试这些/.test(recs.title), recs.title.trim());
+
+  // 静态详情页：桌面类工具不能说成「在线直达」——那正是 v3.17 才刚分开的两种东西
+  await goto('/tools/localsend/');
+  const lsBody = await evaluate(`(document.body.innerText || '')`);
+  check('目录详情页有「数据边界」区块', /数据边界/.test(lsBody));
+  check('桌面应用标「需安装客户端」而不是在线直达', /需安装客户端/.test(lsBody) && !/怎么用上：🌐 在线直达/.test(lsBody));
+  await goto('/');
+
   // ---- 2. 键盘操作（真实键盘事件）----
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: '/', code: 'Slash', text: '/', windowsVirtualKeyCode: 191 });
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: '/', code: 'Slash', windowsVirtualKeyCode: 191 });

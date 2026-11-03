@@ -258,6 +258,10 @@ async function loadRegistry() {
 
 const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
 
+// 目录工具的数据边界标注。顺序须与 scripts/lib/tool-meta.mjs 的 PRIVACY_KINDS 一致。
+const PV = [['本机处理', 'privacyLocal'], ['会上传', 'privacyUpload'], ['看用法', 'privacyOptional'], ['未核实', 'privacyUnknown']];
+const privBadge = (x) => { const p = PV[['local', 'upload', 'optional', 'unknown'].indexOf(x.privacy)] || PV[3]; return t(p[0], p[1]); };
+
 /* ---------- 首页 ---------- */
 // 分类页地址。取不到 slug 时退回旧的 ?cat= 筛选（tools.json 没更新也不会给出死链）
 function catUrl(c) {
@@ -351,7 +355,7 @@ function cardHTML(tool) {
   const isLocal = tool.runtime !== 'link';
   const badge = isLocal
     ? `<span class="badge local">${t('🔒 本地运行', 'badgeLocal')}</span>`
-    : `<span class="badge link">${t('🌐 在线直达', 'badgeLink')}</span>`;
+    : `<span class="badge link">${t('🌐 在线直达', 'badgeLink')} · ${privBadge(tool)}</span>`;
   const icon = CAT_ICONS[tool.category] || '🧰';
   const hot = tool.hot ? '<span class="badge hot">🔥</span>' : '';
   const isFav = favs().includes(tool.id);
@@ -554,7 +558,7 @@ function renderFeatured(tools) {
       return `<div class="fl-row" data-id="${tool.id}" data-link="${tool.runtime !== 'link' ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${m.name}</div><div class="f-desc">${m.desc}</div></div>
-        <span class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : t('🌐 在线直达', 'badgeLink')} · ${catName(tool.category)}</span>
+        <span class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : `${t('🌐 在线直达', 'badgeLink')} · ${privBadge(tool)}`} · ${catName(tool.category)}</span>
       </div>`;
     })
     .join('');
@@ -629,13 +633,17 @@ function renderGrid(tools, keyword) {
       : activeCategory === '🔥 最常用' ? t('还没有使用记录，运行任意工具后这里会自动统计', 'emptyUsed')
       : activeRuntime !== 'all' ? t('当前筛选下没有工具，试试切回「全部」', 'emptyRuntime')
       : t('没有匹配的工具，换个关键词试试', 'emptyAll');
-    // 只在「关键词没命中」这种空态猜错别字：收藏夹空、筛选空都不是打字问题
-    const fix = kw && activeCategory === '全部' && activeRuntime === 'all' ? suggestFix(kw) : null;
+    // 只在「关键词没命中」这种空态猜错别字、给热门出口：收藏夹空、筛选空都不是打字问题
+    const kwMiss = kw && activeCategory === '全部' && activeRuntime === 'all';
+    const fix = kwMiss ? suggestFix(kw) : null;
+    // 热门共 33 个，够取 6 个；乱码也要给出口，所以挂 kwMiss 而不是挂 fix
+    const recs = kwMiss ? REGISTRY.tools.filter((x) => x.hot).slice(0, 6) : [];
     gridEl.innerHTML = `
       <div class="empty">
         <div style="font-size:32px;margin-bottom:8px">🔍</div>
         ${emptyMsg}
         ${fix ? `<div style="margin-top:12px;font-size:13px">${t('没有找到', 'fixNo')}「${esc(kw)}」，${t('是不是要找', 'fixAsk')}：<button class="btn ghost" id="fix-kw" data-kw="${esc(fix)}">${esc(fix)}</button></div>` : ''}
+        ${recs.length ? `<div class="rec-title">${t('试试这些热门工具：', 'tryThese')}</div><div class="rec-row">${recs.map((r) => `<a class="btn ghost" href="/tools/${r.id}/">${esc(r.name)}</a>`).join('')}</div>` : ''}
         <div style="margin-top:14px"><button class="btn ghost" id="reset-filter">${t('查看全部工具', 'viewAll')}</button></div>
       </div>`;
     const fixBtn = gridEl.querySelector('#fix-kw');

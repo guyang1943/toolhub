@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { lintAll } from './lib/tool-lint.mjs';
-import { validateToolMeta, metaSummary } from './lib/tool-meta.mjs';
+import { validateToolMeta, metaSummary, PRIVACY_LABEL } from './lib/tool-meta.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
 
@@ -372,6 +372,29 @@ for (const tool of dirTools) {
   const body =
     `<h2>它解决什么问题</h2><p>${copy.intro}</p>` +
     (tool.blurb ? `<p>${tool.blurb}</p>` : '') +
+    // 数据边界上界面。构建期 v3.17 起就校验了 runtime/privacy/privacyNote，
+    // 但之前没渲染出来——这正是「0 字节上传」口径能站住的前提。
+    // 「怎么用上」必须按 runtime 说实话：把 desktop / selfhost 也叫「在线直达」，
+    // 就是把 v3.17 刚分开的 LocalSend（要装客户端）、Stirling-PDF（要自己部署）
+    // 又混回「打开网页就能用」，等于白分。
+    (() => {
+      const rtLabel = { web: '网页版', desktop: '桌面应用', selfhost: '可自托管', cli: '命令行', extension: '浏览器扩展', mobile: '手机应用' }[tool.runtime] || tool.runtime;
+      const accessLabel = { web: '🌐 在线直达', extension: '🧩 浏览器扩展', desktop: '💻 需安装客户端', cli: '⌨️ 需安装命令行', mobile: '📱 需安装 App', selfhost: '🐳 需自行部署' }[tool.runtime] || '🔗 官网';
+      const pvLabel = PRIVACY_LABEL[tool.privacy] || '未核实';
+      // local 时保留作者写的 privacyNote；没有才退到一句按 runtime 区分的话——
+      // 桌面应用不可能「在浏览器内完成」，照抄那句话就是新的口径错误。
+      const localNote =
+        tool.runtime === 'web'
+          ? '在浏览器内完成，内容不上传（可以有网络请求，但请求里不含你的数据）。'
+          : '处理只在本机完成，内容不上传第三方服务器。';
+      const pvNote = tool.privacyNote || (tool.privacy === 'local' ? localNote : '');
+      return (
+        `<h2>数据边界</h2>` +
+        `<p>怎么用上：${accessLabel}（${rtLabel}，官网 ${host}）</p>` +
+        `<p>数据边界：<b>${pvLabel}</b>${pvNote ? ` —— ${pvNote}` : ''}</p>` +
+        `<p>跳转到对方站点后，适用对方的隐私政策，ToolHub 无法控制也不负责。敏感数据请先看<a href="/privacy/">隐私说明</a>。</p>`
+      );
+    })() +
     (sceneList ? `<h2>三个典型使用场景</h2>${sceneList}` : '') +
     (pairParas ? `<h2>和 ToolHub 本地工具怎么配合</h2>${pairParas}` : '') +
     (sibList ? `<h2>同类可替代方案</h2>${sibList}` : '') +
@@ -526,7 +549,8 @@ const staticPages = [
     h1: '意见反馈与工具需求',
     content:
       '<h2>你可以反馈什么</h2><p>工具报错、想加的功能、希望收录的开源项目、界面与文案问题，都欢迎。</p>' +
-      '<h2>怎么反馈</h2><p>复制页面上的模板，通过邮件或社区帖子发给我们。我们会把高频需求排进开发计划。</p>',
+      '<h2>怎么反馈</h2><p>首选 <a href="https://github.com/guyang1943/toolhub/issues/new/choose" target="_blank" rel="noopener">GitHub Issues</a>（选对应模板提交，带上复现步骤，站长会直接看到）。我们会把高频需求排进开发计划。</p>' +
+      '<h2>反馈模板（复制可用）</h2><pre>【类型】报错 / 新功能 / 收录建议 / 文案问题\n【工具】（哪个工具的页面，如 /tools/json-format/）\n【现象】（发生了什么；期望发生什么）\n【复现步骤】1. 2. 3.\n【环境】浏览器版本 / 手机或电脑 / 是否离线包</pre>',
   },
 ];
 
@@ -639,7 +663,7 @@ for (const p of staticPages) {
   const toolRow = (t, i) => `<a class="fl-row" href="/tools/${t.id}/">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${t.name}</div><div class="f-desc">${t.desc}</div></div>
-        <span class="f-meta">${t.isLocal ? '🔒 本地' : '🌐 在线'}</span>
+        <span class="f-meta">${t.isLocal ? '🔒 本地' : `🌐 在线 · ${PRIVACY_LABEL[t.privacy] || '未核实'}`}</span>
       </a>`;
 
   const catChips = (active) =>
@@ -1334,11 +1358,15 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   const featuredHTML = featuredIds
     .map((id, i) => {
       const tool = allTools.find((x) => x.id === id);
-      const isLocal = tool.runtime !== 'link';
+      // 注意：这里的 allTools 是 tools + dirTools 的原样合并，目录工具的 runtime
+      // 是 web/desktop… 而不是 'link'，不能用 runtime !== 'link' 判本地——否则目录工具
+      // 会被标成 🔒 本地（P0-1 口径红线）。用 dirById 判定才是对的。
+      const isLocal = !dirById.has(tool.id);
+      const priv = isLocal ? '' : ` · ${PRIVACY_LABEL[tool.privacy] || '未核实'}`;
       return `<div class="fl-row" data-id="${tool.id}" data-link="${isLocal ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${esc(tool.name)}</div><div class="f-desc">${esc(tool.desc)}</div></div>
-        <span class="f-meta">${isLocal ? '🔒 本地' : '🌐 在线'} · ${tool.category}</span>
+        <span class="f-meta">${isLocal ? '🔒 本地' : '🌐 在线'}${priv} · ${tool.category}</span>
       </div>`;
     })
     .join('');

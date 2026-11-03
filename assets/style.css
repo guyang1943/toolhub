@@ -197,6 +197,9 @@ body[data-view='home'] #search-open { display: inline-flex; }
 .badge.link { background: #fff7ed; color: #c2570a; }
 .badge.hot { background: transparent; padding: 2px 0; }
 .empty { color: var(--muted); text-align: center; padding: 40px 0; }
+/* P0-2：无结果时的热门推荐 */
+.rec-title { margin-top: 14px; font-size: 13px; }
+.rec-row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 
 /* 工具页专用样式（堆叠提示、结果导出、结果表格、个税大数字、二维码布局、
    教程/常见错误、diff 与 Markdown 预览、口令弹层…）已拆到 assets/style.tool.css（v3.5）。

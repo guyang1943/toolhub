@@ -5,6 +5,10 @@ const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').repla
 const tools = JSON.parse(
   await import('node:fs').then((fs) => fs.readFileSync(new URL('../tools/tools.json', import.meta.url), 'utf8'))
 ).tools;
+// P0-3：目录工具页也要冒烟——之前只覆盖了本地工具，62 个目录页漏网
+const dirTools = JSON.parse(
+  await import('node:fs').then((fs) => fs.readFileSync(new URL('../tools/directory.json', import.meta.url), 'utf8'))
+).tools;
 
 const paths = [
   '/',
@@ -53,6 +57,7 @@ const paths = [
   '/api/tools.json',
   '/feed.xml',
   ...tools.map((t) => `/tools/${t.id}/`),
+  ...dirTools.map((t) => `/tools/${t.id}/`),
   '/tools/json-format/run.js',
   '/assets/vendor/pyodide/pyodide-lock.json',
   '/assets/vendor/pyodide/pyodide.asm.js',
