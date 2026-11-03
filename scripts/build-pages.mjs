@@ -8,6 +8,7 @@ import { lintAll } from './lib/tool-lint.mjs';
 import { validateToolMeta, metaSummary, PRIVACY_LABEL } from './lib/tool-meta.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
+import { matchPage } from './lib/pages-registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').replace(/\/$/, '');
@@ -121,7 +122,14 @@ const tpl = stripped
   .replace(/\d+(?= 个精选开源工具)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 个开源工具)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 个工具 ·)/g, TOTAL_TOOLS)
-  .replace(/\d+(?= 条资源)/g, TOTAL_RES);
+  .replace(/\d+(?= 条资源)/g, TOTAL_RES)
+  // v3.20：首屏那句「N 个工具」把 37 个本地工具和 62 条外链混成一个数。
+  // 访客对本站的第一个事实判断，混着写等于把 v3.19「按 runtime 说实话」又推翻一次。
+  // 拆成两个数，各自由数据推导：本机跑 = tools 分片数，已收录 = 两者之和。
+  .replace(/\d+(?= 个在本机跑)/g, tools.length)
+  .replace(/\d+(?= 个已收录)/g, TOTAL_TOOLS)
+  .replace(/\d+(?= run in your browser)/g, tools.length)
+  .replace(/\d+(?= listed)/g, TOTAL_TOOLS);
 // 模板计数归一后暂不落盘：首页还要注入静态内容，统一在构建末尾写一次（见 6)）
 
 function fillMeta(html, { title, desc, url, botInject, jsonld }) {
@@ -141,9 +149,11 @@ function fillMeta(html, { title, desc, url, botInject, jsonld }) {
   // 非首页统一先标 page；工具页由 tool-page.js 运行时改成 tool。
   out = out.replace('<body data-view="home">', '<body data-view="page">');
   if (jsonld) out = out.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
+  // botInject 不是每页都有（如 /tools/ 总览页），以前无条件拼进去，产物里就多一行
+  // `<script>undefined</script>`。空值要当「没有」，不是当字符串。
   return out.replace(
     '<script type="module" src="/assets/app.js"></script>',
-    `<script>${botInject}</script>\n  <script type="module" src="/assets/app.js"></script>`
+    `${botInject ? `<script>${botInject}</script>\n  ` : ''}<script type="module" src="/assets/app.js"></script>`
   );
 }
 
@@ -403,7 +413,7 @@ for (const tool of dirTools) {
     `<h2>相关阅读</h2><ul>` +
     `${
       kinList ||
-      `<li><a href="/">ToolHub 全部 93 个工具</a> —— 33 个在浏览器本地执行，数据不上传</li>`
+      `<li><a href="/">ToolHub 全部 ${TOTAL_TOOLS} 个工具</a> —— ${tools.length} 个在浏览器本地执行，数据不上传，其余为目录直达</li>`
     }` +
     `<li><a href="${CAT_QUERY(tool.category)}">全部${tool.category}类工具</a> —— 按分类筛选，含本地执行与目录直达</li>` +
     `${topicLinks.map((l) => `<li><a href="${l.href}">${l.label}</a> —— 专题工具包</li>`).join('')}` +
@@ -512,9 +522,16 @@ const staticPages = [
     desc: 'ToolHub 的数据流向逐条说明：本地工具在浏览器内执行、不上传输入、无后端数据库；浏览器里存了什么、如何清除、访问统计口径与关闭方式。',
     h1: '隐私说明',
     content:
-      '<h2>一句话结论</h2><p>本地工具的输入只存在于你浏览器的内存里，处理完即随页面释放；本站没有后端数据库，也没有上传接口，这不是承诺而是架构上就不存在。</p>' +
+      '<h2>一句话结论</h2><p>本地工具的<b>文件</b>输入不上传、不落盘，在浏览器内存里处理完即随页面释放；<b>文本</b>类输入会留一份 ≤4 KB 的草稿在你自己的浏览器里（刷新后能接着填），文件永远不进存储。本站没有后端数据库，也没有上传接口，这不是承诺而是架构上就不存在。</p>' +
       '<h2>三类工具，三种数据流向</h2><p>本地执行类工具（含 Pyodide 驱动的 Python 工具）全部在浏览器内完成，服务端不接触输入；目录类工具是第三方开源项目的官方在线版，点击「打开官网」后进入对方站点，适用对方的隐私政策。</p>' +
-      '<h2>浏览器里存了什么</h2><p>主题偏好、收藏、最近使用、本机使用次数、输入草稿与离线缓存，全部保存在 localStorage 与 Cache Storage 中，可随时通过清除站点数据一次清空。这些数据不会上传，也不会跨设备同步。</p>' +
+      '<h2>浏览器里存了什么</h2><p>只有本地偏好与草稿，没有文件。完整键名清单：</p>' +
+      '<ul><li><code>toolhub:theme</code> 深浅色偏好；<code>toolhub:lang</code> 中英文偏好</li>' +
+      '<li><code>toolhub:favs</code> 收藏的工具 id；<code>toolhub:recent</code> 最近打开过的工具；<code>toolhub:usage</code> 每个工具在本机用过几次</li>' +
+      '<li><code>toolhub:compare</code> 对比页选中的工具；<code>toolhub:events</code> 最近 200 次「跑成 / 跑挂」的记录，只有工具 id、结果与时间，<b>不含任何输入内容</b></li>' +
+      '<li><code>toolhub:draft:&lt;工具id&gt;</code> 上次填的<b>文本</b>输入，≤4 KB，超过就不存；<b>文件从不写入</b></li>' +
+      '<li><code>toolhub:no-analytics</code> 你是否关闭了访问统计</li>' +
+      '<li>Service Worker 缓存：离线包，可在<a href="/offline/">离线说明</a>里查看与清理</li></ul>' +
+      '<p>这些数据不会上传，也不会跨设备同步，清除站点数据即可一次清空。这份清单由构建期脚本 <code>check-storage-keys.mjs</code> 与代码里的实际键名逐条比对，漏写一个就构建失败——同一份事实写两遍迟早会漂，所以让它由闸门盯着。</p>' +
       '<h2>访问统计</h2><p>本站默认不加载任何统计脚本。若启用统计，只采集聚合访问量，不使用 Cookie、不记录输入内容、不跨站追踪；浏览器发出 Do Not Track 时自动跳过，也可在本页一键关闭。</p>' +
       '<h2>加密分享</h2><p>分享结果时可选择加密：内容经 AES-GCM 在本地加密后放入链接的井号片段，该片段不会随请求发送到服务器，因此服务器与 CDN 日志中不会出现明文。设置口令时，拿到链接的人还需口令才能解开。</p>' +
       '<h2>如何自行验证</h2><p>打开开发者工具的 Network 面板运行任意本地工具，不会出现上传请求；缓存过离线包后断网刷新，本地工具仍可使用。</p>',
@@ -1188,7 +1205,12 @@ for (const p of staticPages) {
   mkdirSync(dir, { recursive: true });
   const url = `${BASE}/changelog/`;
   const body = changelog.entries
-    .map((e) => `<h2>${e.version} · ${e.title}</h2><p>${e.date}</p><ul>${e.items.map((x) => `<li>${x}</li>`).join('')}</ul>`)
+    // 条目字段只有 date / version / items，从来没有 title。曾经渲染成「v3.18 · undefined」，
+    // 修法不是给 14 个历史版本各编一个名字，而是承认标题本来就是版本号。
+    // 更新日志正文是数据，不是模板：条目里一直有 `/tools/<id>/`、`<main>`、`<script>` 这类
+    // 技术写法，过去直接拼进 HTML，浏览器会把它们当标签解析——`<id>` 被吞掉、`<script>`
+    // 真的注入一段脚本。v3.20 必须转义，否则一条讲修 bug 的记录会把 bug 演一遍。
+    .map((e) => `<h2>${e.version}</h2><p>${e.date}</p><ul>${e.items.map((x) => `<li>${escapeXml(x)}</li>`).join('')}</ul>`)
     .join('');
   let html = fillMeta(tpl, {
     title: '更新日志 · ToolHub',
@@ -1281,6 +1303,19 @@ const urls = [
   { loc: `${BASE}/guides/`, pri: '0.7', freq: 'monthly' },
   ...GUIDES.map((g) => ({ loc: `${BASE}/guides/${g.slug}/`, pri: '0.7', freq: 'monthly' })),
 ];
+// v3.20：构建期就和页面注册表对账。sitemap 是本脚本认定的「全部页面」清单，
+// 其中任何一条不在注册表里，说明有人加了页面却没登记——等着它变成下一个测试盲区。
+// 放在这里而不是只放 verify：构建时就红，比跑完六套测试才发现要早十分钟。
+{
+  const unregistered = [...new Set(urls.map((u) => new URL(u.loc).pathname))].filter((p) => !matchPage(p));
+  if (unregistered.length) {
+    console.error(
+      `\n❌ 这些页面没有登记在 scripts/lib/pages-registry.mjs：\n   ${unregistered.slice(0, 10).join('\n   ')}\n` +
+        `   一个页面没登记，就等于离线包 / 体检 / 冒烟 / 校验四道闸门都不会管它。\n`
+    );
+    process.exit(1);
+  }
+}
 const today = new Date().toISOString().slice(0, 10);
 writeFileSync(
   join(root, 'sitemap.xml'),

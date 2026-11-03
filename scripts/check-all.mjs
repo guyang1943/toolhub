@@ -20,6 +20,9 @@ const SUITES = [
   { key: 'spa', name: 'SPA 渲染', script: 'spa-render-test.mjs' },
   { key: 'func', name: '工具功能', script: 'new-tools-test.mjs' },
   { key: 'perf', name: '首屏预算', script: 'perf-budget.mjs' },
+  // v3.20：冒烟一直没进这个清单。脚本自称「一条命令跑完全部验收」，
+  // 实际少了 149 项（含 62 个目录页的可达性）——「全跑一遍」的结论不能靠人记着自己补一条。
+  { key: 'smoke', name: '冒烟', script: 'smoke-test.mjs', args: [LOCAL], needsServer: true },
   { key: 'browser', name: '真浏览器', script: 'browser-test.mjs', args: [LOCAL], needsServer: true },
   { key: 'audit', name: '全站体检', script: 'audit.mjs', args: [LOCAL], needsServer: true },
 ];
@@ -58,6 +61,23 @@ const needServer = picked.some((s) => s.needsServer);
   });
   if (g.status !== 0) {
     console.error('❌ 投稿规范闸门未过（schema / 表单 / 模板三处不同步）：\n');
+    console.error(`${g.stdout || ''}${g.stderr || ''}`);
+    process.exit(1);
+  }
+  const line = (g.stdout || '').split('\n').map((l) => l.trim()).find((l) => l.startsWith('✅'));
+  if (line) console.log(line);
+}
+
+// 前置闸门（v3.20）：隐私页说的存储键，必须等于代码实际在用的键。
+// 这是一条「说法」与「行为」的对账——漂了不会报错，只会让「输入不会离开这台设备」悄悄缩水。
+{
+  const g = spawnSync(process.execPath, [join(root, 'scripts', 'check-storage-keys.mjs')], {
+    cwd: root,
+    encoding: 'utf8',
+    timeout: 60000,
+  });
+  if (g.status !== 0) {
+    console.error('❌ 存储键与隐私页不一致（新增存储忘了写文案，或删功能留了死文案）：\n');
     console.error(`${g.stdout || ''}${g.stderr || ''}`);
     process.exit(1);
   }

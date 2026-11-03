@@ -5,13 +5,17 @@ const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').repla
 const tools = JSON.parse(
   await import('node:fs').then((fs) => fs.readFileSync(new URL('../tools/tools.json', import.meta.url), 'utf8'))
 ).tools;
-// P0-3：目录工具页也要冒烟——之前只覆盖了本地工具，62 个目录页漏网
+// 目录工具页也要冒烟——之前只覆盖了本地工具，62 个目录页漏网
 const dirTools = JSON.parse(
   await import('node:fs').then((fs) => fs.readFileSync(new URL('../tools/directory.json', import.meta.url), 'utf8'))
 ).tools;
+// 固定页面清单来自注册表：加一页不用改这里（v3.20）
+const { smokePages } = await import('./lib/pages-registry.mjs');
 
 const paths = [
-  '/',
+  // 固定页面来自注册表（v3.20）。之前这里是手写的，而 /tools/、/categories/、/guides/
+  // 三个总览页一直不在里面——最主路径反而没被冒烟过。
+  ...smokePages(),
   '/sitemap.xml',
   '/robots.txt',
   '/assets/app.js',
@@ -23,12 +27,6 @@ const paths = [
   '/i18n-detail.json',
   '/sw.js',
   '/site.webmanifest',
-  '/about/',
-  '/submit/',
-  '/feedback/',
-  '/privacy/',
-  '/batch/',
-  '/offline/',
   '/assets/batch.js',
   '/assets/offline.js',
   '/assets/lib/zip.js',
@@ -37,23 +35,19 @@ const paths = [
   '/assets/icon-192.png',
   '/assets/icon-512.png',
   '/assets/icon-maskable-512.png',
-  '/compare/',
-  '/resources/',
+  // 各族抽一条详情页：模板相同，抽一条足以证明「这一族能渲染」
   '/resources/icons/',
   '/resources/fonts/',
   '/resources/colors/',
   '/resources/learning/',
   '/resources/open-source/',
   '/resources/templates/',
-  '/topics/',
   '/topics/frontend-debug/',
-  '/evaluations/',
   '/evaluations/image-compress-shootout/',
   '/evaluations/markdown-editors/',
   '/evaluations/pdf-tools/',
   '/evaluations/password-tools/',
   '/evaluations/json-tools/',
-  '/changelog/',
   '/api/tools.json',
   '/feed.xml',
   ...tools.map((t) => `/tools/${t.id}/`),

@@ -9,6 +9,7 @@
 import { readFileSync, statSync, existsSync, writeFileSync, realpathSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { corePages, fullPages } from './lib/pages-registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -70,10 +71,13 @@ export function buildSw({ quiet = false } = {}) {
   // 首屏必需：装完就能打开首页并搜索、看离线页
   // 注意 app.js 的两个**静态** import（pyodide-runtime / pipeline）必须在这里：
   // 静态 import 是启动链的一部分，缺一个整页直接白屏，而不是「某个功能降级」。
+  //
+  // 页面部分（'/'、'/offline/'）不再手写：v3.20 起由 scripts/lib/pages-registry.mjs 声明，
+  // 这里只放数据与脚本。以前同一份页面清单在本文件里写了两遍（CORE_ALL 与 PAGES），
+  // 改一处忘一处的结果是「首页能开、离线页打不开」这种只有断网才发现的错。
   const CORE_ALL = [
-    '/',
+    ...corePages(),
     '/index.html',
-    '/offline/',
     '/site.webmanifest',
     '/assets/style.css',
     '/assets/app.js',
@@ -98,25 +102,9 @@ export function buildSw({ quiet = false } = {}) {
     full.add(`/tools/${t.id}/run.js`);
   }
   for (const v of VENDOR) if (existsSync(join(root, 'assets', 'vendor', v))) full.add(`/assets/vendor/${v}`);
-  const PAGES = [
-    '/privacy/',
-    '/batch/',
-    '/offline/',
-    '/about/',
-    '/submit/',
-    '/compare/',
-    '/changelog/',
-    '/resources/',
-    '/topics/',
-    '/evaluations/',
-    // v3.14：这两个入口原来没进包。断网时导航点「工具」直接 404 —— 它们是最主路径，
-    // 比 /about/ 该进得多。
-    '/tools/',
-    '/categories/',
-    // v3.15：指南总览。断网时从导航点进来同样是白页。
-    '/guides/',
-  ];
-  for (const p of PAGES) full.add(p);
+  // 固定页面来自注册表。以前这里是手写清单，v3.14 / v3.15 补两次、v3.20 又补一次，
+  // 每次都是「断网点了才发现 404」——同一种错犯三次，说明清单不该由人维护。
+  for (const p of fullPages()) full.add(p);
   // 按需加载的应用模块（batch / drop / zip / 加密分享 / 意图解析 …）也必须进包：
   // 它们在断网时会被 import() 到，缺席就是「离线打开批量页，点一下没反应」。
   // 从磁盘扫而不是写死清单：以后新增模块自动进包，不会再漏。

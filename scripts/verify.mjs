@@ -9,6 +9,8 @@ import { spawnSync } from 'node:child_process';
 import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { sameJsonText } from './lib/eol.mjs';
+import { checkStorageKeys } from './lib/storage-keys.mjs';
+import { staticPaths, matchPage, pagePatterns } from './lib/pages-registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -347,12 +349,36 @@ check('sitemap 与页面一致', () => {
 
 check('静态页数（工具 + 说明页）', () => {
   const toolPages = readdirSync(join(root, 'tools')).filter((d) => existsSync(join(root, 'tools', d, 'index.html'))).length;
-  // 说明页清单：漏建一个就等于导航里挂了个 404，所以逐个点名而不是数个数
-  const PAGES = ['about', 'submit', 'feedback', 'compare', 'topics', 'changelog', 'evaluations', 'privacy', 'batch', 'offline'];
-  const miss = PAGES.filter((p) => !existsSync(join(root, p, 'index.html')));
+  // 说明页清单来自页面注册表（v3.20）。以前这里是手写数组，加一页忘一处就静默漏测。
+  const miss = staticPaths().filter((p) => !existsSync(join(root, p === '/' ? 'index.html' : p.slice(1) + 'index.html')));
   assert(toolPages === all.length, `工具页 ${toolPages} ≠ 工具数 ${all.length}`);
   assert(!miss.length, `静态页缺: ${miss.join(', ')}`);
-  return `${toolPages} + ${PAGES.length}`;
+  return `${toolPages} + ${staticPaths().length - 1}`;
+});
+
+// ---------- v3.20：页面注册表反向闸门 ----------
+// 「产物里有的页面，注册表里必须也有」。这是七处接线能收敛成一处的前提：
+// 注册表写了但没人消费会被这个闸门发现，产物生成了但没进注册表也会。
+check('产物页面都在注册表内', () => {
+  const orphan = [];
+  const walk = (dir, depth) => {
+    if (depth > 3) return;
+    for (const name of readdirSync(dir)) {
+      if (name === 'node_modules' || name === '.git' || name === 'assets') continue;
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walk(p, depth + 1);
+      else if (name === 'index.html' && p !== join(root, 'index.html')) {
+        const url = '/' + p.slice(root.length + 1).replace(/\\/g, '/').replace(/index\.html$/, '');
+        if (!matchPage(url)) orphan.push(url);
+      }
+    }
+  };
+  walk(root, 0);
+  assert(
+    !orphan.length,
+    `这些页面建出来了但没在 scripts/lib/pages-registry.mjs 里登记（等于没人测）: ${orphan.slice(0, 6).join(', ')}${orphan.length > 6 ? ` …共 ${orphan.length} 个` : ''}`
+  );
+  return `全部 ${pagePatterns().length} 条模式覆盖产物`;
 });
 
 check('公开文案计数与数据一致', () => {
@@ -361,14 +387,78 @@ check('公开文案计数与数据一致', () => {
   // 首页三处计数（meta description / og / hero 提示）+ 所有生成页的 twitter:description
   const nums = [...home.matchAll(/(\d+) 个(?:精选)?开源工具/g)].map((m) => +m[1]);
   nums.push(...[...home.matchAll(/(\d+) 个工具 ·/g)].map((m) => +m[1]));
+  // v3.20：首屏那句改成「N 个在本机跑 · M 个已收录」，总数字样变了，闸门要跟上
+  nums.push(...[...home.matchAll(/(\d+) 个已收录/g)].map((m) => +m[1]));
+  nums.push(...[...home.matchAll(/(\d+) listed/g)].map((m) => +m[1]));
   assert(nums.length >= 4, `首页计数只有 ${nums.length} 处，meta 可能被改动`);
   const wrong = nums.filter((n) => n !== total);
   assert(!wrong.length, `首页计数 ${[...new Set(wrong)].join('/')} ≠ 实际 ${total}`);
+  // 本机执行数必须单独说清楚：把 62 条外链也算进「数据不出设备」，
+  // 正是 v3.19 刚在首页修掉的错，别在这一版又混回去。
+  // 中文在 data-zh 与正文里各出现一次，英文只在 data-en 里——所以判「至少一处 + 每处都对」，
+  // 不判固定条数（那种断言改一次排版就红，却抓不到真错）。
+  const localNums = [...home.matchAll(/(\d+) 个在本机跑/g)].map((m) => +m[1]);
+  const localEn = [...home.matchAll(/(\d+) run in your browser/g)].map((m) => +m[1]);
+  assert(localNums.length && localEn.length, '首屏缺少「N 个在本机跑 / N run in your browser」的分开陈述（中英都要有）');
+  assert(
+    [...localNums, ...localEn].every((n) => n === local.tools.length),
+    `首屏「本机跑」写作 ${[...new Set([...localNums, ...localEn])].join('/')}，实际本地工具 ${local.tools.length} 个`
+  );
   // 抽查生成页的 twitter:description（fillMeta 不覆盖它，历史上漏改过）
   const probe = readFileSync(join(root, 'tools', all[0].id, 'index.html'), 'utf8');
   const m = probe.match(/name="twitter:description" content="精选 (\d+) 个开源工具/);
   assert(m && +m[1] === total, `生成页 twitter:description 计数 ${m ? m[1] : '缺失'} ≠ ${total}`);
   return `${total} 个工具 / ${nums.length} 处文案`;
+});
+
+// ---------- v3.20：产物里不许出现 undefined ----------
+check('产物不含 undefined', () => {
+  // 真实事故：更新日志渲染 `e.version · e.title`，而条目只有 date/version/items 三个字段，
+  // 于是 5 个版本在页面上写成「v3.18 · undefined」。这类错误不报错、不 404，
+  // 只有人恰好点开那一页才看得见——所以交给闸门盯，别指望有人记得看。
+  //
+  // 判「故障形态」而不是「这个词」：更新日志自己会讨论这个词（这条记录就在讨论），
+  // 全文匹配会让文案不敢提它。真正说明渲染出事的，是它出现在插值位置——
+  // 分隔符后面、属性值里、或独占一个文本节点。
+  const SHAPES = [/·\s*undefined/g, /="undefined"/g, />\s*undefined\s*</g, /undefined<\/(?:p|li|h2|div|span|a)>/g];
+  const bad = [];
+  const walk = (dir, depth) => {
+    if (depth > 4) return;
+    for (const name of readdirSync(dir)) {
+      if (name === 'node_modules' || name === '.git' || name === 'vendor' || name === 'assets') continue;
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walk(p, depth + 1);
+      else if (name === 'index.html') {
+        const html = readFileSync(p, 'utf8');
+        const hit = SHAPES.find((re) => re.test(html));
+        if (hit) bad.push(`${p.slice(root.length + 1)}（${html.match(hit)[0].trim()}）`);
+      }
+    }
+  };
+  walk(root, 0);
+  assert(!bad.length, `渲染出 undefined: ${bad.slice(0, 6).join(', ')}`);
+  return '全站 HTML 无 undefined 插值';
+});
+
+// ---------- v3.20：隐私页说的存储键 = 代码在用的存储键 ----------
+check('隐私页与存储键一致', () => {
+  const { keys, missing } = checkStorageKeys(root);
+  assert(
+    !missing.length,
+    '隐私页漏写: ' + missing.map((m) => `${m.key}（${m.files.join('/')}）`).join(', ')
+  );
+  return `${keys.length} 个键全部有说明`;
+});
+
+// ---------- v3.20：更新日志正文必须转义 ----------
+// 条目里一直有 `/tools/<id>/`、`<main>`、`<script>` 这类技术写法。它们是数据，
+// 但过去直接拼进 HTML，浏览器当标签解析：`<id>` 被吞掉，`<script>` 真的注入一段脚本。
+check('更新日志正文已转义', () => {
+  const html = readFileSync(join(root, 'changelog', 'index.html'), 'utf8');
+  const raw = ['tools/<id>', '<main>', '<script>undefined'].filter((s) => html.includes(s));
+  assert(!raw.length, `正文里有未转义标签: ${raw.join(', ')}`);
+  assert(html.includes('tools/&lt;id&gt;'), '技术写法应当以转义形式显示，否则读者看到的内容是缺的');
+  return '技术写法按文本显示';
 });
 
 // ---------- 4. 资源与可疑内容 ----------

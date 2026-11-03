@@ -69,7 +69,7 @@ export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_
       <h2>✦ 三类工具，三种数据流向</h2>
       <table class="cmp-table">
         <tr><th>类型</th><th>数据去了哪</th><th>谁能看到</th></tr>
-        <tr><td><b>本地执行</b>（占多数）</td><td>只在你浏览器的内存里</td><td class="yes">只有你</td></tr>
+        <tr><td><b>本地执行</b>（占多数）</td><td>在处理过程中只存在于内存，<b>文件不落盘</b>；文本类输入会留一份草稿在本机（≤4 KB）</td><td class="yes">只有你</td></tr>
         <tr><td><b>Python 工具</b></td><td>Pyodide 在你浏览器内跑 WASM，首次下载运行时</td><td class="yes">只有你</td></tr>
         <tr><td><b>第三方官网</b>（目录工具）</td><td>点「打开官网」后进入对方站点，适用对方的隐私政策</td><td class="no">对方站点</td></tr>
       </table>
@@ -78,14 +78,18 @@ export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_
       <h2>✦ 浏览器里存了什么</h2>
       <ul>
         <li><code>toolhub:theme</code> — 深色/浅色偏好</li>
+        <li><code>toolhub:lang</code> — 中英文偏好</li>
         <li><code>toolhub:favs</code> — 你收藏的工具 id</li>
         <li><code>toolhub:recent</code> — 最近打开过的工具</li>
         <li><code>toolhub:usage</code> — 每个工具在本机用过几次（用于「最常用」排序）</li>
-        <li><code>toolhub:draft:&lt;工具id&gt;</code> — 上次填的输入，方便回头继续</li>
+        <li><code>toolhub:compare</code> — 对比页选中的工具</li>
+        <li><code>toolhub:events</code> — 最近 200 次「跑成 / 跑挂」的记录，只有工具 id、结果与时间，<b>不含任何输入内容</b></li>
+        <li><code>toolhub:draft:&lt;工具id&gt;</code> — 上次填的<b>文本</b>输入，≤4 KB，超过就不存；<b>文件从不写入</b></li>
         <li><code>${ANALYTICS_OPT_OUT}</code> — 你是否关闭了访问统计</li>
         <li>Service Worker 缓存 — 离线包（可在 <a href="/offline/">离线说明</a> 里查看与清理）</li>
       </ul>
       <p>全部在你自己浏览器里，清除站点数据即可一次清空。换设备不会同步，我们也没有能力同步。</p>
+      <p class="muted-note">这份清单由 <code>scripts/check-storage-keys.mjs</code> 与代码里的实际键名逐条比对，漏写一个构建就会失败——所以它不会随着版本迭代慢慢失真。</p>
 
       <h2>✦ 访问统计</h2>
       <p>本站默认<b>不加载任何统计脚本</b>。若站长启用了统计，也只会是聚合的访问量（哪个页面被打开多少次），不使用 Cookie、不采集输入内容、不跨站追踪。

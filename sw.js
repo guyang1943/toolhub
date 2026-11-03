@@ -1,10 +1,10 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.19 · 预缓存 204 个地址 · 约 3.3 MB
-const VERSION = "toolhub-v3.19";
+// 版本：toolhub-v3.20 · 预缓存 206 个地址 · 约 3.3 MB
+const VERSION = "toolhub-v3.20";
 const CORE = [
   "/",
-  "/index.html",
   "/offline/",
+  "/index.html",
   "/site.webmanifest",
   "/assets/style.css",
   "/assets/app.js",
@@ -21,8 +21,8 @@ const CORE = [
 ];
 const FULL = [
   "/",
-  "/index.html",
   "/offline/",
+  "/index.html",
   "/site.webmanifest",
   "/assets/style.css",
   "/assets/app.js",
@@ -116,22 +116,24 @@ const FULL = [
   "/assets/vendor/purify.min.js",
   "/assets/vendor/qrcode.min.js",
   "/assets/vendor/pyodide-loader.js",
-  "/privacy/",
-  "/batch/",
-  "/about/",
-  "/submit/",
-  "/compare/",
-  "/changelog/",
-  "/resources/",
-  "/topics/",
-  "/evaluations/",
   "/tools/",
   "/categories/",
   "/guides/",
+  "/topics/",
+  "/evaluations/",
+  "/resources/",
+  "/compare/",
+  "/changelog/",
+  "/about/",
+  "/privacy/",
+  "/submit/",
+  "/feedback/",
+  "/batch/",
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
   "/assets/lib/drop-route.js",
+  "/assets/lib/events.js",
   "/assets/lib/intent.js",
   "/assets/lib/json-schema.js",
   "/assets/lib/pages.js",

@@ -15,6 +15,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
+import { auditPages } from './lib/pages-registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const reg = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8'));
@@ -294,28 +295,14 @@ const CONTRAST_PROBE = `(() => {
 })()`;
 
 // ------------- 待检页面 -------------
+// 固定页面来自注册表（v3.20）。以前这里手写 17 条，加一页忘一处就静默漏检。
 const PAGES = ONLY_TOOLS
   ? []
   : [
-      '/',
-      '/about/',
-      '/submit/',
-      '/feedback/',
-      '/privacy/',
-      '/batch/',
-      '/offline/',
-      '/changelog/',
-      '/compare/',
-      '/topics/',
-      '/evaluations/',
-      '/resources/',
-      // v3.13：分类是独立页面，总览 + 一个分类详情各抽一条（9 个分类页模板相同）
-      '/categories/',
-      // v3.15：指南总览 + 一篇正文。指南页的正文最长（8 段步骤 + 5 条 FAQ），
-      // 排版问题（行宽、序号圆点、长表格）最可能在这一页暴露。
-      '/guides/',
+      ...auditPages(),
+      // 抽样锚点：这两条不是「随便挑一个」，而是各族里最可能暴露排版问题的那一篇——
+      // 教程页正文最长（8 段步骤 + 5 条 FAQ），分类页是九宫格卡片最密的一屏。
       '/guides/tv-box-server/',
-      '/tools/',
       '/categories/image/',
     ];
 const TOOL_PAGES = reg.tools.map((t) => `/tools/${t.id}/`);

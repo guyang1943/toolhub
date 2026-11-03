@@ -9,6 +9,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { PYTHON, PYTHON_HINT } from './lib/python.mjs';
+import { scanStorageKeys } from './lib/storage-keys.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // 工具总数从数据推导，新增工具时不必再改测试
@@ -309,7 +310,14 @@ async function feedFile(selector, dataUrl, name, type) {
   check('首页无控制台错误', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '));
   check('首页无 4xx 资源', netFails.length === 0, netFails.slice(0, 2).join(' | '));
   const heroText = await evaluate(`(document.querySelector('.hero-search-hint') || {}).textContent || ''`);
-  check('首页计数文案正确', heroText.includes(`${TOTAL_TOOLS} 个工具`), heroText.trim());
+  // v3.20：首屏那句拆成「37 个在本机跑 · 99 个已收录」。
+  // 断言跟着意图走而不是跟着某个数走：两个数都要在、都要对，且必须同时出现——
+  // 只留总数会让访客把 62 条外链也算进「数据不出设备」，那正是要防的误读。
+  check(
+    '首页计数文案正确',
+    heroText.includes(`${LOCAL_TOOLS} 个在本机跑`) && heroText.includes(`${TOTAL_TOOLS} 个已收录`),
+    heroText.trim()
+  );
   // v3.5：工具页样式拆成独立文件后，首页绝不能把它捎上——不然拆了个寂寞
   const homeHasToolCss = await evaluate(`!!document.querySelector('link[href="/assets/style.tool.css"]')`);
   check('首页不加载工具页样式', homeHasToolCss === false);
@@ -1147,6 +1155,15 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   await waitText('#page-body', '不会离开这台设备', 8000);
   const pvText = await evaluate(`document.body.textContent`);
   check('隐私页说明数据流向', pvText.includes('不会离开这台设备') && pvText.includes('AES-GCM'));
+  // v3.20：SPA 渲染出来的这份清单，必须覆盖代码里实际在用的每个存储键。
+  // 静态正文那份由构建期闸门（check-storage-keys.mjs）盯着；两条渲染路径都要对，
+  // 否则「断网时看的是静态页、联网时看的是 SPA」就会给出两种说法。
+  {
+    const keys = scanStorageKeys(root).map((k) => k.key);
+    const shown = await evaluate(`document.getElementById('page-body').textContent`);
+    const absent = keys.filter((k) => !shown.includes(k));
+    check('隐私页键清单与代码一致', absent.length === 0, absent.length ? '漏写 ' + absent.join(',') : `${keys.length} 个键`);
+  }
   const toggled = await evaluate(`(() => {
     const b = document.getElementById('analytics-optout');
     if (!b) return 'missing';
@@ -1168,6 +1185,16 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('结果区有「加密分享」入口', shareBtn === true);
     const zipBtn = await evaluate(`!!document.querySelector('#tool-result [data-act="download-zip"]')`);
     check('单结果时不显示打包下载', zipBtn === false);
+    // v3.20：跑成功要在本机留一条事件（只含工具 id / 结果 / 时间，不含输入）。
+    // 这是「任务完成率」唯一的数据来源——没有服务端统计，指标只能本机算。
+    const evs = await evaluate(`JSON.parse(localStorage.getItem('toolhub:events') || '[]')`);
+    const hit = evs.filter((e) => e.tool === 'json-format' && e.event === 'ok');
+    check('本机事件记下「跑成了」', hit.length >= 1, `${evs.length} 条事件`);
+    check(
+      '事件不含输入内容',
+      evs.every((e) => Object.keys(e).sort().join(',') === 'event,tool,ts'),
+      evs.length ? Object.keys(evs[0]).join(',') : '空'
+    );
   }
 
   // 15b. 收到加密链接 → 自动解密回填 → 直接出结果（片段不随请求发送，所以只能由页面自己处理）

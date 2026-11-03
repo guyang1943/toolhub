@@ -8,6 +8,11 @@
  * 于是迁移过来的代码基本保持原样（不必在每个函数里写 deps.xxx），
  * 也避免与主模块循环引用。Node 测试与浏览器跑的是同一份实现。
  */
+// v3.20：本地事件底座。它是纯函数模块、不依赖 app.js 的任何东西，所以直接静态 import，
+// 不走 bindToolPage 的依赖注入——注入是为了避免与主模块循环引用，而这里没有那个风险。
+// 顺带把 app.js 的预算留出来（它只剩 0.8 KB）。
+import { record } from './lib/events.js';
+
 let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles, loadArticle;
 let kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive;
 let getRegistry, getLang, getD18N, getSeoBody, stateHTML;
@@ -667,9 +672,13 @@ export async function openTool(id) {
       renderResultActions(out, box, meta.id, manifest);
       if (out.after) out.after(box);
       pushUsage(meta.id); // 仅本机计数
+      record(meta.id, 'ok'); // v3.20：只记「跑成了」，不记输入
       focusResult(box);
     } catch (e) {
       box.innerHTML = stateHTML('error', { title: t('出错了', 'errorPrefix'), detail: e.message });
+      // 失败也记一条：没有分母就算不出完成率，而「哪些工具在真实使用中经常跑挂」
+      // 正是最该被看见的信号。只记工具与事件，不记 e.message（可能带用户输入）。
+      record(meta.id, 'err');
       focusResult(box);
     } finally {
       setProgressHandler(null);

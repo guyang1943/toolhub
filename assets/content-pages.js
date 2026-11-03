@@ -555,8 +555,7 @@ async function openChangelog() {
         .map(
           (e) => `<div class="log-entry">
             <div class="log-head"><b>${e.version}</b><span>${e.date}</span></div>
-            <div class="log-title">${e.title}</div>
-            <ul>${e.items.map((x) => `<li>${x}</li>`).join('')}</ul>
+            <ul>${e.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>`
         )
         .join('')}
