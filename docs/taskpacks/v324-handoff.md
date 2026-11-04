@@ -1,13 +1,14 @@
 # v3.24 交接单
 
-> 初版 2026-11-04 23:20；23:40 补「本地已同步」；本版按「启动数据已拆」重写。
+> 初版 2026-11-04 23:20；23:40 补「本地已同步」；按「启动数据已拆」重写；
+> 11-05 00:25 补「PR #2 已合并」。
 > 聊天记录不能当真源（这段任务被压缩 40+ 次，摘要套摘要），**以本文件 + `memory/MEMORY.md` + 资料库为准**。
 
 ## 一、现在停在哪（已核对，不是猜的）
 
 | 项 | 值 |
 |---|---|
-| 远端 `main` | `2d7ffd2`（交接单入仓）；本次「拆启动数据」在分支上，**未合** |
+| 远端 `main` | `2dd9964`（PR #2 合并，2026-11-05 00:20）；「拆启动数据」**已在 main**，本地已快进对齐 |
 | 首屏体积 | **86.1 / 88.0 KB**（拆分前 89.9 / 90.0，余量从 145 字节变成 1.9 KB） |
 | 启动数据 | 36.1 / 52.4 KB（六个 JSON，见 `perf-budget.json` 的 `bootData`） |
 | 版本号 | `sw.js` 仍是 `toolhub-v3.23`（**没 bump**，发版时随 `changelog.json` 一起改） |
@@ -82,10 +83,14 @@ resources-notes.json  → notes["<合集slug>"]["<条目名>"] = "正文"
 第一秒可能看到空正文，后台更新完刷新即可。**不值得为此写兼容代码**：`sw.js` bump 之后
 预缓存整体换新，过渡只有一次。真要兜，就在 `loadResNotes` 失败时回退 `c.items[].note`，两行的事。
 
-### 3. 远端留着两个无用分支
+### 3. 远端留着三个无用分支（都已合入 main）
 
-`origin/feat/v324-three-flows`（内容已在 main）、`origin/muse-v324-flows`（只有草稿 JSON）。
-发版时一起清：`git push origin --delete feat/v324-three-flows muse-v324-flows`
+`origin/feat/v324-three-flows`、`origin/feat/v324-split-boot`（内容都在 main）、
+`origin/muse-v324-flows`（只有草稿 JSON）。发版时一起清：
+
+```bash
+git push origin --delete feat/v324-three-flows feat/v324-split-boot muse-v324-flows
+```
 
 ### 4. 还能从启动数据里抠 723 字节（暂时不做）
 
