@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-10-24",
+  "updated": "2026-11-04",
   "policy": "本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。",
   "groups": [
     {
@@ -699,6 +699,118 @@
           "tags": [
             "综合",
             "中文"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "gov-doc-fonts",
+      "title": "公文写作字库",
+      "icon": "📄",
+      "group": "design",
+      "desc": "GB/T 9704-2012 公文字体清单与正版获取渠道，只做外链不托管字体",
+      "intro": "排版参数其实不难，卡住公文的往往是字体本身：标题要 2 号小标宋，正文要 3 号仿宋，一级标题黑体、二级标题楷体，四款缺一样，换台电脑打开就全变了。本合集把国标用字、权利人官方渠道和授权边界一次列清，但不提供任何字体文件下载——这不是保守，是必须。GB/T 9704-2012 点名的仿宋_GB2312、楷体_GB2312 由北京中易中标电子授权给微软，字体属性里写明仅限微软产品许可条款范围使用、禁止其他用途，不能单独分发也不能免费商用；标题用的方正小标宋简体属方正字库基础字体，官网明确商用需单独购买授权。把 .ttf 打包上传会同时踩到复制权与信息网络传播权，还会违反 Windows 许可；改成网页 @font-face 也行不通，方正把在线云字库、Web Font CSS 调用和嵌入式用途明确排除在免费商用范围之外。所以这里每条都是外链，指向权利人官网或政府公开的标准文本；真正需要字体时，走单位采购的正版字库，或在本机调用随正版系统已安装的字体。开源替代那一组只用于预览和草稿，字形与国标字体不同，落款上报前请换回已授权字体。",
+      "choices": [
+        "正式行文：走单位采购的方正公文写作字库，小标宋、黑体、仿宋、楷体四款一次配齐",
+        "只在本机排版：直接调用随正版 Windows 已安装的仿宋_GB2312 / 楷体_GB2312，别把字体文件复制给他人",
+        "网页或应用里想显示公文字体：不要做 @font-face，改用 font-family 回退链调用访客本机字体",
+        "没有授权又要看版式：用 OFL 授权字体做形近替代，并标注非正式公文",
+        "拿不准能不能用：以权利人官网当前条款为准，不要相信第三方免费字体打包站"
+      ],
+      "relatedTools": [
+        "word-count",
+        "pdf-merge"
+      ],
+      "items": [
+        {
+          "name": "方正字库·公文写作字库",
+          "url": "https://foundertype.com.cn/index.php/FontInfo/index/id/164",
+          "source": "方正字库",
+          "license": "商业授权（需购买）",
+          "note": "官网给出公文写作字库方案，含方正小标宋、黑体、仿宋、楷体四款，覆盖国标全部用字；单位采购与机关间电子公文交换走这里最稳。",
+          "tags": [
+            "正版",
+            "公文"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "方正小标宋·授权说明",
+          "url": "https://www.foundertype.com/index.php/FontInfo/licensing/id/164.html",
+          "source": "方正字库",
+          "license": "基础字体·商用需单独授权",
+          "note": "标题专用字体属基础字体，商用须单独购买授权；此页把个人非商业、商业发布、出版物、嵌入式四类授权的区别逐项写清。",
+          "tags": [
+            "授权",
+            "标题"
+          ]
+        },
+        {
+          "name": "方正字库·字体授权总说明",
+          "url": "https://www.foundertype.com/index.php/About/powerbus",
+          "source": "方正字库",
+          "license": "官方授权条款",
+          "note": "官网把使用方式分为内部、内置、发布三种，并把字体分免费、基础、精选三类；做网页字体或嵌入应用前务必先读这一页。",
+          "tags": [
+            "授权",
+            "需核条款"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "GB/T 9704-2012 公文格式执行清单",
+          "url": "https://www.chongchuan.gov.cn/xccqrmzf/lcczfwj/content/448e323f-316a-45d6-9914-b375f6f475db.html",
+          "source": "南通市崇川区人民政府",
+          "license": "政府公开文件",
+          "note": "把国标落成可照抄的排版参数：2 号小标宋标题、3 号仿宋正文、一级黑体二级楷体、页边距与每页 22 行每行 28 字。",
+          "tags": [
+            "国标",
+            "排版"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "国家标准全文公开系统",
+          "url": "https://openstd.samr.gov.cn/",
+          "source": "国家标准全文公开系统",
+          "license": "国家标准公开文本",
+          "note": "查 GB/T 9704-2012 标准原文与现行状态的权威入口；字体字号一律以标准正文为准，别只信二手排版教程里的转述。",
+          "tags": [
+            "国标",
+            "权威"
+          ]
+        },
+        {
+          "name": "思源宋体 Source Han Serif",
+          "url": "https://github.com/adobe-fonts/source-han-serif",
+          "source": "github.com/adobe-fonts/source-han-serif",
+          "license": "SIL OFL 1.1",
+          "note": "OFL 授权开源宋体，可商用可再分发；仅作无授权环境下的形近替代，字形与 2 号小标宋不同，不能用于正式公文。",
+          "tags": [
+            "开源",
+            "替代"
+          ]
+        },
+        {
+          "name": "思源黑体 Source Han Sans",
+          "url": "https://github.com/adobe-fonts/source-han-sans",
+          "source": "github.com/adobe-fonts/source-han-sans",
+          "license": "SIL OFL 1.1",
+          "note": "覆盖一级标题所需黑体的开源方案，授权宽松；同样只用于预览与草稿，正式行文请换回单位已授权字体。",
+          "tags": [
+            "开源",
+            "替代"
+          ]
+        },
+        {
+          "name": "霞鹜文楷 LXGW WenKai",
+          "url": "https://github.com/lxgw/LxgwWenKai",
+          "source": "github.com/lxgw/LxgwWenKai",
+          "license": "SIL OFL 1.1",
+          "note": "基于 Klee One 的开源楷体，可作二级标题的形近替代；OFL 允许商用与再分发，但不等同国标楷体_GB2312。",
+          "tags": [
+            "开源",
+            "替代"
           ]
         }
       ]

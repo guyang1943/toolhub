@@ -3,24 +3,35 @@
   "$id": "https://toolhub.bot.cd/schemas/resource.json",
   "title": "ToolHub 资源投稿规范 / resource submission",
   "description": "往资源库加一条收录时的字段规范。这份文件同时被三处读取：前端表单（assets/submit-resource.js 按 x-form 渲染并校验）、构建期校验（scripts/check-submit-schema.mjs 验 resources.json 的每一条）、Issue 模板（.github/ISSUE_TEMPLATE/resource.yml 的字段顺序与必填项）。改这里就是改三处，别在别处另写一套规则。",
-
   "type": "object",
-  "required": ["collection", "item", "conflict"],
+  "required": [
+    "collection",
+    "item",
+    "conflict"
+  ],
   "additionalProperties": false,
   "properties": {
     "collection": {
       "description": "挂到哪个合集下。取值必须与 resources.json 的 collections[].slug 完全一致（check-submit-schema.mjs 会两向比对，多一个少一个都算失败）。",
       "type": "string",
-      "enum": ["icons", "fonts", "colors", "learning", "open-source", "templates"],
+      "enum": [
+        "icons",
+        "fonts",
+        "colors",
+        "learning",
+        "open-source",
+        "templates",
+        "gov-doc-fonts"
+      ],
       "x-form": {
         "kind": "select",
         "label": "挂到哪个合集",
         "hint": "拿不准就选最接近的，维护时会被移到合适合集。"
       }
     },
-
-    "item": { "$ref": "#/$defs/item" },
-
+    "item": {
+      "$ref": "#/$defs/item"
+    },
     "submitter": {
       "description": "投稿人署名，可留空。留空即匿名收录。",
       "type": "string",
@@ -31,11 +42,15 @@
         "hint": "只写进更新记录，不会用于任何统计。"
       }
     },
-
     "conflict": {
       "description": "利益相关声明。收录流程里唯一不可省略的诚实项：本站不接联盟链接、不收推广费，所以必须知道推荐人与这条资源是什么关系。",
       "type": "string",
-      "enum": ["none", "author", "affiliate", "paid"],
+      "enum": [
+        "none",
+        "author",
+        "affiliate",
+        "paid"
+      ],
       "x-form": {
         "kind": "select",
         "label": "你和这条资源的关系",
@@ -49,13 +64,17 @@
       }
     }
   },
-
   "$defs": {
     "item": {
       "title": "一条资源",
       "description": "真正入库的字段。投稿包里的 item 与 resources.json 的 collections[].items[] 是同一套结构，所以构建期能直接拿这份规范验存量数据。",
       "type": "object",
-      "required": ["name", "url", "license", "note"],
+      "required": [
+        "name",
+        "url",
+        "license",
+        "note"
+      ],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -116,7 +135,11 @@
           "minItems": 1,
           "maxItems": 4,
           "uniqueItems": true,
-          "items": { "type": "string", "minLength": 1, "maxLength": 12 },
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12
+          },
           "x-form": {
             "kind": "tags",
             "label": "标签（1-4 个，逗号分隔）",
