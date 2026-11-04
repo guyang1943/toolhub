@@ -1,0 +1,102 @@
+/* 「我的数据」页 · v3.22 页面分片
+   只在 /my/ 用到。
+   静态页由构建期注入 <link>，SPA 内跳转由 app.js 的 ensureCss() 补上。
+   配色全部走 style.css 的变量，暗色主题自动跟随，不在这里再写一套。 */
+
+.my { margin: 6px 0 20px; }
+
+/* 四格概览：数字大、标签小。数字是这一页的主角，别让标签抢戏 */
+.my-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 24px; }
+.my-card {
+  display: flex; flex-direction: column; gap: 2px; padding: 14px 16px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--panel);
+  transition: border-color 0.15s;
+}
+.my-card:hover { border-color: var(--accent); }
+.my-card b { font-size: 24px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.my-card span { font-size: 12.5px; color: var(--muted); }
+
+.my-sec { margin: 0 0 28px; }
+.my-sec h2 { font-size: 16px; margin: 0 0 10px; }
+.my-note { margin: 8px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+.my-empty {
+  margin: 0; padding: 14px 16px; font-size: 13px; color: var(--muted);
+  border: 1px dashed var(--border); border-radius: 10px;
+}
+.my-dim { color: var(--muted); font-size: 12.5px; }
+.my-gone { color: var(--muted); }
+.my-gone em { font-style: normal; font-size: 12px; }
+
+/* 条目列表：一行一个，删除按钮永远在最右 */
+.my-list { list-style: none; margin: 0; padding: 0; }
+.my-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 2px; border-bottom: 1px dashed var(--border); font-size: 14px;
+}
+.my-list li:last-child { border-bottom: 0; }
+.my-list li a:hover { color: var(--accent); }
+.my-x {
+  margin-left: auto; border: 0; background: transparent; color: var(--muted);
+  font: inherit; font-size: 13px; padding: 3px 8px; border-radius: 6px; cursor: pointer;
+}
+.my-x:hover { background: var(--accent-soft); color: var(--accent); }
+
+/* 使用次数：条形图的宽度是相对第一名的比例，不是绝对值——绝对值已经在右边写着 */
+.my-bars { list-style: none; margin: 0; padding: 0; }
+.my-bars li {
+  display: grid; grid-template-columns: minmax(96px, 150px) 1fr auto;
+  gap: 10px; align-items: center; padding: 5px 0; font-size: 13px;
+}
+.my-bar-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.my-bar { height: 6px; border-radius: 999px; background: var(--border); overflow: hidden; }
+.my-bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+.my-bars b { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 28px; text-align: right; }
+
+.my-runs { list-style: none; margin: 0; padding: 0; }
+.my-runs li {
+  display: flex; justify-content: space-between; gap: 10px;
+  padding: 6px 2px; border-bottom: 1px dashed var(--border); font-size: 13.5px;
+}
+.my-runs li:last-child { border-bottom: 0; }
+.my-rate { color: var(--muted); }
+.my-rate em { font-style: normal; }
+
+/* 存储明细表：五列，窄屏横向滚动。数字列右对齐，扫的时候不用来回找 */
+.my-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
+.my-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.my-table th, .my-table td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+.my-table th { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.my-table tr:last-child td { border-bottom: 0; }
+.my-table code { font-family: var(--mono); font-size: 12px; word-break: break-all; }
+.my-table .my-what em { font-style: normal; color: var(--muted); font-size: 12px; }
+.my-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* 表格里的「清除」曾经是 36×20 —— 体检按 WCAG 2.5.8 报了出来。
+   24px 是硬线：手指点得准的最小尺寸。小字加小内边距看起来精致，
+   代价是手机上点三次中一次。 */
+.my-table .my-x { margin-left: 0; padding: 4px 8px; font-size: 12px; line-height: 1.4; }
+.my-total td { font-weight: 600; }
+
+/* 自定义集合 */
+.my-set {
+  border: 1px solid var(--border); border-radius: 12px; background: var(--panel);
+  padding: 12px 14px; margin-bottom: 10px;
+}
+.my-set-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.my-set-head b { font-size: 14.5px; }
+.my-set-add, .my-set-new { display: flex; gap: 8px; margin-top: 8px; }
+.my-set-add input, .my-set-new input {
+  flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 8px 10px;
+  border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text);
+}
+.my-set-new { margin-top: 12px; }
+
+/* 按类清除：四个按钮，每个下面一行小字写明删掉哪些键 */
+.my-wipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.my-wipe { display: flex; flex-direction: column; gap: 3px; text-align: left; }
+.my-wipe em { font-style: normal; font-size: 11.5px; color: var(--muted); font-family: var(--mono); }
+
+@media (max-width: 640px) {
+  .my-cards { grid-template-columns: repeat(2, 1fr); }
+  .my-bars li { grid-template-columns: 1fr auto; }
+  .my-bar { grid-column: 1 / -1; order: 3; }
+}

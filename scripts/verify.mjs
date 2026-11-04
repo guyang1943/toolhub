@@ -10,6 +10,8 @@ import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { sameJsonText } from './lib/eol.mjs';
 import { checkStorageKeys } from './lib/storage-keys.mjs';
+// 键清单本身也要被校验，所以直接从浏览器侧那份模块读——不复制一份到 Node 侧。
+import * as storeKeys from '../assets/lib/store-keys.js';
 import { staticPaths, matchPage, pagePatterns } from './lib/pages-registry.mjs';
 import { PRIVACY_KINDS, validateToolMeta } from './lib/tool-meta.mjs';
 
@@ -441,14 +443,41 @@ check('产物不含 undefined', () => {
   return '全站 HTML 无 undefined 插值';
 });
 
-// ---------- v3.20：隐私页说的存储键 = 代码在用的存储键 ----------
-check('隐私页与存储键一致', () => {
-  const { keys, missing } = checkStorageKeys(root);
-  assert(
-    !missing.length,
-    '隐私页漏写: ' + missing.map((m) => `${m.key}（${m.files.join('/')}）`).join(', ')
-  );
-  return `${keys.length} 个键全部有说明`;
+// ---------- v3.22：存储键四向闭合 ----------
+// v3.20 只对了「隐私页 ⊇ 源码字面量」一个方向，漏掉的三个方向各自对应一类真实错法：
+//   死键（清单有、代码没有）→ 隐私页在说一件已经不存在的事
+//   未申报（代码有、清单没有）→ 隐私页漏说，正是当初 draft 那个矛盾的产生方式
+//   绕过 store（裸 'toolhub:' 字面量）→ 前缀、迁移、兜错对它全部不生效
+check('存储键四向闭合（v3.22）', () => {
+  const { keys, problems } = checkStorageKeys(root);
+  assert(!problems.length, problems.join('；'));
+  return `${keys.length} 个键：清单 / 源码 / 隐私页 / 前缀唯一，四处一致`;
+});
+
+// 隐私页那张表必须真的是渲染出来的，不是手抄的。
+// 判据：行数恰好等于清单长度。手抄的表在加键那天不会自动长出这一行。
+check('隐私页键表由清单渲染（v3.22）', () => {
+  const { KEYS } = storeKeys;
+  const html = readFileSync(join(root, 'privacy', 'index.html'), 'utf8');
+  assert(html.includes('<th>键名</th><th>存了什么</th><th>上限</th>'), '隐私页没有那张键表（还是 <ul> 手抄版？）');
+  const rows = (html.match(/<tr><td><code>toolhub:/g) || []).length;
+  assert(rows === KEYS.length, `表里 ${rows} 行，清单 ${KEYS.length} 个键 —— 有人手改过这张表`);
+  return `${rows} 行，与清单逐条对应`;
+});
+
+// /my/ 面板同样由清单驱动：容器在、模块在、清除按钮由 clearableGroups() 生成。
+// 这几条只能证明「接了线」，真正的行为（点了确实清空）由 browser-test 在真浏览器里跑。
+check('我的数据页接入（v3.22）', () => {
+  const html = readFileSync(join(root, 'my', 'index.html'), 'utf8');
+  assert(/style\.my\.css/.test(html), '/my/ 没有引入自己的样式表');
+  assert(/我的数据/.test(html), '/my/ 缺少标题');
+  assert(existsSync(join(root, 'assets', 'my.js')), '缺 assets/my.js');
+  const my = readFileSync(join(root, 'assets', 'my.js'), 'utf8');
+  assert(/clearableGroups\(\)/.test(my), '清除按钮没有从清单生成（手写的那份迟早会漏键）');
+  assert(/byGroup\(\)/.test(my), '存储明细没有从清单生成');
+  const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
+  assert(/path: '\/my\/'/.test(reg), '/my/ 没进页面注册表（离线包与体检都会漏掉它）');
+  return '容器 + 模块 + 清单驱动 + 注册表';
 });
 
 // ---------- v3.20：更新日志正文必须转义 ----------
@@ -840,7 +869,10 @@ check('隐私说明与统计口径（D3）', () => {  const page = join(root, 'p
   const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
   assert(/\/privacy\/<\/loc>/.test(sm), 'sitemap 缺 /privacy/');
   const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
-  assert(/ANALYTICS_OPT_OUT/.test(app), 'app.js 缺本机退出统计的实现');
+  // v3.22：统计开关改走 store，常量 ANALYTICS_OPT_OUT 已删除。断言改成分别判读与写两个故障形态——
+  // 只判一个字符串在不在，会让「能读不能写」这种半残实现照样通过。
+  assert(/store\.set\('no-analytics'/.test(app), 'app.js 缺「在本机关闭统计」的写入路径（按钮点了不生效）');
+  assert(/store\.get\('no-analytics'/.test(app), 'app.js 缺「本机关闭了统计」的读取路径（开关永远读成未关闭）');
   return '隐私页 + sitemap + 退出开关';
 });
 

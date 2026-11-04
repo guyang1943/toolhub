@@ -7,11 +7,22 @@
   <meta name="description" content="把 ToolHub 的本地工具全部缓存到浏览器：断网、飞行模式、内网隔离环境都能继续用，也可以安装到桌面像本地应用一样打开。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
-  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
   <script>
     (function () {
       try {
         var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
         if (t !== 'dark' && t !== 'light') {
           t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
@@ -203,7 +214,7 @@
 
   <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
        首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
-  <script>window.__PAGE__="offline";window.__OFFLINE_META__={"version":"toolhub-v3.21","files":209,"bytes":3525101};</script>
+  <script>window.__PAGE__="offline";window.__OFFLINE_META__={"version":"toolhub-v3.22","files":214,"bytes":3630407};</script>
   <script type="module" src="/assets/app.js"></script>
 </body>
 </html>

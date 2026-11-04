@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.21 · 预缓存 209 个地址 · 约 3.4 MB
-const VERSION = "toolhub-v3.21";
+// 版本：toolhub-v3.22 · 预缓存 214 个地址 · 约 3.5 MB
+const VERSION = "toolhub-v3.22";
 const CORE = [
   "/",
   "/offline/",
@@ -10,6 +10,7 @@ const CORE = [
   "/assets/app.js",
   "/assets/pyodide-runtime.js",
   "/assets/pipeline.js",
+  "/assets/lib/store.js",
   "/assets/icon-192.png",
   "/assets/icon-512.png",
   "/i18n.json",
@@ -28,6 +29,7 @@ const FULL = [
   "/assets/app.js",
   "/assets/pyodide-runtime.js",
   "/assets/pipeline.js",
+  "/assets/lib/store.js",
   "/assets/icon-192.png",
   "/assets/icon-512.png",
   "/i18n.json",
@@ -131,6 +133,7 @@ const FULL = [
   "/submit/",
   "/feedback/",
   "/batch/",
+  "/my/",
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
@@ -140,7 +143,9 @@ const FULL = [
   "/assets/lib/json-schema.js",
   "/assets/lib/pages.js",
   "/assets/lib/secure-share.js",
+  "/assets/lib/store-keys.js",
   "/assets/lib/zip.js",
+  "/assets/my.js",
   "/assets/offline.js",
   "/assets/submit-page.js",
   "/assets/submit-resource.js",
@@ -148,6 +153,7 @@ const FULL = [
   "/assets/toolbuilder.js",
   "/assets/style.batch.css",
   "/assets/style.compare.css",
+  "/assets/style.my.css",
   "/assets/style.offline.css",
   "/assets/style.submit.css",
   "/assets/style.tool.css",

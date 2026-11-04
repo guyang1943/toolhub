@@ -7,11 +7,22 @@
   <meta name="description" content="camelCase / snake_case / kebab-case 等命名互转" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
-  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏 -->
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
   <script>
     (function () {
       try {
         var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
         if (t !== 'dark' && t !== 'light') {
           t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }

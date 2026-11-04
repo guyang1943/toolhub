@@ -3,7 +3,9 @@
  * 关于/提交/反馈/隐私/批量/离线：只有打开这些页面时才需要，首页不为它们付字节。
  * 正文由常量拼出，唯一的注册表依赖是「已收录 N 个工具」。
  */
-export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_OUT = 'toolhub:no-analytics' } = {}) {
+import { renderKeyTable } from './store-keys.js';
+
+export function makePages(reg, { analyticsOptedOut = () => false } = {}) {
   const counts = reg ? reg.counts.local + reg.counts.dir : '';
   return {
   about: () => `
@@ -32,7 +34,7 @@ export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_
       <h2>✦ 数据与隐私</h2>
       <ul>
         <li>平台<b>没有后端数据库</b>，不收集你的输入内容</li>
-        <li>「最近使用」「我的收藏」「本机使用次数」都只保存在你浏览器的 localStorage 中，可随时清除</li>
+        <li>「最近使用」「我的收藏」「本机使用次数」都只保存在你浏览器的 localStorage 中，可在 <a href="/my/">我的数据</a> 逐项查看与清除</li>
         <li>站点若启用访问量统计，仅统计页面访问次数，不使用 Cookie、不追踪个人身份；详细口径与关闭方式见 <a href="/privacy/">隐私说明</a></li>
       </ul>
       <h2>✦ 开源与致谢</h2>
@@ -76,20 +78,10 @@ export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_
       <p>本站<b>没有后端数据库</b>，也没有上传接口——这不是承诺，是架构上就不存在：整站是静态文件，唯一的动态部分是 Cloudflare 的边缘缓存。</p>
 
       <h2>✦ 浏览器里存了什么</h2>
-      <ul>
-        <li><code>toolhub:theme</code> — 深色/浅色偏好</li>
-        <li><code>toolhub:lang</code> — 中英文偏好</li>
-        <li><code>toolhub:favs</code> — 你收藏的工具 id</li>
-        <li><code>toolhub:recent</code> — 最近打开过的工具</li>
-        <li><code>toolhub:usage</code> — 每个工具在本机用过几次（用于「最常用」排序）</li>
-        <li><code>toolhub:compare</code> — 对比页选中的工具</li>
-        <li><code>toolhub:events</code> — 最近 200 次「跑成 / 跑挂」的记录，只有工具 id、结果与时间，<b>不含任何输入内容</b></li>
-        <li><code>toolhub:draft:&lt;工具id&gt;</code> — 上次填的<b>文本</b>输入，≤4 KB，超过就不存；<b>文件从不写入</b></li>
-        <li><code>${ANALYTICS_OPT_OUT}</code> — 你是否关闭了访问统计</li>
-        <li>Service Worker 缓存 — 离线包（可在 <a href="/offline/">离线说明</a> 里查看与清理）</li>
-      </ul>
-      <p>全部在你自己浏览器里，清除站点数据即可一次清空。换设备不会同步，我们也没有能力同步。</p>
-      <p class="muted-note">这份清单由 <code>scripts/check-storage-keys.mjs</code> 与代码里的实际键名逐条比对，漏写一个构建就会失败——所以它不会随着版本迭代慢慢失真。</p>
+      ${renderKeyTable()}
+      <p>外加 Service Worker 缓存（离线包，可在 <a href="/offline/">离线说明</a> 里查看与清理）。</p>
+      <p>全部在你自己浏览器里，换设备不会同步，我们也没有能力同步。<a href="/my/">「我的数据」页</a>把每一条实际占了多少、怎么单独删，逐项列了出来。</p>
+      <p class="muted-note">上面这张表不是手写的：它由 <code>assets/lib/store-keys.js</code> 的键清单直接渲染，构建期还有一道闸门核对「清单 / 代码里真实读写的键 / 这张表」三者一一对应。所以它不会随着版本迭代慢慢失真。</p>
 
       <h2>✦ 访问统计</h2>
       <p>本站默认<b>不加载任何统计脚本</b>。若站长启用了统计，也只会是聚合的访问量（哪个页面被打开多少次），不使用 Cookie、不采集输入内容、不跨站追踪。
@@ -112,6 +104,23 @@ export function makePages(reg, { analyticsOptedOut = () => false, ANALYTICS_OPT_
       <p><a href="/about/">← 回关于页</a></p>
     </div>`;
   },
+  // v3.22：机身是静态文案（无 JS 也能读到「数据存在哪」这件事），明细由 my.js 填。
+  // 为什么正文里要重写一遍「存在哪」：这一页的一半读者是禁用 JS 或以纯文本抓取的，
+  // 而这一页的价值恰恰是「把话说清楚」，不能只有脚本跑起来才说得清。
+  my: () => `
+    <div class="page">
+      <h1>🗂 我的数据</h1>
+      <p class="lead">这个站<b>没有账号，也没有后端数据库</b>。你在这里做的每件事——收藏了哪些工具、用过几次、跑到什么结果——都只存在<b>这台设备</b>的浏览器里。这一页把它们摊开：每一条存在哪、存了什么、占多大、怎么单独删。</p>
+      <div id="my-app" class="my"></div>
+      <h2>✦ 为什么要把这些列出来</h2>
+      <p>「你的数据在你手里」这句话，只有当你真的能看见、能删掉的时候才算数。只给一个「清除全部站点数据」的按钮，实际给出的选择是「全留」或者「全丢」——人一旦怕丢，就会选全留。所以这里能按类删：偏好、我的工具、本机统计、输入草稿，各删各的。</p>
+      <p>另有一条：页面上的数字是<b>当场量的</b>（这个键现在多少条、占多少字节），不是抄配置里的上限。两者对不上就是代码有问题，这种事应该被看见，而不是被一句「最多 200 条」盖住。</p>
+      <h2>✦ 这些数据会同步吗</h2>
+      <p>不会。没有账号系统，也就没有同步通道。换一台设备、换一个浏览器、清一次站点数据，这里就空了 —— 我们也没有副本能还给你，因为本来就不存在别处。</p>
+      <h2>✦ 关于自定义集合</h2>
+      <p>集合只是把工具 id 归了个组：一组「发文章要用的」，一组「整理图片要用的」。它<b>不保存工具的输入输出</b>，也不排序、不串成流程——把几个工具连成一条流水线是下一版的事，这一版先解决「找得到」。</p>
+      <p><a href="/privacy/">隐私说明</a> · <a href="/offline/">离线包</a> · <a href="/about/">关于</a></p>
+    </div>`,
   offline: () => {
     // 静态页首访时由构建期注入；SPA 内部跳转时没有，交给 mountOffline 从 sw.js 现算
     const meta = window.__OFFLINE_META__;

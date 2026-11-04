@@ -13,7 +13,9 @@
 //
 // 存储上限 200 条（环形缓冲）。超了从头部丢，不做压缩、不做增量聚合：
 // 写入路径必须短，聚合放在读取时算。
-const KEY = 'toolhub:events';
+import { get, set, del } from './store.js';
+
+const KEY = 'events';
 const MAX = 200;
 
 /** 记录一个事件。失败一律静默——指标不能影响工具本身能不能用。 */
@@ -23,7 +25,7 @@ export function record(tool, event) {
     const list = read();
     list.push({ tool, event, ts: Date.now() });
     if (list.length > MAX) list.splice(0, list.length - MAX);
-    localStorage.setItem(KEY, JSON.stringify(list));
+    set(KEY, list);
   } catch {
     /* 隐私模式禁用存储、配额满：丢掉这一次，不报错 */
   }
@@ -31,23 +33,13 @@ export function record(tool, event) {
 
 /** 读回最近的事件（旧的在前）。任何脏数据都当没有。 */
 export function read() {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
-    const list = JSON.parse(raw);
-    if (!Array.isArray(list)) return [];
-    return list.filter((e) => e && typeof e.tool === 'string' && typeof e.event === 'string' && Number.isFinite(e.ts));
-  } catch {
-    return [];
-  }
+  const list = get(KEY, []);
+  if (!Array.isArray(list)) return [];
+  return list.filter((e) => e && typeof e.tool === 'string' && typeof e.event === 'string' && Number.isFinite(e.ts));
 }
 
 export function clear() {
-  try {
-    localStorage.removeItem(KEY);
-  } catch {
-    /* 同上 */
-  }
+  del(KEY);
 }
 
 /**

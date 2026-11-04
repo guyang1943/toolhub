@@ -116,9 +116,21 @@ try {
 // 注入全局并加载 app.js
 const rawSrc = await (await import('node:fs')).readFileSync(new URL('../assets/app.js', import.meta.url), 'utf8');
 // 静态 import 在 new Function 体里不合法：剥离 import 行，用空实现桩替代（仅测试环境）
-const importRe = /^import\s+\{([^}]+)\}\s+from\s+['"][^'"]+['"];?\s*$/gm;
+// v3.22：app.js 多了一种导入写法 `import * as store from '...'`，上面的正则只认命名导入，
+// 于是整行原样留在了 new Function 里，直接 SyntaxError。两种都要剥。
+const importRe = /^import\s+(?:\{([^}]+)\}|(\*\s+as\s+\w+))\s+from\s+['"][^'"]+['"];?\s*$/gm;
 const stubLines = [];
-const src = rawSrc.replace(importRe, (_m, named) => {
+// store 的桩：get 一律返回调用方给的默认值，写操作返回 true 且不落盘。
+// 这是「渲染逻辑测试不该有状态」的直接体现——测试要验的是页面长什么样，
+// 不是存储对不对（那个由 browser-test 在真浏览器里验）。
+// 注意这里的键名是 assets/lib/store.js 导出面的镜像，那边加方法，这里要跟着加，
+// 否则新方法在测试里是 undefined，报的错会像是渲染坏了。
+const STORE_STUB = '{ migrate: () => 0, get: (k, d) => d, set: () => true, del: () => {}, has: () => false, allKeys: () => [], size: () => 0 }';
+const src = rawSrc.replace(importRe, (_m, named, ns) => {
+  if (ns) {
+    stubLines.push(`const ${ns.replace(/^\*\s+as\s+/, '').trim()} = ${STORE_STUB};`);
+    return '';
+  }
   named
     .split(',')
     .map((n) => n.trim())

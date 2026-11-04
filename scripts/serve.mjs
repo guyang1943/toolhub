@@ -16,7 +16,12 @@ const argOf = (name, fallback) => {
   const i = process.argv.indexOf('--' + name);
   return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 };
-const PORT = Number(argOf('port', process.env.PORT || 8788));
+// 端口既认 --port 也认位置参数：audit.mjs 的头注释与 README 一直写的是
+// `node scripts/serve.mjs 8788 &`，而这里过去只认 --port —— 于是那个写法会静默
+// 落到默认 8788。一直没人发现，是因为唯一的调用方（check-all）传的端口恰好就是默认值。
+// 直到有人真用 8795 起服务、脚本去 8795 探活、永远探不到。
+const POS_PORT = process.argv.slice(2).find((a) => /^\d{2,5}$/.test(a));
+const PORT = Number(argOf('port', POS_PORT || process.env.PORT || 8788));
 const HOST = argOf('host', '127.0.0.1');
 // --no-sw：开发时彻底绕开 Service Worker 缓存。
 // 踩过的坑：sw.js 对页面是「缓存优先 + 后台更新」，而本地反复重建不会改 VERSION，

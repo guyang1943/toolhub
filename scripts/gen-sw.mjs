@@ -69,7 +69,7 @@ export function buildSw({ quiet = false } = {}) {
   const tools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
 
   // 首屏必需：装完就能打开首页并搜索、看离线页
-  // 注意 app.js 的两个**静态** import（pyodide-runtime / pipeline）必须在这里：
+  // 注意 app.js 的三个**静态** import（pyodide-runtime / pipeline / lib-store）必须在这里：
   // 静态 import 是启动链的一部分，缺一个整页直接白屏，而不是「某个功能降级」。
   //
   // 页面部分（'/'、'/offline/'）不再手写：v3.20 起由 scripts/lib/pages-registry.mjs 声明，
@@ -83,6 +83,9 @@ export function buildSw({ quiet = false } = {}) {
     '/assets/app.js',
     '/assets/pyodide-runtime.js',
     '/assets/pipeline.js',
+    // v3.22：存储内核，app.js 静态 import。它必须进首屏——缺了它 app.js 连 LANG 都读不出来，
+    // 整页白屏。而 store-keys.js 不进：那份清单只有 /my/ 与隐私页用，首页一条都不碰。
+    '/assets/lib/store.js',
     '/assets/icon-192.png',
     '/assets/icon-512.png',
     '/i18n.json',

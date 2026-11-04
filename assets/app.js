@@ -2,10 +2,14 @@
 // 新增：深色模式 / 收藏 / URL 分类状态 / 关于与提交页 / 快捷键 / 回顶
 import { setProgressHandler } from '/assets/pyodide-runtime.js';
 import { CHAINS, setHandoff, takeHandoff } from '/assets/pipeline.js';
+import * as store from '/assets/lib/store.js';
 let REGISTRY = null;
 let I18N = null;
 let D18N = null; // 工具详情页英文内容
-let LANG = localStorage.getItem('toolhub:lang') || 'zh';
+// v3.22：存储统一走 store（脏数据兜错 + 版本迁移）。迁移必须在任何读取之前跑完——
+// 老用户的 theme/lang 存的是裸字符串，晚一步就会被 JSON.parse 判成脏数据，静默退回默认值。
+store.migrate();
+let LANG = store.get('lang', 'zh');
 let activeCategory = '全部';
 // 运行时筛选与排序：状态同步到 URL，刷新/分享后保持
 const QS0 = new URLSearchParams(location.search);
@@ -93,9 +97,8 @@ function taskList() {
 }
 async function switchLang() {
   LANG = LANG === 'en' ? 'zh' : 'en';
-  localStorage.setItem('toolhub:lang', LANG);
-  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-CN';
-  $('#lang-btn').textContent = LANG === 'en' ? '🌐 中' : '🌐 EN';
+  store.set('lang', LANG);
+  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-CN';  $('#lang-btn').textContent = LANG === 'en' ? '🌐 中' : '🌐 EN';
   document.title = LANG === 'en' ? 'ToolHub · Open-source tools, ready to use' : SITE;
   await loadI18n();
   applyStaticText();
@@ -136,14 +139,8 @@ if (LANG === 'en') {
 /* ---------- 主题 ---------- */
 /* ---------- 访问统计（v2.9 D3：多后端 + 可退出） ---------- */
 // 默认 provider=none，页面零第三方请求。开启后也只加载一个脚本，无 cookie、不跨站跟踪。
-const ANALYTICS_OPT_OUT = 'toolhub:no-analytics';
-
 function analyticsOptedOut() {
-  try {
-    return localStorage.getItem(ANALYTICS_OPT_OUT) === '1';
-  } catch {
-    return false;
-  }
+  return store.get('no-analytics', false) === true;
 }
 
 async function initAnalytics() {
@@ -195,31 +192,31 @@ function applyTheme(theme) {
 }
 
 function initTheme() {
-  const saved = localStorage.getItem('toolhub:theme');
+  const saved = store.get('theme');
   const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   applyTheme(saved || (sysDark ? 'dark' : 'light'));
 }
 $('#theme-btn') && $('#theme-btn').addEventListener('click', () => {
   const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   applyTheme(next);
-  localStorage.setItem('toolhub:theme', next);
+  store.set('theme', next);
 });
 function toggleTheme() {
   const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   applyTheme(next);
-  localStorage.setItem('toolhub:theme', next);
+  store.set('theme', next);
 }
 initTheme();
 initAnalytics();
 
 /* ---------- 收藏 ---------- */
-const favs = () => JSON.parse(localStorage.getItem('toolhub:favs') || '[]');
+const favs = () => store.get('favs', []);
 function toggleFav(id, btn) {
   const list = favs();
   const i = list.indexOf(id);
   if (i >= 0) list.splice(i, 1);
   else list.push(id);
-  localStorage.setItem('toolhub:favs', JSON.stringify(list));
+  store.set('favs', list);
   btn.classList.toggle('on', i < 0);
   btn.textContent = i < 0 ? '★' : '☆';
   renderChips(REGISTRY.categories);
@@ -1165,9 +1162,8 @@ async function loadArticle(id) {
 }
 
 /* ---------- 工具对比 ---------- */
-const CMP_KEY = 'toolhub:compare';
-const cmpList = () => JSON.parse(localStorage.getItem(CMP_KEY) || '[]');
-const cmpSet = (ids) => localStorage.setItem(CMP_KEY, JSON.stringify(ids.slice(0, 4)));
+const cmpList = () => store.get('compare', []);
+const cmpSet = (ids) => store.set('compare', ids.slice(0, 4));
 
 function toggleCompare(id) {
   const list = cmpList();
@@ -1325,21 +1321,21 @@ async function openCompare(queryIds) {
 
 /* ---------- 最近使用 / 本地使用统计 ---------- */
 function recentIds() {
-  return JSON.parse(localStorage.getItem('toolhub:recent') || '[]');
+  return store.get('recent', []);
 }
 function pushRecent(id) {
   const list = recentIds().filter((x) => x !== id);
   list.unshift(id);
-  localStorage.setItem('toolhub:recent', JSON.stringify(list.slice(0, 8)));
+  store.set('recent', list.slice(0, 8));
 }
 // 使用计数：仅存本机 localStorage，不上报任何服务器
 function usageMap() {
-  return JSON.parse(localStorage.getItem('toolhub:usage') || '{}');
+  return store.get('usage', {});
 }
 function pushUsage(id) {
   const m = usageMap();
   m[id] = (m[id] || 0) + 1;
-  localStorage.setItem('toolhub:usage', JSON.stringify(m));
+  store.set('usage', m);
 }
 function renderRecent(tools) {
   const row = $('#recent-row');
@@ -1547,6 +1543,7 @@ function ensureCss(href) {
 }
 const PAGE_CSS = {
   batch: '/assets/style.batch.css',
+  my: '/assets/style.my.css',
   offline: '/assets/style.offline.css',
   submit: '/assets/style.submit.css',
   compare: '/assets/style.compare.css',
@@ -1556,12 +1553,13 @@ async function openPage(name) {
   const reg = await loadRegistry();
   await loadI18n();
   const { makePages } = await import('/assets/lib/pages.js');
-  // 隐私页需要知道「本机是否已关闭统计」以及那个 localStorage 键名，随调用注入
-  const PAGES = makePages(reg, { analyticsOptedOut, ANALYTICS_OPT_OUT });
+  // 隐私页只需要知道「本机是否已关闭统计」。键名与清单由 pages.js 自己从 store-keys 取，
+  // 不再由这里注入——v3.22 之前注入的是一个键名常量，而清单本体在另外两处各写了一遍。
+  const PAGES = makePages(reg, { analyticsOptedOut });
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   setView('page');
-  const titles = { about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装' };
+  const titles = { about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
 
@@ -1580,19 +1578,27 @@ async function openPage(name) {
     };
   }
 
-  // 隐私页：本机统计开关（只写 localStorage，不上传）
+  // 隐私页：本机统计开关（只写本机存储，不上传）
   const optOut = document.getElementById('analytics-optout');
   if (optOut) {
     optOut.onclick = () => {
       const next = optOut.dataset.off !== '1';
-      try {
-        localStorage.setItem(ANALYTICS_OPT_OUT, next ? '1' : '0');
-      } catch {
-        /* 隐私模式禁写：按钮状态仍然反映本次意图 */
-      }
+      store.set('no-analytics', next);
       optOut.dataset.off = next ? '1' : '0';
       optOut.textContent = next ? '恢复统计' : '在本机关闭统计';
     };
+  }
+
+  // 「我的数据」页：按需加载（不进首屏包）。它比 batch 重的地方在于要读两份注册表
+  // 把 id 还原成中文名，所以传 reg 进去，省一次重复请求。
+  const myBox = document.getElementById('my-app');
+  if (myBox) {
+    try {
+      const { mountMy } = await import('/assets/my.js');
+      await mountMy(myBox, reg);
+    } catch (e) {
+      myBox.innerHTML = stateHTML('error', { title: '数据面板加载失败', detail: e.message });
+    }
   }
 
   // 批量处理页：按需加载（不进首屏包）
@@ -1676,7 +1682,7 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
-  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline)$/);
+  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my)$/);
   if (page) return openPage(page[1]);
   return renderHome();
 }

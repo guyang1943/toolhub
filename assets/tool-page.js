@@ -12,6 +12,7 @@
 // 不走 bindToolPage 的依赖注入——注入是为了避免与主模块循环引用，而这里没有那个风险。
 // 顺带把 app.js 的预算留出来（它只剩 0.8 KB）。
 import { record } from './lib/events.js';
+import * as store from './lib/store.js';
 
 let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles, loadArticle;
 let kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive;
@@ -36,7 +37,9 @@ export function bindToolPage(ctx) {
 const TOOL_CSS = '/assets/style.tool.css';
 
 /* ---------- 工具输入：URL 参数 / 草稿 / 分享链接 ---------- */
-const DRAFT_PREFIX = 'toolhub:draft:';
+// v3.22：键名去掉 `toolhub:` 前缀——前缀由 store 统一加。带着前缀传进去会写成
+// `toolhub:toolhub:draft:<id>`，迁到 store 时最容易犯的就是这种「前缀加了两遍」。
+const DRAFT_PREFIX = 'draft:';
 
 // 收集当前表单值（文件类不参与序列化）
 function collectValues(manifest) {
@@ -72,19 +75,16 @@ function saveDraft(id, values) {
     const plain = {};
     for (const [k, v] of Object.entries(values)) if (typeof v === 'string' && v !== '') plain[k] = v;
     if (!Object.keys(plain).length) return;
-    const s = JSON.stringify(plain);
-    if (s.length > 4000) return;
-    localStorage.setItem(DRAFT_PREFIX + id, s);
+    // 先序列化是为了判「超没超 4 KB」——不先量一遍就存，等于把上限交给运气。
+    // 代价是 store.set 内部会再 stringify 一次；≤4 KB 的对象量两次是微秒级，
+    // 换回来的是「上限判断」与「写入」用同一份数据，不会各算各的。
+    if (JSON.stringify(plain).length > 4000) return;
+    store.set(DRAFT_PREFIX + id, plain);
   } catch {}
 }
 
 function loadDraft(id) {
-  try {
-    const s = localStorage.getItem(DRAFT_PREFIX + id);
-    return s ? JSON.parse(s) : null;
-  } catch {
-    return null;
-  }
+  return store.get(DRAFT_PREFIX + id, null);
 }
 
 // 把当前输入编码进 URL，便于把「算好的结果」直接发人
@@ -596,7 +596,7 @@ export async function openTool(id) {
     const fields = document.getElementById('tool-fields');
     if (fields) fields.insertBefore(bar, fields.firstChild);
     document.getElementById('draft-clear').onclick = () => {
-      localStorage.removeItem(DRAFT_PREFIX + meta.id);
+      store.del(DRAFT_PREFIX + meta.id);
       bar.remove();
       openTool(meta.id);
     };

@@ -9,7 +9,9 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { PYTHON, PYTHON_HINT } from './lib/python.mjs';
-import { scanStorageKeys } from './lib/storage-keys.mjs';
+// 键清单在浏览器侧那一份，Node 直接读同一份——不复制到测试里，
+// 否则「清单改了、测试还在断言旧键」会变成又一处漂移。
+import { KEYS } from '../assets/lib/store-keys.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // 工具总数从数据推导，新增工具时不必再改测试
@@ -1188,7 +1190,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   // 静态正文那份由构建期闸门（check-storage-keys.mjs）盯着；两条渲染路径都要对，
   // 否则「断网时看的是静态页、联网时看的是 SPA」就会给出两种说法。
   {
-    const keys = scanStorageKeys(root).map((k) => k.key);
+    const keys = KEYS.map((k) => k.id);
     const shown = await evaluate(`document.getElementById('page-body').textContent`);
     const absent = keys.filter((k) => !shown.includes(k));
     check('隐私页键清单与代码一致', absent.length === 0, absent.length ? '漏写 ' + absent.join(',') : `${keys.length} 个键`);
@@ -1199,7 +1201,9 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     b.click();
     return localStorage.getItem('toolhub:no-analytics');
   })()`);
-  check('可在本机关闭统计', toggled === '1', 'localStorage=' + toggled);
+  // v3.22 起统计开关存 JSON 布尔（'true'），之前是字符串 '1'。断言跟着存储格式走，
+  // 判的是「按钮写进去了」，不是「写进去的是哪种字面量」——但必须写清现在是哪种。
+  check('可在本机关闭统计', toggled === 'true', 'localStorage=' + toggled);
   await evaluate(`localStorage.removeItem('toolhub:no-analytics')`);
 
   // ---- 15. v3.0：加密分享 / 批量 / 意图 / 离线包 ----
@@ -1437,6 +1441,123 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('点识别条直达工具并预填', pasteLanded === true, await evaluate('location.pathname'));
     const prefilled = await evaluate(`(document.getElementById('f-json') || {}).value || ''`);
     check('预填内容就是粘进去的 JSON', prefilled.includes('"b":[2,3]'), prefilled.slice(0, 40));
+  }
+
+  // ---- 16. 存储层与「我的数据」页（v3.22）----
+  // 这一组测的是「统一存储层」到底有没有效果，不是「页面好不好看」。
+  // 四件事各自对应一类真实故障：脏数据打挂页面、格式迁移丢偏好、清除按钮不生效、首帧闪白。
+  {
+    // 16a. 脏数据不能打挂首页。
+    // 这是 store 层存在的第一理由：过去 favs() 直接 JSON.parse，存储里若是半截 JSON，
+    // 首页渲染当场中断——用户看到的是白屏，而不是「收藏丢了」。
+    await evaluate(`localStorage.setItem('toolhub:favs', '{broken')`);
+    await goto('/');
+    const cardsN = await evaluate(`document.querySelectorAll('#main-content .card[data-id]').length`);
+    check('存储里是坏 JSON 时首页照常渲染', cardsN > 10, `${cardsN} 张卡片`);
+    check('坏 JSON 不产生未捕获异常', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '));
+    await evaluate(`localStorage.removeItem('toolhub:favs')`);
+
+    // 16b. 迁移：v3.22 之前 theme 存的是裸字符串 `dark`，之后是 JSON `"dark"`。
+    // 不迁移的话 get() 会把它当脏数据，退回默认值——深浅色偏好在升级当天静默丢失。
+    await evaluate(`localStorage.setItem('toolhub:theme', 'dark')`);
+    await goto('/');
+    const migrated = await evaluate(`localStorage.getItem('toolhub:theme')`);
+    const themeAfter = await evaluate(`document.documentElement.dataset.theme`);
+    check('裸字符串偏好被迁移成 JSON', migrated === '"dark"', String(migrated));
+    check('迁移后偏好没丢（仍是深色）', themeAfter === 'dark', String(themeAfter));
+
+    // 16c. 首帧防闪白要同时认两种格式。
+    // 第 13 组测的是裸字符串那条路；这里测已迁移的 JSON 那条——两条都得绿，
+    // 否则升级当天深色用户会看到一次白闪，而截图里看不出来。
+    await cdp.send('Network.setBlockedURLs', { urls: ['*/assets/app.js'] });
+    await goto('/');
+    const preJson = await evaluate(`document.documentElement.dataset.theme`);
+    check('已迁移的 JSON 偏好首帧也是深色', preJson === 'dark', String(preJson));
+    await cdp.send('Network.setBlockedURLs', { urls: [] });
+    await evaluate(`localStorage.setItem('toolhub:theme', '"light"')`);
+
+    // 16d. /my/ 面板：四格概览 + 存储明细行数 = 清单键数 + 清除按钮由清单生成。
+    await evaluate(`localStorage.setItem('toolhub:favs', JSON.stringify(['json-format','qr-code']))`);
+    await evaluate(`localStorage.setItem('toolhub:usage', JSON.stringify({'json-format':3}))`);
+    await goto('/my/');
+    const myOk = await waitText('#my-app', '存了什么', 10000);
+    const myInfo = await evaluate(`(() => {
+      const rows = document.querySelectorAll('.my-table tbody tr, .my-table tr').length;
+      return {
+        rows,
+        cards: document.querySelectorAll('.my-card').length,
+        wipes: document.querySelectorAll('.my-wipe').length,
+        keys: [...document.querySelectorAll('.my-table code')].map((e) => e.textContent),
+        total: (document.querySelector('.my-total td.my-num') || {}).textContent || '',
+      };
+    })()`);
+    check('我的数据页渲染出面板', myOk === true);
+    check('四格概览齐全', myInfo.cards === 4, `${myInfo.cards} 格`);
+    // 表头 1 行 + 11 个键 + 合计 1 行 = 13
+    check('存储明细行数 = 清单键数', myInfo.rows === 13, `${myInfo.rows} 行（含表头与合计）`);
+    check('清单里的键全在面板上', myInfo.keys.length === 11 && myInfo.keys.includes('toolhub:draft:<工具 id>'), myInfo.keys.join(','));
+    check('按类清除按钮由清单生成', myInfo.wipes === 4, `${myInfo.wipes} 个`);
+    check('合计占用有实测值', /KB|B/.test(myInfo.total), myInfo.total);
+    await shot('16-my-panel');
+
+    // 16e. 单删：点某一行「清除」只清那一项，别的键不受影响
+    await evaluate(`(() => {
+      const b = [...document.querySelectorAll('[data-wipe]')].find((x) => x.dataset.wipe === 'favs');
+      if (b) b.click();
+    })()`);
+    await sleep(300);
+    const afterOne = await evaluate(`({ favs: localStorage.getItem('toolhub:favs'), usage: localStorage.getItem('toolhub:usage') })`);
+    check('单删只清那一个键', afterOne.favs === null, 'favs=' + String(afterOne.favs));
+    check('单删不误伤同类键', afterOne.usage !== null, 'usage=' + String(afterOne.usage));
+
+    // 16f. 按类清除：清「我的工具」要清掉 favs/recent/compare/sets，但不能动 usage/events
+    await evaluate(`(() => {
+      localStorage.setItem('toolhub:favs', JSON.stringify(['json-format']));
+      localStorage.setItem('toolhub:recent', JSON.stringify(['json-format']));
+      localStorage.setItem('toolhub:compare', JSON.stringify(['json-format']));
+      localStorage.setItem('toolhub:sets', JSON.stringify({ x: { name: 't', tools: [], at: 1 } }));
+    })()`);
+    await goto('/my/');
+    await waitText('#my-app', '存了什么', 10000);
+    await evaluate(`(() => {
+      const b = [...document.querySelectorAll('[data-group]')].find((x) => x.dataset.group === 'library');
+      if (b) b.click();
+    })()`);
+    await sleep(400);
+    const afterGroup = await evaluate(`({
+      favs: localStorage.getItem('toolhub:favs'),
+      recent: localStorage.getItem('toolhub:recent'),
+      compare: localStorage.getItem('toolhub:compare'),
+      sets: localStorage.getItem('toolhub:sets'),
+      usage: localStorage.getItem('toolhub:usage'),
+    })`);
+    check(
+      '按类清除清掉整组',
+      afterGroup.favs === null && afterGroup.recent === null && afterGroup.compare === null && afterGroup.sets === null,
+      JSON.stringify(afterGroup)
+    );
+    check('按类清除不越界（统计还在）', afterGroup.usage !== null, 'usage=' + String(afterGroup.usage));
+
+    // 16g. 自定义集合：新建 → 落进 sets 键
+    await goto('/my/');
+    await waitText('#my-app', '存了什么', 10000);
+    await evaluate(`(() => {
+      const i = document.getElementById('my-set-name');
+      if (i) { i.value = '测试集合'; }
+      const b = document.getElementById('my-set-create');
+      if (b) b.click();
+    })()`);
+    await sleep(300);
+    const setShown = await waitText('.my-set', '测试集合', 5000);
+    const setStored = await evaluate(`(() => {
+      const v = JSON.parse(localStorage.getItem('toolhub:sets') || '{}');
+      return Object.values(v).map((s) => s.name);
+    })()`);
+    check('能新建自定义集合并显示', setShown === true, String(setStored));
+    check('集合写进 sets 键', setStored.includes('测试集合'), JSON.stringify(setStored));
+
+    // 收尾：把测试造的数据清掉，别影响后面依赖空存储的用例
+    await evaluate(`['favs','recent','compare','sets','usage','events'].forEach((k) => localStorage.removeItem('toolhub:' + k))`);
   }
 
   // ---- 汇总 ----
