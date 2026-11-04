@@ -16,7 +16,15 @@ const BASE = (args.find((a) => a.startsWith('http')) || 'https://toolhub.bot.cd'
 const waitIdx = args.indexOf('--wait');
 const WAIT = waitIdx >= 0 ? Number(args[waitIdx + 1] || 90) : 0;
 
-const PATHS = ['/', '/tools/', '/guides/', '/categories/', '/categories/image/', '/evaluations/', '/sw.js', '/assets/content-pages.js', '/sitemap.xml'];
+// v3.23：工作流页与它的三个文件都在这里。新页面上线时最容易漏的正是这一步——
+// 本地七套测试全绿、推送也成功，但线上少个文件，用户点进去就是空壳。
+// 加页面时同步加一条：页面本体、它按需加载的脚本、它读的数据。
+const PATHS = [
+  '/', '/tools/', '/guides/', '/categories/', '/categories/image/', '/evaluations/',
+  '/workflows/', '/workflows/workflows.json',
+  '/assets/workflow.js', '/assets/style.workflows.css', '/assets/lib/workflow-core.js',
+  '/sw.js', '/assets/content-pages.js', '/sitemap.xml',
+];
 
 async function get(path, tries = 3) {
   for (let i = 0; i < tries; i++) {
