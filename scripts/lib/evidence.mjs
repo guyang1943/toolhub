@@ -17,7 +17,10 @@
 // 分档复检周期：证据越弱，过期越快。imported 90 天就催，逼着转成 manual；
 // 已经人工核过的给 365 天，因为产品不会天天改隐私模型。
 
-export const LINK_METHODS = ['manual', 'probe'];
+// probe-ci：由 CI 每周自动刷新的探活（v3.24）。与 probe 分开记，是为了让人一眼看出
+// 「这条是机器每周刷的」还是「这条是人手动跑的」——两者能证明的东西一样（站点活着），
+// 但时效性不同：CI 会自己续期，人跑的不会。
+export const LINK_METHODS = ['manual', 'probe', 'probe-ci'];
 // inferred：按产品机制/同类工具推断出来的，有依据但没人打开页面确认。
 // 它比 imported 强（imported 只是照抄上游），但**仍然不算核过**——
 // 「这个工具用 WebRTC 直传」是架构常识，「它现在这个版本还这么干」得看页面。
@@ -27,13 +30,19 @@ export const METHOD_LABEL = {
   manual: '人工核验',
   inferred: '按机制推断',
   probe: '脚本探活',
+  'probe-ci': 'CI 探活',
   imported: '上游继承',
 };
 
 /** 各维度的复检周期（天）。warn 只提示，fail 直接让构建失败。 */
 export const TTL = {
   link: {
-    probe: { warn: 180, fail: 365 },
+    // v3.24：链接探活改成每周 CI 自动刷新（probe-ci）之后，过期阈值必须收紧——
+    // 45 天没刷新说明 CI 停了，那是真信号；旧的 180/365 是为「人记得才跑」设的，
+    // 现在只会把 CI 故障藏起来。阈值与 v3.28 的快照过期闸门一致：14 天警告 / 45 天失败。
+    // manual 仍是 365/730：人手动跑的探活不会天天跑，催太紧只会逼人乱填日期。
+    probe: { warn: 14, fail: 45 },
+    'probe-ci': { warn: 14, fail: 45 },
     manual: { warn: 365, fail: 730 },
   },
   boundary: {

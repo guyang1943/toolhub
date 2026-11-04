@@ -24,6 +24,9 @@ const PATHS = [
   '/workflows/', '/workflows/workflows.json',
   '/assets/workflow.js', '/assets/style.workflows.css', '/assets/lib/workflow-core.js',
   '/sw.js', '/assets/content-pages.js', '/sitemap.xml',
+  // v3.24：llms.txt 是新发布物（给 AI 抓取）。它不在任何页面里，漏传不会有 404 报错，
+  // 只有「AI 拿不到」——线上核对必须主动探一次。
+  '/llms.txt',
   // v3.24：资源正文从 resources.json 拆出来了。它是合集页唯一的正文来源，
   // 漏传这一份不会报错，只会让所有合集页的正文变成空白——线上核对必须盯着它。
   '/resources.json', '/resources-notes.json', '/resources/icons/',

@@ -24,7 +24,8 @@
     "idem": "node scripts/check-idempotent.mjs",
     "online": "node scripts/verify-online.mjs",
     "check:workflows": "node scripts/check-workflows.mjs",
-    "test:flow": "node scripts/workflow-test.mjs"
+    "test:flow": "node scripts/workflow-test.mjs",
+    "gen:llms": "node scripts/gen-llms-txt.mjs"
   },
   "engines": {
     "node": ">=22"

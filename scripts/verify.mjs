@@ -1344,6 +1344,68 @@ check('README 头部数字与数据一致（v3.22.1）', () => {
   return `${totalN} 收录 / ${localN} 本地，三处一致`;
 });
 
+// ---------- v3.24：llms.txt 不能漂 ----------
+// llms.txt 是给 AI 抓取的「一页说清」，它和站点数据是两份东西——不做闸门就一定会漂：
+// 加了一条工具、忘了重建，链接里少一条，而页面上完全看不出来（AI 拿到的就是缺的）。
+// 所以三条一起判：文件在、条数等于两份 manifest、每条 URL 都能在页面注册表里对上。
+check('llms.txt 与工具/流程数据一致（v3.24）', () => {
+  const p = join(root, 'llms.txt');
+  assert(existsSync(p), '根目录没有 llms.txt——构建链末尾没调用 gen-llms-txt');
+  const txt = readFileSync(p, 'utf8');
+
+  const flows = read('workflows/workflows.json').flows || [];
+  const want = { local: local.tools.length, dir: dir.tools.length, flows: flows.length };
+
+  // 按 H2 切段，只数 `- [` 开头的条目
+  const sections = {};
+  let cur = null;
+  for (const line of txt.split('\n')) {
+    if (line.startsWith('## ')) {
+      cur = line.slice(3).trim();
+      sections[cur] = [];
+      continue;
+    }
+    if (cur && /^-\s+\[/.test(line)) sections[cur].push(line);
+  }
+  const findSec = (prefix) => Object.keys(sections).find((k) => k.startsWith(prefix));
+  const localKey = findSec('本地工具');
+  const dirKey = findSec('第三方目录');
+  const flowKey = findSec('工作流');
+  assert(localKey, 'llms.txt 缺「本地工具」一节');
+  assert(dirKey, 'llms.txt 缺「第三方目录」一节');
+  assert(flowKey, 'llms.txt 缺「工作流」一节');
+  assert(sections[localKey].length === want.local, `本地工具条目 ${sections[localKey].length} ≠ 数据 ${want.local}`);
+  assert(sections[dirKey].length === want.dir, `第三方目录条目 ${sections[dirKey].length} ≠ 数据 ${want.dir}`);
+  assert(sections[flowKey].length === want.flows, `工作流条目 ${sections[flowKey].length} ≠ 数据 ${want.flows}`);
+
+  // 标题里声明的数字也必须等于实际条目数——正文和标题各说各的，是最常见的漂法
+  const hdrN = (k) => {
+    const m = /（(\d+) 个/.exec(k);
+    return m ? Number(m[1]) : null;
+  };
+  assert(hdrN(localKey) === want.local, `本地工具标题写 ${hdrN(localKey)} 个，实际 ${want.local}`);
+  assert(hdrN(dirKey) === want.dir, `第三方目录标题写 ${hdrN(dirKey)} 个，实际 ${want.dir}`);
+
+  // 每条 URL 的 pathname 必须在页面注册表里能对上（复用注册表，不手抄清单）
+  const bad = [];
+  let n = 0;
+  for (const line of txt.split('\n')) {
+    const m = /^-\s+\[[^\]]*\]\(([^)]+)\)/.exec(line);
+    if (!m) continue;
+    n++;
+    let pathname;
+    try {
+      pathname = new URL(m[1]).pathname;
+    } catch {
+      bad.push(m[1] + '（不是绝对 URL）');
+      continue;
+    }
+    if (!matchPage(pathname)) bad.push(m[1]);
+  }
+  assert(!bad.length, 'llms.txt 里的 URL 对不上页面注册表：' + bad.slice(0, 5).join(' / '));
+  return `本地 ${want.local} / 目录 ${want.dir} / 流程 ${want.flows}，${n} 条 URL 全部可对上`;
+});
+
 // ---------- 输出 ----------
 console.log('\n🔍 ToolHub 全量校验\n');
 for (const r of results) {

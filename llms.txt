@@ -1,0 +1,114 @@
+# ToolHub
+> 开源在线工具目录：能在浏览器里跑的都在本机处理，文件 0 字节上传服务器；第三方工具只做跳转，适用对方隐私政策。
+
+## 本地工具（38 个，在本机运行，0 字节上传）
+- [JSON 格式化](https://toolhub.bot.cd/tools/json-format/): 美化/压缩 JSON，自动校验语法错误
+- [图片压缩](https://toolhub.bot.cd/tools/image-compress/): 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器
+- [二维码生成](https://toolhub.bot.cd/tools/qrcode/): 把文本/网址变成二维码，可下载 PNG
+- [Base64 / URL 编解码](https://toolhub.bot.cd/tools/base64-url/): Base64 与 URL 编码互转，支持中文
+- [时间戳转换](https://toolhub.bot.cd/tools/timestamp/): Unix 时间戳与可读时间互转，多时区支持
+- [哈希计算](https://toolhub.bot.cd/tools/sha256-hash/): SHA-256/384/512 哈希，基于 WebCrypto 安全实现
+- [强密码生成](https://toolhub.bot.cd/tools/password-gen/): crypto 安全随机源生成强密码，本机生成不上传
+- [UUID / ULID 生成](https://toolhub.bot.cd/tools/uuid-gen/): UUID v4、ULID、Nano ID 批量生成，可作数据库主键
+- [颜色格式转换](https://toolhub.bot.cd/tools/color-convert/): HEX / RGB / HSL 互转，附色块预览与 CSS 变量
+- [文本对比](https://toolhub.bot.cd/tools/text-diff/): 两段文本行级差异对比，新增/删除一目了然
+- [Markdown 预览](https://toolhub.bot.cd/tools/markdown-preview/): 实时渲染 Markdown，输出经 DOMPurify 消毒防 XSS
+- [Python 运行器](https://toolhub.bot.cd/tools/python-run/): 浏览器内跑 Python（Pyodide WASM 沙箱），代码不出本机
+- [Cron 解析](https://toolhub.bot.cd/tools/cron-parser/): 用人话解释 cron 表达式，并算出接下来 5 次执行时间
+- [JWT 解码](https://toolhub.bot.cd/tools/jwt-decode/): 解码 JWT 的 Header/Payload，标注过期时间，本地不上传
+- [CSV ↔ JSON](https://toolhub.bot.cd/tools/csv-json/): CSV 与 JSON 数组互转，正确处理引号与换行
+- [图片缩放](https://toolhub.bot.cd/tools/image-resize/): 按最大边长等比缩放图片，生成头像/封面尺寸
+- [数值统计](https://toolhub.bot.cd/tools/py-stats/): 用 Python statistics 计算均值/中位数/标准差/四分位
+- [CSV 数据体检](https://toolhub.bot.cd/tools/pandas-csv/): pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要
+- [正则测试器](https://toolhub.bot.cd/tools/regex-tester/): 实时高亮正则匹配结果，列出分组与位置
+- [命名风格转换](https://toolhub.bot.cd/tools/case-convert/): camelCase / snake_case / kebab-case 等命名互转
+- [文本去重排序](https://toolhub.bot.cd/tools/text-dedupe/): 按行去重、排序、去空行，适合清洗名单与日志
+- [字数统计](https://toolhub.bot.cd/tools/word-count/): 中英文字数、字符、段落与阅读时长统计
+- [图片转 Base64](https://toolhub.bot.cd/tools/image-base64/): 图片与 Data URI / Base64 双向转换
+- [颜色对比度检查](https://toolhub.bot.cd/tools/color-contrast/): 按 WCAG 标准检查文字与背景的对比度是否达标
+- [个税计算器](https://toolhub.bot.cd/tools/tax-calc/): 工资薪金个税按累计预扣法逐月计算，含专项附加扣除与全年预测
+- [单位换算](https://toolhub.bot.cd/tools/unit-convert/): 长度/面积/体积/质量/温度/速度/时间/数据/压力/功率/能量/角度互转
+- [二维码解析](https://toolhub.bot.cd/tools/qr-decode/): 上传图片本地识别二维码内容，图片不上传，标注识别位置
+- [PDF 合并拆分](https://toolhub.bot.cd/tools/pdf-merge/): 多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传
+- [房贷计算器](https://toolhub.bot.cd/tools/mortgage-calc/): 等额本息与等额本金月供、总利息对比，含逐年还款明细表
+- [时区转换](https://toolhub.bot.cd/tools/timezone-convert/): 一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时
+- [图片转 PDF](https://toolhub.bot.cd/tools/img-to-pdf/): 多张图片合成一个 PDF，A4 或适应图片，本地生成不上传
+- [照片元数据剥离](https://toolhub.bot.cd/tools/exif-strip/): 查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码
+- [图片格式转换](https://toolhub.bot.cd/tools/image-convert/): PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码
+- [身份证 / 银行卡校验](https://toolhub.bot.cd/tools/id-validate/): 批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别
+- [图片裁剪](https://toolhub.bot.cd/tools/img-crop/): 拖出选区或填空坐标裁剪图片，支持等比锁定与圆角
+- [文件哈希校验](https://toolhub.bot.cd/tools/file-hash/): 拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对
+- [CSV 选列与重排](https://toolhub.bot.cd/tools/csv-columns/): CSV 列太多？选列、拖动排序、按列值过滤后导出新表
+- [硬盘整数分区计算器](https://toolhub.bot.cd/tools/disk-partition/): 算出 NTFS / FAT32 下显示整数 GB 分区时该填的精确 MB 值
+
+## 第三方目录（62 个，跳转对方官网，适用对方隐私政策）
+- [Excalidraw](https://toolhub.bot.cd/tools/excalidraw/): 手绘风格白板画图，协作绘图神器（数据边界：看用法）
+- [tldraw](https://toolhub.bot.cd/tools/tldraw/): 精致的无限画布白板，交互丝滑（数据边界：看用法）
+- [draw.io](https://toolhub.bot.cd/tools/diagrams/): 最流行的流程图/架构图绘制工具（数据边界：看用法）
+- [JSPaint](https://toolhub.bot.cd/tools/jspaint/): 网页版经典画图（复刻 Windows 画板）（数据边界：本机处理）
+- [SVG-Edit](https://toolhub.bot.cd/tools/svgedit/): 浏览器里的 SVG 矢量图编辑器（数据边界：本机处理）
+- [Three.js Editor](https://toolhub.bot.cd/tools/threejs-editor/): 浏览器内 3D 场景编辑器（数据边界：本机处理）
+- [OKLCH Color Picker](https://toolhub.bot.cd/tools/oklch/): 新一代感知均匀选色器，前端配色利器（数据边界：本机处理）
+- [Squoosh](https://toolhub.bot.cd/tools/squoosh/): Google 出品的图片压缩，对比预览效果极佳（数据边界：本机处理）
+- [Picsum Photos](https://toolhub.bot.cd/tools/picsum/): 占位图服务，开发测试用假图一键生成（数据边界：本机处理）
+- [Tesseract.js OCR](https://toolhub.bot.cd/tools/tesseract/): 浏览器本地图片文字识别（OCR）官方演示（数据边界：本机处理）
+- [BentoPDF](https://toolhub.bot.cd/tools/bentopdf/): PDF 合并/拆分/压缩，全部本地处理（数据边界：本机处理）
+- [Stirling-PDF](https://toolhub.bot.cd/tools/stirlingpdf/): 功能最全的开源 PDF 工具箱（官方演示站）（数据边界：看用法）
+- [PDF.js Viewer](https://toolhub.bot.cd/tools/pdfjs/): Mozilla 官方 PDF 阅读器在线演示（数据边界：本机处理）
+- [StackEdit](https://toolhub.bot.cd/tools/stackedit/): 浏览器内 Markdown 编辑器，支持云同步（数据边界：看用法）
+- [Dillinger](https://toolhub.bot.cd/tools/dillinger/): 简洁的在线 Markdown 编辑器（数据边界：本机处理）
+- [CryptPad](https://toolhub.bot.cd/tools/cryptpad/): 端到端加密的在线文档/表格/看板，无需注册即可协作（数据边界：会上传）
+- [AFFiNE](https://toolhub.bot.cd/tools/affine/): 开源 Notion 替代品：文档+白板+表格一体（数据边界：会上传）
+- [CyberChef](https://toolhub.bot.cd/tools/cyberchef/): GCHQ 出品的数据解码/加密/转换瑞士军刀（数据边界：本机处理）
+- [Transform](https://toolhub.bot.cd/tools/transform/): JSON/YAML/TOML/TS 等几十种格式互转（数据边界：本机处理）
+- [quicktype](https://toolhub.bot.cd/tools/quicktype/): JSON 一键生成 TypeScript/Java/Go 等类型定义（数据边界：未核实）
+- [JSON Hero](https://toolhub.bot.cd/tools/jsonhero/): 高颜值 JSON 浏览器，结构一目了然（数据边界：会上传）
+- [JSONPlaceholder](https://toolhub.bot.cd/tools/jsonplaceholder/): 免费假 REST API，前端开发调试必备（数据边界：会上传）
+- [httpbin](https://toolhub.bot.cd/tools/httpbin/): HTTP 请求测试服务，调试接口的好帮手（数据边界：会上传）
+- [Webhook.site](https://toolhub.bot.cd/tools/webhook/): 即时生成临时 URL 捕获查看 Webhook 请求（数据边界：会上传）
+- [DuckDB Shell](https://toolhub.bot.cd/tools/duckdb/): 浏览器里直接跑 DuckDB SQL 分析（数据边界：本机处理）
+- [DevDocs](https://toolhub.bot.cd/tools/devdocs/): 一站式 API 文档聚合（100+ 语言/框架）（数据边界：本机处理）
+- [Prettier Playground](https://toolhub.bot.cd/tools/prettier/): 官方在线代码格式化试验场（数据边界：本机处理）
+- [Regexper](https://toolhub.bot.cd/tools/regexper/): 正则表达式可视化图解，一眼看懂（数据边界：本机处理）
+- [Mermaid Live](https://toolhub.bot.cd/tools/mermaid/): 用文本语法画流程图/时序图，实时预览（数据边界：本机处理）
+- [Markmap](https://toolhub.bot.cd/tools/markmap/): 把 Markdown 变成互动思维导图（数据边界：本机处理）
+- [PlantUML Server](https://toolhub.bot.cd/tools/plantuml/): 文本生成 UML 类图/时序图官方服务（数据边界：会上传）
+- [AsciiFlow](https://toolhub.bot.cd/tools/asciiflow/): ASCII 架构图绘制，README 注释神器（数据边界：本机处理）
+- [ExplainShell](https://toolhub.bot.cd/tools/explainshell/): 逐段解释 Linux 命令每个参数的含义（数据边界：会上传）
+- [roadmap.sh](https://toolhub.bot.cd/tools/roadmap/): 开发者成长路线图（前端/后端/AI 等）（数据边界：本机处理）
+- [Icônes](https://toolhub.bot.cd/tools/icones/): 浏览/搜索 20 万+ 开源图标，一键复制组件（数据边界：本机处理）
+- [Lucide Icons](https://toolhub.bot.cd/tools/lucide/): Feather Icons 社区延续版，干净现代图标库（数据边界：本机处理）
+- [AudioMass](https://toolhub.bot.cd/tools/audiomass/): 浏览器音频剪辑/特效，免安装的声波编辑器（数据边界：本机处理）
+- [PairDrop](https://toolhub.bot.cd/tools/pairdrop/): 同一网络设备间 P2P 互传文件，免安装（数据边界：点对点）
+- [LocalSend](https://toolhub.bot.cd/tools/localsend/): 跨平台局域网传文件（AirDrop 开源替代，需装 App）（数据边界：点对点）
+- [FilePizza](https://toolhub.bot.cd/tools/filepizza/): 浏览器 P2P 临时传文件，链接即焚（数据边界：点对点）
+- [PrivateBin](https://toolhub.bot.cd/tools/privatebin/): 阅后即焚的加密粘贴板（数据边界：会上传）
+- [Bitwarden 密码生成器](https://toolhub.bot.cd/tools/bitwarden-gen/): 知名开源密码管理商的免费在线生成器（数据边界：本机处理）
+- [Monkeytype](https://toolhub.bot.cd/tools/monkeytype/): 最优雅的打字速度测试与练习（数据边界：本机处理）
+- [LibreSpeed](https://toolhub.bot.cd/tools/librespeed/): 开源无追踪网速测试（数据边界：会上传）
+- [Flexbox Froggy](https://toolhub.bot.cd/tools/flexbox-froggy/): 玩游戏学会 Flex 布局（经典教学）（数据边界：本机处理）
+- [Layoutit Grid](https://toolhub.bot.cd/tools/layoutit/): 可视化拖拽生成 CSS Grid 布局代码（数据边界：本机处理）
+- [Carbon](https://toolhub.bot.cd/tools/carbon/): 把代码变成漂亮的分享图片，配主题/配色（数据边界：未核实）
+- [JSON Crack](https://toolhub.bot.cd/tools/jsoncrack/): JSON 转成可视化节点图谱，结构一眼看穿（数据边界：本机处理）
+- [Regex Vis](https://toolhub.bot.cd/tools/regex-vis/): 正则表达式可视化图解（高亮每个片段）（数据边界：本机处理）
+- [WiseMapping](https://toolhub.bot.cd/tools/wisemapping/): 在线思维导图，支持快捷键与分享（数据边界：会上传）
+- [RAWGraphs](https://toolhub.bot.cd/tools/rawgraphs/): 拖拽生成数据可视化图表（开源数据工具）（数据边界：本机处理）
+- [SVGOMG](https://toolhub.bot.cd/tools/svgomg/): SVG 优化压缩 GUI（SVGO 的可视化界面）（数据边界：本机处理）
+- [Placehold](https://toolhub.bot.cd/tools/placehold/): 一行 URL 生成占位图，开发测试利器（数据边界：本机处理）
+- [DiceBear](https://toolhub.bot.cd/tools/dicebear/): 自动生成可爱头像，无需注册（数据边界：本机处理）
+- [Simple Icons](https://toolhub.bot.cd/tools/simpleicons/): 3000+ 品牌 SVG 图标库（含国内主流 App）（数据边界：本机处理）
+- [QuickRef](https://toolhub.bot.cd/tools/quickref/): 各语言/命令速查表，开发时随手翻（数据边界：本机处理）
+- [Exercism](https://toolhub.bot.cd/tools/exercism/): 70+ 语言免费编程练习与导师点评（数据边界：会上传）
+- [ColorBrewer](https://toolhub.bot.cd/tools/colorbrewer/): 数据可视化安全配色方案（地图/图表）（数据边界：本机处理）
+- [SimplyTranslate](https://toolhub.bot.cd/tools/simplytranslate/): 开源无追踪翻译引擎聚合（隐私友好）（数据边界：会上传）
+- [Vert](https://toolhub.bot.cd/tools/vert/): 文件格式转换器（支持批量，跨平台开源）（数据边界：本机处理）
+- [IT-Tools](https://toolhub.bot.cd/tools/it-tools/): 几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码（数据边界：本机处理）
+- [ffmpeg.wasm](https://toolhub.bot.cd/tools/ffmpeg-wasm/): 浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF（数据边界：本机处理）
+
+## 工作流
+- [图片发布包](https://toolhub.bot.cd/workflows/?flow=image-publish): 把一张手机照片变成能直接发出去的图
+- [照片成 PDF](https://toolhub.bot.cd/workflows/?flow=photo-to-pdf): 把一张照片做成能打印、能报销的 A4 PDF
+- [编码串还原 JSON](https://toolhub.bot.cd/workflows/?flow=b64-to-json): 把日志里抓到的那串 Base64 变成能读的 JSON
+- [表格提列转 JSON](https://toolhub.bot.cd/workflows/?flow=csv-pick-to-json): 把 40 列的导出表格取要用的几列，直接转成接口能吃的 JSON
+- [名单去重计数](https://toolhub.bot.cd/workflows/?flow=dedupe-count): 把关键词/黑名单去重后，看还剩多少条
+- [二维码嵌码](https://toolhub.bot.cd/workflows/?flow=qr-embed): 生成二维码，直接拿到能嵌进单文件 HTML 的 Data URI
