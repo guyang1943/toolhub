@@ -72,11 +72,16 @@
 .wf-out { margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 14px; font-size: 13px; }
 .wf-files { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
 .wf-files li {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
   padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
 }
-.wf-files a { color: var(--accent); font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
+.wf-files a { flex: 1 1 auto; color: var(--accent); font-family: var(--mono); font-size: 12.5px; overflow-wrap: anywhere; }
 .wf-size { flex: none; font-size: 11.5px; color: var(--muted); }
+/* 失败续跑时标出这份产物是哪一步的（v3.24） */
+.wf-from {
+  flex: none; font-style: normal; font-size: 11px; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 999px; padding: 1px 7px;
+}
 .wf-text-out { margin-top: 10px; }
 .wf-text-out pre {
   margin: 0 0 8px; max-height: 320px; overflow: auto; font-size: 12.5px; line-height: 1.6;
