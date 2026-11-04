@@ -49,6 +49,15 @@ export const KEYS = [
   { id: 'recent', group: 'library', kind: 'array', what: '最近打开过的工具 id', cap: '最多 8 条', clear: true },
   { id: 'compare', group: 'library', kind: 'array', what: '对比栏里选中的工具 id', cap: '最多 4 条', clear: true },
   { id: 'sets', group: 'library', kind: 'object', what: '你自己命名并存的工具集合', cap: '最多 20 个', clear: true },
+  {
+    id: 'flows',
+    group: 'library',
+    kind: 'object',
+    what: '你存下来的工作流参数',
+    cap: '最多 20 个',
+    tail: '只存参数，不存你选的文件与产物',
+    clear: true,
+  },
 
   { id: 'usage', group: 'stats', kind: 'object', what: '每个工具在本机用过几次', tail: '只用来排「最常用」', clear: true },
   {

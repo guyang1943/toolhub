@@ -17,6 +17,9 @@
 //      用户会以为工具坏了。所以沿用时会在界面上写「完成（无新产物）」，不假装这一步做了事。
 
 import { buildValues } from './lib/workflow-core.js';
+// 只 import store.js（它本来就在首屏，被 app.js 静态引用），**不** import store-keys.js：
+// 那份清单 3 KB，这一页只需要一个键名，为它多付一次请求不值得。
+import * as store from './lib/store.js';
 
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -121,6 +124,11 @@ export async function mountWorkflows(box, reg) {
         <span class="wf-cost">${esc(flow.cost || '')}</span>
       </div>
       <div class="wf-input">${input}</div>
+      <div class="wf-saved-wrap" id="wf-saved"></div>
+      <details class="wf-params" id="wf-params">
+        <summary>参数 · 改完可以存成「我的流程」</summary>
+        <div id="wf-pbody"></div>
+      </details>
       <ol class="wf-steps" id="wf-steps">
         ${flow.steps
           .map(
@@ -187,6 +195,234 @@ export async function mountWorkflows(box, reg) {
       }
     }
 
+    /* ---------- 参数面板 + 「我的流程」（v3.24） ---------- */
+    //
+    // 流程定义里写死的 args 是「默认值」，不是「不可改」：公众号封面要 1200、
+    // 头像要 512，同一套步骤在不同场景下差的就是几个数字。这个面板把 args 摊开，
+    // 改完能存成一条「我的流程」，下次选同一条流程一键套用。
+    //
+    // 只摊 args，不摊 bind：bind 是流程内部的接线，改它等于改流程本身——那属于 workflows.json，
+    // 改错了不会报错，只会把 A 的产物喂给 B。这种权限不该出现在运行页上。
+    //
+    // 面板默认折叠：展开才去 import 各工具的 run.js 读 manifest（它们运行时要 import 同一批，
+    // 所以展开后不额外花第二次请求）。只是看一眼流程的人不该为此多下载三个模块。
+    const FLOW_KEY = 'flows'; // 键名登记在 assets/lib/store-keys.js
+    const FLOW_MAX = 20;
+    const NAME_MAX = 20;
+
+    const loadSaved = () => {
+      const v = store.get(FLOW_KEY, {});
+      return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+    };
+
+    // 「用这个跑」套用的参数，以及面板没展开时的取值来源。
+    // 注意它不能替代 DOM：面板展开后用户改了输入框，DOM 才是最新值。
+    let applied = {};
+
+    const argCount = (args) => Object.values(args || {}).reduce((n, o) => n + Object.keys(o || {}).length, 0);
+
+    const fmtAt = (t) => {
+      if (!t) return '';
+      const d = new Date(t);
+      const p = (n) => String(n).padStart(2, '0');
+      return `${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    };
+
+    /** 这一次运行真正的参数：先套 applied，再让面板上的输入覆盖它 */
+    const readOverrides = () => {
+      const ov = {};
+      for (const [i, o] of Object.entries(applied)) ov[i] = { ...o };
+      for (const el of runner.querySelectorAll('[data-arg]')) {
+        const [i, k] = el.dataset.arg.split(':');
+        if (!flow.steps[Number(i)]?.args || !(k in flow.steps[Number(i)].args)) continue;
+        (ov[i] = ov[i] || {})[k] = el.type === 'checkbox' ? el.checked : el.type === 'number' ? Number(el.value) : el.value;
+      }
+      return ov;
+    };
+
+    /** 把一套参数写进面板（面板没展开就只记在 applied 里，展开时用得上） */
+    const applyArgs = (args) => {
+      applied = JSON.parse(JSON.stringify(args || {}));
+      for (const el of runner.querySelectorAll('[data-arg]')) {
+        const [i, k] = el.dataset.arg.split(':');
+        const v = (applied[i] || {})[k];
+        if (v === undefined) continue;
+        if (el.type === 'checkbox') el.checked = !!v;
+        else el.value = v;
+      }
+    };
+
+    const saveNote = (msg) => {
+      const n = runner.querySelector('#wf-save-note');
+      if (n) n.textContent = msg;
+    };
+
+    function fieldHTML(id, input, val) {
+      const label = esc(input.label || input.name);
+      const cur = val ?? input.default ?? '';
+      if (input.type === 'select') {
+        const opts = (input.options || [])
+          .map((o) => `<option value="${esc(o.value)}"${String(o.value) === String(cur) ? ' selected' : ''}>${esc(o.label || o.value)}</option>`)
+          .join('');
+        return `<label class="wf-pfield"><span>${label}</span><select data-arg="${id}">${opts}</select></label>`;
+      }
+      if (input.type === 'checkbox') {
+        return `<label class="wf-pfield wf-pcheck"><input type="checkbox" data-arg="${id}"${cur === true || cur === 'yes' ? ' checked' : ''}><span>${label}</span></label>`;
+      }
+      if (input.type === 'range' || input.type === 'number') {
+        return `<label class="wf-pfield"><span>${label}</span><input type="number" data-arg="${id}" value="${esc(cur)}"${
+          input.min != null ? ` min="${input.min}"` : ''
+        }${input.max != null ? ` max="${input.max}"` : ''}></label>`;
+      }
+      return `<label class="wf-pfield"><span>${label}</span><input type="text" data-arg="${id}" value="${esc(cur)}" placeholder="${esc(
+        input.placeholder || ''
+      )}"></label>`;
+    }
+
+    async function mountParams(flow) {
+      const body = runner.querySelector('#wf-pbody');
+      const groups = [];
+      for (const [i, step] of flow.steps.entries()) {
+        const keys = Object.keys(step.args || {});
+        if (!keys.length) continue;
+        let manifest = null;
+        try {
+          manifest = (await import(`/tools/${step.tool}/run.js`)).manifest;
+        } catch {
+          // 面板是增强功能：读不到 manifest 就不显示这一组，不影响「运行」本身
+        }
+        if (!manifest) continue;
+        const inputs = Array.isArray(manifest.inputs) ? manifest.inputs : [];
+        const fields = keys
+          .map((k) => {
+            const input = inputs.find((x) => x.name === k);
+            if (!input) return ''; // 构建期闸门已保证 args 都对得上 manifest，这里只是兜底
+            return fieldHTML(`${i}:${k}`, input, (applied[i] || {})[k] ?? step.args[k]);
+          })
+          .join('');
+        if (fields) {
+          groups.push(`<fieldset class="wf-pgroup"><legend>第 ${i + 1} 步 · ${esc(toolName(step.tool))}</legend>${fields}</fieldset>`);
+        }
+      }
+
+      if (!groups.length) {
+        runner.querySelector('#wf-params').hidden = true;
+        return;
+      }
+
+      body.innerHTML = `
+        <p class="wf-tip">流程里写死的是默认值，这里改只影响这一次和「我的流程」，不改流程定义本身。</p>
+        ${groups.join('')}
+        <div class="wf-psave">
+          <input type="text" id="wf-save-name" maxlength="${NAME_MAX}" placeholder="给这套参数起个名字（如：公众号封面）" />
+          <button type="button" class="btn ghost" id="wf-save">保存为我的流程</button>
+          <button type="button" class="btn ghost" id="wf-reset">恢复默认值</button>
+          <span class="wf-dim" id="wf-save-note"></span>
+        </div>`;
+
+      body.querySelector('#wf-save').onclick = () => {
+        const nameEl = body.querySelector('#wf-save-name');
+        const name = (nameEl.value || '').trim();
+        if (!name) {
+          saveNote('先起个名字再保存。');
+          nameEl.focus();
+          return;
+        }
+        const saved = loadSaved();
+        // 同一条流程下同名 = 覆盖。否则用户改一次存一次，列表里很快堆满一模一样的两三条。
+        const same = Object.entries(saved).find(([, v]) => v && v.flow === flow.id && v.name === name);
+        if (!same && Object.keys(saved).length >= FLOW_MAX) {
+          saveNote(`最多存 ${FLOW_MAX} 个，先删一个不用的。`);
+          return;
+        }
+        const id = same ? same[0] : Date.now().toString(36);
+        saved[id] = { name: name.slice(0, NAME_MAX), flow: flow.id, args: readOverrides(), at: Date.now() };
+        if (!store.set(FLOW_KEY, saved)) {
+          saveNote('存不进去（浏览器存储被禁用或已满）。');
+          return;
+        }
+        saveNote(`已保存「${saved[id].name}」，下次选这条流程就能套用。`);
+        renderSaved(flow);
+      };
+
+      body.querySelector('#wf-reset').onclick = () => {
+        applied = {};
+        for (const el of body.querySelectorAll('[data-arg]')) {
+          const [i, k] = el.dataset.arg.split(':');
+          const v = flow.steps[Number(i)].args[k];
+          if (el.type === 'checkbox') el.checked = v === true || v === 'yes';
+          else el.value = v ?? '';
+        }
+        saveNote('已恢复流程默认值。要留住现在的值，得点「保存为我的流程」。');
+      };
+    }
+
+    /** 「我的流程」列表：只读 localStorage，不需要 manifest，所以面板关着也照样显示 */
+    function renderSaved(flow) {
+      const box = runner.querySelector('#wf-saved');
+      if (!box) return;
+      const saved = loadSaved();
+      const items = Object.entries(saved)
+        .filter(([, v]) => v && v.flow === flow.id)
+        .sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
+      if (!items.length) {
+        box.innerHTML = '<p class="wf-dim">还没有存过这条流程的参数。展开下面的「参数」改几个值，起个名字就能存下来。</p>';
+        return;
+      }
+      box.innerHTML = `
+        <div class="wf-saved-head">我的流程 <span class="wf-dim">${items.length} 个 · 只存在这台设备上</span></div>
+        <ul class="wf-saved">${items
+          .map(
+            ([id, v]) =>
+              `<li><b>${esc(v.name)}</b><span class="wf-dim">${argCount(v.args)} 个参数 · ${fmtAt(v.at)}</span>
+               <button type="button" class="btn ghost" data-use="${esc(id)}">用这个跑</button>
+               <button type="button" class="btn ghost" data-drop="${esc(id)}">删除</button></li>`
+          )
+          .join('')}</ul>`;
+      box.onclick = (e) => {
+        const use = e.target.closest('[data-use]');
+        const drop = e.target.closest('[data-drop]');
+        if (use) {
+          if (runBtn.disabled) return; // 正在跑，别插队
+          const v = loadSaved()[use.dataset.use];
+          if (!v) return;
+          applyArgs(v.args);
+          const nameEl = runner.querySelector('#wf-save-name');
+          if (nameEl) nameEl.value = v.name;
+          saveNote(`已套用「${v.name}」。`);
+          const input = readInput();
+          const ready = flow.input.kind === 'file' ? !!input.picked : !!input.text.trim();
+          if (ready) start({});
+          else {
+            out.innerHTML = `<div class="msg-warn">参数已按「${esc(v.name)}」填好——先${
+              flow.input.kind === 'file' ? '选一个文件' : '把内容粘进来'
+            }，再点「开始运行」。</div>`;
+          }
+          return;
+        }
+        if (drop) {
+          const saved2 = loadSaved();
+          const name = saved2[drop.dataset.drop]?.name || '这条';
+          delete saved2[drop.dataset.drop];
+          store.set(FLOW_KEY, saved2);
+          renderSaved(flow);
+          saveNote(`已删除「${name}」。`);
+        }
+      };
+    }
+
+    // 面板只在第一次展开时读 manifest；之后开关都不再请求
+    const paramsEl = runner.querySelector('#wf-params');
+    if (paramsEl) {
+      let loaded = false;
+      paramsEl.addEventListener('toggle', async () => {
+        if (!paramsEl.open || loaded) return;
+        loaded = true;
+        await mountParams(flow);
+      });
+    }
+    renderSaved(flow);
+
     runBtn.onclick = () => start({});
 
     /**
@@ -199,6 +435,8 @@ export async function mountWorkflows(box, reg) {
     async function start({ resumeFrom = null, prev = null, input = null } = {}) {
       const resume = prev !== null;
       const own = input || readInput();
+      // 参数面板 / 「我的流程」套用的值；面板没动过就是空对象
+      const ov = readOverrides();
 
       if (!resume) {
         if (flow.input.kind === 'file' && !own.picked) {
@@ -234,7 +472,9 @@ export async function mountWorkflows(box, reg) {
           const step = flow.steps[i];
           setState(i, 'running');
           const mod = await import(`/tools/${step.tool}/run.js`);
-          const values = buildValues(mod.manifest, step, i, {
+          // 面板上改过的值并进这一份 args；workflows.json 里的定义不动
+          const eff = ov[i] ? { ...step, args: { ...step.args, ...ov[i] } } : step;
+          const values = buildValues(mod.manifest, eff, i, {
             files: own.picked ? [own.picked] : [],
             file: own.picked,
             text: own.text,

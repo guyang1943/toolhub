@@ -1302,6 +1302,110 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await goto('/');
   }
 
+  // ---- 9.13c 参数面板 +「保存为我的流程」（v3.24）----
+  // 这一段防的不是「按钮点得动」，是三种最容易假通过的情况：
+  //   ① 面板改了值，运行仍用流程默认值——面板成了装饰品；
+  //   ② 存进了 localStorage 但列表读不出来（写入与读取用了两种形状）；
+  //   ③ 只活在内存变量里：本页看着能跑，刷新就没了。
+  // 还有一条更隐蔽的：面板默认折叠，不展开也要能用「我的流程」——
+  // 否则等于强迫每个用户先下载三个工具的 manifest 才能点一下存好的参数。
+  {
+    await goto('/workflows/');
+    await waitText('.wf-picker', '表格提列转 JSON', 12000);
+    await evaluate(`document.querySelector('[data-flow="csv-pick-to-json"]').click()`);
+    await waitEl('#wf-params', 8000);
+
+    const openByDefault = await evaluate(`document.getElementById('wf-params').open`);
+    check('参数面板默认折叠（不多下载 manifest）', openByDefault === false, String(openByDefault));
+
+    await evaluate(`document.getElementById('wf-params').open = true`);
+    await waitEl('[data-arg="0:cols"]', 15000);
+    const fields = await evaluate(`[...document.querySelectorAll('[data-arg]')].map((e) => e.dataset.arg)`);
+    check(
+      '面板摊开的是 args，不碰 bind（input 口不出现）',
+      fields.includes('0:cols') && fields.includes('0:filterCol') && fields.includes('0:filterVal') && !fields.includes('0:input'),
+      fields.join(',')
+    );
+
+    // 改参数 + 给输入，跑一次：产物必须只见两列、只剩张三那行
+    await evaluate(`(() => {
+      const set = (sel, v) => { const el = document.querySelector(sel); el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+      set('[data-arg="0:cols"]', '订单号,客户');
+      set('[data-arg="0:filterCol"]', '客户');
+      set('[data-arg="0:filterVal"]', '张');
+      const t = document.getElementById('wf-text');
+      t.value = '订单号,客户,金额\\nA001,张三,128\\nA002,李四,340';
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await evaluate(`document.getElementById('wf-run').click()`);
+    const panelRun = await waitText('#wf-out', '跑完', 20000);
+    const panelOut = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    let panelArr = null;
+    try {
+      panelArr = JSON.parse(panelOut);
+    } catch {}
+    check(
+      '面板上的参数真的进了运行（两列、筛剩一行）',
+      panelRun === true && Array.isArray(panelArr) && panelArr.length === 1 && Object.keys(panelArr[0]).join(',') === '订单号,客户',
+      panelOut.slice(0, 90).replace(/\n/g, ' ')
+    );
+
+    await evaluate(`(() => {
+      document.getElementById('wf-save-name').value = '只提两列';
+      document.getElementById('wf-save').click();
+    })()`);
+    const savedShown = await waitText('#wf-saved', '只提两列', 5000);
+    const stored = await evaluate(`localStorage.getItem('toolhub:flows')`);
+    check('保存写进 flows 键并在列表里显示', savedShown === true && /只提两列/.test(stored || ''), String(stored).slice(0, 100));
+    check(
+      '存的是参数，不含文件与产物',
+      /"cols":"订单号,客户"/.test(stored || '') && !/blob:|base64|data:/.test(stored || ''),
+      String(stored).slice(0, 120)
+    );
+    await evaluate(`document.querySelector('.wf-runner').scrollIntoView({ block: 'start' })`);
+    await sleep(300);
+    await shot('09c-save-flow');
+
+    // 刷新 → 还在（证明是落盘不是内存）
+    await goto('/workflows/');
+    await waitText('.wf-picker', '表格提列转 JSON', 12000);
+    await evaluate(`document.querySelector('[data-flow="csv-pick-to-json"]').click()`);
+    const afterReload = await waitText('#wf-saved', '只提两列', 8000);
+    check('刷新后「我的流程」还在', afterReload === true);
+
+    // 没填输入时点「用这个跑」：只套参数 + 提示，不许空跑
+    await evaluate(`document.querySelector('[data-use]').click()`);
+    const needInput = await waitText('#wf-out', '参数已按', 5000);
+    const nothingRan = await evaluate(
+      `document.querySelectorAll('.wf-step[data-state="done"], .wf-step[data-state="fail"]').length`
+    );
+    check('没填输入时只套参数、不启动', needInput === true && nothingRan === 0, needInput ? `${nothingRan} 步` : '（没有提示）');
+
+    // 面板仍折叠着，直接点「用这个跑」：参数必须照样生效
+    const stillClosed = await evaluate(`document.getElementById('wf-params').open`);
+    await evaluate(`(() => {
+      const t = document.getElementById('wf-text');
+      t.value = '订单号,客户,金额\\nA001,张三,128\\nA002,李四,340';
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await evaluate(`document.querySelector('[data-use]').click()`);
+    const useRun = await waitText('#wf-out', '跑完', 20000);
+    const useOut = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    check(
+      '面板没展开时「用这个跑」也套用了存下的参数',
+      stillClosed === false && useRun === true && /张三/.test(useOut) && !/"金额"/.test(useOut),
+      useOut.slice(0, 90).replace(/\n/g, ' ')
+    );
+
+    await evaluate(`document.querySelector('[data-drop]').click()`);
+    const afterDrop = await evaluate(`({
+      raw: localStorage.getItem('toolhub:flows'),
+      btns: document.querySelectorAll('[data-use]').length,
+    })`);
+    check('删除后列表与 flows 键同时清掉', afterDrop.btns === 0 && !/只提两列/.test(afterDrop.raw || ''), JSON.stringify(afterDrop).slice(0, 100));
+    await goto('/');
+  }
+
   // ---- 9.14 v3.24 三条新流程 ----
   // 这一段专治「流程能跑完，但跑的是工具自带的示例数据」。
   // 三条流程的第一步都吃用户粘贴的文本，而这些工具的输入框都带示例默认值——
@@ -1843,9 +1947,9 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     })()`);
     check('我的数据页渲染出面板', myOk === true);
     check('四格概览齐全', myInfo.cards === 4, `${myInfo.cards} 格`);
-    // 表头 1 行 + 11 个键 + 合计 1 行 = 13
-    check('存储明细行数 = 清单键数', myInfo.rows === 13, `${myInfo.rows} 行（含表头与合计）`);
-    check('清单里的键全在面板上', myInfo.keys.length === 11 && myInfo.keys.includes('toolhub:draft:<工具 id>'), myInfo.keys.join(','));
+    // 表头 1 行 + 12 个键 + 合计 1 行 = 14（v3.24 加了 flows）
+    check('存储明细行数 = 清单键数', myInfo.rows === 14, `${myInfo.rows} 行（含表头与合计）`);
+    check('清单里的键全在面板上', myInfo.keys.length === 12 && myInfo.keys.includes('toolhub:draft:<工具 id>'), myInfo.keys.join(','));
     check('按类清除按钮由清单生成', myInfo.wipes === 4, `${myInfo.wipes} 个`);
     check('合计占用有实测值', /KB|B/.test(myInfo.total), myInfo.total);
     await shot('16-my-panel');
