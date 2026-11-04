@@ -1218,6 +1218,90 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await goto('/');
   }
 
+  // ---- 9.13b 失败续跑（v3.24）----
+  // 「本地处理的天然优势」这句话必须能被点出来，否则它就只是文案。这一段盯三件事：
+  //   ① 第 2 步失败时，第 1 步的产物仍然列出、仍然能下载（失败不作废已完成的步骤）；
+  //   ② 「从第 2 步重试」真的只碰第 2 步——用 MutationObserver 记录每一步的状态变化，
+  //      第 1 步若被重跑，状态一定会翻成 running，这条断言就红。只看最终状态是骗人的：
+  //      重跑一遍最后也还是 done/fail/idle。
+  //   ③ 输入一改，续跑入口就撤掉——不许「前半段吃旧文件、后半段吃新文件」。
+  // 坏文件用合成 JPEG（元数据读得出、扫描数据解不开）：第 1 步 exif-strip 只读段能过，
+  // 第 2 步 image-resize 要真解码，必然失败。这就是「故意传坏文件」。
+  {
+    await goto('/workflows/');
+    await waitText('.wf-picker', '图片发布包', 12000);
+    await evaluate(`document.querySelector('[data-flow="image-publish"]').click()`);
+    await waitEl('#wf-file', 8000);
+
+    const { makeJpeg: makeBadJpeg } = await import(
+      'file://' + join(root, 'scripts/lib/jpeg-fixture.mjs').replace(/\\/g, '/')
+    );
+    const badUrl = 'data:image/jpeg;base64,' + makeBadJpeg({ gps: true }).toString('base64');
+    await evaluate(`(async () => {
+      const bytes = new Uint8Array(await (await fetch(${JSON.stringify(badUrl)})).arrayBuffer());
+      const dt = new DataTransfer();
+      dt.items.add(new File([bytes], 'gps-only.jpg', { type: 'image/jpeg' }));
+      const input = document.getElementById('wf-file');
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    })()`);
+
+    await evaluate(`document.getElementById('wf-run').click()`);
+    const stopped2 = await waitText('#wf-out', '停在第 2 步', 30000);
+    check('坏文件停在第 2 步', stopped2 === true, stopped2 ? '' : (await evaluate(`((document.getElementById('wf-out')||{}).innerText||'').slice(0,140)`)));
+    const states1 = await evaluate(
+      `[0,1,2].map(i => (document.querySelector('.wf-step[data-step="' + i + '"]') || {}).dataset?.state || '').join(',')`
+    );
+    check('第 1 步仍是「完成」，第 3 步没被碰', states1 === 'done,fail,idle', states1);
+
+    const partial = await evaluate(`(() => {
+      const li = document.querySelector('#wf-out .wf-files li');
+      const a = li && li.querySelector('a[download]');
+      if (!a) return '';
+      const from = li.querySelector('.wf-from');
+      return JSON.stringify({ from: from ? from.textContent : '', name: a.getAttribute('download'), href: a.getAttribute('href') });
+    })()`);
+    check(
+      '失败后第 1 步的产物仍列出、仍可下载',
+      /"from":"第 1 步"/.test(partial) && /\.jpg"/.test(partial) && partial.includes('blob:'),
+      partial.slice(0, 90) || '（没有产物）'
+    );
+
+    const resumeLabel = await evaluate(`(document.getElementById('wf-resume') || {}).textContent || ''`);
+    check('给出「从第 2 步重试」入口', resumeLabel === '从第 2 步重试', resumeLabel || '（没有）');
+
+    // 记录状态翻转：续跑若从第 1 步重来，step 0 必然出现 running
+    await evaluate(`(() => {
+      window.__wfTrace = [];
+      window.__wfObs = new MutationObserver((ms) => {
+        for (const m of ms) {
+          const t = m.target;
+          if (t.dataset && t.dataset.step !== undefined) window.__wfTrace.push(t.dataset.step + ':' + t.dataset.state);
+        }
+      });
+      for (const li of document.querySelectorAll('.wf-step')) {
+        window.__wfObs.observe(li, { attributes: true, attributeFilter: ['data-state'] });
+      }
+    })()`);
+    await evaluate(`document.getElementById('wf-resume').click()`);
+    const again = await waitText('#wf-out', '从第 2 步重试后仍然失败', 30000);
+    check('续跑接在失败那一步（失败原因照旧说出来）', again === true);
+    const trace = await evaluate(`(() => { window.__wfObs.disconnect(); return window.__wfTrace.join(','); })()`);
+    check('续跑只碰第 2 步：第 1 步的状态一次都没变', !/(^|,)0:/.test(trace), trace || '（无变化）');
+    const dlAgain = await evaluate(`(() => {
+      const a = document.querySelector('#wf-out .wf-files a[download]');
+      return a ? a.getAttribute('download') + '|' + a.getAttribute('href') : '';
+    })()`);
+    check('续跑再次失败后，产物依然可取', /\.jpg\|blob:/.test(dlAgain), dlAgain.slice(0, 60) || '（没有产物）');
+
+    // 输入一改 → 断点作废（否则会拿旧文件跑前半段、新文件跑后半段）
+    await evaluate(`document.getElementById('wf-file').dispatchEvent(new Event('change', { bubbles: true }))`);
+    const voided = await waitText('#wf-out', '断点已作废', 5000);
+    const resumeGone = await evaluate(`document.getElementById('wf-resume') ? 'yes' : 'no'`);
+    check('改了输入，续跑入口就撤掉', voided === true && resumeGone === 'no', voided ? '入口已撤' : '（没有提示）');
+    await goto('/');
+  }
+
   // ---- 9.14 v3.24 三条新流程 ----
   // 这一段专治「流程能跑完，但跑的是工具自带的示例数据」。
   // 三条流程的第一步都吃用户粘贴的文本，而这些工具的输入框都带示例默认值——
