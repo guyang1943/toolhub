@@ -134,5 +134,7 @@ for (const w of warns) console.log(`⚠️ ${w}`);
 const dist = Object.entries(byCollection)
   .map(([k, v]) => `${k} ${v}`)
   .join(' · ');
-console.log(`✅ 投稿规范一致：6 个合集 / ${checked} 条存量全部符合 $defs.item`);
+// v3.23 合并：这里的合集数原本写死「6 个」，内容运营那边加了第 7 个合集后就成了假话。
+// 数和分布本来就在 byCollection 里，没有理由手写。
+console.log(`✅ 投稿规范一致：${Object.keys(byCollection).length} 个合集 / ${checked} 条存量全部符合 $defs.item`);
 console.log(`   分布：${dist}`);

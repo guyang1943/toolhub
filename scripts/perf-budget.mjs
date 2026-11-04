@@ -20,8 +20,14 @@ const JSON_OUT = jsonIdx > -1 ? argv[jsonIdx + 1] : '';
 const budgetCfg = JSON.parse(readFileSync(join(root, 'perf-budget.json'), 'utf8'));
 const B = budgetCfg.budgets;
 
+// 量之前先把 CRLF 归一成 LF。
+// 仓库里存的是 LF，GitHub Pages 发出去的也是 LF；只有这台机器的 core.autocrlf=true
+// 会在检出时把文件转成 CRLF，每行多一个 \r。不归一化，同一份代码在 Windows 上量出
+// 30.1 KB、在 CI（Linux）上量出 29.7 KB——「本地红、线上绿」是最耗人的那种假红。
+// v3.23 合并时踩到：变基重新检出后 app.js 原始体积凭空多 1.9 KB，看着像代码变胖了。
 const gz = (rel) => {
-  const buf = readFileSync(join(root, rel));
+  const disk = readFileSync(join(root, rel));
+  const buf = disk.includes(13) ? Buffer.from(disk.toString('utf8').replace(/\r\n/g, '\n'), 'utf8') : disk;
   return { raw: buf.length, gzip: gzipSync(buf, { level: 9 }).length };
 };
 const kb = (n) => (n / 1024).toFixed(1) + ' KB';
