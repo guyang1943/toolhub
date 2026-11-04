@@ -21,7 +21,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readManifest } from './lib/tool-manifest.mjs';
-import { validateArgs, planStep, parseRef, acceptMismatch, REF_FORMS } from '../assets/lib/workflow-core.js';
+import { validateArgs, planStep, parseRef, acceptMismatch, exampleDefaultPorts, REF_FORMS } from '../assets/lib/workflow-core.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const quiet = process.argv.includes('--quiet');
@@ -107,10 +107,26 @@ for (const [i, f] of flows.entries()) {
     const src = readFileSync(join(root, 'tools', step.tool, 'run.js'), 'utf8');
     if (!/export\s+(async\s+)?function\s+run\b/.test(src)) err(`${where}：tools/${step.tool}/run.js 没有导出 run()`);
 
+    // 产出文件必须是 Blob。qrcode 曾经只给 url（Data URL 字符串），引擎拿它去 new File()
+    // 会把对象转成 "[object Object]"——Base64 全是垃圾且不报错，到最后一步才崩。
+    const lit = src.match(/files:\s*\[([\s\S]*?)\]/);
+    if (lit && !/\bblob\b/.test(lit[1])) {
+      err(`${where}：${step.tool} 返回的 files 条目里没有 blob——工作流要的是文件，Data URL 字符串接不住`);
+    }
+
     for (const e of validateArgs(mf.manifest, step)) err(`${where}：${e}`);
 
     const plan = planStep(mf.manifest, step, j);
     for (const e of plan.errors) err(`${where}：${e}`);
+
+    // 数据口掉进示例默认值 = 用户输入被忽略，跑的是工具自带的示例。
+    // planStep 认为「有值就算齐了」，所以这里必须单独拦一道。
+    for (const name of exampleDefaultPorts(mf.manifest, plan)) {
+      err(
+        `${where}的 ${name} 落到了工具的示例默认值——用户输入会被忽略，流程跑的是示例数据。` +
+          `数据口只能来自 in.* / text / files[N]，或用 args 写死`
+      );
+    }
 
     // 首步引用「上一步」= 一定取不到值，属于写错了而不是运行期才知道的事
     if (j === 0) {

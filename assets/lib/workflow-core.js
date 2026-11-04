@@ -161,6 +161,25 @@ export function planStep(manifest, step, index) {
   return { values, errors };
 }
 
+/**
+ * 流程里「掉进了工具示例默认值」的数据口。返回输入名数组（空 = 没问题）。
+ *
+ * 为什么这条要单独判：默认值让 planStep 认为「每个输入都有确定的值」，校验全过——
+ * 可用户粘进来的内容根本没被用上，跑的是工具自带的那段示例数据，而输出看上去还挺正常。
+ * 数据口的值只该来自三处：用户输入（in.*）、上一步（text / files[N]）、或 args 里写死的值；
+ * 「没写，于是用了示例」不属于其中任何一种。
+ * v3.24 的 dedupe-count 就是这么错的：word-count 的 text 自带示例段落，
+ * 第二步不写 bind，统计出来的是那段介绍文字（82 字 / 2 行），不是用户的名单。
+ */
+export function exampleDefaultPorts(manifest, plan) {
+  const inputs = Array.isArray(manifest?.inputs) ? manifest.inputs : [];
+  return (plan?.values || [])
+    .filter((v) => v.from === 'default')
+    .map((v) => ({ name: v.name, input: inputs.find((i) => i.name === v.name) }))
+    .filter((x) => inputKind(x.input))
+    .map((x) => x.name);
+}
+
 /* ---------------- 运行时取值 ---------------- */
 
 /** 上一步给的是 { name, blob, kind }，工具要的是 File——补一层，别让工具自己判断 */

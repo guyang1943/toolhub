@@ -36,6 +36,10 @@ function ensureQRCode() {
 
 export async function run({ text, size }) {
   if (!text.trim()) throw new Error('请输入要生成的内容');
+  // 超容量时 qrcodejs 抛的是内部错（Cannot read properties of undefined），
+  // 用户只看到一堆天书。容错级别 M 的字节模式下上限是 2331 字节，先自己判一次。
+  const bytes = new TextEncoder().encode(text).length;
+  if (bytes > 2331) throw new Error(`内容太长：${bytes} 字节，二维码最多放 2331 字节（容错 M）。缩短内容或改用短链`);
   await ensureQRCode();
   const s = Number(size);
   const holder = document.createElement('div');
@@ -45,9 +49,24 @@ export async function run({ text, size }) {
   let url = canvas?.toDataURL('image/png');
   if (!url && img) url = img.src;
 
+  // 产物必须给 Blob。以前这里只有 url（Data URL 字符串），工作流把它当文件传给下一个工具时，
+  // new File([{name,url,kind}]) 会把对象转成 "[object Object]"——转出来的 Base64 全是垃圾，
+  // 而且不报错。工具页只用 html，不受影响；url 保留，免得别处还引用着。
+  const blob = canvas ? await new Promise((ok) => canvas.toBlob((b) => ok(b), 'image/png')) : null;
+  // 兜底不走 fetch：本地工具一律不许发网络请求（哪怕只是个 data: URL，闸门也照拦）。
+  // 自己把 base64 解成字节，纯本地。
+  const png = blob || (() => {
+    const [head, b64] = String(url).split(',');
+    const bin = atob(b64 || '');
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const type = (head.match(/data:([^;]+)/) || [])[1] || 'image/png';
+    return new Blob([bytes], { type });
+  })();
+
   return {
     html: `<div class="msg-ok">✅ 已生成 ${s}×${s} 二维码</div>`,
-    files: [{ name: 'qrcode.png', url, kind: 'image' }],
+    files: [{ name: 'qrcode.png', blob: png, url, kind: 'image' }],
     text,
   };
 }

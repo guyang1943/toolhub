@@ -82,6 +82,111 @@
           "note": "两空格缩进，直接贴进代码或文档"
         }
       ]
+    },
+    {
+      "id": "csv-pick-to-json",
+      "name": "表格提列转 JSON",
+      "goal": "把 40 列的导出表格取要用的几列，直接转成接口能吃的 JSON",
+      "detail": "运营导出的订单表动不动 40 列，接口只要其中 6 列。先选列、筛行（输出 CSV 文本），再转成 JSON 数组。少了选列这一步，40 列全进 JSON，下游字段对不上；少了转 JSON 这一步，CSV 给不了接口。",
+      "cost": "不到 1 秒",
+      "input": {
+        "kind": "text",
+        "label": "粘贴 CSV（可从 Excel 直接复制整块表格）",
+        "placeholder": "订单号,客户,金额\nA001,张三,128",
+        "rows": 8,
+        "hint": "列配置在第 1 步里填；v3.24 参数面板支持把常用列配置存成「我的流程」一键重跑"
+      },
+      "steps": [
+        {
+          "tool": "csv-columns",
+          "args": {
+            "cols": "",
+            "delim": "auto",
+            "filterCol": "",
+            "filterVal": "",
+            "header": "yes"
+          },
+          "bind": {
+            "input": "in.text"
+          },
+          "note": "选列与筛行：cols 填列名或序号（逗号分隔），留空=全部列。注意 input 必须显式 bind 到 in.text——它自带示例默认值，不写 bind 流程会跑示例数据而不是用户粘贴的内容"
+        },
+        {
+          "tool": "csv-json",
+          "bind": {
+            "input": "text"
+          },
+          "note": "CSV → JSON 数组，首行表头变成 key。input 同样必须显式 bind（它也有示例默认值）"
+        }
+      ]
+    },
+    {
+      "id": "dedupe-count",
+      "name": "名单去重计数",
+      "goal": "把关键词/黑名单去重后，看还剩多少条",
+      "detail": "运营的关键词表、安全的黑名单，贴进来先去重（忽略大小写与首尾空格、去掉空行），再统计剩余条数与字数。不去重直接数，数字含重复是错的；只去重不计数，得手动数。",
+      "cost": "不到 1 秒",
+      "input": {
+        "kind": "text",
+        "label": "粘贴名单（每行一条）",
+        "placeholder": "apple\nBanana\napple\ncherry",
+        "rows": 8,
+        "hint": "去重规则（忽略大小写、排序、空行）在第 1 步可调"
+      },
+      "steps": [
+        {
+          "tool": "text-dedupe",
+          "args": {
+            "dropEmpty": "yes",
+            "ignoreCase": "yes",
+            "sort": "none"
+          },
+          "bind": {
+            "text": "in.text"
+          },
+          "note": "去重。text 必须显式 bind 到 in.text——它自带示例默认值，不写 bind 会跑示例数据"
+        },
+        {
+        "tool": "word-count",
+        "bind": {
+          "text": "text"
+        },
+        "note": "统计去重后的条数与字数。text 也自带示例默认值，必须显式 bind 到上一步的文本——不写的话 args→bind→default 会跑到 default，统计的是那段示例介绍而不是你的名单"
+        }
+      ]
+    },
+    {
+      "id": "qr-embed",
+      "name": "二维码嵌码",
+      "goal": "生成二维码，直接拿到能嵌进单文件 HTML 的 Data URI",
+      "detail": "邮件签名、单文件页面里要放二维码，不想再找图床托管。先按文本生成 PNG，再转成 Data URI，复制即用。少了转码这一步，就得多一次上传托管，还违背不上传的调性。",
+      "cost": "不到 1 秒",
+      "input": {
+        "kind": "text",
+        "label": "二维码内容（网址或任意文本）",
+        "placeholder": "https://toolhub.bot.cd/",
+        "hint": "生成约 256px 的 PNG，Data URI 约几十 KB"
+      },
+      "steps": [
+        {
+          "tool": "qrcode",
+          "args": {
+            "size": "256"
+          },
+          "note": "按文本生成 PNG（qrcode.png）。text 输入无默认值，自动接流程输入"
+        },
+        {
+          "tool": "image-base64",
+          "args": {
+            "dataUri": "",
+            "mode": "toBase64"
+          },
+          "bind": {
+            "file": "files[0]"
+          },
+          "note": "PNG → Data URI。dataUri 置空是故意的：它和 file 是两个入口，不写 bind/args 会被自动接到上一步的文本（二维码原文）——toBase64 模式下虽然用不上，但空着才是对的"
+        }
+      ]
     }
   ]
 }

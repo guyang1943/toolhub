@@ -1135,7 +1135,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
 
     const cards = await waitText('.wf-picker', '图片发布包', 12000);
     const cardN = await evaluate(`document.querySelectorAll('.wf-picker [data-flow]').length`);
-    check('工作流页列出流程卡片', cards === true && cardN === 3, cardN + ' 条');
+    check('工作流页列出流程卡片', cards === true && cardN === 6, cardN + ' 条');
 
     // ② 文本流程：Base64 → JSON
     await evaluate(`document.querySelector('[data-flow="b64-to-json"]').click()`);
@@ -1215,6 +1215,92 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     })()`);
     check('产物是 webp 且给了下载链接', /\.webp"/.test(dl) && dl.includes('blob:'), dl.slice(0, 80));
     await shot('09-workflows');
+    await goto('/');
+  }
+
+  // ---- 9.14 v3.24 三条新流程 ----
+  // 这一段专治「流程能跑完，但跑的是工具自带的示例数据」。
+  // 三条流程的第一步都吃用户粘贴的文本，而这些工具的输入框都带示例默认值——
+  // 一旦漏写 bind，planStep 会安静地走 default：页面显示「跑完」，产出却是示例。
+  // 所以断言不能只看「跑完」，必须看产物里是不是用户那几行字。
+  {
+    await goto('/workflows/');
+    const picked = await waitText('.wf-picker', '表格提列转 JSON', 12000);
+    check('六条流程都渲染出来', picked === true);
+
+    const runText = async (flow, value, expect) => {
+      await evaluate(`document.querySelector('[data-flow="${flow}"]').click()`);
+      await waitEl('#wf-text', 8000);
+      await evaluate(`(() => {
+        const el = document.getElementById('wf-text');
+        el.value = ${JSON.stringify(value)};
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      })()`);
+      await evaluate(`document.getElementById('wf-run').click()`);
+      const ok = await waitText('#wf-out', expect, 20000);
+      return { ok, out: await evaluate(`((document.getElementById('wf-out') || {}).innerText || '')`) };
+    };
+
+    // ① 表格提列转 JSON：贴两行订单，出来必须是 JSON 数组，且用的是我这三列
+    const csv = '订单号,客户,金额\nA001,张三,128\nA002,李四,340';
+    const r1 = await runText('csv-pick-to-json', csv, '跑完');
+    check('提列流程跑完两步', r1.ok === true, r1.out.slice(0, 80).replace(/\n/g, ' '));
+    const jsonText = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    let parsed = null;
+    try {
+      parsed = JSON.parse(jsonText);
+    } catch {}
+    check('产物是能直接解析的 JSON 数组', Array.isArray(parsed), jsonText.slice(0, 40).replace(/\n/g, ' '));
+    check('表头变成了 key（订单号/客户/金额）', !!parsed && Object.keys(parsed[0] || {}).join(',') === '订单号,客户,金额', parsed ? Object.keys(parsed[0]).join(',') : '');
+    check('值来自用户粘贴的内容，不是示例', !!parsed && parsed[0]['客户'] === '张三' && parsed[1]['金额'] === '340', parsed ? JSON.stringify(parsed[0]) : '');
+    check('没有混进示例表的列（id/amount）', !/"(id|amount)"/.test(jsonText));
+
+    // 只有表头、没有数据行：第 1 步能过（它只是选列），第 2 步转 JSON 时才发现没数据。
+    // 这比「空输入」更能验到停在第几步——空输入会被引擎自己挡在运行之前。
+    const r1bad = await runText('csv-pick-to-json', '订单号,客户,金额', '停在第 2 步');
+    check('只有表头时停在第 2 步', r1bad.ok === true, r1bad.out.slice(0, 80).replace(/\n/g, ' '));
+    const csvStep1 = await evaluate(`(document.querySelector('.wf-step[data-step="0"]') || {}).dataset?.state || ''`);
+    const csvStep2 = await evaluate(`(document.querySelector('.wf-step[data-step="1"]') || {}).dataset?.state || ''`);
+    check('第 1 步完成了，第 2 步才失败', csvStep1 === 'done' && csvStep2 === 'fail', csvStep1 + '/' + csvStep2);
+
+    // ② 名单去重计数：重复项要真的被去掉，统计的是去重后的 3 条
+    const list = 'apple\nBanana\napple\n  banana  \ncherry\n\ncherry';
+    const r2 = await runText('dedupe-count', list, '跑完');
+    check('去重计数流程跑完两步', r2.ok === true, r2.out.slice(0, 80).replace(/\n/g, ' '));
+    const counted = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    check('统计的是去重后的 3 行', /行数：3/.test(counted), counted.split('\n').slice(0, 2).join(' '));
+    check('英文单词数是 3（apple/Banana/cherry）', /英文单词数：3/.test(counted), counted.split('\n').slice(0, 3).join(' '));
+    check('不是那段示例介绍（ToolHub…/82 字）', !/ToolHub/.test(counted) && !/字符数（含空格）：82/.test(counted), counted.slice(0, 60).replace(/\n/g, ' '));
+
+    // 这个流程没有「跑一半失败」的路径：text-dedupe 什么文本都收，word-count 也不会抛。
+    // 但它有一条更前面的守卫值得验：空输入根本不该启动执行——一步都不许跑，更不许标失败。
+    const r2bad = await runText('dedupe-count', '   ', '先把内容粘进来再运行');
+    check('空名单在运行前就被挡住', r2bad.ok === true, r2bad.out.slice(0, 60).replace(/\n/g, ' '));
+    const anyRan = await evaluate(
+      `document.querySelectorAll('.wf-step[data-state="done"], .wf-step[data-state="fail"], .wf-step[data-state="warn"]').length`
+    );
+    check('被挡住时没有任何一步被执行', anyRan === 0, anyRan + ' 步');
+
+    // ③ 二维码嵌码：文本 → PNG → Data URI
+    const r3 = await runText('qr-embed', 'https://toolhub.bot.cd/', '跑完');
+    check('二维码流程跑完两步', r3.ok === true, r3.out.slice(0, 80).replace(/\n/g, ' '));
+    const uri = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    check('产物是 PNG 的 Data URI', /^data:image\/png;base64,[A-Za-z0-9+/=]{200,}/.test(uri.trim()), '长度 ' + uri.trim().length);
+    check('产物不是二维码原文（没被自动接错口）', !uri.includes('toolhub.bot.cd/'), uri.trim().slice(0, 40));
+    const png = await evaluate(`(() => {
+      const a = document.querySelector('#wf-out .wf-files a[download]');
+      return a ? a.getAttribute('download') + '|' + a.getAttribute('href') : '';
+    })()`);
+    check('同时给了 PNG 下载链接', /\.png\|blob:/.test(png), png.slice(0, 60));
+
+    // 内容超出二维码容量（4000 字符 > 容错级别 M 的上限）：第 1 步就该停，别把半成品传给转码
+    const r3bad = await runText('qr-embed', 'A'.repeat(4000), '停在第 1 步');
+    check('内容超容量时停在第 1 步', r3bad.ok === true, r3bad.out.slice(0, 100).replace(/\n/g, ' '));
+    check('失败原因说得像人话（不是库内部报错）', /内容太长/.test(r3bad.out), r3bad.out.slice(0, 100).replace(/\n/g, ' '));
+    const qrStep2 = await evaluate(`(document.querySelector('.wf-step[data-step="1"]') || {}).dataset?.state || ''`);
+    check('二维码生成失败后第 2 步仍是 idle', qrStep2 === 'idle', qrStep2);
+
+    await shot('09b-v324-flows');
     await goto('/');
   }
 
