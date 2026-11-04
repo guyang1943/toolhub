@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>工作流 · 把几个工具按顺序接起来 · ToolHub</title>
-  <meta name="description" content="三条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。" />
+  <meta name="description" content="六条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、二维码嵌码、表格提列转 JSON、名单去重计数、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。" />
   <meta name="theme-color" content="#2563eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
@@ -36,7 +36,7 @@
   <meta property="og:url" content="https://toolhub.bot.cd/workflows/" />
   <link rel="canonical" href="https://toolhub.bot.cd/workflows/" />
   <meta property="og:title" content="工作流 · 把几个工具按顺序接起来 · ToolHub" />
-  <meta property="og:description" content="三条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。" />
+  <meta property="og:description" content="六条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、二维码嵌码、表格提列转 JSON、名单去重计数、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。" />
   <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -75,7 +75,7 @@
   
 
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"工作流 · 把几个工具按顺序接起来 · ToolHub","description":"三条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。","url":"https://toolhub.bot.cd/workflows/"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"工作流 · 把几个工具按顺序接起来 · ToolHub","description":"六条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、二维码嵌码、表格提列转 JSON、名单去重计数、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。","url":"https://toolhub.bot.cd/workflows/"}</script>
   <link rel="stylesheet" href="/assets/style.workflows.css" />
 </head>
 <body data-view="page">
@@ -99,7 +99,7 @@
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>工作流</h1><p>三条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。</p><h2>它解决什么问题</h2><p>发布一张照片其实要连做三件事：删掉 GPS 与机型、把长边限到 1200、再压成 WebP。三件事各自都有工具，但每做一次就要开三次页面、下三次文件、再上传三次——把顺序丢给了人的记性。工作流把这三步写死成一条链，你只选一次图。</p><h2>为什么只有三条</h2><p>判断标准是「少一步都不成立」。单看「图片压缩」谁都能单开一页做，但连着做才是发布前真正要的那件事；凑数的流程只会把这一页变成另一个工具列表。目前三条：图片发布包、照片成 PDF、编码串还原 JSON。</p><h2>参数与接线写在哪</h2><p>在 <code>workflows/workflows.json</code> 里，只写「哪几个工具、什么顺序、参数是什么、谁接谁」，不写执行代码。构建期由 <code>check-workflows.mjs</code> 按每个工具自己的 manifest 逐项校验：选项是否存在、数值是否落在上下限内、每个输入是不是都有确定的值、第一步吃不吃得下入口收的类型。工具改了表单而流程没跟着改，构建就会失败，不会等到用户点「运行」才炸。</p><h2>中间结果去哪了</h2><p>只在当前页面的内存里：不上传、不落盘、没有任务 id，关掉页面即释放。所以也没有「历史记录」——不是没做，是本来就不该有。</p><h2>失败会怎样</h2><p>停在那一步，把工具自己的原话说出来，并且不继续往下跑。半成品接下去往往不会报错，只会产出一个看起来正常、内容不对的结果——那比报错更难发现。</p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>工作流</h1><p>六条固定流程：图片发布包（去元数据 → 限边长 → 转 WebP）、照片成 PDF、二维码嵌码、表格提列转 JSON、名单去重计数、Base64 还原 JSON。参数在构建期按工具清单逐项校验，全程在本机跑完，中间结果不落盘也不上传。</p><h2>它解决什么问题</h2><p>发布一张照片其实要连做三件事：删掉 GPS 与机型、把长边限到 1200、再压成 WebP。三件事各自都有工具，但每做一次就要开三次页面、下三次文件、再上传三次——把顺序丢给了人的记性。工作流把这三步写死成一条链，你只选一次图。</p><h2>为什么只有这六条</h2><p>判断标准只有一条：<b>少一步就不成立</b>。单看「图片压缩」谁都能单开一页做，但连着做才是发布前真正要的那件事；单看「CSV 转 JSON」也只是个小工具，可「先挑出要的列、再转成 JSON」才是接口真能用的结果。凑数的流程只会把这一页变成另一个工具列表。现在六条，按场景分三组：图片（发布包、照片成 PDF、二维码嵌码）、数据（表格提列转 JSON）、文本（名单去重计数、Base64 还原 JSON）。</p><h2>参数与接线写在哪</h2><p>在 <code>workflows/workflows.json</code> 里，只写「哪几个工具、什么顺序、参数是什么、谁接谁」，不写执行代码。构建期由 <code>check-workflows.mjs</code> 按每个工具自己的 manifest 逐项校验：选项是否存在、数值是否落在上下限内、每个输入是不是都有确定的值、第一步吃不吃得下入口收的类型。工具改了表单而流程没跟着改，构建就会失败，不会等到用户点「运行」才炸。</p><h2>中间结果去哪了</h2><p>只在当前页面的内存里：不上传、不落盘、没有任务 id，关掉页面即释放。所以也没有「历史记录」——不是没做，是本来就不该有。</p><h2>失败会怎样</h2><p>停在那一步，把工具自己的原话说出来，并且不继续往下跑。半成品接下去往往不会报错，只会产出一个看起来正常、内容不对的结果——那比报错更难发现。</p></div>
     <!-- 首页 -->
     <section id="view-home">
       <div class="hero">

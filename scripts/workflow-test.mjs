@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readManifest } from './lib/tool-manifest.mjs';
-import { parseRef, planStep, buildValues, validateArgs, acceptMismatch, inputKind, REF_FORMS } from '../assets/lib/workflow-core.js';
+import { parseRef, planStep, buildValues, validateArgs, acceptMismatch, inputKind, exampleDefaultPorts, REF_FORMS } from '../assets/lib/workflow-core.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 let pass = 0;
@@ -138,10 +138,46 @@ console.log('· 入口类型兼容');
   check('任一侧没写 accept 就不判（不假装知道）', acceptMismatch('', 'image/jpeg').length === 0);
 }
 
-/* ---------- 6. 三条真流程能凑齐每个输入 ---------- */
-console.log('· 真流程');
+/* ---------- 6. 数据口不许掉进示例默认值 ---------- */
+console.log('· 示例默认值');
+{
+  const withExample = {
+    inputs: [
+      { name: 'text', type: 'textarea', default: '工具自带的示例段落' },
+      { name: 'mode', type: 'select', default: 'auto', options: [{ value: 'auto' }, { value: 'x' }] },
+    ],
+  };
+  const planBare = planStep(withExample, { tool: 'x' }, 1);
+  check(
+    '数据口落到默认值能被认出来',
+    exampleDefaultPorts(withExample, planBare).join(',') === 'text',
+    JSON.stringify(exampleDefaultPorts(withExample, planBare))
+  );
+  check('下拉的默认值不算（它不是数据口）', !exampleDefaultPorts(withExample, planBare).includes('mode'));
+
+  const planBound = planStep(withExample, { tool: 'x', bind: { text: 'text' } }, 1);
+  check('显式 bind 后不再报', exampleDefaultPorts(withExample, planBound).length === 0);
+  check('bind 之后取值来源是 bind', planBound.values.find((v) => v.name === 'text').from === 'bind');
+
+  const planArg = planStep(withExample, { tool: 'x', args: { text: '写死的值' } }, 1);
+  check('args 写死也不算默认值', exampleDefaultPorts(withExample, planArg).length === 0);
+
+  // 回归：真流程里一个都不许有——v3.24 的 dedupe-count 曾在这里犯错
+  const flows = JSON.parse(readFileSync(join(root, 'workflows', 'workflows.json'), 'utf8')).flows;
+  for (const f of flows) {
+    for (const [i, step] of f.steps.entries()) {
+      const mf = readManifest(step.tool, root);
+      if (!mf.ok) continue;
+      const bad = exampleDefaultPorts(mf.manifest, planStep(mf.manifest, step, i));
+      check(`${f.id} 第 ${i + 1} 步没有数据口跑示例数据`, bad.length === 0, bad.join('、'));
+    }
+  }
+}
+
+/* ---------- 7. 真流程能凑齐每个输入 ---------- */
 {
   const flows = JSON.parse(readFileSync(join(root, 'workflows', 'workflows.json'), 'utf8')).flows;
+  console.log(`· 真流程（${flows.length} 条）`);
   const textFixture = Buffer.from(JSON.stringify({ name: '张三', city: '南京' })).toString('base64');
 
   for (const f of flows) {
@@ -165,6 +201,38 @@ console.log('· 真流程');
       check(`${f.id} 第 ${i + 1} 步每个输入都取到了值`, missing.length === 0, `缺 ${missing.join('、')}`);
     }
   }
+}
+
+/* ---------- 8. v3.24 三条新流程的接线意图 ---------- */
+// 这几条写的是「为什么这么接」，不是「跑得通吗」——后者上面已经覆盖。
+// 一旦有人觉得 bind 冗余把它删掉，这几条会立刻红，而不是等到产物变成示例数据。
+{
+  const flows = JSON.parse(readFileSync(join(root, 'workflows', 'workflows.json'), 'utf8')).flows;
+  const flow = (id) => flows.find((f) => f.id === id);
+  const source = (id, i, name) => {
+    const f = flow(id);
+    const mf = readManifest(f.steps[i].tool, root);
+    const plan = planStep(mf.manifest, f.steps[i], i);
+    return plan.values.find((v) => v.name === name) || {};
+  };
+
+  const csv1 = source('csv-pick-to-json', 0, 'input');
+  check('提列第 1 步把 input 钉在用户输入上', csv1.from === 'bind' && csv1.ref === 'in.text', JSON.stringify(csv1));
+  const csv2 = source('csv-pick-to-json', 1, 'input');
+  check('提列第 2 步吃上一步的 CSV 文本', csv2.from === 'bind' && csv2.ref === 'text', JSON.stringify(csv2));
+
+  const ded2 = source('dedupe-count', 1, 'text');
+  check('去重第 2 步吃上一步的名单，不落示例', ded2.from === 'bind' && ded2.ref === 'text', JSON.stringify(ded2));
+
+  const qr2file = source('qr-embed', 1, 'file');
+  const qr2uri = source('qr-embed', 1, 'dataUri');
+  check('嵌码第 2 步的 file 接上一步的 PNG', qr2file.from === 'bind' && qr2file.ref === 'files[0]', JSON.stringify(qr2file));
+  check('嵌码第 2 步的 dataUri 是空串占位（不自动接二维码原文）', qr2uri.from === 'arg', JSON.stringify(qr2uri));
+  check(
+    '空串真的是空串，不是被写成了别的',
+    flow('qr-embed').steps[1].args.dataUri === '',
+    JSON.stringify(flow('qr-embed').steps[1].args.dataUri)
+  );
 }
 
 /* ---------- 输出 ---------- */
