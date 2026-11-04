@@ -387,6 +387,9 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .trust-strip b { display: block; font-size: 13.5px; margin-bottom: 3px; }
 .trust-strip span { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
 .trust-strip .ts-stat b { font-size: 30px; line-height: 1.15; color: var(--ok); }
+/* /my/ 的唯一出口，挂在「收藏与记录只存在本机」后面——承诺要接上兑现的地方。
+   padding 是为凑够 WCAG 2.5.8 的 24px 点击高：第一版只有字高 16px，被浏览器测试报了出来。 */
+.trust-strip .ts-link { display: inline-block; margin-top: 2px; padding: 5px 0; font-size: 12.5px; line-height: 14px; font-weight: 600; }
 
 /* ===== 对比表 ===== */
 .cmp-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 10px 0 6px; }

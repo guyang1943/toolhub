@@ -1556,6 +1556,27 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('能新建自定义集合并显示', setShown === true, String(setStored));
     check('集合写进 sets 键', setStored.includes('测试集合'), JSON.stringify(setStored));
 
+    // 16h. 首页入口：这个功能当初做出来没有入口，用户反馈「主页上看不出来」。
+    // 这条不测「页面能不能开」（16d 已经直达过了），只测「从首页点得到」——
+    // 两者差一个链接，而缺那个链接时所有直达测试都是绿的。
+    await goto('/');
+    await waitText('body', '为什么本地执行更放心', 10000);
+    const entryBox = await evaluate(`(() => {
+      const a = document.querySelector('a.ts-link[href="/my/"]');
+      if (!a) return null;
+      const r = a.getBoundingClientRect();
+      return { text: a.textContent.trim(), w: Math.round(r.width), h: Math.round(r.height) };
+    })()`);
+    check('首页信任区有「我的数据」入口', !!entryBox && /在哪、怎么删/.test(entryBox.text), JSON.stringify(entryBox));
+    check('入口可点（面积不为零、不小于 24px 高）', !!entryBox && entryBox.w > 24 && entryBox.h >= 24, JSON.stringify(entryBox));
+    await evaluate(`document.querySelector('a.ts-link[href="/my/"]').click()`);
+    await sleep(1200);
+    const landed = await evaluate(`location.pathname`);
+    check('点入口能进 /my/', landed === '/my/', String(landed));
+    const panelFromHome = await waitText('#my-app', '存了什么', 10000);
+    check('从首页进来面板也渲染', panelFromHome === true);
+    await shot('16-my-from-home');
+
     // 收尾：把测试造的数据清掉，别影响后面依赖空存储的用例
     await evaluate(`['favs','recent','compare','sets','usage','events'].forEach((k) => localStorage.removeItem('toolhub:' + k))`);
   }

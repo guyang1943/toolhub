@@ -1237,6 +1237,22 @@ for (const p of pending) {
   }
 }
 
+// ---------- v3.22.2：做了的页面必须有入口 ----------
+// 这一条是用户直接反馈换来的：「这两版主页上看不出来」。查下去发现 v3.22 做的 /my/
+// 在首页零入口，全站只有隐私页链过去——功能存在，但用户到不了，等于没做。
+// 判据写死成「首页存在指向它的链接」，而不是「文件存在」：文件存在只证明我写过。
+check('我的数据页在首页有入口（v3.22.2）', () => {
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  const m = home.match(/<a[^>]*class="ts-link"[^>]*href="\/my\/"/);
+  assert(m, '首页没有指向 /my/ 的入口——做了页面却进不去，等于没做');
+  // 入口要挂在「收藏与记录只存在本机」那句话旁边才有意义，所以顺带判它是否仍在信任区里
+  const trust = home.slice(home.indexOf('trust-strip'), home.indexOf('</section>', home.indexOf('trust-strip')));
+  assert(/href="\/my\/"/.test(trust), '入口不在信任区里——脱离「数据只存在本机」的语境就成了孤立链接');
+  // 中英文都得有，否则切到英文版这条承诺就断了
+  assert(/data-en="Where it lives, how to delete/.test(home), '入口缺英文文案');
+  return '首页信任区 → /my/，中英各一条';
+});
+
 // ---------- v3.22.1：README 头部数字由数据推导 ----------
 // 这一条是被现实咬出来的：e46ae70 加了第 38 个本地工具，站点首页（数字由数据推导）当场变成
 // 「38 个在本机跑 · 100 个已收录」，而 README 开头还写着 99 / 37，一直到 v3.22 都没人发现。
