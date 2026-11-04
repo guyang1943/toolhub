@@ -62,7 +62,10 @@ function buildBody(v, meta) {
   ];
   const head = rows.map(([k, val]) => `### ${k}\n${val || '—'}`).join('\n\n');
   const json = JSON.stringify({ collection: v.collection, item: it }, null, 2);
-  return `${head}\n\n<details>\n<summary>JSON（维护者用，可直接贴进 resources.json）</summary>\n\n\`\`\`\`json\n${json}\n\`\`\`\`\n\n</details>\n`;
+  // v3.24 起条目分两处存：骨架进 resources.json（首屏要），正文 note 进 resources-notes.json（合集页才取）。
+  // 这块 JSON 是给维护者直接复用键名的，所以要把「贴哪儿」写在标签上——不然 note 会被贴进骨架文件，
+  // 页面看不出来，首屏却悄悄变胖。
+  return `${head}\n\n<details>\n<summary>JSON（维护者用：骨架进 resources.json，note 进 resources-notes.json）</summary>\n\n\`\`\`\`json\n${json}\n\`\`\`\`\n\n</details>\n`;
 }
 
 /**

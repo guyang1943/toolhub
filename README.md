@@ -55,7 +55,8 @@ toolhub/
 ├── topics.json           # 10 个专题（按场景打包工具 + 资源 + FAQ）
 ├── evaluations.json      # 5 篇工具横评（隐私/速度/功能取舍）
 ├── articles.json         # 34 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
-├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
+├── resources.json        # 7 个资源合集 / 58 条的骨架：名字、地址、授权、标签（逐条）
+├── resources-notes.json  # 上面每条的正文「为什么值得收藏」——按需加载，不进首屏（v3.24）
 ├── changelog.json        # 更新日志数据
 ├── sw.js                 # Service Worker（由 scripts/gen-sw.mjs 构建期生成，勿手改）
 ├── scripts/              # build-pages / gen-sw / verify / check-workflows / workflow-test / smoke-test / health-check / spa-render-test / new-tools-test / browser-test / serve / perf-budget

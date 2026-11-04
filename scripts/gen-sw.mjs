@@ -93,6 +93,9 @@ export function buildSw({ quiet = false } = {}) {
     '/tools/tools.json',
     '/tools/directory.json',
     '/resources.json',
+    // v3.24：资源条目正文，合集页要用。它不在首屏（首页用不到正文），
+    // 但离线装上之后合集页得能打开，所以仍进预缓存包。
+    '/resources-notes.json',
     '/analytics.json',
   ];
 

@@ -564,6 +564,22 @@ async function openChangelog() {
 
 /* ---------- 资源库 ---------- */
 
+// v3.24：条目的正文（note）已从 resources.json 拆到 resources-notes.json 按需加载。
+// 理由是体积账：resources.json 是首屏六个启动 JSON 之一，58 条正文按 gzip 算 3.8 KB，
+// 而首页只用得到合集标题、说明与条目数量——正文只在合集页出现。
+// 这个加载器放在这里而不是 app.js，是因为只有内容页要正文，首屏一个字节都不该为它付。
+let RES_NOTES = null;
+async function loadResNotes() {
+  if (RES_NOTES) return RES_NOTES;
+  try {
+    RES_NOTES = (await (await fetch('/resources-notes.json')).json()).notes || {};
+  } catch {
+    // 取不到正文不算致命：条目名、授权、地址都还在，页面照样能用
+    RES_NOTES = {};
+  }
+  return RES_NOTES;
+}
+
 function resCard(c) {
   return `<a class="res-card" href="/resources/${c.slug}/">
     <div class="res-card-icon">${c.icon || '📚'}</div>
@@ -613,13 +629,15 @@ async function openResourceCollection(slug) {
 
   const rec = c.items.filter((x) => x.recommended);
   const others = c.items.filter((x) => !x.recommended);
+  // 正文按 slug 分桶、按条目名取——同一个资源名在不同合集里可以都出现
+  const notes = (await loadResNotes())[c.slug] || {};
   const itemRow = (it) => `
     <div class="res-item">
       <div class="res-item-head">
         <a href="${esc(it.url)}" target="_blank" rel="noopener" class="res-item-name">${it.name} ↗</a>
         <span class="res-license">${it.license}</span>
       </div>
-      <div class="res-item-note">${it.note}</div>
+      <div class="res-item-note">${notes[it.name] || ''}</div>
       <div class="res-item-meta">${(it.tags || []).map((x) => `<span class="badge">${x}</span>`).join('')}<span class="res-src">${it.source}</span></div>
     </div>`;
 

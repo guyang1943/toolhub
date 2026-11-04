@@ -9,6 +9,7 @@ import { validateToolMeta, metaSummary, PRIVACY_LABEL } from './lib/tool-meta.mj
 import { evidenceLine } from './lib/evidence.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
+import { loadResources } from './lib/resources-data.mjs';
 import { matchPage } from './lib/pages-registry.mjs';
 // v3.22：隐私页那张键名表现在由清单渲染，不再是手写的 <li> 列表。
 // 构建期（这里是静态正文，爬虫与禁用 JS 时看到的）与 pages.js（站内跳转后重渲染）调的是
@@ -73,7 +74,9 @@ const evaluations = {
     return { ...ev, ...JSON.parse(readFileSync(bodyPath, 'utf8')) };
   }),
 };
-const resources = JSON.parse(readFileSync(join(root, 'resources.json'), 'utf8'));
+// 正文在 resources-notes.json，这里按合集 + 条目名合起来读；缺正文直接让构建失败。
+// 静态合集页的正文是给爬虫看的，空着等于告诉搜索引擎这一页没内容。
+const resources = loadResources(root, { strict: true });
 const topics = JSON.parse(readFileSync(join(root, 'topics.json'), 'utf8'));
 // v3.13：分类从「首页的一个筛选参数」升级成独立页面。文案放在 content/categories.json，
 // name 必须与 tools.json 的 category 一致——下面立刻校验，缺文案就构建失败，

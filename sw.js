@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.23 · 预缓存 219 个地址 · 约 3.6 MB
+// 版本：toolhub-v3.23 · 预缓存 220 个地址 · 约 3.6 MB
 const VERSION = "toolhub-v3.23";
 const CORE = [
   "/",
@@ -18,6 +18,7 @@ const CORE = [
   "/tools/tools.json",
   "/tools/directory.json",
   "/resources.json",
+  "/resources-notes.json",
   "/analytics.json"
 ];
 const FULL = [
@@ -37,6 +38,7 @@ const FULL = [
   "/tools/tools.json",
   "/tools/directory.json",
   "/resources.json",
+  "/resources-notes.json",
   "/analytics.json",
   "/tools/json-format/",
   "/tools/json-format/run.js",
