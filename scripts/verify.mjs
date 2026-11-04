@@ -1237,6 +1237,34 @@ for (const p of pending) {
   }
 }
 
+// ---------- v3.22.1：README 头部数字由数据推导 ----------
+// 这一条是被现实咬出来的：e46ae70 加了第 38 个本地工具，站点首页（数字由数据推导）当场变成
+// 「38 个在本机跑 · 100 个已收录」，而 README 开头还写着 99 / 37，一直到 v3.22 都没人发现。
+// 首页不会漂，因为它从数据渲染；README 会，因为它是手写的。所以给它加一道闸门——
+// 手写可以，但写错就红。
+check('README 头部数字与数据一致（v3.22.1）', () => {
+  const md = readFileSync(join(root, 'README.md'), 'utf8');
+  const localN = local.tools.length;
+  const totalN = localN + dir.tools.length;
+  // 第三条参数是「两个捕获组各是什么」——英文导语写的是「38 of the 100」，
+  // 本地在前、总数在后，与另外两处正好相反。第一版没写这个，闸门上来就红在自己身上。
+  const pats = [
+    [/\*\*(\d+) 个开源工具收录，其中 (\d+) 个在浏览器里跑/, '中文导语', ['total', 'local']],
+    [/(\d+) of the (\d+) tools run entirely in your browser/, '英文导语', ['local', 'total']],
+    [/当前收录 (\d+) 个工具\*\*：(\d+) 个本地执行/, '规模说明', ['total', 'local']],
+  ];
+  for (const [re, label, order] of pats) {
+    const m = md.match(re);
+    assert(m, `README 的${label}那句改了写法，闸门认不出——要么改回来，要么改这条断言`);
+    const got = order[0] === 'total' ? [Number(m[1]), Number(m[2])] : [Number(m[2]), Number(m[1])];
+    assert(
+      got[0] === totalN && got[1] === localN,
+      `README 的${label}写的是 ${got[0]} 收录 / ${got[1]} 本地，数据是 ${totalN} / ${localN}`
+    );
+  }
+  return `${totalN} 收录 / ${localN} 本地，三处一致`;
+});
+
 // ---------- 输出 ----------
 console.log('\n🔍 ToolHub 全量校验\n');
 for (const r of results) {

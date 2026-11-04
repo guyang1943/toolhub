@@ -3,16 +3,16 @@
 [![五套测试 + 性能预算](https://github.com/guyang1943/toolhub/actions/workflows/ci.yml/badge.svg)](https://github.com/guyang1943/toolhub/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**99 个开源工具收录，其中 37 个在浏览器里跑 —— 本地工具的输入不上传服务器，62 条外链逐个标注数据边界并写明这个标注是怎么核出来的。**
+**100 个开源工具收录，其中 38 个在浏览器里跑 —— 本地工具的输入不上传服务器，62 条外链逐个标注数据边界并写明这个标注是怎么核出来的。**
 
 ### ▶ <https://toolhub.bot.cd>
 
 ![ToolHub 首页](docs/images/home.png)
 
-在线工具通常要把文件传到服务器上处理。这个站点有 37 个工具不是——它们用 Canvas、WebCrypto、
+在线工具通常要把文件传到服务器上处理。这个站点有 38 个工具不是——它们用 Canvas、WebCrypto、
 WebAssembly 在浏览器里直接算，文件从头到尾没有离开你的设备。可以拔掉网线验证：页面照样能用。
 
-> **No upload, no sign-up, no install.** 37 of the 99 tools run entirely in your browser
+> **No upload, no sign-up, no install.** 38 of the 100 tools run entirely in your browser
 > via Canvas / WebCrypto / WebAssembly — your files never leave the device. The other 62 are
 > curated links to well-known open-source projects (each URL is verified, not scraped).
 
@@ -24,7 +24,7 @@ WebAssembly 在浏览器里直接算，文件从头到尾没有离开你的设�
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
-**当前收录 99 个工具**：37 个本地执行（浏览器内完成，数据不上传）+ 62 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、34 篇使用教程——教程累计 185 条问答，每条都写具体的技术边界而不是套模板。
+**当前收录 100 个工具**：38 个本地执行（浏览器内完成，数据不上传）+ 62 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、34 篇使用教程——教程累计 185 条问答，每条都写具体的技术边界而不是套模板。
 
 
 ## 架构（可扩展核心）
@@ -395,7 +395,7 @@ v3.3 没有新增测试条目，而是把既有断言搬到拆分后的正确文
 
 | 套件 | 命令 | 覆盖 | 数量 |
 |---|---|---|---|
-| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、清单闸门、安全头/CSP、性能预算、隐私页，v3.0 的离线包清单/PWA 图标/加密分享/ZIP/意图规则，以及 v3.1 的「每个应用模块都必须在离线清单里」「静态 import 必须在首屏清单」，v3.13 的分类页结构与「分类内链不回首页」、v3.15 的教程页结构与回退章节，v3.20 的「产物零 undefined」「隐私页与存储键一致」「产物页面都在注册表内」「更新日志正文已转义」，v3.21 的「证据结构合法且旧字段已清除」「62 个详情页的证据行与 boundary.method 一致」「隐私枚举在 lib·app.js·i18n·数据四处对齐」，v3.22 的「存储键四向闭合」「隐私页键表行数等于清单」「我的数据页接线」 | 65 |
+| 结构与内容校验 | `node scripts/verify.mjs` | 数据完整性、SEO、清单闸门、安全头/CSP、性能预算、隐私页，v3.0 的离线包清单/PWA 图标/加密分享/ZIP/意图规则，以及 v3.1 的「每个应用模块都必须在离线清单里」「静态 import 必须在首屏清单」，v3.13 的分类页结构与「分类内链不回首页」、v3.15 的教程页结构与回退章节，v3.20 的「产物零 undefined」「隐私页与存储键一致」「产物页面都在注册表内」「更新日志正文已转义」，v3.21 的「证据结构合法且旧字段已清除」「62 个详情页的证据行与 boundary.method 一致」「隐私枚举在 lib·app.js·i18n·数据四处对齐」，v3.22 的「存储键四向闭合」「隐私页键表行数等于清单」「我的数据页接线」，以及 v3.22.1 的「README 头部数字与数据一致」 | 66 |
 | SPA 渲染 | `node scripts/spa-render-test.mjs` | DOM 桩下的路由、搜索、表单联动、端到端、/offline/ 与 /batch/ 页、命令面板自然语言、分类页渲染与工具清单、v3.15 的教程总览与详情、v3.16 的测评页对比入口位置、v3.18 的投稿页四类入口与表单挂载 | 76 |
 | 工具功能 | `node scripts/new-tools-test.mjs` | 个税/房贷数学、单位精度、真实 PDF、真实 QR、图片转码、EXIF 剥离、ZIP 字节结构、加密分享往返与失败分支、拖放与粘贴路由（排序/多文件/混合退化/参数落点） | 206 |
 | 冒烟 | `node scripts/smoke-test.mjs <base>` | 关键路径可达性 + sw.js MIME/清单 + manifest 图标 + 内容抽查 + **62 个目录工具页**（v3.19 起）+ 页面注册表接管清单（v3.20 补上 /tools/、/categories/、/guides/ 三个总览页） | 152 |

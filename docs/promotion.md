@@ -36,7 +36,7 @@ I kept needing one-off tools — compress an image, merge two PDFs, format some 
 and every site that offered them wanted me to upload the file or make an account.
 Most of these operations don't need a server at all.
 
-So I built ToolHub: 99 tools, 37 of which run entirely client-side. Nothing is uploaded.
+So I built ToolHub: 100 tools, 38 of which run entirely client-side. Nothing is uploaded.
 Image work goes through Canvas, hashing through WebCrypto, PDF work through pdf-lib,
 and a couple of Python/data tools run on Pyodide compiled to WebAssembly.
 
@@ -124,7 +124,7 @@ Most "free online PDF tools" upload your file. Here's how to tell which ones don
    - 打开 DevTools 的 Network，操作一次，没有请求携带文件内容 → 本地执行
    - 页面能装成 PWA 离线用 → 基本可以确定是本地执行
 3. 原理：Canvas / WebCrypto / WebAssembly 让浏览器能干以前必须服务端干的活。
-4. 我们做了什么：37 个工具走这条路，站上没有任何第三方请求（无字体 CDN、无统计脚本）。
+4. 我们做了什么：38 个工具走这条路，站上没有任何第三方请求（无字体 CDN、无统计脚本）。
 5. 最后一行放链接。
 
 **这个帖子即使不带链接也有价值**——判断方法本身就是干货。带上链接反而要克制。
