@@ -1,69 +1,62 @@
 # v3.24 交接单
 
-> 写于 2026-11-04 23:20。上一段任务已连续运行 15 天、被压缩 43 次，
-> 聊天记录里的早期细节不可信，**以本文件 + `memory/MEMORY.md` + 资料库为准**。
+> 初版 2026-11-04 23:20；23:40 补「本地已同步」；本版按「启动数据已拆」重写。
+> 聊天记录不能当真源（这段任务被压缩 40+ 次，摘要套摘要），**以本文件 + `memory/MEMORY.md` + 资料库为准**。
 
 ## 一、现在停在哪（已核对，不是猜的）
 
 | 项 | 值 |
 |---|---|
-| 远端 `main` | `c015358 Merge pull request #1 from guyang1943/feat/v324-three-flows`（11-04 23:15） |
-| 该合并的 tree | `d57c751…`，与分支提交 `3165edb` **完全一致** —— 合并没改动任何文件 |
-| 本地仓库 | 已同步：`main` = `origin/main` = `c015358`，本地分支 `feat/v324-three-flows` 已删 |
-| 线上 | `https://toolhub.bot.cd/workflows/workflows.json` 已返回 **6 条**流程 |
-| 版本号 | `sw.js` 仍是 `toolhub-v3.23`（刻意没 bump，见遗留 2） |
-| 工作区 | 干净（11-04 23:40 提交本文件后为 0 个未提交改动） |
+| 远端 `main` | `2d7ffd2`（交接单入仓）；本次「拆启动数据」在分支上，**未合** |
+| 首屏体积 | **86.1 / 88.0 KB**（拆分前 89.9 / 90.0，余量从 145 字节变成 1.9 KB） |
+| 启动数据 | 36.1 / 52.4 KB（六个 JSON，见 `perf-budget.json` 的 `bootData`） |
+| 版本号 | `sw.js` 仍是 `toolhub-v3.23`（**没 bump**，发版时随 `changelog.json` 一起改） |
+| 离线包 | 220 个地址 / 约 3.6 MB（比拆分前多 `resources-notes.json` 一份） |
+| 工作流 | 六条，线上已生效（v3.23 + v3.24 前半段） |
 
-`workflows/workflows.json` 现有六条：`image-publish`、`photo-to-pdf`、`b64-to-json`、
-`csv-pick-to-json`、`dedupe-count`、`qr-embed`。
+## 二、这一版做了什么：资源正文搬出首屏
 
-## 二、四条遗留问题（按优先级）
+### 为什么
 
-### 1. `git fetch` 曾报「Host key verification failed」（11-04 23:40 已解决）
+`resources.json` 是首屏六个启动 JSON 之一。它的 58 条资源每条都带一段「为什么值得收藏」
+（`note`），而**首页只用得到合集标题、说明和条目数量**——正文只在 `/resources/<合集>/` 那一页出现。
+按 gzip 算这段正文 3.82 KB，等于每个访客都在为「他可能永远不打开的合集页」付下载与解析。
 
-- 现象：`git fetch origin` 报 `Host key verification failed` / `Permission denied (publickey)`。
-- 真因：**不是密钥问题**，是权限规则拦了 `C:\Users\huwei\.ssh\` 的读取（config / known_hosts / id_ed25519）。
-  公钥指纹始终是 `SHA256:id0CNSSh/9pZxPzxAzdqF4g9+YQZWMxNeMdncAkCjk`，没被撤过。
-- 处理（已完成）：`~/.workbuddy/settings.json` 里把
-  `sandbox.orderedRules.file.customized` 置 `true`，并把 `file-preset-1`（`~/.ssh/`）
-  的 `read` 从 `ask` 改成 `allow`（write / delete 仍为 `ask`），**重启客户端**后生效。
-- **这条要记住**：权限规则只在启动时读一次。改完不重启，等于没改，还会一路往密钥方向误判。
-- 重启后的核验命令：
+### 怎么拆的
 
-  ```bash
-  git fetch origin && git checkout main && git merge --ff-only origin/main
-  git branch -d feat/v324-three-flows      # 已合并，可删
-  ```
+| 文件 | 内容 | 谁读 |
+|---|---|---|
+| `resources.json` | 条目骨架：`name` / `url` / `source` / `license` / `tags` / `recommended` + 合集元信息 | 首屏（首页合集卡、命令面板、投稿页查重） |
+| `resources-notes.json` | `{ notes: { <合集 slug>: { <条目名>: <正文> } } }` | 只在合集页，按需取 |
 
-- **不先同步就开工，等于基于 3 条流程的旧基座改代码，回头必冲突。**
+- 定位用「合集 slug + 条目名」，**不用数组下标**——往合集中间插一条，下标会让后面全部错位。
+- 合并逻辑只有一份：`scripts/lib/resources-data.mjs` 的 `loadResources(root, {strict})`。
+  **不要在别处直接读 `resources.json` 再自己拼**，那样漏一条正文不会报错，只会安静渲染出空段落。
+- 运行时加载在 `assets/content-pages.js` 的 `loadResNotes()`（内容页早就按需加载，不进首屏）。
+- 取不到正文文件不白屏：条目名、授权、地址仍在，页面照常可用。
 
-### 2. `sw.js` 没 bump，老访客还是只看到 3 条流程
+### 三道闸门（都手动试过会红）
 
-- 缓存策略是缓存优先，`workflows.json` 在预缓存清单里（219 个地址）。
-- 新访客 / 无痕窗口正常看到 6 条；访问过老版本的人会继续用客户端缓存。
-- 这不算 bug，是「一支只做了一半的版本」的预期代价。**v3.24 整体发版时 bump 版本号，一并刷新。**
+1. `verify` 的「资源正文不在首屏」：把 `note` 写回 `resources.json` 直接失败。
+   这种退化页面完全看不出来，只有断言看得见。
+2. `loadResources(root, {strict:true})`：构建期缺正文直接抛错并列出 `合集/条目`
+   （`build-pages` 与 `check-submit-schema` 都走 strict）。
+   **`schemas/resource.json` 没改**——`note` 仍是必填的编辑标准，只是校验的是合并后的视图。
+3. `browser-test` 第 9.15 节：首页**不许**请求 `resources-notes.json`，合集页**必须**请求，
+   且每条正文都渲染出来、不是同一段复读。
 
-### 3. 首屏预算只剩 145 字节（89.9 / 90.0 KB）
+### 以后加一条资源
 
-- 上限 90.0 KB 是 11-04 因为内容变厚（第 7 个合集，`resources.json` +8 条 → +2.0 KB）才从 88.0 抬上来的，
-  `perf-budget.json` 里写明了「这是内容的账，不是代码的账」。
-- **v3.24 无论做什么，第一步都要先拆启动数据**：把 `directory.json` / `resources.json` 的正文改成按需加载。
-  不拆的话，参数面板那点 JS 一进去就超。
-- 抬 `total` 不是首选。真要抬，必须同一次提交里在 `perf-budget.json` 的 note 写清是哪种账。
+两份文件都要动：
 
-### 4. 远端留着两个无用分支
+```
+resources.json        → items 里加骨架对象（不放 note）
+resources-notes.json  → notes["<合集slug>"]["<条目名>"] = "正文"
+```
 
-- `origin/feat/v324-three-flows` → `3165edb`，内容已在 main 里，可删。
-- `origin/muse-v324-flows` → 只放着草稿 `docs/taskpacks/v324-flows-draft.json`（三条流程的原始描述），
-  内容已落进 main，留着的唯一价值是「当初的草案长什么样」。
-- 删除命令（可选，不影响功能，等 v3.24 发版时一起清）：
-  `git push origin --delete feat/v324-three-flows muse-v324-flows`
+漏了第二份，构建会直接失败并指出是哪一条——比在页面上发现空段落早得多。
 
-## 三、v3.24 的范围（来自 `ROADMAP-2.0.md` 第 188–201 行）
-
-已做完的（上一段任务，已在 main）：六条流程、构建期闸门、真浏览器 fixture、失败即停。
-
-**还没做的三件**：
+## 三、v3.24 还剩三件事
 
 1. **参数面板 /「保存为我的流程」**：参数集存进 `store.js` 的 `flows`，下次一键重跑。
    `csv-pick-to-json` 的 `cols` / `filterCol` / `filterVal` 现在是空串占位，就是等这个功能在运行时填。
@@ -71,42 +64,68 @@
    这是本地处理的天然优势（数据一直在内存里），值得写进产品文案。
 3. **工具页「接着做」升级**：从单跳变成「加入流程」。
 
-**闸门要求**：六条流程在真浏览器里用 fixture 跑通；失败续跑单独一条断言
-（故意传坏文件，断言前两步产物仍可取）。
+**闸门要求**：失败续跑单独一条断言（故意传坏文件，断言前两步产物仍可取）；新交互都要真浏览器点。
 
-## 四、开工前的必读清单（按顺序，约 50 KB）
+三件事都落在 `/workflows/` 与 `/tools/*`，不占首屏——但**别再往首屏加东西**：
+1.9 KB 余量是留给「确实必须在首屏」的改动，加之前先看 `perf-budget.json` 末尾那几条账。
+
+## 四、遗留问题
+
+### 1. `sw.js` 没 bump，老访客看到的还是旧缓存
+
+缓存策略是缓存优先，`resources.json` / `workflows.json` 都在预缓存清单里。
+新访客 / 无痕窗口正常。v3.24 整体发版时 bump 版本号一并刷新。
+
+### 2. 老缓存的过渡期
+
+老访客缓存里的 `resources.json` 是带 `note` 的旧版，而新前端从 `resources-notes.json` 取正文——
+第一秒可能看到空正文，后台更新完刷新即可。**不值得为此写兼容代码**：`sw.js` bump 之后
+预缓存整体换新，过渡只有一次。真要兜，就在 `loadResNotes` 失败时回退 `c.items[].note`，两行的事。
+
+### 3. 远端留着两个无用分支
+
+`origin/feat/v324-three-flows`（内容已在 main）、`origin/muse-v324-flows`（只有草稿 JSON）。
+发版时一起清：`git push origin --delete feat/v324-three-flows muse-v324-flows`
+
+### 4. 还能从启动数据里抠 723 字节（暂时不做）
+
+`tools/directory.json` 的 `evidence`（62 个外链 × 2 个对象）运行时一个字节都不用，
+但删它要动 `check-links` / `build-pages` / `verify` / `tool-meta` / `evidence` 五个脚本。
+为 723 字节动五个脚本不值当，等真需要空间再说。
+
+## 五、开工前的必读清单（按顺序，约 50 KB）
 
 ```
 1. .workbuddy/memory/MEMORY.md                      全文（工程铁律都在这里）
-2. .workbuddy/memory/2026-11-04.md                  尾部 ~100 行（今天发生了什么）
+2. .workbuddy/memory/<最近一份日报>                  尾部 ~100 行
 3. ROADMAP-2.0.md 第 188-201 行                      v3.24 范围
 4. changelog.json entries[0]                         v3.23 做了什么
-5. perf-budget.json 的 budgets + 最后一条 note        预算怎么算的
+5. perf-budget.json 的 budgets + note 末尾两条         预算怎么算、这次为什么收回 88.0
 6. git log --oneline -10 && git status && git branch
 ```
 
 **不要整份读**：`README.md`（123 KB）、`ROADMAP.md`（65 KB，已被 ROADMAP-2.0 取代）、
 12 篇日报全量（150 KB）。需要时 grep 单行即可。
 
-资料库四份真源（要跨任务查时用，ID 见 MEMORY.md）：
+资料库四份真源（跨任务查时用，ID 见 MEMORY.md）：
 版本记录 `6EprCKM8a2hXdvelPgCgEh`、质量基线 `FNzh7ODLWDJlhoEPG1AdCS`、
 路线图 `D6YKmSFWuhFRKv1Cz2iIu2`、总览 `6QV5OlrCBfOx9uoEk4cPU1`。
 
-## 五、常用命令
+## 六、常用命令
 
 ```bash
 npm run serve:fresh        # 本地预览（8765，--no-sw，改完立刻看到）
 npm run build:prod         # 重建全部页面（产物不手改，改数据源）
-npm run check             # 八套全量验收
-npm run check:workflows   # 工作流静态闸门
-npm run perf              # 首屏预算
-npm run online            # 线上核对（远端 HEAD 查不到时跳过，不判「没推」）
+npm run check              # 八套全量验收
+npm run perf               # 首屏预算
+npm run check:submit       # 投稿规范与真实数据是否还对得上
+npm run online             # 线上核对（远端 HEAD 查不到时跳过，不判「没推」）
 ```
 
-发版链路与坑（SSH 权限、产物合并、提交信息写文件、测试不 sleep 轮询）见 `MEMORY.md`
-的「发布链路与产物合并」一节，**开工前务必过一遍**。
+沙箱里跑浏览器套件要先 `export NO_PROXY="127.0.0.1,localhost"`，否则本机代理会让 CDP 连不上。
+SSH 权限、产物合并、提交信息写文件、测试不 sleep 轮询等坑见 `MEMORY.md` 的「发布链路」一节。
 
-## 六、纪律
+## 七、纪律
 
 - 一版一个主题，不夹带。八套全绿才发版，体验改动必须落到断言。
 - 走分支 + PR，不直接推 `main`。

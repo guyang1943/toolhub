@@ -14,6 +14,7 @@ import { checkStorageKeys } from './lib/storage-keys.mjs';
 import * as storeKeys from '../assets/lib/store-keys.js';
 import { staticPaths, matchPage, pagePatterns } from './lib/pages-registry.mjs';
 import { PRIVACY_KINDS, validateToolMeta } from './lib/tool-meta.mjs';
+import { loadResources } from './lib/resources-data.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -44,7 +45,9 @@ const en = read('i18n.json').en;
 const det = read('i18n-detail.json').en;
 const art = read('articles.json');
 const evals = read('evaluations.json');
-const res = read('resources.json');
+// v3.24 起正文不在 resources.json 里，用共用加载器合起来读；
+// 下面「资源正文不在首屏」那一条单独盯拆分有没有被悄悄退回。
+const res = loadResources(root);
 const topics = read('topics.json');
 const changelog = read('changelog.json');
 const all = [...local.tools, ...dir.tools];
@@ -161,6 +164,23 @@ check('资源条目标注授权', () => {
   }
   assert(!bad.length, bad.slice(0, 6).join(', '));
   return '每条都有 url / 授权 / 来源 / 推荐语';
+});
+
+// v3.24：正文拆出首屏这件事必须有人盯着。否则哪天有人「顺手」把 note 写回 resources.json，
+// 页面照样正常显示，只有首屏悄悄背着 3.8 KB 上路——这种退化只有断言看得见。
+check('资源正文不在首屏', () => {
+  const raw = read('resources.json');
+  const back = raw.collections.reduce((a, c) => a + c.items.filter((i) => 'note' in i).length, 0);
+  assert(!back, `${back} 条正文又写回了 resources.json（首屏会重新背上约 3.8 KB）`);
+
+  const notes = read('resources-notes.json');
+  const total = raw.collections.reduce((a, c) => a + c.items.length, 0);
+  const have = raw.collections.reduce((a, c) => a + Object.keys(notes.notes[c.slug] || {}).length, 0);
+  assert(have === total, `正文 ${have} 条 / 条目 ${total} 条，对不上`);
+
+  const missing = res.__missingNotes || [];
+  assert(!missing.length, `缺正文: ${missing.slice(0, 5).join(', ')}`);
+  return `${total} 条正文在 resources-notes.json 按需加载`;
 });
 
 check('资源库静态页', () => {

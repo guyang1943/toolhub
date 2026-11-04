@@ -1304,6 +1304,36 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await goto('/');
   }
 
+  // ---- 9.15 资源正文按需加载（v3.24）----
+  // 「页面好看」不等于「拆对了」。这一段盯两件事，缺一件这次拆分就是白做：
+  //   ① 首页**不许**请求 resources-notes.json —— 拆出去的全部意义就在这一条；
+  //   ② 合集页**必须**请求它，并且正文真的渲染出来 —— 否则等于把正文删了。
+  // 只测第 ② 条最容易被骗：正文文件自己加载成功、页面却渲染空段落时，页面照样「打开」。
+  {
+    await goto('/');
+    await waitForCount('.res-preview-card', 3);
+    const onHome = netUrls.filter((u) => u.includes('resources-notes.json')).length;
+    check('首页不请求资源正文', onHome === 0, onHome + ' 次');
+    check('首页仍然拿条目骨架（来源数量靠它算）', netUrls.some((u) => /\/resources\.json$/.test(u)) === true);
+    const cnt = await evaluate(`(document.querySelector('.res-preview-card .rp-count') || {}).textContent || ''`);
+    check('首页合集卡仍显示来源数量', /\d+\s*个来源/.test(cnt), cnt.trim());
+
+    await goto('/resources/icons/');
+    await waitText('#page-body', '个来源', 12000);
+    const onPage = netUrls.filter((u) => u.includes('resources-notes.json')).length;
+    check('合集页请求了正文文件', onPage >= 1, onPage + ' 次');
+    const rows = await waitForCount('.res-item', 8);
+    check('合集页条目都渲染了', rows >= 8, rows + ' 条');
+    const ns = await evaluate(`(() => {
+      const xs = [...document.querySelectorAll('.res-item-note')].map((n) => n.textContent.trim());
+      return { total: xs.length, empty: xs.filter((x) => x.length < 15).length, uniq: new Set(xs).size };
+    })()`);
+    check('每条都有正文，不是空段落', ns.empty === 0 && ns.total >= 8, `${ns.total} 条 / 空 ${ns.empty}`);
+    check('正文不是同一段复读（说明按条目取到了）', ns.uniq >= 6, ns.uniq + ' 种');
+    await shot('19-resources-notes');
+    await goto('/');
+  }
+
   // ---- 10. 刷新深链 + 返回按钮 ----
   await goto('/tools/mortgage-calc/');
   await cdp.send('Page.reload');

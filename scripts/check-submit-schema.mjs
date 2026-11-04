@@ -16,13 +16,17 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { validate } from '../assets/lib/json-schema.js';
+import { loadResources } from './lib/resources-data.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => readFileSync(join(root, rel), 'utf8');
 const json = (rel) => JSON.parse(read(rel));
 
 const schema = json('schemas/resource.json');
-const resources = json('resources.json');
+// v3.24：条目正文已拆到 resources-notes.json，schema 描述的仍是「一条完整的资源」
+// （note 是必填的编辑标准，不能因为存储方式变了就放宽）。所以这里校验的是**合并后**的视图，
+// 否则拆文件会把 58 条全部判成「缺少必填字段」——那是把存储方式误当成内容缺失。
+const resources = loadResources(root, { strict: true });
 const errors = [];
 const warns = [];
 

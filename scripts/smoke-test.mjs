@@ -23,6 +23,10 @@ const paths = [
   '/assets/pyodide-runtime.js',
   '/tools/tools.json',
   '/tools/directory.json',
+  // v3.24：资源条目被拆成骨架 + 正文两份。正文那份漏传时页面不会报错，
+  // 只会安静地渲染出 58 个空段落——所以它必须在冒烟清单里。
+  '/resources.json',
+  '/resources-notes.json',
   '/i18n.json',
   '/i18n-detail.json',
   '/sw.js',
