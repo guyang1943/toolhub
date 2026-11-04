@@ -9,6 +9,7 @@ import { validateToolMeta, metaSummary, PRIVACY_LABEL } from './lib/tool-meta.mj
 import { evidenceLine } from './lib/evidence.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
+import { genLlmsTxt } from './gen-llms-txt.mjs';
 import { loadResources } from './lib/resources-data.mjs';
 import { matchPage } from './lib/pages-registry.mjs';
 // v3.22：隐私页那张键名表现在由清单渲染，不再是手写的 <li> 列表。
@@ -1572,6 +1573,15 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   } else {
     console.log('   ⚠️ 找不到 offline/index.html，离线包统计未回填');
   }
+}
+
+// 8) llms.txt（v3.24 分发层）。必须放在最后：它读的是第 0 步派生的 tools.json，
+//    而且故意在 buildSw 之后写——它给 AI 抓取用，不进离线包，也不进首屏预算。
+{
+  const info = genLlmsTxt({ root, base: BASE, tools, dirTools });
+  console.log(
+    `   ↻ llms.txt：本地 ${info.counts.local} 条 / 目录 ${info.counts.directory} 条 / 工作流 ${info.counts.flows} 条`
+  );
 }
 
 if (tpl !== stripped) console.log(`   ↻ 模板计数已归一：${TOTAL_TOOLS} 个工具 / ${TOTAL_RES} 条资源`);

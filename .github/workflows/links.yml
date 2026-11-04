@@ -8,7 +8,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # v3.24：探活成功后要回写 evidence 并开 PR，所以从 read 升到 write。
+  # 仍然不直接推 main——证据是状态变更，走 PR 留一个人工复核的入口。
+  contents: write
+  pull-requests: write
   issues: write
 
 jobs:
@@ -49,3 +52,33 @@ jobs:
           else
             gh issue create --title "$TITLE" --body "$BODY"
           fi
+
+      # v3.24：探活成功就把 evidence.link.at 刷成今天，并开 PR。
+      # 只动 at/method/by 三个字段，不碰 evidence.boundary——探活证明不了「它不上传你的文件」。
+      # 没有变化时安静跳过；同一分支当天重复跑也不会叠 PR。
+      - name: 回写证据时间戳并开 PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node scripts/sync-evidence.mjs --report health-report.json
+          if git diff --quiet -- tools/directory.json; then
+            echo "✅ 证据无变化，跳过 PR"
+            exit 0
+          fi
+          BRANCH="chore/evidence-$(date -u +%Y%m%d)"
+          # 先查有没有已开的 PR：同一天手动重跑时不要重复推分支、重复开 PR
+          EXIST=$(gh pr list --state open --head "$BRANCH" --json number --jq '.[0].number // empty')
+          if [ -n "$EXIST" ]; then
+            echo "已有 PR #$EXIST，跳过"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add tools/directory.json
+          git commit -m "chore(evidence): 刷新外链探活时间戳"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "chore(evidence): 刷新外链探活时间戳" \
+            --body "由每周链接巡检自动生成：把本次探活成功的目录条目 \`evidence.link.at\` 刷新为 $(date -u +%F)，\`method=probe-ci\`、\`by=ci-schedule\`。只动 at/method/by 三个字段，不碰 \`evidence.boundary\`。请人工复核后合并。" \
+            --head "$BRANCH" --base main
