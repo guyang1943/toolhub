@@ -498,6 +498,10 @@
       "csv-columns": {
         "name": "CSV Column Picker",
         "desc": "Pick, reorder and filter CSV columns, then export a fresh CSV"
+      },
+      "disk-partition": {
+        "name": "Disk Integer Partition Planner",
+        "desc": "Plan disk partitions in whole GB, validate capacity, visualize the layout and export the plan."
       }
     },
     "res": {

@@ -1142,6 +1142,37 @@
         "filterCol": "Filter by column (optional)",
         "filterVal": "Value contains (optional)"
       }
+    },
+    "disk-partition": {
+      "usage": "Enter the disk capacity in GB and a partition list (one line per partition: name sizeGB) to plan whole-GB partitions and visualize the layout.",
+      "tips": [
+        "Rated capacity is not usable capacity: a 1TB disk shows about 931GB in the OS; plan with the real value.",
+        "Whole-GB partitions are easy to align and remember; reserve 100–200GB for the system partition.",
+        "Leave some unallocated space for later expansion instead of filling the whole disk."
+      ],
+      "scenarios": [
+        {
+          "scene": "Plan system and data partitions for a new 1TB SSD",
+          "how": "Set capacity to 931 and list C/D/E in whole GB",
+          "result": "Get a realistic integer layout with unallocated space"
+        },
+        {
+          "scene": "Verify partitions fit before reinstalling",
+          "how": "Enter disk capacity and your planned partitions",
+          "result": "Overflow is flagged with how many GB exceed"
+        },
+        {
+          "scene": "Spread leftover space across earlier partitions",
+          "how": "Set unallocated handling to 'spread'",
+          "result": "Each partition gets +1GB until the remainder is used up"
+        }
+      ],
+      "runLabel": "Plan",
+      "labels": {
+        "diskGb": "Disk capacity (GB)",
+        "plan": "Partition plan (one line per partition: name sizeGB)",
+        "remainder": "Unallocated space handling"
+      }
     }
   }
 }

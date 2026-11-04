@@ -71,6 +71,7 @@
     "id-validate",
     "img-crop",
     "file-hash",
-    "csv-columns"
+    "csv-columns",
+    "disk-partition"
   ]
 }

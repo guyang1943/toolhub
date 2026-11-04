@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.21 · 预缓存 206 个地址 · 约 3.3 MB
+// 版本：toolhub-v3.21 · 预缓存 209 个地址 · 约 3.4 MB
 const VERSION = "toolhub-v3.21";
 const CORE = [
   "/",
@@ -110,6 +110,8 @@ const FULL = [
   "/tools/file-hash/run.js",
   "/tools/csv-columns/",
   "/tools/csv-columns/run.js",
+  "/tools/disk-partition/",
+  "/tools/disk-partition/run.js",
   "/assets/vendor/jsQR.js",
   "/assets/vendor/marked.min.js",
   "/assets/vendor/pdf-lib.min.js",
@@ -156,6 +158,7 @@ const FULL = [
   "/articles/cron-parser.json",
   "/articles/csv-columns.json",
   "/articles/csv-json.json",
+  "/articles/disk-partition.json",
   "/articles/exif-strip.json",
   "/articles/file-hash.json",
   "/articles/id-validate.json",
