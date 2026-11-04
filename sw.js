@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.22.2 · 预缓存 214 个地址 · 约 3.5 MB
-const VERSION = "toolhub-v3.22.2";
+// 版本：toolhub-v3.23 · 预缓存 219 个地址 · 约 3.6 MB
+const VERSION = "toolhub-v3.23";
 const CORE = [
   "/",
   "/offline/",
@@ -134,6 +134,7 @@ const FULL = [
   "/feedback/",
   "/batch/",
   "/my/",
+  "/workflows/",
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
@@ -144,6 +145,7 @@ const FULL = [
   "/assets/lib/pages.js",
   "/assets/lib/secure-share.js",
   "/assets/lib/store-keys.js",
+  "/assets/lib/workflow-core.js",
   "/assets/lib/zip.js",
   "/assets/my.js",
   "/assets/offline.js",
@@ -151,12 +153,14 @@ const FULL = [
   "/assets/submit-resource.js",
   "/assets/tool-page.js",
   "/assets/toolbuilder.js",
+  "/assets/workflow.js",
   "/assets/style.batch.css",
   "/assets/style.compare.css",
   "/assets/style.my.css",
   "/assets/style.offline.css",
   "/assets/style.submit.css",
   "/assets/style.tool.css",
+  "/assets/style.workflows.css",
   "/articles/base64-url.json",
   "/articles/case-convert.json",
   "/articles/color-contrast.json",
@@ -234,7 +238,8 @@ const FULL = [
   "/guides/tv-box-server/",
   "/guides/tv-box-server.json",
   "/schemas/resource.json",
-  "/tools/schema.json"
+  "/tools/schema.json",
+  "/workflows/workflows.json"
 ];
 
 self.addEventListener('install', (e) => {

@@ -20,6 +20,9 @@ const SUITES = [
   { key: 'spa', name: 'SPA 渲染', script: 'spa-render-test.mjs' },
   { key: 'func', name: '工具功能', script: 'new-tools-test.mjs' },
   { key: 'perf', name: '首屏预算', script: 'perf-budget.mjs' },
+  // v3.23：工作流引擎的单元测试。它不进 verify（那套是「数据与产物」），
+  // 也不是真浏览器——验的是绑定规则本身，包括那些「必须报错」的反例。
+  { key: 'flow', name: '工作流', script: 'workflow-test.mjs' },
   // v3.20：冒烟一直没进这个清单。脚本自称「一条命令跑完全部验收」，
   // 实际少了 149 项（含 62 个目录页的可达性）——「全跑一遍」的结论不能靠人记着自己补一条。
   { key: 'smoke', name: '冒烟', script: 'smoke-test.mjs', args: [LOCAL], needsServer: true },
@@ -83,6 +86,24 @@ const needServer = picked.some((s) => s.needsServer);
   }
   const line = (g.stdout || '').split('\n').map((l) => l.trim()).find((l) => l.startsWith('✅'));
   if (line) console.log(line);
+}
+
+// 前置闸门（v3.23）：工作流的每一步参数，必须还对得上工具当前的 manifest。
+// 漂移的症状是「用户选完文件，第一步就抛异常」，而工具自身的测试全绿——它们测的是工具，
+// 不是「工具被接进流程之后还成不成立」。
+{
+  const g = spawnSync(process.execPath, [join(root, 'scripts', 'check-workflows.mjs'), '--quiet'], {
+    cwd: root,
+    encoding: 'utf8',
+    timeout: 60000,
+  });
+  if (g.status !== 0) {
+    console.error('❌ 工作流闸门未过（参数或端口与工具的 manifest 对不上）：\n');
+    console.error(`${g.stdout || ''}${g.stderr || ''}`);
+    process.exit(1);
+  }
+  const n = (g.stdout || '').match(/工作流：(\d+) 条/);
+  if (n) console.log(`✅ 工作流：${n[1]} 条流程参数与 manifest 一致`);
 }
 
 // 只抓两类行：汇总（最后一行带 ✅ 的）和失败（带 ❌ 的）。其余全部丢弃。

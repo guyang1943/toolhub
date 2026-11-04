@@ -160,6 +160,15 @@ export function buildSw({ quiet = false } = {}) {
   }
   if (onDisk('/tools/schema.json')) full.add('/tools/schema.json');
 
+  // 工作流（v3.23）：页面本身是壳，真正要跑起来还缺两样——流程定义 workflows.json 与
+  // 每一步的 run.js。run.js 在上面的工具循环里已经进包了，这里补流程定义。
+  // 漏了它的表现是「断网打开工作流页，卡片区一片空白」，而不是报错。
+  if (existsSync(join(root, 'workflows'))) {
+    for (const f of readdirSync(join(root, 'workflows'))) {
+      if (f.endsWith('.json')) full.add('/workflows/' + f);
+    }
+  }
+
   // 只收录真的存在于磁盘上的路径：install 里的 addAll 是「全有或全无」，一个 404 会让整个装包失败
   const CORE = CORE_ALL.filter(onDisk);
   const FULL = [...full].filter(onDisk);

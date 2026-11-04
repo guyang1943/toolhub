@@ -523,6 +523,14 @@ check('投稿页链到教程与测评模板', tplLinks.includes('guide') && tplL
 check('测评明确声明不收正文', subHtml.includes('不收正文'));
 // 资源表单的容器必须在（挂载失败时它会拿到错误态，但容器本身不能缺）
 check('资源表单容器就位', subHtml.includes('id="resource-submit"'));
+// v3.23：一进页面不该把所有类别要填的东西摊开。四个面板都默认 hidden，
+// 且有四个「选类别」按钮——少了任何一半，要么全摊开、要么点了没反应。
+check(
+  '投稿页默认不展开任何一类',
+  (subHtml.match(/data-panel="[a-z]+" hidden/g) || []).length === 4,
+  (subHtml.match(/data-panel="[a-z]+" hidden/g) || []).length + ' 个面板默认收起'
+);
+check('四类各有一个可点的类别按钮', (subHtml.match(/class="su-pick"/g) || []).length === 4);
 
 // 汇总
 let pass = 0;

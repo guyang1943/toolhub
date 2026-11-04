@@ -31,6 +31,7 @@ WebAssembly 在浏览器里直接算，文件从头到尾没有离开你的设�
 
 - **平台本体零工具**：所有工具通过 **Manifest 规范** 接入，平台自动渲染表单 UI 与结果区。
 - **纯浏览器执行**：所有计算在用户本地完成，数据不上传（隐私卖点 + 零服务器成本）。
+- **工作流复用同一套 `run()`**：`workflows/workflows.json` 只写「哪些工具、什么顺序、谁接谁」，引擎把它们串起来跑，没有第二套执行层；参数在构建期按每个工具的 manifest 逐项校验。
 - **接新工具 = 新建目录**：`tools/<工具id>/run.js`，导出 `manifest`（声明输入参数）和 `run()`（执行逻辑），平台代码零改动。
 
 ```
@@ -50,13 +51,14 @@ toolhub/
 │   ├── schema.json       # Manifest 与 tool.json 的 JSON Schema（构建期闸门）
 │   ├── directory.json    # 在线目录：60 个开源项目官网（URL 已验证）
 │   └── <工具id>/         # tool.json（身份）+ run.js（manifest + run）
+├── workflows/workflows.json  # 工作流定义：哪几个工具、什么顺序、谁接谁（构建期按 manifest 验参数）
 ├── topics.json           # 10 个专题（按场景打包工具 + 资源 + FAQ）
 ├── evaluations.json      # 5 篇工具横评（隐私/速度/功能取舍）
 ├── articles.json         # 34 个本地工具的长尾教程（简介+步骤+常见错误+FAQ）
 ├── resources.json        # 6 个资源合集 / 50 条（逐条标注授权）
 ├── changelog.json        # 更新日志数据
 ├── sw.js                 # Service Worker（由 scripts/gen-sw.mjs 构建期生成，勿手改）
-├── scripts/              # build-pages / gen-sw / verify / smoke-test / health-check / spa-render-test / new-tools-test / browser-test / serve / perf-budget
+├── scripts/              # build-pages / gen-sw / verify / check-workflows / workflow-test / smoke-test / health-check / spa-render-test / new-tools-test / browser-test / serve / perf-budget
 ├── topics/ evaluations/ resources/ tools/<id>/   # 构建生成的静态 SEO 页
 └── wrangler.toml         # Cloudflare Workers 静态资源部署配置
 ```

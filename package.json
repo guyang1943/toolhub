@@ -22,7 +22,9 @@
     "check:links": "node scripts/check-links.mjs",
     "check:submit": "node scripts/check-submit-schema.mjs",
     "idem": "node scripts/check-idempotent.mjs",
-    "online": "node scripts/verify-online.mjs"
+    "online": "node scripts/verify-online.mjs",
+    "check:workflows": "node scripts/check-workflows.mjs",
+    "test:flow": "node scripts/workflow-test.mjs"
   },
   "engines": {
     "node": ">=22"

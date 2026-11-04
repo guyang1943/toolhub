@@ -1434,6 +1434,7 @@ function renderNavActive(path) {
     '/guides': 'guides',
     '/evaluations': 'evaluations',
     '/compare': 'evaluations',
+    '/workflows': 'workflows',
   };
   const key = map[path] || '';
   $$('#main-nav a').forEach((a) => a.classList.toggle('active', a.dataset.nav === key));
@@ -1547,6 +1548,7 @@ const PAGE_CSS = {
   offline: '/assets/style.offline.css',
   submit: '/assets/style.submit.css',
   compare: '/assets/style.compare.css',
+  workflows: '/assets/style.workflows.css',
 };
 
 async function openPage(name) {
@@ -1559,7 +1561,7 @@ async function openPage(name) {
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   setView('page');
-  const titles = { about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据' };
+  const titles = { about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
 
@@ -1589,37 +1591,21 @@ async function openPage(name) {
     };
   }
 
-  // 「我的数据」页：按需加载（不进首屏包）。它比 batch 重的地方在于要读两份注册表
-  // 把 id 还原成中文名，所以传 reg 进去，省一次重复请求。
-  const myBox = document.getElementById('my-app');
-  if (myBox) {
+  // 页面级模块（v3.23 收成一张表）：容器 id → 模块 / 导出 / 是否要注册表 / 报错时的说法。
+  // 这里原本是四段几乎一样的 try/catch，加第五个页面时发现又是同一段——「每加一个页面就抄一段」
+  // 正是 v3.20 页面注册表要治的病，只不过这次病在挂载侧。加页面从此是一行。
+  for (const [id, mod, fn, withReg, label] of [
+    ['my-app', '/assets/my.js', 'mountMy', 1, '数据面板'],
+    ['flow-app', '/assets/workflow.js', 'mountWorkflows', 1, '工作流引擎'],
+    ['batch-app', '/assets/batch.js', 'mountBatch', 0, '批量模块'],
+    ['offline-app', '/assets/offline.js', 'mountOffline', 0, '离线模块'],
+  ]) {
+    const box = document.getElementById(id);
+    if (!box) continue;
     try {
-      const { mountMy } = await import('/assets/my.js');
-      await mountMy(myBox, reg);
+      await (await import(mod))[fn](box, ...(withReg ? [reg] : []));
     } catch (e) {
-      myBox.innerHTML = stateHTML('error', { title: '数据面板加载失败', detail: e.message });
-    }
-  }
-
-  // 批量处理页：按需加载（不进首屏包）
-  const batchBox = document.getElementById('batch-app');
-  if (batchBox) {
-    try {
-      const { mountBatch } = await import('/assets/batch.js');
-      mountBatch(batchBox);
-    } catch (e) {
-      batchBox.innerHTML = stateHTML('error', { title: '批量模块加载失败', detail: e.message });
-    }
-  }
-
-  // 离线包页：按需加载（不进首屏包）
-  const offBox = document.getElementById('offline-app');
-  if (offBox) {
-    try {
-      const { mountOffline } = await import('/assets/offline.js');
-      await mountOffline(offBox);
-    } catch (e) {
-      offBox.innerHTML = stateHTML('error', { title: '离线模块加载失败', detail: e.message });
+      box.innerHTML = stateHTML('error', { title: label + '加载失败', detail: e.message });
     }
   }
 
@@ -1627,7 +1613,9 @@ async function openPage(name) {
   // v3.18 起从 app.js 搬去 assets/submit-page.js：首页不该为投稿页付解析成本。
   // 加载失败只降级不炸页——投稿页的骨架（四类说明 + Issue 模板链接）是静态渲染的，
   // 表单挂了还能走模板。所以这里兜住异常，让读者至少拿得到一条能走的路。
-  if (document.getElementById('tool-builder') || document.getElementById('resource-submit')) {
+  // 投稿页：挂载点改成 #su-nav（v3.23）。表单要等用户选中那一类才挂，
+  // 先挂满再藏起来，等于让每个访客为一张还没决定要不要填的表单付解析成本。
+  if (document.getElementById('su-nav')) {
     try {
       const { mountSubmitPage } = await import('/assets/submit-page.js');
       await mountSubmitPage({ loadResources, stateHTML });
@@ -1682,7 +1670,7 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
-  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my)$/);
+  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my|workflows)$/);
   if (page) return openPage(page[1]);
   return renderHome();
 }

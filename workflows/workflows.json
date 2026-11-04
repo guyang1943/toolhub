@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "note": "工作流 = 把已经存在的工具按顺序接起来。这里不写执行代码，只写「哪几个工具、按什么顺序、参数是什么、谁接谁」。执行逻辑在 assets/workflow.js，构建期闸门是 scripts/check-workflows.mjs——它按 tools/<id>/run.js 的 manifest 逐个校验下面的 args 与端口，工具改表单而流程没跟着改，构建就会红，不会等用户点「运行」才炸。",
+  "flows": [
+    {
+      "id": "image-publish",
+      "name": "图片发布包",
+      "goal": "把一张手机照片变成能直接发出去的图",
+      "detail": "先去元数据、再限边长、最后压成 WebP。三步的默认值按「发布」这个场景定死，你只需要选一张图。",
+      "cost": "约 1 秒",
+      "input": {
+        "kind": "file",
+        "accept": "image/jpeg,.jpg,.jpeg",
+        "label": "选一张 JPG 照片",
+        "hint": "第一步要读 EXIF，只认 JPG；PNG / HEIC 请先另存为 JPG"
+      },
+      "steps": [
+        {
+          "tool": "exif-strip",
+          "args": { "mode": "strip" },
+          "note": "先删掉 GPS、机型与拍摄时间——发出去之前这一步最该做"
+        },
+        {
+          "tool": "image-resize",
+          "args": { "max": "1200", "format": "image/jpeg" },
+          "note": "长边限到 1200，公众号正文与网页首图都够用"
+        },
+        {
+          "tool": "image-compress",
+          "args": { "quality": 78, "format": "image/webp" },
+          "note": "质量 78 转 WebP，通常比原图小一半以上"
+        }
+      ]
+    },
+    {
+      "id": "photo-to-pdf",
+      "name": "照片成 PDF",
+      "goal": "把一张照片做成能打印、能报销的 A4 PDF",
+      "detail": "先缩到 A4 打印够用的尺寸，再按 20mm 边距排进 A4 页面。省了「先改尺寸、再转 PDF、发现太大又回头改」那一圈。",
+      "cost": "约 2 秒",
+      "input": {
+        "kind": "file",
+        "accept": "image/*",
+        "label": "选一张照片或截图",
+        "hint": "JPG / PNG / WebP 都能进；HEIC（iPhone 默认）浏览器解不了，先另存为 JPG"
+      },
+      "steps": [
+        {
+          "tool": "image-resize",
+          "args": { "max": "1920", "format": "image/jpeg" },
+          "note": "长边限到 1920：A4 打印足够，又不至于把 PDF 撑到十几 MB"
+        },
+        {
+          "tool": "img-to-pdf",
+          "args": { "size": "a4", "margin": "20" },
+          "note": "A4 纵向、20mm 边距，打印机安全区以内"
+        }
+      ]
+    },
+    {
+      "id": "b64-to-json",
+      "name": "编码串还原 JSON",
+      "goal": "把日志里抓到的那串 Base64 变成能读的 JSON",
+      "detail": "网关日志、埋点参数、回调 query 里取出来的一长串编码，粘进来先解码，再缩进对齐。少了「解码 → 复制 → 另开工具 → 再粘贴」这一趟。",
+      "cost": "不到 1 秒",
+      "input": {
+        "kind": "text",
+        "label": "粘贴 Base64 编码串",
+        "placeholder": "eyJuYW1lIjoi5byg5LiJIiwiY2l0eSI6IuWNl+S6rCJ9",
+        "rows": 6,
+        "hint": "解码后的内容必须是 JSON；不是的话第一步就会说清楚哪里不对"
+      },
+      "steps": [
+        {
+          "tool": "base64-url",
+          "args": { "op": "b64dec" },
+          "note": "Base64 解码（不是 URL 解码，别选错）"
+        },
+        {
+          "tool": "json-format",
+          "args": { "mode": "pretty", "indent": "2" },
+          "note": "两空格缩进，直接贴进代码或文档"
+        }
+      ]
+    }
+  ]
+}

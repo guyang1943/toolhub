@@ -74,6 +74,7 @@
   
   
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","name":"文档工具","description":"PDF 合并、拆分、图片转 PDF：合同与扫描件在本地处理，不进上传队列。","url":"https://toolhub.bot.cd/categories/docs/"},{"@type":"ItemList","name":"文档工具","numberOfItems":11,"itemListElement":[{"@type":"ListItem","position":1,"name":"PDF 合并拆分","url":"https://toolhub.bot.cd/tools/pdf-merge/"},{"@type":"ListItem","position":2,"name":"图片转 PDF","url":"https://toolhub.bot.cd/tools/img-to-pdf/"},{"@type":"ListItem","position":3,"name":"BentoPDF","url":"https://toolhub.bot.cd/tools/bentopdf/"},{"@type":"ListItem","position":4,"name":"Stirling-PDF","url":"https://toolhub.bot.cd/tools/stirlingpdf/"},{"@type":"ListItem","position":5,"name":"PDF.js Viewer","url":"https://toolhub.bot.cd/tools/pdfjs/"},{"@type":"ListItem","position":6,"name":"StackEdit","url":"https://toolhub.bot.cd/tools/stackedit/"},{"@type":"ListItem","position":7,"name":"Dillinger","url":"https://toolhub.bot.cd/tools/dillinger/"},{"@type":"ListItem","position":8,"name":"CryptPad","url":"https://toolhub.bot.cd/tools/cryptpad/"},{"@type":"ListItem","position":9,"name":"AFFiNE","url":"https://toolhub.bot.cd/tools/affine/"},{"@type":"ListItem","position":10,"name":"SimplyTranslate","url":"https://toolhub.bot.cd/tools/simplytranslate/"},{"@type":"ListItem","position":11,"name":"Vert","url":"https://toolhub.bot.cd/tools/vert/"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"工具分类","item":"https://toolhub.bot.cd/categories/"},{"@type":"ListItem","position":3,"name":"文档工具","item":"https://toolhub.bot.cd/categories/docs/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"合并后的 PDF 会变模糊吗？","acceptedAnswer":{"@type":"Answer","text":"不会。合并只是把各文件的页面对象搬进一个新文件，不会重新编码里面的图片，所以体积基本是各文件之和。"}},{"@type":"Question","name":"有页数或体积限制吗？","acceptedAnswer":{"@type":"Answer","text":"没有服务端限制，瓶颈在浏览器内存。单次几百页、几十 MB 一般没问题；超过 100MB 建议拆成两批，避免标签页被回收。"}},{"@type":"Question","name":"文件会不会被上传？","acceptedAnswer":{"@type":"Answer","text":"本地工具不会。页面里没有上传接口，文件只在内存中读写；断网后这些工具照常可用，这本身就能证明没有上传。"}}]}]}</script>
 </head>
 <body data-view="page">
@@ -82,6 +83,7 @@
     <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
       <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>

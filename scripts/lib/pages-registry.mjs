@@ -42,6 +42,9 @@ export const STATIC_PAGES = [
   // v3.22：「我的数据」页。进离线包是有意义的——它读的 localStorage 完全不依赖网络，
   // 断网时正是「我到底存了什么」最需要被查清的时候。
   { path: '/my/', title: '我的数据', offline: 'full', audit: true, smoke: true },
+  // v3.23：工作流页。它跑的全是本地工具，断网时更该能用——所以整条链（页面 + 引擎 +
+  // workflows.json + 每一步的 run.js）都进离线包，见 gen-sw.mjs。
+  { path: '/workflows/', title: '工作流', offline: 'full', audit: true, smoke: true },
   { path: '/offline/', title: '离线说明', offline: 'core', audit: true, smoke: true },
 ];
 

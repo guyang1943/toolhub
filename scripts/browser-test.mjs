@@ -181,6 +181,22 @@ async function waitForFocus(id, timeout = 8000) {
   return false;
 }
 
+// 等页面里某个选择器数到 N 个，而不是猜一个固定时长。
+// v3.23 踩过：reload 之后 sleep(900) 再数卡片，机器空着够用；机器正忙（上一套测试刚退场）时
+// 首屏还没把 tools.json 拉回来，数出 0 张——接着提示文案空、chip 0 个、最后 null.click 崩掉，
+// 整串看着像产品坏了，实际只测到了「还没渲染」。首屏是脚本异步渲染的，只能等结果，不能等时长。
+async function waitForCount(selector, want, timeout = 8000) {
+  const sel = JSON.stringify(selector);
+  const start = Date.now();
+  let n = 0;
+  while (Date.now() - start < timeout) {
+    n = await evaluate(`document.querySelectorAll(${sel}).length`).catch(() => 0);
+    if (n >= want) return n;
+    await sleep(100);
+  }
+  return n;
+}
+
 async function fill(map) {
   await evaluate(`(() => {
     const vals = ${JSON.stringify(map)};
@@ -305,9 +321,9 @@ async function feedFile(selector, dataUrl, name, type) {
     return regs.length;
   })()`).catch(() => 0);
   await cdp.send('Page.reload');
-  await sleep(900);
   if (swDropped) console.log('   （已清掉 ' + swDropped + ' 个旧 Service Worker 注册）');
-  const cards = await evaluate(`document.querySelectorAll('#grid [data-id]').length`);
+  // 等卡片真的出现再数（见 waitForCount 的注释：固定 sleep 在忙机器上会假红）
+  const cards = await waitForCount('#grid [data-id]', 24);
   check('首页渲染工具卡片（一页 24）', cards === 24, cards + ' 张');
   check('首页无控制台错误', pageErrors.length === 0, pageErrors.slice(0, 2).join(' | '));
   check('首页无 4xx 资源', netFails.length === 0, netFails.slice(0, 2).join(' | '));
@@ -359,7 +375,8 @@ async function feedFile(selector, dataUrl, name, type) {
   await goto('/');
   // v3.16：导航收敛成四栏，入口卡必须与之同序——两边顺序不一致是最容易悄悄发生的错位
   const navLabels = await evaluate(`[...document.querySelectorAll('#main-nav a')].map((a) => a.textContent.trim()).join('/')`);
-  check('导航四栏且顺序为 工具/资源/教程/测评', navLabels === '工具/资源/教程/测评', navLabels);
+  // v3.23：导航多了一栏「工作流」——工作流页需要入口，而顶部导航是唯一每页都在的位置。
+  check('导航五栏且顺序为 工具/工作流/资源/教程/测评', navLabels === '工具/工作流/资源/教程/测评', navLabels);
   const cardOrder = await evaluate(`[...document.querySelectorAll('#route-cards .route-card')].map((a) => a.getAttribute('href')).join(',')`);
   check('入口卡与导航同序', cardOrder === '/tools/,/resources/,/guides/,/evaluations/', cardOrder);
   check(
@@ -375,9 +392,9 @@ async function feedFile(selector, dataUrl, name, type) {
   for (let i = 0; i < 40; i++) {
     await sleep(100);
     enHome = await evaluate(`[...document.querySelectorAll('#main-nav a')].map((a) => a.textContent.trim()).join('/')`);
-    if (enHome.startsWith('Tools/Resources/Guides/Reviews')) break;
+    if (enHome.startsWith('Tools/Workflows/Resources/Guides/Reviews')) break;
   }
-  check('切英文后导航变英文', enHome === 'Tools/Resources/Guides/Reviews', enHome);
+  check('切英文后导航变英文', enHome === 'Tools/Workflows/Resources/Guides/Reviews', enHome);
   const enCard = await evaluate(`
     (document.querySelector('.rc--tools .rc-tag') || {}).textContent.trim() +
     '/' + [...document.querySelectorAll('.trust-strip span')].slice(1, 2).map((x) => x.textContent).join('')`);
@@ -980,6 +997,13 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   // ---- 9.11 提交页工具包生成器（v2.8 C3）----
   {
     await goto('/submit/');
+    // v3.23：投稿页改成「先选类别，再出字段」。没点「工具」这一格，生成器不该挂载——
+    // 这正是这一版要的行为，所以测试必须先点，再断言。
+    await evaluate(`document.querySelector('[data-slot="tool"]').click()`);
+    const gateTool = await evaluate(
+      `JSON.stringify({ tool: !document.getElementById('su-tool').hidden, resource: document.getElementById('su-resource').hidden })`
+    );
+    check('选中「工具」后只展开工具那一类', gateTool === '{"tool":true,"resource":true}', gateTool);
     const mounted = await waitText('#tool-builder', '生成一个工具包', 12000);
     check('提交页加载出工具包生成器', mounted === true);
     // 先提交一份不合规的（id 含大写、介绍太短），必须被拦下
@@ -1012,6 +1036,29 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   // 而是三条真正的行为：空表单被拦、已收过的网址被认出来、合规内容产出可用的提交链接。
   {
     await goto('/submit/');
+    // v3.23 的核心断言：一进页面，四类里一个都不展开，资源表单连挂载都没发生。
+    // 这不是「藏起来」——DOM 里数不到任何一个 [data-path]，所以也不可能被抓成「页面上有 7 个字段」。
+    const gate0 = await evaluate(`(() => {
+      const panels = [...document.querySelectorAll('[data-panel]')];
+      return JSON.stringify({
+        total: panels.length,
+        open: panels.filter((p) => !p.hidden).length,
+        fields: document.querySelectorAll('#resource-submit [data-path]').length,
+        picks: document.querySelectorAll('#su-nav [data-slot]').length,
+      });
+    })()`);
+    check(
+      '进页面时四类都不展开、资源表单未挂载',
+      gate0 === '{"total":4,"open":0,"fields":0,"picks":4}',
+      gate0
+    );
+
+    await evaluate(`document.querySelector('[data-slot="resource"]').click()`);
+    const gateRes = await evaluate(
+      `JSON.stringify({ resource: !document.getElementById('su-resource').hidden, tool: document.getElementById('su-tool').hidden, pressed: document.querySelector('[data-slot="resource"]').getAttribute('aria-pressed') })`
+    );
+    check('选中「资源」后只展开资源那一类，且按钮为按下态', gateRes === '{"resource":true,"tool":true,"pressed":"true"}', gateRes);
+
     const resMounted = await waitText('#resource-submit', '推荐一条资源', 12000);
     check('投稿页加载出资源投稿表单', resMounted === true);
 
@@ -1067,6 +1114,109 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await goto('/');
   }
 
+
+  // ---- 9.13 工作流页（v3.23）----
+  // 这一屏验三件事，都不是「页面能打开」：
+  //   ① 从首页导航点得进来（v3.22.2 的教训：直达测试对链接一无所知）；
+  //   ② 一条文本流程真的跑完两步、产物能拿走；
+  //   ③ 输入坏了就停在第 1 步，不带着半成品往下跑。
+  {
+    await goto('/');
+    const navHref = await evaluate(`(() => {
+      const a = document.querySelector('#main-nav a[href="/workflows/"]');
+      return a ? a.getAttribute('href') : '';
+    })()`);
+    check('首页导航里有「工作流」入口', navHref === '/workflows/', navHref || '（没有）');
+
+    await evaluate(`document.querySelector('#main-nav a[href="/workflows/"]').click()`);
+    await sleep(1000);
+    const wfUrl = await evaluate(`location.pathname`);
+    check('从导航点进来落在 /workflows/', wfUrl === '/workflows/', wfUrl);
+
+    const cards = await waitText('.wf-picker', '图片发布包', 12000);
+    const cardN = await evaluate(`document.querySelectorAll('.wf-picker [data-flow]').length`);
+    check('工作流页列出流程卡片', cards === true && cardN === 3, cardN + ' 条');
+
+    // ② 文本流程：Base64 → JSON
+    await evaluate(`document.querySelector('[data-flow="b64-to-json"]').click()`);
+    await waitEl('#wf-text', 8000);
+    const b64 = Buffer.from(JSON.stringify({ name: '张三', city: '南京' })).toString('base64');
+    await evaluate(`(() => {
+      const el = document.getElementById('wf-text');
+      el.value = ${JSON.stringify(b64)};
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await evaluate(`document.getElementById('wf-run').click()`);
+    const textDone = await waitText('#wf-out', '跑完', 15000);
+    check('文本流程跑完两步', textDone === true);
+    const outText = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    check('产物是缩进好的 JSON', outText.includes('"name": "张三"'), outText.slice(0, 40).replace(/\n/g, ' '));
+    const stepsDone = await evaluate(`document.querySelectorAll('.wf-step[data-state="done"]').length`);
+    check('两步都标成完成', stepsDone === 2, stepsDone + ' 步');
+
+    // ③ 坏输入：必须停在第 1 步，并说出原因
+    await evaluate(`document.querySelector('[data-flow="b64-to-json"]').click()`);
+    await waitEl('#wf-text', 8000);
+    await evaluate(`(() => {
+      const el = document.getElementById('wf-text');
+      el.value = '这不是 base64!!';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await evaluate(`document.getElementById('wf-run').click()`);
+    const stopped = await waitText('#wf-out', '停在第 1 步', 15000);
+    check('坏输入停在第 1 步，不继续往下跑', stopped === true);
+    const failedN = await evaluate(`document.querySelectorAll('.wf-step[data-state="fail"]').length`);
+    check('失败的步骤被标出来', failedN === 1, failedN + ' 步');
+    const step2State = await evaluate(`(document.querySelector('.wf-step[data-step="1"]') || {}).dataset?.state || ''`);
+    check('第 2 步没有被执行', step2State === 'idle', step2State);
+
+    // ④ 图片流程：带 GPS 的 JPEG 进去，WebP 出来。
+    // 这里踩了一个坑值得记下来：jpeg-fixture 生成的是 570 字节的**合成** JPEG——够读元数据，
+    // 但扫描数据是桩，浏览器解不开。只验元数据的测试察觉不到，工作流一接到「图片缩放」就炸了
+    // （The source image could not be decoded）。所以这里拿 canvas 编一张真 JPEG，
+    // 再把夹具里的 APP1 Exif 段插到 SOI 之后：既带 GPS，又能解码，两个前提都成立。
+    const { makeJpeg } = await import('file://' + join(root, 'scripts/lib/jpeg-fixture.mjs').replace(/\\/g, '/'));
+    const jpgDataUrl = 'data:image/jpeg;base64,' + makeJpeg({ gps: true, xmp: true }).toString('base64');
+    await evaluate(`document.querySelector('[data-flow="image-publish"]').click()`);
+    await waitEl('#wf-file', 8000);
+    const exifSegs = await evaluate(`(async () => {
+      const fix = new Uint8Array(await (await fetch(${JSON.stringify(jpgDataUrl)})).arrayBuffer());
+      const app = [];
+      let i = 2;
+      while (i + 3 < fix.length && fix[i] === 0xff && fix[i + 1] !== 0xda) {
+        const m = fix[i + 1], len = (fix[i + 2] << 8) | fix[i + 3];
+        if (m === 0xe1 && String.fromCharCode(...fix.subarray(i + 4, i + 8)) === 'Exif') app.push(fix.subarray(i, i + 2 + len));
+        i += 2 + len;
+      }
+      const c = document.createElement('canvas'); c.width = 900; c.height = 700;
+      const g = c.getContext('2d'); g.fillStyle = '#357'; g.fillRect(0, 0, 900, 700);
+      const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.92));
+      const real = new Uint8Array(await blob.arrayBuffer());
+      const parts = [real.subarray(0, 2), ...app, real.subarray(2)];
+      const total = new Uint8Array(parts.reduce((n, x) => n + x.length, 0));
+      let o = 0; for (const x of parts) { total.set(x, o); o += x.length; }
+      const dt = new DataTransfer();
+      dt.items.add(new File([total], 'IMG_9001.jpg', { type: 'image/jpeg' }));
+      const input = document.getElementById('wf-file');
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      return app.length;
+    })()`);
+    check('测试用的 JPEG 既带 EXIF 又能解码', exifSegs === 1, exifSegs + ' 段 Exif');
+    await evaluate(`document.getElementById('wf-run').click()`);
+    const imgDone = await waitText('#wf-out', '跑完', 30000);
+    const imgOut = await evaluate(`((document.getElementById('wf-out') || {}).innerText || '').replace(/\\s+/g, ' ').slice(0, 140)`);
+    check('图片流程跑完三步', imgDone === true, imgDone ? '' : imgOut);
+    const firstStep = await evaluate(`(document.querySelector('.wf-step[data-step="0"]') || {}).dataset?.state || ''`);
+    check('第 1 步真的删了元数据（不是「沿用上一段」）', firstStep === 'done', firstStep);
+    const dl = await evaluate(`(() => {
+      const a = document.querySelector('#wf-out .wf-files a[download]');
+      return a ? JSON.stringify({ name: a.getAttribute('download'), href: a.getAttribute('href') }) : '';
+    })()`);
+    check('产物是 webp 且给了下载链接', /\.webp"/.test(dl) && dl.includes('blob:'), dl.slice(0, 80));
+    await shot('09-workflows');
+    await goto('/');
+  }
 
   // ---- 10. 刷新深链 + 返回按钮 ----
   await goto('/tools/mortgage-calc/');

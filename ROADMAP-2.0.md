@@ -167,9 +167,23 @@ verify 63 → 65 项；browser-test 197 → 214 项，新增七条全部针对�
 
 ### P1 闭环（v3.23 – v3.24）
 
-#### v3.23 工作流引擎
+#### v3.23 工作流引擎 ✅ 已完成（2026-11-04）
 
-这一节是整条路线的技术核心，单独展开在第四节。**交付**：`workflows/*.json`、`assets/workflow.js`、`scripts/check-workflows.mjs`、`scripts/workflow-test.mjs`，首期三条流程（图片发布包 / PDF 整理 / 数据体检）。
+**交付**（与第四节设计一致，两处按实际改了口径）
+- `workflows/workflows.json`：三条流程 + `assets/lib/workflow-core.js`（绑定解析 / 参数合并 / 参数校验的唯一实现，浏览器与 Node 共用）。
+- `assets/workflow.js`：引擎与页面控制器，`/workflows/` 按需加载，不进首屏；挂在主导航第五栏。
+- `scripts/check-workflows.mjs`：构建期闸门，按每个工具的 manifest 验 args、端口、入口类型。
+- `scripts/workflow-test.mjs`：61 项，一半是反例。
+
+**实际三条流程**：图片发布包（exif-strip → image-resize → image-compress）、照片成 PDF（image-resize → img-to-pdf）、编码串还原 JSON（base64-url → json-format）。
+
+**跟原计划不一样的两处**
+1. **`io` 字段没加。** `manifest.inputs` 的 `type` 已经是端口声明（`file` / `textarea` / `text`），工作流只用得到这一层；`io` 真正的价值在「跨工具推荐」（v3.25）。105 个工具逐个判断输入输出是数据工作量，和证据模型同类，不该挤进这一版。原文那句「`io` 补完之前 `check-workflows` 不能开」据此改判：闸门验的是「参数与端口对不对得上」，这件事不需要 `io` 也能做准。
+2. **流程换了两个。** 「数据体检」要先把 pandas 的 36 MB 下载完，当一个第二入口太重；「PDF 整理」里只有 `pdf-merge` 与 `img-to-pdf`，合并再拆分是绕圈，串不成链。改成「照片成 PDF」——它真的是「先缩尺寸再转 PDF，否则文件十几 MB」的两步。
+
+**闸门**：verify 67 → 69（工作流页接入 / 导航入口且产物同步）；browser-test 218 → 234（点导航进得去、文本流程跑完、坏输入停在第 1 步且第 2 步不执行、带 EXIF 的 JPEG 跑完三步出 WebP）；spa 76 → 78；冒烟 152 → 155。
+
+**首屏**：87.6 → 87.9 KB（脚本 29.3 / 29.5，其余不动），9 个请求不变。**余量 96 字节**——下一版要往首屏加任何东西，必须先拆 `directory.json` 的 evidence。
 
 #### v3.24 工作流中心
 

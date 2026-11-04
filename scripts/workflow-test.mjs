@@ -1,0 +1,176 @@
+#!/usr/bin/env node
+// 工作流引擎的单元测试（v3.23）
+//
+// 为什么要有这一套，而不是只靠 check-workflows：
+//   闸门验的是「现有这三条流程配得对不对」，它挡不住引擎自己写错——绑定解析多认了一种写法、
+//   自动接把两个口接串了、参数合并把默认值吞了，这些在流程数据正确时全都不会暴露。
+//   所以这里一半是正例（真流程真能凑齐每个输入），另一半是**反例**：
+//   每种错误都断言「必须报错，且报在对的地方」。只测正例的测试，改坏了也常常是绿的。
+//
+// 用法：node scripts/workflow-test.mjs
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+import { readManifest } from './lib/tool-manifest.mjs';
+import { parseRef, planStep, buildValues, validateArgs, acceptMismatch, inputKind, REF_FORMS } from '../assets/lib/workflow-core.js';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+let pass = 0;
+const fails = [];
+const check = (name, ok, detail = '') => {
+  if (ok) pass++;
+  else fails.push(`${name}${detail ? ' — ' + detail : ''}`);
+  console.log(`  ${ok ? '✅' : '❌'} ${name}${ok || !detail ? '' : `  (${detail})`}`);
+};
+const throws = (fn) => {
+  try {
+    fn();
+    return '';
+  } catch (e) {
+    return e.message;
+  }
+};
+
+const file = (name = 'a.jpg', type = 'image/jpeg') => new File([new Uint8Array([1, 2, 3])], name, { type });
+
+console.log('\n🧩 工作流引擎测试\n');
+
+/* ---------- 1. 引用语法 ---------- */
+console.log('· 引用语法');
+{
+  check('in.file / in.files / in.text / files[0] / text 都认', REF_FORMS.every((r) => parseRef(r)));
+  check('files[3] 取到第 4 个', parseRef('files[3]').index === 3);
+  const bad = ['prev.files[0]', 'files[-1]', 'files[0].name', 'in.files[0]', 'eval(1)', '', null];
+  check(
+    '别的写法一律不认（包括带查询、负下标、旧写法）',
+    bad.every((r) => parseRef(r) === null),
+    bad.find((r) => parseRef(r))
+  );
+  check('不认识的是 null，不是抛错——「写错」与「没值」要分开处理', parseRef('nope') === null);
+}
+
+/* ---------- 2. 参数校验 ---------- */
+console.log('· 参数校验');
+{
+  const mf = {
+    inputs: [
+      { name: 'files', type: 'file', accept: 'image/jpeg', multiple: true },
+      { name: 'quality', type: 'range', min: 10, max: 95, default: 70 },
+      { name: 'format', type: 'select', default: 'image/jpeg', options: [{ value: 'image/jpeg' }, { value: 'image/webp' }] },
+      { name: 'note', type: 'text' },
+    ],
+  };
+  check('合规参数零问题', validateArgs(mf, { tool: 'x', args: { quality: 78, format: 'image/webp' } }).length === 0);
+  check(
+    '枚举值写错要报，并列出可选值',
+    /不在 .* 的选项里/.test(validateArgs(mf, { tool: 'x', args: { format: 'image/gif' } })[0] || '')
+  );
+  check('滑块超上限要报', /大于上限 95/.test(validateArgs(mf, { tool: 'x', args: { quality: 120 } })[0] || ''));
+  check('滑块低于下限要报', /小于下限 10/.test(validateArgs(mf, { tool: 'x', args: { quality: 5 } })[0] || ''));
+  check('未知键要报，并列出该工具真有的输入', /不是 x 的输入项/.test(validateArgs(mf, { tool: 'x', args: { qulity: 1 } })[0] || ''));
+  check('给文件输入写死值要报', /请改用 bind/.test(validateArgs(mf, { tool: 'x', args: { files: 'a.jpg' } })[0] || ''));
+  check('对象当参数要报', /只能是标量/.test(validateArgs(mf, { tool: 'x', args: { quality: { v: 1 } } })[0] || ''));
+}
+
+/* ---------- 3. 端口规划 ---------- */
+console.log('· 端口规划');
+{
+  const oneFile = { inputs: [{ name: 'file', type: 'file', accept: 'image/*' }] };
+  const p0 = planStep(oneFile, { tool: 't' }, 0);
+  check('首步的唯一文件口自动接用户输入', p0.values[0].ref === 'in.file');
+  const p1 = planStep(oneFile, { tool: 't' }, 1);
+  check('续接步的唯一文件口自动接上一步第 1 个文件', p1.values[0].ref === 'files[0]');
+
+  const twoText = { inputs: [{ name: 'a', type: 'textarea' }, { name: 'b', type: 'text' }] };
+  const amb = planStep(twoText, { tool: 't' }, 1);
+  check(
+    '同类口有两个又没写 bind → 必须报错，不许猜',
+    amb.errors.length === 2 && amb.errors.every((e) => /自动接会接错/.test(e)),
+    amb.errors.join('；')
+  );
+  const half = planStep(twoText, { tool: 't', bind: { b: 'text' } }, 1);
+  check('只 bind 一个口时，另一个口不会静默放过', half.errors.length >= 1, half.errors.join('；'));
+  const full = planStep(twoText, { tool: 't', bind: { a: 'in.text', b: 'text' } }, 1);
+  check('两个口都写清 bind → 通过', full.errors.length === 0, full.errors.join('；'));
+
+  const noDefault = { inputs: [{ name: 'mode', type: 'select' }] };
+  check('下拉没有默认值、也没给 args → 报「不能留空」', /不能留空/.test(planStep(noDefault, { tool: 't' }, 0).errors[0] || ''));
+
+  const both = { inputs: [{ name: 'file', type: 'file', accept: 'image/*' }] };
+  check('同一输入既给 args 又给 bind → 报错', planStep(both, { tool: 't', args: { file: 'x' }, bind: { file: 'in.file' } }, 0).errors.some((e) => /只能留一处/.test(e)));
+  check('bind 引用写法非法 → 报错并列出可用写法', planStep(both, { tool: 't', bind: { file: 'prev.files' } }, 1).errors.some((e) => /不是合法引用/.test(e)));
+  check('bind 指向不存在的输入 → 报错', planStep(both, { tool: 't', bind: { nope: 'text' } }, 1).errors.some((e) => /不是 t 的输入项/.test(e)));
+  check('inputKind 只把 file / textarea / text 当数据口', inputKind({ type: 'select' }) === null && inputKind({ type: 'file' }) === 'file');
+}
+
+/* ---------- 4. 运行时取值 ---------- */
+console.log('· 运行时取值');
+{
+  const mf = {
+    inputs: [
+      { name: 'files', type: 'file', accept: 'image/*', multiple: true },
+      { name: 'q', type: 'range', min: 1, max: 100, default: 70 },
+    ],
+  };
+  const step = { tool: 't', args: { q: 78 } };
+  const v0 = buildValues(mf, step, 0, { files: [file('x.png', 'image/png')] });
+  check('首步把用户文件包成数组（multiple 输入）', Array.isArray(v0.files) && v0.files[0].name === 'x.png');
+  check('args 覆盖默认值', v0.q === 78);
+
+  const prev = { files: [{ name: 'b.jpg', blob: new Blob([new Uint8Array([9])], { type: 'image/jpeg' }), kind: 'image' }], text: '' };
+  const v1 = buildValues(mf, { tool: 't' }, 1, { prev });
+  check('上一步的 {name,blob} 会被补成 File（工具里能拿到 name 与 type）', v1.files[0] instanceof File && v1.files[0].name === 'b.jpg');
+
+  const textFlow = { inputs: [{ name: 'text', type: 'textarea' }] };
+  check('文本口取上一步的文本', buildValues(textFlow, { tool: 't' }, 1, { prev: { files: [], text: '{"a":1}' } }).text === '{"a":1}');
+  check('上一步没有文本 → 明确报错，而不是传空串', /没有文本产出/.test(throws(() => buildValues(textFlow, { tool: 't' }, 1, { prev: { files: [], text: '' } }))));
+  check('上一步文件不够 → 报「只产出 N 个」', /只产出 0 个/.test(throws(() => buildValues(mf, { tool: 't' }, 1, { prev: { files: [], text: '' } }))));
+  check('规划有问题时取值也抛——构建期与运行时不会各行其是', throws(() => buildValues({ inputs: [{ name: 'a', type: 'textarea' }, { name: 'b', type: 'text' }] }, { tool: 't' }, 1, {})) !== '');
+}
+
+/* ---------- 5. 入口类型兼容 ---------- */
+console.log('· 入口类型兼容');
+{
+  check('image/png 与只收 JPG 的工具不兼容', acceptMismatch('image/png', 'image/jpeg,.jpg,.jpeg').length === 1);
+  check('image/jpeg 与 .jpg/.jpeg 兼容', acceptMismatch('image/jpeg,.jpg,.jpeg', 'image/jpeg,.jpg,.jpeg').length === 0);
+  check('通配入口对通配工具兼容', acceptMismatch('image/*', 'image/*').length === 0);
+  check('image/* 工具收得下 image/png', acceptMismatch('image/png', 'image/*').length === 0);
+  check('任一侧没写 accept 就不判（不假装知道）', acceptMismatch('', 'image/jpeg').length === 0);
+}
+
+/* ---------- 6. 三条真流程能凑齐每个输入 ---------- */
+console.log('· 真流程');
+{
+  const flows = JSON.parse(readFileSync(join(root, 'workflows', 'workflows.json'), 'utf8')).flows;
+  const textFixture = Buffer.from(JSON.stringify({ name: '张三', city: '南京' })).toString('base64');
+
+  for (const f of flows) {
+    for (const [i, step] of f.steps.entries()) {
+      const mf = readManifest(step.tool, root);
+      check(`${f.id} 第 ${i + 1} 步能读出 ${step.tool} 的 manifest`, mf.ok, mf.error);
+      if (!mf.ok) continue;
+
+      const plan = planStep(mf.manifest, step, i);
+      check(`${f.id} 第 ${i + 1} 步规划无问题`, plan.errors.length === 0, plan.errors.join('；'));
+      check(`${f.id} 第 ${i + 1} 步参数合法`, validateArgs(mf.manifest, step).length === 0, validateArgs(mf.manifest, step).join('；'));
+
+      // 用一份假的上一步产物把每个输入都真取一遍：只要有一个取不到就会抛
+      const prev = {
+        files: [file('prev.jpg')],
+        text: i === 0 ? '' : textFixture,
+      };
+      const ctx = { files: [file('in.jpg')], text: textFixture, prev };
+      const values = buildValues(mf.manifest, step, i, ctx);
+      const missing = (mf.manifest.inputs || []).map((x) => x.name).filter((n) => values[n] === undefined);
+      check(`${f.id} 第 ${i + 1} 步每个输入都取到了值`, missing.length === 0, `缺 ${missing.join('、')}`);
+    }
+  }
+}
+
+/* ---------- 输出 ---------- */
+console.log(`\n${fails.length ? '❌ 失败 ' + fails.length + ' 项' : '✅ 全部通过'}（${pass + fails.length} 项）\n`);
+if (fails.length) {
+  for (const f of fails) console.log(`   · ${f}`);
+  console.log('');
+  process.exit(1);
+}

@@ -480,6 +480,49 @@ check('我的数据页接入（v3.22）', () => {
   return '容器 + 模块 + 清单驱动 + 注册表';
 });
 
+// 工作流页（v3.23）：页面 / 引擎 / 流程定义三样缺一不可，而且首屏一个字节都不该沾。
+// 这几条只证明「接上了」；「点运行真的跑完、坏输入真的停住」由 browser-test 负责。
+check('工作流页接入（v3.23）', () => {
+  const html = readFileSync(join(root, 'workflows', 'index.html'), 'utf8');
+  assert(/style\.workflows\.css/.test(html), '/workflows/ 没有引入自己的样式表');
+  // 挂载点写在 pages.js 的模板里（静态产物只放给爬虫看的正文，SPA 正文由模板渲染）
+  const pagesJs = readFileSync(join(root, 'assets', 'lib', 'pages.js'), 'utf8');
+  assert(/id="flow-app"/.test(pagesJs), '投稿页模板里缺 #flow-app 挂载点，引擎没有地方可挂');
+  assert(/<h1>工作流<\/h1>/.test(html) && /workflows\.json/.test(html), '/workflows/ 的静态正文没写清「流程定义在哪、怎么校验」');
+  for (const f of ['assets/workflow.js', 'assets/lib/workflow-core.js', 'assets/style.workflows.css', 'workflows/workflows.json']) {
+    assert(existsSync(join(root, f)), `缺 ${f}`);
+  }
+  const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
+  assert(/path: '\/workflows\/'/.test(reg), '/workflows/ 没进页面注册表（离线包与体检都会漏掉它）');
+  // 首屏不许为它付字节：引擎只能是动态 import（静态 import 会让首页多解析 10 KB）
+  const app = readFileSync(join(root, 'assets/app.js'), 'utf8');
+  assert(!/^import[^\n]*workflow/m.test(app), 'app.js 静态 import 了工作流引擎——首屏会为它付解析成本');
+  // 挂载侧在 v3.23 收成了一张表（容器 id → 模块 → 导出），所以「动态加载」不再长成
+  // import('/assets/workflow.js') 这一行。断言对事不对形：地址在表里，且模块确实经由
+  // import() 的变量形式加载。钉死某一行字面量的写法，会在下一次重构时变成假红。
+  assert(/'\/assets\/workflow\.js'/.test(app), 'app.js 的挂载表里没有工作流引擎，页面会只剩空壳');
+  assert(/await import\(\s*mod\s*\)/.test(app), 'app.js 没有按需 import 页面模块（工作流页会只剩空壳）');
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('/assets/workflow.js'), '工作流引擎没进离线包（断网打开是一片空白）');
+  assert(sw.includes('/workflows/workflows.json'), '流程定义没进离线包（断网只剩空壳）');
+  return '页面 + 引擎 + 流程定义 + 注册表 + 离线包';
+});
+
+// 做了的页面必须有入口（v3.22.2 的用户反馈换来的）。工作流挂在主导航上，
+// 而导航是每个页面的公共头部——只改首页模板、产物没重建，就会出现「首页有、别的页没有」。
+check('工作流页在导航有入口（v3.23）', () => {
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  const m = home.match(/<a href="\/workflows\/"[^>]*data-nav="workflows"[^>]*>/);
+  assert(m, '首页没有指向 /workflows/ 的导航入口——做了页面却进不去，等于没做');
+  assert(/data-zh="工作流"/.test(m[0]) && /data-en="Workflows"/.test(m[0]), '入口缺中文或英文文案');
+  for (const p of ['tools', 'about', 'submit']) {
+    const f = join(root, p, 'index.html');
+    if (!existsSync(f)) continue;
+    assert(/href="\/workflows\/"/.test(readFileSync(f, 'utf8')), `${p}/ 页的导航里没有工作流入口（模板改了但产物没重建）`);
+  }
+  return '主导航 → /workflows/，中英齐备，产物同步';
+});
+
 // ---------- v3.20：更新日志正文必须转义 ----------
 // 条目里一直有 `/tools/<id>/`、`<main>`、`<script>` 这类技术写法。它们是数据，
 // 但过去直接拼进 HTML，浏览器当标签解析：`<id>` 被吞掉，`<script>` 真的注入一段脚本。
