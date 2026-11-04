@@ -88,8 +88,16 @@ const bad = rows.filter((r) => r.code !== 200);
 console.log(`🌐 线上复验 ${BASE}`);
 for (const r of rows) console.log(`   ${r.code === 200 ? '✅' : '❌'} ${String(r.code).padEnd(3)} ${r.p}`);
 console.log(`   版本  线上 ${online} / 本地 ${local}${online === local ? ' ✅' : ' ❌'}`);
-console.log(`   提交  本地 ${head} / 远端 ${remote}${head === remote ? ' ✅ 已推送' : ' ⚠️ 未推送'}`);
+// 「查不到远端 HEAD」不等于「没推上去」。这个脚本跑在沙箱里时读不到 SSH 凭证，
+// git ls-remote 会失败并返回 '?'；把它当成未推送，就会得出「上线未确认」这种假结论
+// （v3.23 当场踩到：其实 ef8fa61 早已推上去，只是脚本自己查不动）。
+// 所以分三种状态：一致 / 不一致 / 查不到（跳过，不参与判定）。
+const remoteKnown = remote !== '?';
+console.log(
+  `   提交  本地 ${head} / 远端 ${remoteKnown ? remote : '查不到（本机无 GitHub 凭证，跳过）'}` +
+    (!remoteKnown ? ' ⏭️' : head === remote ? ' ✅ 已推送' : ' ⚠️ 未推送')
+);
 
-const ok = !bad.length && online === local && head === remote;
+const ok = !bad.length && online === local && (!remoteKnown || head === remote);
 console.log(ok ? '\n✅ 上线确认：路径全通，线上就是本地这一版' : '\n❌ 上线未确认，按上面标红的项排查');
 process.exit(ok ? 0 : 1);
