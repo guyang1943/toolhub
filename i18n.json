@@ -500,8 +500,8 @@
         "desc": "Pick, reorder and filter CSV columns, then export a fresh CSV"
       },
       "disk-partition": {
-        "name": "Disk Integer Partition Planner",
-        "desc": "Plan disk partitions in whole GB, validate capacity, visualize the layout and export the plan."
+        "name": "Disk Partition MB Calculator",
+        "desc": "Compute the exact MB to enter so a partition shows as a whole GB in NTFS or FAT32."
       }
     },
     "res": {

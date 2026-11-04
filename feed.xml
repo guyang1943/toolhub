@@ -7,10 +7,10 @@
     <language>zh-CN</language>
     <atom:link href="https://toolhub.bot.cd/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>磁盘整数分区规划</title>
+      <title>硬盘整数分区计算器</title>
       <link>https://toolhub.bot.cd/tools/disk-partition/</link>
       <guid>https://toolhub.bot.cd/tools/disk-partition/</guid>
-      <description>按整数 GB 规划磁盘分区，校验容量是否超限并可视化布局</description>
+      <description>算出 NTFS / FAT32 下显示整数 GB 分区时该填的精确 MB 值</description>
       <pubDate>Wed, 04 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>

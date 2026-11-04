@@ -1044,25 +1044,27 @@
     },
     {
       "id": "disk-partition",
-      "name": "磁盘整数分区规划",
-      "desc": "按整数 GB 规划磁盘分区，校验容量是否超限并可视化布局",
+      "name": "硬盘整数分区计算器",
+      "desc": "算出 NTFS / FAT32 下显示整数 GB 分区时该填的精确 MB 值",
       "category": "效率",
       "source": "内置实现 · 纯浏览器计算（无第三方依赖）",
       "license": "MIT",
       "runtime": "browser",
       "tags": [
-        "磁盘",
         "分区",
-        "容量规划"
+        "NTFS",
+        "FAT32",
+        "整数",
+        "装机"
       ],
       "aliases": [
-        "cipanzhengshufenquguihua",
-        "cpzsfqgh",
-        "disk integer partition planner",
+        "yingpanzhengshufenqujisuanqi",
+        "ypzsfqjsq",
+        "disk partition mb calculator",
         "disk",
-        "integer",
         "partition",
-        "planner"
+        "mb",
+        "calculator"
       ]
     }
   ]

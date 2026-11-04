@@ -1144,34 +1144,37 @@
       }
     },
     "disk-partition": {
-      "usage": "Enter the disk capacity in GB and a partition list (one line per partition: name sizeGB) to plan whole-GB partitions and visualize the layout.",
+      "usage": "Enter the whole-GB size you want Windows to display (optionally several sizes at once), choose NTFS or FAT32, and get the exact MB value to type into Disk Management, plus a reference table of common sizes.",
       "tips": [
-        "Rated capacity is not usable capacity: a 1TB disk shows about 931GB in the OS; plan with the real value.",
-        "Whole-GB partitions are easy to align and remember; reserve 100–200GB for the system partition.",
-        "Leave some unallocated space for later expansion instead of filling the whole disk."
+        "The size field in Disk Management is in MB: paste the plain number, without commas or units.",
+        "Entering 1024×G (e.g. 102400 for 100GB) usually shows about 99.9 GB, because the file system reserves space for metadata.",
+        "NTFS rounds up to whole cylinders of 7.84423828125 MB; FAT32 uses 1024×G + 4×(G−1). Do not mix the two.",
+        "Windows Disk Management generally formats FAT32 only up to 32GB; use NTFS or exFAT for larger volumes.",
+        "GPT/MBR, 4K alignment and different tools can shift the result by a few MB; a 1–2 MB difference after formatting is normal.",
+        "Vendor capacity is decimal (1TB ≈ 931GB in the OS); this tool computes the MB needed for a whole-GB display, which is a different thing."
       ],
       "scenarios": [
         {
-          "scene": "Plan system and data partitions for a new 1TB SSD",
-          "how": "Set capacity to 931 and list C/D/E in whole GB",
-          "result": "Get a realistic integer layout with unallocated space"
+          "scene": "Create a C: drive that shows exactly 100 GB",
+          "how": "Enter 100 and pick both file systems",
+          "result": "Get 102407 MB for NTFS and 102796 MB for FAT32, ready to paste"
         },
         {
-          "scene": "Verify partitions fit before reinstalling",
-          "how": "Enter disk capacity and your planned partitions",
-          "result": "Overflow is flagged with how many GB exceed"
+          "scene": "Plan several whole-GB partitions at once",
+          "how": "Enter 120, 500, 1000 in the batch field",
+          "result": "The reference table highlights every size you entered"
         },
         {
-          "scene": "Spread leftover space across earlier partitions",
-          "how": "Set unallocated handling to 'spread'",
-          "result": "Each partition gets +1GB until the remainder is used up"
+          "scene": "Look up common sizes without typing",
+          "how": "Just click Calculate with the defaults",
+          "result": "See 21 common sizes from 10 to 2000 GB for both file systems"
         }
       ],
-      "runLabel": "Plan",
+      "runLabel": "Calculate MB",
       "labels": {
-        "diskGb": "Disk capacity (GB)",
-        "plan": "Partition plan (one line per partition: name sizeGB)",
-        "remainder": "Unallocated space handling"
+        "targetGb": "Whole-GB size to display (GB)",
+        "fsType": "File system",
+        "batch": "Batch sizes (optional, comma or space separated, e.g. 120, 500, 1000)"
       }
     }
   }
