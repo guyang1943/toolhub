@@ -990,6 +990,42 @@ check('数据边界枚举与前端一致（v3.21）', () => {
   return `${PRIVACY_KINDS.length} 个枚举值：前端 / i18n / 数据三处对齐`;
 });
 
+check('AI 分类的运行位置与提示词去向（v3.25）', () => {
+  // 这一栏的立栏理由是「每条都能回答跑在哪、提示词去哪」。数据层已由 lib/tool-meta.mjs 验过，
+  // 这里验的是**渲染出来的页面**——字段写对了但没渲染出去，用户看到的还是空白。
+  // 最要紧的一条是否定式断言：非 web 的条目绝不能出现「怎么用上：🌐 在线直达」。
+  // 那正是这一版要修的口径错误（Ollama 要装客户端、Dify 要自己部署）。
+  const ai = dir.tools.filter((t) => t.category === 'AI');
+  assert(ai.length >= 6, `AI 分类只有 ${ai.length} 条`);
+  const ACCESS = {
+    web: '在线直达',
+    desktop: '需安装客户端',
+    selfhost: '需自行部署',
+    cli: '需安装命令行',
+    extension: '编辑器扩展',
+    mobile: '需安装 App',
+  };
+  const bad = [];
+  for (const t of ai) {
+    const p = join(root, 'tools', t.id, 'index.html');
+    if (!existsSync(p)) {
+      bad.push(`${t.id}(缺详情页)`);
+      continue;
+    }
+    const h = readFileSync(p, 'utf8');
+    if (!h.includes(ACCESS[t.runtime])) bad.push(`${t.id}(没写「${ACCESS[t.runtime]}」)`);
+    if (t.runtime !== 'web' && h.includes('怎么用上：🌐')) bad.push(`${t.id}(被写成在线直达)`);
+    if (!h.includes('你的提示词会去哪里')) bad.push(`${t.id}(缺提示词去向)`);
+    if (t.keyRequired && !h.includes('需 API Key')) bad.push(`${t.id}(缺 Key 徽标)`);
+  }
+  assert(!bad.length, bad.join(' / '));
+  // 列表侧也要跟上：卡片不再把目录工具一律标成「在线直达」，靠的是保留真实 runtime。
+  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(/runsOn: t\.runtime/.test(app), 'app.js 没保留目录工具的真实运行位置（runsOn）');
+  assert(/RUNS\[x\.runsOn\]/.test(app), 'app.js 的徽标没按 runsOn 分档');
+  return `${ai.length} 条 AI 工具：位置徽标 / 提示词去向 / Key 标记都在`;
+});
+
 // ---------- v3.0 E1–E4 ----------
 check('离线包清单（E1）', () => {
   const sw = readFileSync(join(root, 'sw.js'), 'utf8');

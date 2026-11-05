@@ -247,18 +247,38 @@ async function loadRegistry() {
   REGISTRY = {
     ...local,
     categories: [...new Set([...local.categories, ...dir.tools.map((t) => t.category)])],
-    tools: [...local.tools, ...dir.tools.map((t) => ({ ...t, runtime: 'link' }))],
+    // v3.25：目录工具保留真实运行位置（runsOn），卡片不能一律叫「在线直达」——
+    // Ollama 要装客户端、Dify 要自己部署，写成在线直达就是新的口径错误
+    // （v3.17 在详情页已经分开了，卡片一直没跟上）。
+    tools: [...local.tools, ...dir.tools.map((t) => ({ ...t, runsOn: t.runtime, runtime: 'link' }))],
     counts: { local: local.tools.length, dir: dir.tools.length },
   };
   return REGISTRY;
 }
 
-const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
+const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐', AI: '🤖' };
 
 // 目录工具的数据边界标注。键名须与 scripts/lib/tool-meta.mjs 的 PRIVACY_KINDS 一致。
 // v3.21 加 p2p：文件在两台设备之间直传，和「本机处理」不是一回事——东西确实出了这台机器。
 const PV = { local: ['本机处理', 'privacyLocal'], p2p: ['点对点', 'privacyP2P'], upload: ['会上传', 'privacyUpload'], optional: ['看用法', 'privacyOptional'], unknown: ['未核实', 'privacyUnknown'] };
 const privBadge = (x) => { const p = PV[x.privacy] || PV.unknown; return t(p[0], p[1]); };
+
+// 目录工具的位置徽标（v3.25）。文字与形状区分，不靠颜色——色觉障碍用户靠的也是这几个字。
+// 键名与 scripts/lib/tool-meta.mjs 的 RUNTIME_KINDS 一致，多出来的档位会落到 web。
+const RUNS = {
+  web: ['🌐 在线直达', 'badgeLink'],
+  desktop: ['💻 需安装客户端', 'badgeClient'],
+  selfhost: ['🐳 需自行部署', 'badgeSelfhost'],
+  cli: ['⌨️ 需安装命令行', 'badgeCli'],
+  extension: ['🧩 编辑器扩展', 'badgeExt'],
+  mobile: ['📱 需安装 App', 'badgeMobile'],
+};
+// 「需 API Key」是第二个维度：Cline 装在编辑器里，但仍要你自备模型凭据。
+// 压成一个徽标就会丢掉「程序在本地」这个事实。
+const accessText = (x) => {
+  const r = RUNS[x.runsOn] || RUNS.web;
+  return t(r[0], r[1]) + (x.keyRequired ? ' · ' + t('🔑 需 API Key', 'badgeKey') : '');
+};
 
 /* ---------- 首页 ---------- */
 // 分类页地址。取不到 slug 时退回旧的 ?cat= 筛选（tools.json 没更新也不会给出死链）
@@ -353,7 +373,7 @@ function cardHTML(tool) {
   const isLocal = tool.runtime !== 'link';
   const badge = isLocal
     ? `<span class="badge local">${t('🔒 本地运行', 'badgeLocal')}</span>`
-    : `<span class="badge link">${t('🌐 在线直达', 'badgeLink')} · ${privBadge(tool)}</span>`;
+    : `<span class="badge link">${accessText(tool)} · ${privBadge(tool)}</span>`;
   const icon = CAT_ICONS[tool.category] || '🧰';
   const hot = tool.hot ? '<span class="badge hot">🔥</span>' : '';
   const isFav = favs().includes(tool.id);
@@ -556,7 +576,7 @@ function renderFeatured(tools) {
       return `<div class="fl-row" data-id="${tool.id}" data-link="${tool.runtime !== 'link' ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${m.name}</div><div class="f-desc">${m.desc}</div></div>
-        <span class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : `${t('🌐 在线直达', 'badgeLink')} · ${privBadge(tool)}`} · ${catName(tool.category)}</span>
+        <span class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : `${accessText(tool)} · ${privBadge(tool)}`} · ${catName(tool.category)}</span>
       </div>`;
     })
     .join('');
@@ -1512,6 +1532,9 @@ async function openTool(id) {
     stateHTML,
     CHAINS, setHandoff, takeHandoff, setProgressHandler,
     ensureCss,
+    // v3.25：外链详情页也要说清「跑在哪 / 提示词去哪」，口径直接复用首页那两枚徽标，
+    // 否则静态页与 SPA 视图会各写一套，迟早分叉
+    privBadge, accessText,
   });
   return m.openTool(id);
 }

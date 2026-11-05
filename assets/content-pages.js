@@ -5,6 +5,12 @@
    避免子模块反过来 import 主模块造成循环引用。 */
 let $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE;
 
+// v3.25：目录工具按真实运行位置标，不再一律「在线」——Ollama 要装客户端、Dify 要自己部署，
+// 全标成在线就等于说「打开网页就能用」。app.js 的 RUNS 是权威口径（带 i18n），
+// 这里只是列表里的短标签，两者不一致时以 app.js 为准。
+const RUNS_SHORT = { web: '🌐 在线', desktop: '💻 客户端', selfhost: '🐳 自部署', cli: '⌨️ 命令行', extension: '🧩 扩展', mobile: '📱 App' };
+const runsShort = (x) => `${RUNS_SHORT[x.runsOn] || RUNS_SHORT.web}${x.keyRequired ? ' · 🔑 Key' : ''}`;
+
 export function bindContentPages(deps) {
   ({ $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE } = deps);
   return {
@@ -92,7 +98,7 @@ async function openCategory(slug) {
   const row = (t, i) => `<a class="fl-row" data-spa href="/tools/${t.id}/">
       <span class="rank">${String(i + 1).padStart(2, '0')}</span>
       <div class="f-body"><div class="f-name">${esc(toolMeta(t).name)}</div><div class="f-desc">${esc(toolMeta(t).desc)}</div></div>
-      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : '🌐 在线'}</span>
+      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : runsShort(t)}</span>
     </a>`;
   const topicsData = await loadTopics();
   const ids = new Set(xs.map((t) => t.id));
@@ -163,7 +169,7 @@ async function openTools() {
   const row = (t) => `<a class="fl-row" data-spa href="/tools/${t.id}/">
       <span class="rank">${String(++n).padStart(2, '0')}</span>
       <div class="f-body"><div class="f-name">${esc(toolMeta(t).name)}</div><div class="f-desc">${esc(toolMeta(t).desc)}</div></div>
-      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : '🌐 在线'}</span>
+      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : runsShort(t)}</span>
     </a>`;
   setView('page');
   document.title = `全部工具 · ${SITE}`;

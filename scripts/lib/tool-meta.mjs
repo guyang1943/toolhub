@@ -55,16 +55,38 @@ export function validateToolMeta(dirTools, { localTools = [], today = new Date()
     if (t.privacy && t.privacy !== 'local' && !String(t.privacyNote || '').trim()) {
       errors.push(`${at} privacy=${t.privacy} 必须写 privacyNote（说明具体怎么个传法）`);
     }
+
+    // v3.25：AI 分类多两个字段。
+    // keyRequired 回答「不填模型凭据能不能用」，promptNote 回答「提示词会去哪里」——
+    // 这两件事在 AI 工具上比「哪个站点」重要得多：同一个工具接本地模型和接云 API，
+    // 数据边界完全相反。所以不做「AI 分类免检」，而是要求每条都把话说清。
+    if (t.keyRequired !== undefined && typeof t.keyRequired !== 'boolean') {
+      errors.push(`${at} keyRequired 必须是布尔值（不填 = 不需要凭据）`);
+    }
+    // 全本机的工具不可能「需要你在别处填 Key」——两者同时出现，说明有一条是错的。
+    // 这条防的是偷懒：给本地工具贴个「需 API Key」徽标，或者反过来把要 Key 的标成本机处理。
+    if (t.keyRequired === true && t.privacy === 'local') {
+      errors.push(`${at} keyRequired=true 却标 privacy=local（要用别人的 Key，内容就不可能全在本机）`);
+    }
+    if (t.category === 'AI') {
+      if (!String(t.promptNote || '').trim()) {
+        errors.push(`${at} AI 分类必须写 promptNote（你的提示词会去哪里），这是这一栏的立栏理由`);
+      }
+      if (t.evidence?.boundary?.method === 'imported') {
+        errors.push(`${at} AI 分类不接受 boundary.method=imported（照抄上游说明不了提示词去哪）`);
+      }
+    }
   }
 
   const ev = validateEvidence(dirTools, { today });
   errors.push(...ev.errors);
   warns.push(...ev.warns);
 
-  const stats = { total: dirTools.length, privacy: {}, runtime: {}, evidence: ev.stats };
+  const stats = { total: dirTools.length, privacy: {}, runtime: {}, evidence: ev.stats, keys: 0 };
   for (const t of dirTools) {
     stats.privacy[t.privacy] = (stats.privacy[t.privacy] || 0) + 1;
     stats.runtime[t.runtime] = (stats.runtime[t.runtime] || 0) + 1;
+    if (t.keyRequired === true) stats.keys += 1;
   }
 
   return { errors, warns, stats };
