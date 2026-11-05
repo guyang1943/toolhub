@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.27 · 预缓存 304 个地址 · 约 4.7 MB
-const VERSION = "toolhub-v3.27";
+// 版本：toolhub-v3.28 · 预缓存 304 个地址 · 约 4.7 MB
+const VERSION = "toolhub-v3.28";
 const CORE = [
   "/",
   "/offline/",
