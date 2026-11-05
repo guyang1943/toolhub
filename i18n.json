@@ -516,9 +516,9 @@
         "name": "Ollama",
         "desc": "Run open models on your own machine with one command"
       },
-      "lm-studio": {
-        "name": "LM Studio",
-        "desc": "Desktop app to download and run local models with a GUI"
+      "gpt4all": {
+        "name": "GPT4All",
+        "desc": "Fully local desktop chatbot with on-device document chat"
       },
       "anythingllm": {
         "name": "AnythingLLM",
