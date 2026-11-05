@@ -52,6 +52,13 @@ const topics = read('topics.json');
 const changelog = read('changelog.json');
 const all = [...local.tools, ...dir.tools];
 const ids = new Set(all.map((x) => x.id));
+// v3.30：本地工具的 aliases 已从 tools.json 拆到 tools/aliases.json（首屏按需加载）。
+// 校验侧要把它合回来——「口语词表里的变体是否真的进了别名」这条断言查的就是这里，
+// 少了这一句，加工具忘了跑别名生成器会静默通过。
+const ALIAS_MAP = read('tools/aliases.json');
+for (const tool of local.tools) {
+  if (!tool.aliases && ALIAS_MAP[tool.id]) tool.aliases = ALIAS_MAP[tool.id];
+}
 
 check('数据文件可解析', () => `${all.length} 个工具`);
 
@@ -753,11 +760,15 @@ check('工具清单合规（v2.8 C1）', () => {
 });
 
 check('注册表与工具分片同步（v2.8 C2）', () => {
-  const { payload, unknown } = buildToolsJson();
+  const { payload, aliases, unknown } = buildToolsJson();
   const cur = readFileSync(join(root, 'tools', 'tools.json'), 'utf8').trim();
   // 忽略行尾：Windows 上 core.autocrlf=true 的机器 clone 出来就是 CRLF，
   // 逐字节比会误报成「分片不一致」，把新接手的人引到完全错误的方向（v3.5.1）
   assert(sameJsonText(cur, JSON.stringify(payload, null, 2)), 'tools/tools.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
+  // 别名单独一个文件，就得多一道「它也跟着同步了吗」的闸门：少这道，改了 tool.json 的别名
+  // 但忘了同步，搜索会静默退回「只能按名称搜」——页面上完全看不出来。
+  const aliasCur = readFileSync(join(root, 'tools', 'aliases.json'), 'utf8').trim();
+  assert(sameJsonText(aliasCur, JSON.stringify(aliases)), 'tools/aliases.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
   assert(!unknown.length, `未登记在 registry.order：${unknown.join(', ')}`);
   return `${payload.tools.length} 个工具 / 排序已登记`;
 });

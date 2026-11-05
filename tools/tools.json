@@ -61,17 +61,7 @@
         "格式化",
         "校验"
       ],
-      "hot": true,
-      "aliases": [
-        "geshihua",
-        "gsh",
-        "验证",
-        "检查格式",
-        "对不对",
-        "json formatter",
-        "json",
-        "formatter"
-      ]
+      "hot": true
     },
     {
       "id": "image-compress",
@@ -87,21 +77,6 @@
         "canvas"
       ],
       "hot": true,
-      "aliases": [
-        "tupianyasuo",
-        "tpys",
-        "瘦身",
-        "压小",
-        "变小",
-        "减体积",
-        "太大了",
-        "照片",
-        "截图",
-        "图像",
-        "image compressor",
-        "image",
-        "compressor"
-      ],
       "accepts": [
         "image/*"
       ]
@@ -118,18 +93,7 @@
         "二维码",
         "qr"
       ],
-      "hot": true,
-      "aliases": [
-        "erweimashengcheng",
-        "ewmsc",
-        "扫码",
-        "qr码",
-        "二维码图片",
-        "qr code generator",
-        "qr",
-        "code",
-        "generator"
-      ]
+      "hot": true
     },
     {
       "id": "base64-url",
@@ -143,14 +107,6 @@
         "base64",
         "url",
         "编码"
-      ],
-      "aliases": [
-        "bianjiema",
-        "bjm",
-        "base64 / url codec",
-        "base64",
-        "url",
-        "codec"
       ]
     },
     {
@@ -165,16 +121,6 @@
         "时间戳",
         "unix",
         "时区"
-      ],
-      "aliases": [
-        "shijianchuozhuanhuan",
-        "sjczh",
-        "转格式",
-        "换格式",
-        "转成",
-        "timestamp converter",
-        "timestamp",
-        "converter"
       ]
     },
     {
@@ -189,19 +135,6 @@
         "hash",
         "sha256",
         "校验"
-      ],
-      "aliases": [
-        "haxijisuan",
-        "hxjs",
-        "验证",
-        "检查格式",
-        "对不对",
-        "摘要",
-        "指纹",
-        "校验值",
-        "hash calculator",
-        "hash",
-        "calculator"
       ]
     },
     {
@@ -216,18 +149,7 @@
         "密码",
         "随机"
       ],
-      "hot": true,
-      "aliases": [
-        "qiemimashengcheng",
-        "qmmsc",
-        "qiangmimashengcheng",
-        "qiangmima",
-        "口令",
-        "随机密码",
-        "password generator",
-        "password",
-        "generator"
-      ]
+      "hot": true
     },
     {
       "id": "uuid-gen",
@@ -241,14 +163,6 @@
         "uuid",
         "ulid",
         "id"
-      ],
-      "aliases": [
-        "shengcheng",
-        "sc",
-        "uuid / ulid generator",
-        "uuid",
-        "ulid",
-        "generator"
       ]
     },
     {
@@ -264,20 +178,6 @@
         "hex",
         "rgb",
         "css"
-      ],
-      "aliases": [
-        "yansegeshizhuanhuan",
-        "ysgszh",
-        "转格式",
-        "换格式",
-        "另存为",
-        "转成",
-        "配色",
-        "色值",
-        "色号",
-        "color converter",
-        "color",
-        "converter"
       ]
     },
     {
@@ -292,16 +192,7 @@
         "diff",
         "对比"
       ],
-      "hot": true,
-      "aliases": [
-        "wenbenduibi",
-        "wbdb",
-        "比对",
-        "差异",
-        "diff",
-        "text diff",
-        "text"
-      ]
+      "hot": true
     },
     {
       "id": "markdown-preview",
@@ -314,13 +205,6 @@
       "tags": [
         "markdown",
         "预览"
-      ],
-      "aliases": [
-        "yulan",
-        "yl",
-        "markdown preview",
-        "markdown",
-        "preview"
       ]
     },
     {
@@ -336,14 +220,7 @@
         "沙箱",
         "wasm"
       ],
-      "hot": true,
-      "aliases": [
-        "yunxingqi",
-        "yxq",
-        "python runner",
-        "python",
-        "runner"
-      ]
+      "hot": true
     },
     {
       "id": "cron-parser",
@@ -358,14 +235,7 @@
         "定时任务",
         "运维"
       ],
-      "hot": true,
-      "aliases": [
-        "jiexi",
-        "jx",
-        "cron parser",
-        "cron",
-        "parser"
-      ]
+      "hot": true
     },
     {
       "id": "jwt-decode",
@@ -380,14 +250,7 @@
         "token",
         "调试"
       ],
-      "hot": true,
-      "aliases": [
-        "jiema",
-        "jm",
-        "jwt decoder",
-        "jwt",
-        "decoder"
-      ]
+      "hot": true
     },
     {
       "id": "csv-json",
@@ -401,12 +264,6 @@
         "csv",
         "json",
         "表格"
-      ],
-      "aliases": [
-        "csv to json",
-        "csv",
-        "to",
-        "json"
       ]
     },
     {
@@ -421,20 +278,6 @@
         "图片",
         "缩放",
         "尺寸"
-      ],
-      "aliases": [
-        "tupiansuofang",
-        "tpsf",
-        "照片",
-        "截图",
-        "图像",
-        "改尺寸",
-        "调大小",
-        "放大",
-        "缩小",
-        "image resizer",
-        "image",
-        "resizer"
       ],
       "accepts": [
         "image/*"
@@ -453,14 +296,7 @@
         "python",
         "数据"
       ],
-      "hot": true,
-      "aliases": [
-        "shuzhitongji",
-        "sztj",
-        "number stats",
-        "number",
-        "stats"
-      ]
+      "hot": true
     },
     {
       "id": "pandas-csv",
@@ -475,15 +311,7 @@
         "pandas",
         "数据分析"
       ],
-      "hot": true,
-      "aliases": [
-        "shujutijian",
-        "sjtj",
-        "csv health check",
-        "csv",
-        "health",
-        "check"
-      ]
+      "hot": true
     },
     {
       "id": "regex-tester",
@@ -498,16 +326,7 @@
         "regex",
         "调试"
       ],
-      "hot": true,
-      "aliases": [
-        "zhengzeceshiqi",
-        "zzcsq",
-        "regexp",
-        "规则匹配",
-        "regex tester",
-        "regex",
-        "tester"
-      ]
+      "hot": true
     },
     {
       "id": "case-convert",
@@ -521,16 +340,6 @@
         "命名",
         "camel",
         "snake"
-      ],
-      "aliases": [
-        "mingmingfenggezhuanhuan",
-        "mmfgzh",
-        "转格式",
-        "换格式",
-        "转成",
-        "case converter",
-        "case",
-        "converter"
       ]
     },
     {
@@ -545,17 +354,6 @@
         "去重",
         "排序",
         "清洗"
-      ],
-      "aliases": [
-        "wenbenquzhongpaixu",
-        "wbqzpx",
-        "重复项",
-        "删除重复",
-        "去重复",
-        "dedupe & sort lines",
-        "dedupe",
-        "sort",
-        "lines"
       ]
     },
     {
@@ -571,17 +369,7 @@
         "统计",
         "写作"
       ],
-      "hot": true,
-      "aliases": [
-        "zishutongji",
-        "zstj",
-        "多少字",
-        "字数多少",
-        "数一下字",
-        "word count",
-        "word",
-        "count"
-      ]
+      "hot": true
     },
     {
       "id": "image-base64",
@@ -595,17 +383,6 @@
         "base64",
         "图片",
         "datauri"
-      ],
-      "aliases": [
-        "tupianzhuan",
-        "tpz",
-        "照片",
-        "截图",
-        "图像",
-        "image to base64",
-        "image",
-        "to",
-        "base64"
       ],
       "accepts": [
         "image/*"
@@ -623,19 +400,6 @@
         "对比度",
         "无障碍",
         "wcag"
-      ],
-      "aliases": [
-        "yanseduibidujiancha",
-        "ysdbdjc",
-        "配色",
-        "色值",
-        "色号",
-        "比对",
-        "差异",
-        "diff",
-        "contrast checker",
-        "contrast",
-        "checker"
       ]
     },
     {
@@ -651,18 +415,7 @@
         "工资",
         "累计预扣"
       ],
-      "hot": true,
-      "aliases": [
-        "geshuijisuanqi",
-        "gsjsq",
-        "扣税",
-        "到手工资",
-        "税后",
-        "income tax calculator",
-        "income",
-        "tax",
-        "calculator"
-      ]
+      "hot": true
     },
     {
       "id": "unit-convert",
@@ -677,16 +430,7 @@
         "换算",
         "度量衡"
       ],
-      "hot": true,
-      "aliases": [
-        "danweihuansuan",
-        "dwhs",
-        "度量衡",
-        "换算",
-        "unit converter",
-        "unit",
-        "converter"
-      ]
+      "hot": true
     },
     {
       "id": "qr-decode",
@@ -702,17 +446,6 @@
         "解码"
       ],
       "hot": true,
-      "aliases": [
-        "erweimajiexi",
-        "ewmjx",
-        "扫码",
-        "qr码",
-        "二维码图片",
-        "qr code reader",
-        "qr",
-        "code",
-        "reader"
-      ],
       "accepts": [
         "image/*"
       ]
@@ -731,22 +464,6 @@
         "拆分"
       ],
       "hot": true,
-      "aliases": [
-        "hebingchaifen",
-        "hbcf",
-        "拼起来",
-        "合起来",
-        "合成一个",
-        "连起来",
-        "拆开",
-        "切开",
-        "一分为二",
-        "分成两个",
-        "pdf merge & split",
-        "pdf",
-        "merge",
-        "split"
-      ],
       "accepts": [
         "application/pdf"
       ],
@@ -766,16 +483,7 @@
         "等额本息",
         "等额本金"
       ],
-      "hot": true,
-      "aliases": [
-        "fangdaijisuanqi",
-        "fdjsq",
-        "月供",
-        "贷款计算",
-        "mortgage calculator",
-        "mortgage",
-        "calculator"
-      ]
+      "hot": true
     },
     {
       "id": "timezone-convert",
@@ -791,18 +499,7 @@
         "时差",
         "夏令时"
       ],
-      "hot": true,
-      "aliases": [
-        "shiquzhuanhuan",
-        "sqzh",
-        "转格式",
-        "换格式",
-        "转成",
-        "time zone converter",
-        "time",
-        "zone",
-        "converter"
-      ]
+      "hot": true
     },
     {
       "id": "img-to-pdf",
@@ -818,20 +515,6 @@
         "转换"
       ],
       "hot": true,
-      "aliases": [
-        "tupianzhuan",
-        "tpz",
-        "转格式",
-        "换格式",
-        "转成",
-        "照片",
-        "截图",
-        "图像",
-        "images to pdf",
-        "images",
-        "to",
-        "pdf"
-      ],
       "accepts": [
         "image/*"
       ],
@@ -850,17 +533,6 @@
         "隐私",
         "图片",
         "gps"
-      ],
-      "aliases": [
-        "zhaopianyuanshujuboli",
-        "zpysjbl",
-        "照片",
-        "截图",
-        "图像",
-        "photo metadata stripper",
-        "photo",
-        "metadata",
-        "stripper"
       ],
       "accepts": [
         "image/jpeg",
@@ -885,20 +557,6 @@
         "格式转换"
       ],
       "hot": true,
-      "aliases": [
-        "tupiangeshizhuanhuan",
-        "tpgszh",
-        "转格式",
-        "换格式",
-        "另存为",
-        "转成",
-        "照片",
-        "截图",
-        "图像",
-        "image converter",
-        "image",
-        "converter"
-      ],
       "accepts": [
         "image/*"
       ]
@@ -917,21 +575,7 @@
         "校验",
         "luhn"
       ],
-      "hot": true,
-      "aliases": [
-        "shenfenzheng",
-        "sfz",
-        "yinxingkaxiaoyan",
-        "yxkxy",
-        "sfzyxkxy",
-        "验证",
-        "检查格式",
-        "对不对",
-        "id & card validator",
-        "id",
-        "card",
-        "validator"
-      ]
+      "hot": true
     },
     {
       "id": "img-crop",
@@ -946,19 +590,6 @@
         "裁剪",
         "圆角",
         "头像"
-      ],
-      "aliases": [
-        "tupiancaijian",
-        "tpcj",
-        "照片",
-        "截图",
-        "图像",
-        "裁切",
-        "切图",
-        "剪切",
-        "image cropper",
-        "image",
-        "cropper"
       ],
       "accepts": [
         "image/*"
@@ -979,20 +610,6 @@
         "sha256",
         "校验",
         "文件"
-      ],
-      "aliases": [
-        "wenjianhaxixiaoyan",
-        "wjhxxy",
-        "验证",
-        "检查格式",
-        "对不对",
-        "摘要",
-        "指纹",
-        "校验值",
-        "file hash checker",
-        "file",
-        "hash",
-        "checker"
       ],
       "accepts": [
         ".exe",
@@ -1034,14 +651,6 @@
         "选列",
         "过滤"
       ],
-      "aliases": [
-        "xuanlieyuzhongpai",
-        "xlyzp",
-        "csv column picker",
-        "csv",
-        "column",
-        "picker"
-      ],
       "since": "v3.7"
     },
     {
@@ -1058,15 +667,6 @@
         "FAT32",
         "整数",
         "装机"
-      ],
-      "aliases": [
-        "yingpanzhengshufenqujisuanqi",
-        "ypzsfqjsq",
-        "disk partition mb calculator",
-        "disk",
-        "partition",
-        "mb",
-        "calculator"
       ]
     },
     {
@@ -1082,16 +682,6 @@
         "AES",
         "隐私"
       ],
-      "aliases": [
-        "wenbenjiajiemi",
-        "wbjjm",
-        "加密码",
-        "设置密码",
-        "text encrypt & decrypt",
-        "text",
-        "encrypt",
-        "decrypt"
-      ],
       "since": "v3.26"
     },
     {
@@ -1105,14 +695,6 @@
       "tags": [
         "Markdown",
         "表格"
-      ],
-      "aliases": [
-        "biaogeshengchengqi",
-        "bgscq",
-        "markdown table generator",
-        "markdown",
-        "table",
-        "generator"
       ],
       "since": "v3.26"
     },
@@ -1128,14 +710,6 @@
         "转义",
         "编码"
       ],
-      "aliases": [
-        "zifuchuanzhuanyi",
-        "zfczy",
-        "string escape / unescape",
-        "string",
-        "escape",
-        "unescape"
-      ],
       "since": "v3.26"
     },
     {
@@ -1149,14 +723,6 @@
       "tags": [
         "占位",
         "Mock"
-      ],
-      "aliases": [
-        "zhanweiwenbenshengcheng",
-        "zwwbsc",
-        "placeholder text generator",
-        "placeholder",
-        "text",
-        "generator"
       ],
       "since": "v3.26"
     },
@@ -1173,13 +739,6 @@
         "Token",
         "LLM"
       ],
-      "aliases": [
-        "gusuan",
-        "gs",
-        "token estimator",
-        "token",
-        "estimator"
-      ],
       "since": "v3.26"
     },
     {
@@ -1193,14 +752,6 @@
       "tags": [
         "URL",
         "调试"
-      ],
-      "aliases": [
-        "jiexigouzao",
-        "jxgz",
-        "url parser & rebuilder",
-        "url",
-        "parser",
-        "rebuilder"
       ],
       "since": "v3.26"
     },
@@ -1217,13 +768,6 @@
         "子网",
         "运维"
       ],
-      "aliases": [
-        "ziwangjisuanqi",
-        "zwjsq",
-        "subnet calculator",
-        "subnet",
-        "calculator"
-      ],
       "since": "v3.26"
     },
     {
@@ -1237,13 +781,6 @@
       "tags": [
         "XML",
         "格式化"
-      ],
-      "aliases": [
-        "geshihua",
-        "gsh",
-        "xml formatter",
-        "xml",
-        "formatter"
       ],
       "since": "v3.26"
     },
@@ -1259,15 +796,6 @@
         "HTTP",
         "手册"
       ],
-      "aliases": [
-        "zhuangtaimasucha",
-        "ztmsc",
-        "http status code lookup",
-        "http",
-        "status",
-        "code",
-        "lookup"
-      ],
       "since": "v3.26"
     },
     {
@@ -1281,16 +809,6 @@
       "tags": [
         "进制",
         "转换"
-      ],
-      "aliases": [
-        "jinzhizhuanhuan",
-        "jzzh",
-        "转格式",
-        "换格式",
-        "转成",
-        "radix converter",
-        "radix",
-        "converter"
       ],
       "since": "v3.26"
     },
@@ -1306,13 +824,6 @@
         "env",
         "配置"
       ],
-      "aliases": [
-        "jiexi",
-        "jx",
-        ".env parser",
-        ".env",
-        "parser"
-      ],
       "since": "v3.26"
     },
     {
@@ -1326,16 +837,6 @@
       "tags": [
         "CSS",
         "前端"
-      ],
-      "aliases": [
-        "danweihuansuan",
-        "dwhs",
-        "度量衡",
-        "换算",
-        "css unit converter",
-        "css",
-        "unit",
-        "converter"
       ],
       "since": "v3.26"
     },
@@ -1542,16 +1043,6 @@
         "JSON",
         "对比",
         "diff"
-      ],
-      "aliases": [
-        "yuyiduibi",
-        "yydb",
-        "比对",
-        "差异",
-        "diff",
-        "json semantic diff",
-        "json",
-        "semantic"
       ]
     },
     {
@@ -1566,13 +1057,6 @@
         "AA",
         "记账",
         "分摊"
-      ],
-      "aliases": [
-        "fentan",
-        "ft",
-        "bill split",
-        "bill",
-        "split"
       ]
     },
     {
@@ -1587,14 +1071,6 @@
         "PDF",
         "导出",
         "文本"
-      ],
-      "aliases": [
-        "wenbenzhuan",
-        "wbz",
-        "text to pdf",
-        "text",
-        "to",
-        "pdf"
       ]
     }
   ]

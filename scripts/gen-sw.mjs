@@ -100,6 +100,8 @@ export function buildSw({ quiet = false } = {}) {
     '/i18n.json',
     '/i18n-detail.json',
     '/tools/tools.json',
+    // v3.30：别名按需加载，但离线时必须取得到——不然断网后拼音搜索静默失效
+    '/tools/aliases.json',
     '/tools/directory.json',
     '/resources.json',
     // v3.24：资源条目正文，合集页要用。它不在首屏（首页用不到正文），

@@ -18,6 +18,8 @@ import { readManifest } from './lib/tool-manifest.mjs';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const TOOLS = join(root, 'tools');
 const OUT = join(TOOLS, 'tools.json');
+// v3.30：别名按需加载，不再压首屏（见 buildToolsJson 与 app.js 的 ensureAliasesForSearch）
+const ALIAS_OUT = join(TOOLS, 'aliases.json');
 const REG = join(TOOLS, 'registry.json');
 const CAT_COPY = join(root, 'content', 'categories.json');
 
@@ -75,7 +77,9 @@ export function buildToolsJson() {
     if (m.runtime) out.runtime = m.runtime;
     if (m.tags) out.tags = m.tags;
     if (m.hot) out.hot = true;
-    if (m.aliases) out.aliases = m.aliases;
+    // v3.30：aliases 不再进 tools.json。拼音全拼/首字母/英文词压缩后约 2.1 KB，
+    // 是全站最大的一块可拆启动数据，而首页不搜索时一个字都用不到——它现在按需从
+    // tools/aliases.json 取（见 assets/app.js 的 ensureAliasesForSearch）。
     // 派生的「可接收文件类型」：不进 tool.json（那是手写的），由 run.js 的 manifest 算出来
     if (m.runtime !== 'link' && existsSync(join(TOOLS, id, 'run.js'))) {
       const acc = acceptsOf(id);
@@ -90,7 +94,14 @@ export function buildToolsJson() {
     if (m.since) out.since = m.since;
     return out;
   });
+  // 别名单独成文件：键是工具 id，值是别名词条。顺序跟随 tools 的顺序，增量 diff 稳定。
+  const aliases = {};
+  for (const t of [...order, ...rest]) {
+    const m = byId.get(t);
+    if (m.aliases && m.aliases.length) aliases[t] = m.aliases;
+  }
   return {
+    aliases,
     // v3.13：分类页有独立 URL 后，前端需要「分类名 → slug」的映射组链接。
     // 放在这里而不是 app.js 里硬编码，是为了让 content/categories.json 保持唯一真相：
     // 加一个分类时改那一份文案就够了，前端与构建期都跟着走。
@@ -104,23 +115,27 @@ export function buildToolsJson() {
 const isMain = isMainModule(import.meta.url);
 if (isMain) {
   const check = process.argv.includes('--check');
-  const { payload, unknown, shardCount } = buildToolsJson();
+  const { payload, aliases, unknown, shardCount } = buildToolsJson();
   const text = JSON.stringify(payload, null, 2);
+  // 一行紧凑写法：这个文件只给程序读，越小越好（首屏已不为它付钱，离线包里还有一份）
+  const aliasText = JSON.stringify(aliases);
   const old = existsSync(OUT) ? readFileSync(OUT, 'utf8') : '';
-  const same = old.trim() === text.trim();
+  const oldAlias = existsSync(ALIAS_OUT) ? readFileSync(ALIAS_OUT, 'utf8') : '';
+  const same = old.trim() === text.trim() && oldAlias.trim() === aliasText.trim();
   if (unknown.length) console.log(`   ⚠ 未登记在 registry.order 的工具（已追加到末尾）：${unknown.join(', ')}`);
   if (check) {
     if (!same) {
-      console.log('❌ tools/tools.json 与分片元数据不一致，请运行：node scripts/sync-tools.mjs');
+      console.log('❌ tools/tools.json（或 aliases.json）与分片元数据不一致，请运行：node scripts/sync-tools.mjs');
       process.exit(1);
     }
-    console.log(`✅ 注册表已同步（${shardCount} 个工具分片）`);
+    console.log(`✅ 注册表已同步（${shardCount} 个工具分片 / ${Object.keys(aliases).length} 组别名）`);
   } else {
     if (same) {
-      console.log(`✅ 已是同步状态（${shardCount} 个工具分片）`);
+      console.log(`✅ 已是同步状态（${shardCount} 个工具分片 / ${Object.keys(aliases).length} 组别名）`);
     } else {
       writeFileSync(OUT, text, 'utf8');
-      console.log(`✅ 已生成 tools/tools.json（${shardCount} 个工具分片）`);
+      writeFileSync(ALIAS_OUT, aliasText, 'utf8');
+      console.log(`✅ 已生成 tools/tools.json 与 tools/aliases.json（${shardCount} 个工具分片 / ${Object.keys(aliases).length} 组别名）`);
     }
   }
 }

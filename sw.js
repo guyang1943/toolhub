@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.28 · 预缓存 313 个地址 · 约 4.8 MB
+// 版本：toolhub-v3.28 · 预缓存 314 个地址 · 约 4.8 MB
 const VERSION = "toolhub-v3.28";
 const CORE = [
   "/",
@@ -16,6 +16,7 @@ const CORE = [
   "/i18n.json",
   "/i18n-detail.json",
   "/tools/tools.json",
+  "/tools/aliases.json",
   "/tools/directory.json",
   "/resources.json",
   "/resources-notes.json",
@@ -36,6 +37,7 @@ const FULL = [
   "/i18n.json",
   "/i18n-detail.json",
   "/tools/tools.json",
+  "/tools/aliases.json",
   "/tools/directory.json",
   "/resources.json",
   "/resources-notes.json",

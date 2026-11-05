@@ -502,9 +502,22 @@ async function feedFile(selector, dataUrl, name, type) {
       return el.value;
     })()`);
 
+  // v3.30：别名（拼音 / 首字母 / 口语词）已从启动数据搬到 /tools/aliases.json 按需加载，
+  // 首屏因此轻了 2.1 KB。代价是第一次搜拼音或口语词时，结果要多等一次本地 fetch（几十毫秒）。
+  // 这里轮询等它出现：立刻读 DOM 测的是「启动包里有没有别名」，而不是「用户搜不搜得到」。
+  const waitGridId = async (id, tries = 30) => {
+    for (let i = 0; i < tries; i++) {
+      const hit = await evaluate(`[...document.querySelectorAll('#grid [data-id]')].some((e) => e.dataset.id === ${JSON.stringify(id)})`);
+      if (hit) return true;
+      await sleep(100);
+    }
+    return false;
+  };
+
   await typeHero('瘦身');
+  const slimmingOk = await waitGridId('image-compress');
   const slimming = await evaluate(`[...document.querySelectorAll('#grid [data-id]')].map((e) => e.dataset.id)`);
-  check('口语词「瘦身」命中图片压缩', slimming.includes('image-compress'), slimming.slice(0, 3).join(',') || '（无结果）');
+  check('口语词「瘦身」命中图片压缩', slimmingOk, slimming.slice(0, 3).join(',') || '（无结果）');
 
   await typeHero('图片 压缩');
   const multiHits = await evaluate(`[...document.querySelectorAll('#grid [data-id]')].map((e) => e.dataset.id)`);
