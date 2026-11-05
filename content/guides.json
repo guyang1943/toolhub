@@ -317,7 +317,6 @@
       "difficulty": "中等",
       "minutes": 40,
       "risk": "mid",
-      "riskNote": "改 NS（nameserver）后，域名的全部 DNS 解析都由 Cloudflare 接管。操作前先在原服务商后台把现有 DNS 记录截图备份；改错或漏记一条记录，可能导致网站或邮箱暂时中断。按步骤来、改完逐项核对，都可以恢复。",
       "lastChecked": "2026-11-05",
       "intro": "Cloudflare 是一层挡在访客和你网站之间的免费服务：它替你管 DNS、把页面缓存到全球节点加速打开、免费发 SSL 证书、还能挡住流量攻击。免费版每月 0 美元，不用绑信用卡，个人网站完全够用。这篇把你的域名接进 Cloudflare，改几处设置就完成。",
       "why": [
@@ -327,6 +326,7 @@
         "不用改代码：接在域名层面，网站本身一行业不用动。"
       ],
       "prereqs": [
+        "操作前先在原服务商后台把现有 DNS 记录截图备份好：改 NS 之后，域名的解析权就全交给 Cloudflare 了，漏记一条，网站或邮箱可能中断一段时间。",
         "一个已有域名，并且你能进它的注册商后台改设置（第 2 篇注册的 DNSHE 域名就行）。",
         "一个已经上线的网站（GitHub Pages 就可以）。",
         "一个邮箱，用来注册 Cloudflare 账号。"
@@ -514,6 +514,349 @@
         { "name": "注册 GitHub 账号（官方）", "url": "https://docs.github.com/en/account-and-profile/how-tos/account-management/creating-an-account-on-github", "note": "邮箱验证与免费账号的官方说明" },
         { "name": "在 GitHub 上创建合并请求（Microsoft Learn）", "url": "https://learn.microsoft.com/en-us/contribute/content/create-pull-request", "note": "从 fork 到 PR 的网页端完整流程" },
         { "name": "ToolHub 开源仓库", "url": "https://github.com/guyang1943/toolhub", "note": "练手用的公开仓库：可以 Star、Fork，也可以从改文档开始提 PR" }
+      ]
+    },
+    {
+      "slug": "toolhub-image-pipeline",
+      "icon": "🖼️",
+      "title": "把一张图压到 200KB，再转成要的格式",
+      "tagline": "用本站的工作流和图片工具，全程在本机跑完，不装软件、不上传。",
+      "difficulty": "入门",
+      "minutes": 15,
+      "risk": "low",
+      "lastChecked": "2026-11-05",
+      "intro": "报名系统、投稿后台、聊天窗口对图片体积都有上限，「不能超过 200KB」是最常见的一条。这篇走的是本站自己的流程：先剥掉元数据，再把长边缩小、压成 WebP，最后按对方要求的格式转一次。三步都在浏览器里跑完，图片不经过任何服务器——这也是它适合处理身份证、合同、工牌这类带个人信息截图的原因。",
+      "why": [
+        "不用装软件、不用注册：浏览器打开就能做，Windows、Mac、手机都一样。",
+        "图片不出本机：压缩和转码用的是浏览器自己的 Canvas，页面里没有上传接口可调。带个人信息的截图尤其该这样处理。",
+        "参数可以存下来：200KB 这个上限不是靠手感试出来的，是「长边 1200 + 质量 78 + WebP」这组值压出来的，存成自己的流程后下次直接套。"
+      ],
+      "prereqs": [
+        "一张要处理的图片。工作流只认 JPG；PNG、iPhone 的 HEIC 会卡在第一步，先在相册或系统预览里另存为 JPG。",
+        "看清对方的两条要求：体积上限（比如 200KB）和尺寸下限（比如宽高不小于 600 像素）。只盯上限、把图压成 400 像素宽，一样会被系统退回。",
+        "一个较新的浏览器（Chrome、Edge、Firefox，或 Safari 14 以上）。WebP 在老浏览器和部分内嵌浏览器里打不开。"
+      ],
+      "steps": [
+        {
+          "title": "先量一下原图有多重",
+          "body": "打开图片信息工具，选图，最上面一行就是「格式 · 像素尺寸 · 体积」，往下还有一张明细表。这一步的目的是知道要砍掉多少：一张 4MB 的手机照片压到 200KB 是砍掉 95%，只调质量基本做不到，必须同时把尺寸降下来。不量就动手，常见结果是压了五六次还在 300KB 以上，还找不到原因。表里还有一行「位置信息（GPS）」——写「有」就说明这张图带着拍摄地点，下一步的元数据剥离别跳过。"
+        },
+        {
+          "title": "打开「图片发布包」工作流",
+          "body": "进工作流页，在上方选「图片发布包」这张卡（它的三步是：去元数据 → 限边长 → 转 WebP），选一张 JPG。第一步会把 GPS、机型、拍摄时间从图里剥掉——图要发到公网，这一步最该做，跳过等于把「这张照片在哪拍的」一起发出去。工作流第一步读的是 JPG 的 EXIF，只认 JPG，PNG 和 HEIC 会在这里直接报错。"
+        },
+        {
+          "title": "展开「参数」，按目标体积改两个值",
+          "body": "参数面板里每一步的字段都能改，默认是：长边 1200、最后一步转 WebP、压缩质量 78。想更小就把第 3 步的压缩质量降到 60 到 70。边长那栏是固定档位（256 / 512 / 1200 / 1920），要降只能整档降——从 1200 到 512 是很猛的一刀，先只降质量试一次更稳。改完点「保存为我的流程」可以起个名字存住，下次直接套；不存也只影响这一次，流程定义本身不会被改。"
+        },
+        {
+          "title": "点「开始运行」，看三步各自的状态",
+          "body": "每一步的状态会从「待运行」走到「完成」。中间任何一步失败，流程就停在那一步、把工具自己的原话显示出来，不会带着半成品继续往下跑——半成品接下去一般不报错，只会产出一个看着正常、其实不对的结果。跑完在结果区下载最终文件。产物只在当前页面的内存里，关掉页面即释放，服务器上没有副本。"
+        },
+        {
+          "title": "核对体积，没到 200KB 就再跑一次",
+          "body": "结果区会标出体积（按 1024 进制显示，195.0 KB 就是 199,680 字节，在 200KB 以内）。超了就回参数面板改两处：质量再降 10，边长从 1200 降到 512。改完重新点「开始运行」，不用重新选图。压到体积达标但字发虚，说明质量砍过头了——把质量拉回 80 以上，体积靠降边长来减，文字清晰度对质量比对尺寸敏感得多。"
+        },
+        {
+          "title": "平台只收 JPG，再转一次格式",
+          "body": "不少报名系统只认 JPG。打开图片格式转换工具，选图，目标格式选 JPEG，输出质量选 90%，透明区域填充色选白色，点「转换」。注意两件事：JPEG 没有透明通道，PNG 的透明区会变成你选的那个填充色，图标和 logo 这类要留透明就别转 JPEG；输出文件名是原文件名换扩展名，和原件同名，存的时候注意别把原件覆盖掉。"
+        },
+        {
+          "title": "最后核对三件事",
+          "body": "一看体积有没有超过上限，二看宽高有没有低于对方的尺寸下限，三看后缀和要求的格式对不对。拿不准就回图片信息工具再量一次。工作流的产物文件名带 compressed，缩放的产物文件名带宽高数字，这两种都不是原件——原图留着，压过的图回不去。"
+        }
+      ],
+      "fallback": [
+        "压不到 200KB：先把质量降到 60，再把边长从 1200 降到 512，两条一起动通常一次就够。还超，说明这张图本身不适合有损压缩（大面积噪点、细密纹理），改走图片缩放工具，长边直接限到 800 以下再压。",
+        "转完出现白底或黑底：PNG 转 JPEG 或 WebP 时透明区会被填充色补上，这是格式本身的限制，不是工具坏了。需要透明就留在 PNG，接受体积大一些。",
+        "工作流第一步报读不到 EXIF：源文件不是 JPG（PNG、HEIC、WebP 都会这样）。先另存为 JPG 再走工作流；或者干脆不走工作流，直接用缩放和压缩两个工具各做一次。",
+        "压完体积反而变大：输出成 PNG 时是常态（PNG 无损，可压空间很小）。换成 WebP 或 JPEG 再试。",
+        "浏览器解码失败：HEIC、RAW、TIFF 这类格式浏览器解不了。先用系统自带的看图或预览另存为 JPG 或 PNG。"
+      ],
+      "pitfalls": [
+        {
+          "title": "只调质量、不缩尺寸",
+          "body": "手机照片的像素量本身就超标，质量压到 30 还在 300KB 以上。顺序应该是先缩长边、再谈质量，反过来做只会得到一张又糊又大的图。"
+        },
+        {
+          "title": "带着 GPS 直接发出去",
+          "body": "压缩会重画像素、丢掉大部分元数据，但工作流里「去元数据」是独立的第一步，跳过它就不保证干净。图片信息工具能看原图里有没有 GPS，它只回答「有 / 无」，不展开坐标。"
+        },
+        {
+          "title": "用 JPEG 存带透明的图",
+          "body": "透明区会被填成白色，图标、logo、带圆角的卡片图一转就露白边。要透明就留 PNG。"
+        },
+        {
+          "title": "反复在 JPEG 之间来回转",
+          "body": "每转一次都掉一次画质，三次以后肉眼可见。从原图直接一步转到目标格式，别拿压过的图再压。"
+        },
+        {
+          "title": "拿压过的图当原图存档",
+          "body": "缩小和压缩都不可逆，像素已经丢了。压完另存一份，原件留在原处。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "一定要用工作流吗？",
+          "body": "不必。工作流只是把「去元数据 → 缩尺寸 → 转 WebP」三步串起来、参数定好。你也可以分别打开缩放、压缩、转换三个工具各做一次，结果一样，只是多点几次、中间文件要自己接。"
+        },
+        {
+          "q": "200KB 是 200 乘 1024 还是 200 乘 1000 字节？",
+          "body": "两种算法都有人用，差 2.4%。按小的算（200 乘 1024，等于 204,800 字节）更保险。工具显示的是 1024 进制的 KB，看到 195.0 KB 就是 199,680 字节，安全。"
+        },
+        {
+          "q": "压完还能放大回去吗？",
+          "body": "不能。缩小和压缩都不可逆，细节已经丢了，放大只会得到一张模糊的大图。需要大图时从原图重做。"
+        },
+        {
+          "q": "手机上能用吗？",
+          "body": "能，这些工具都是网页，手机浏览器打开一样跑，压缩也在手机本地完成。但 iOS 相册给的是 HEIC，先在相册里另存为 JPG，或者用格式转换工具转一次再进流程。"
+        }
+      ],
+      "tools": ["image-resize", "image-compress", "image-convert", "image-info", "exif-strip"],
+      "links": [
+        { "name": "MDN：图片文件类型与浏览器支持", "url": "https://developer.mozilla.org/zh-CN/docs/Web/Media/Guides/Formats/Image_types", "note": "JPEG / PNG / WebP 各自适合什么、透明与有损的差别" },
+        { "name": "Squoosh（Google 开源）", "url": "https://squoosh.app/", "note": "同一张图逐档对比画质与体积，用来判断「压到多小还算能看」" },
+        { "name": "MDN：Canvas toBlob", "url": "https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLCanvasElement/toBlob", "note": "本站压缩与转码用的就是这个浏览器接口，质量参数怎么起作用" }
+      ]
+    },
+    {
+      "slug": "ollama-local-ai",
+      "icon": "🖥️",
+      "title": "在自己电脑上跑一个离线 AI 对话（Ollama 篇）",
+      "tagline": "免费开源模型本地跑，聊天记录不出设备；旧电脑也能跑小模型。",
+      "difficulty": "中等",
+      "minutes": 60,
+      "risk": "mid",
+      "lastChecked": "2026-11-05",
+      "intro": "Ollama 是一个免费工具，能让你在自己的电脑上跑开源大模型：下载、聊天都在本机完成，聊天记录不出设备，不用订阅、不用联网也能用。本篇先讲清楚你的电脑能不能跑，再一步步装好、拉模型、开始对话。旧电脑也能跑小模型，只是回答慢一点。",
+      "why": [
+        "隐私：聊天记录只存在你的电脑上，不上传、不留痕，问私事也安心。",
+        "免费：模型本身不要钱，不用订阅、不按条数收费，下载一次一直用。",
+        "断网也能用：模型下载完之后，飞机上、没网的地方都能聊。"
+      ],
+      "prereqs": [
+        "一台电脑：Windows 10（22H2 或更新）/ Windows 11，或 macOS 14（Sonoma）或更新，或 Linux。",
+        "内存对照表（Ollama 官方说明）：8GB 内存跑 7B 模型是底线（能跑但慢）、跑 3B 小模型最稳；16GB 跑 13B；32GB 跑 33B。旧电脑请先看第 1 步。",
+        "至少 10GB 空闲磁盘空间（一个小模型约 2GB，多备几个模型要更多）。",
+        "下载模型时需要联网，下载完之后可以断网使用。"
+      ],
+      "steps": [
+        {
+          "title": "先看你的电脑能不能跑：查内存",
+          "body": "先看自己电脑的内存，再决定跑多大的模型。Windows：按 Ctrl+Shift+Esc 打开任务管理器，点“性能”，点“内存”，看右上角的数字。Mac：点左上角苹果菜单 →“关于本机”，看“内存”。对照表（Ollama 官方说明）：8GB 内存跑 7B 模型是底线（能跑但慢）、跑 3B 小模型最稳；16GB 跑 13B；32GB 跑 33B。低于 8GB 就别试了，先用免费在线聊天。成功标志：你知道了自己的内存数字，也知道了该拉哪个档位的模型。"
+        },
+        {
+          "title": "去官网下载安装 Ollama",
+          "body": "打开浏览器，去 ollama.com/download（Ollama 官网下载页）。Windows：下载 OllamaSetup.exe，双击安装，一路点“下一步”，装完右下角托盘会出现一只小羊驼图标。Mac：下载 Ollama.dmg，打开后把 Ollama 拖进“应用程序”，再打开一次。Linux：在终端里粘贴官方安装命令 curl -fsSL https://ollama.com/install.sh | sh，等它跑完。成功标志：电脑上出现 Ollama 的图标或服务（Windows 托盘有图标，Mac 菜单栏有图标）。"
+        },
+        {
+          "title": "确认装好了：输一行命令看版本号",
+          "body": "确认 Ollama 装好了。Windows：按 Win+R，输入 cmd 回车，打开黑色命令行窗口；Mac：打开“终端”（在“应用程序 → 实用工具”里）。输入 ollama --version 再回车。成功标志：窗口里出现一串版本号，比如 ollama version is 0.x.x。如果提示“找不到命令”，先重启电脑再试一次。"
+        },
+        {
+          "title": "拉第一个模型：从最小的 3B 开始",
+          "body": "拉第一个模型。初学者建议从最小的开始：在命令行里输入 ollama pull llama3.2:3b 再回车。这个模型约 2GB，下载要几分钟到十几分钟，看网速。成功标志：最后一行出现 success，或者进度条走完回到可以输入的状态。下载一半不要关窗口。"
+        },
+        {
+          "title": "开始对话：第一句问候",
+          "body": "在命令行里输入 ollama run llama3.2:3b 再回车，第一次会稍等一会儿加载模型，然后出现 >>> 提示符，就可以打字聊天了。试着问一句“用三句话介绍一下你自己”。成功标志：模型用中文回答了你的问题。想退出时输入 /bye 再回车。聊天记录只存在你的电脑上，不会上传。"
+        },
+        {
+          "title": "内存够的话，换个更大的模型试试",
+          "body": "如果你的电脑内存有 16GB，可以试试更大的模型，回答质量会好一些。输入 ollama pull qwen2.5:7b（约 4.7GB），下载完再输入 ollama run qwen2.5:7b 开始聊。成功标志：新模型能正常对话。内存只有 8GB 就别试这一步，3B 模型够用了。"
+        },
+        {
+          "title": "看看装了哪些模型，不想要的删掉",
+          "body": "输入 ollama list 可以看到你已经下载了哪些模型和它们的大小。某个模型不想留了，输入 ollama rm 模型名 删掉它（比如 ollama rm llama3.2:3b），能腾出磁盘空间。成功标志：ollama list 里不再出现被删的模型。"
+        },
+        {
+          "title": "不想敲命令：装 GPT4All 图形界面",
+          "body": "如果你不想碰命令行，还有图形界面的选择：去 gpt4all.io（GPT4All 官网）下载安装，打开后在软件里点一点选模型、下载、聊天，全程不用敲命令。GPT4All 是免费开源软件，模型同样在本地跑。成功标志：打开 GPT4All，选好模型，能打字聊天。"
+        }
+      ],
+      "fallback": [
+        "模型下不动：检查磁盘空间（3B 模型约 2GB），空间够就换个网络环境再试一次；还是不行就换更小的模型。",
+        "对话太慢：先关掉其他占内存的程序（浏览器、视频软件）；还是慢就换 3B 小模型，或者接受它慢一点——本地小模型本来就比云端慢。",
+        "电脑实在跑不动：直接用免费在线聊天（DeepSeek 网页版完全免费，或 ChatGPT 免费版），本地模型以后再试。"
+      ],
+      "pitfalls": [
+        {
+          "title": "不看内存，硬拉大模型",
+          "body": "模型是按大小分的，7B 模型约 5GB，13B 约 7–9GB（看具体模型），70B 要 64GB 内存。只看名字好听就拉 70B，电脑会直接卡住。先看第 1 步的对照表，按内存选。"
+        },
+        {
+          "title": "拉到 :cloud 模型会花钱",
+          "body": "模型库里名字带 :cloud 后缀的模型（比如 qwen3.5:cloud）是跑在 Ollama 服务器上的，按 token 计费，不是本地免费模型。用 :cloud 模型要先登录 Ollama 账号，聊天内容会发到 Ollama 服务器。拉模型时认准没有 :cloud 的名字。"
+        },
+        {
+          "title": "以为下载是秒完成的",
+          "body": "模型文件几个 GB，第一次下载要几分钟到十几分钟，看网速。下载一半关掉，下次要重新下。"
+        },
+        {
+          "title": "断网了还想下载模型",
+          "body": "下载模型要联网；下载完之后聊天可以断网。别在没网的时候下载。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "我的旧电脑只有 8GB 内存，能跑吗？",
+          "body": "8GB 内存可以跑 3B 小模型（比如 llama3.2:3b，约 2GB），回答会慢一点，但能用。16GB 内存跑 7B、8B 模型比较顺。低于 8GB 就别试了，先用免费在线聊天。"
+        },
+        {
+          "q": "模型存在电脑的哪里？",
+          "body": "Windows 在 C:\\Users\\你的用户名\\.ollama\\models，Mac 在 ~/.ollama/models，Linux 在 /usr/share/ollama/.ollama/models。删模型用 ollama rm 模型名（删了要重新下载才能用，没有确认提示）。"
+        },
+        {
+          "q": "本地模型能联网查今天的新闻吗？",
+          "body": "不能。本地模型只知道它训练时学到的东西，不知道今天的新闻、天气和股价。需要查实时信息时，用联网的免费聊天工具。"
+        },
+        {
+          "q": "本地模型和 ChatGPT 比，哪个更强？",
+          "body": "写东西、改文章、总结文档，本地 7B、8B 模型够用；复杂推理、写代码、长文创作还是云端大模型更强。本地胜在隐私和免费，不胜在聪明。"
+        },
+        {
+          "q": "断网了还能用吗？",
+          "body": "第一次下载模型必须联网（几个 GB）。下载完之后，聊天可以完全断网进行。"
+        }
+      ],
+      "tools": [],
+      "links": [
+        { "name": "Ollama 官网下载", "url": "https://ollama.com/download", "note": "Windows、Mac、Linux 安装包都在这里" },
+        { "name": "Ollama 模型库", "url": "https://ollama.com/library", "note": "查每个模型的大小和名字，拉之前先看" },
+        { "name": "GPT4All 官网", "url": "https://gpt4all.io", "note": "不想敲命令时的图形界面替代，免费开源" },
+        { "name": "Ollama GitHub 仓库", "url": "https://github.com/ollama/ollama", "note": "硬件要求和安装说明的出处" }
+      ]
+    },
+    {
+      "slug": "cloudflare-tunnel-home",
+      "icon": "🏠",
+      "title": "把家里的服务安全地放到公网（Cloudflare Tunnel）",
+      "tagline": "不开路由器端口、不要公网 IP，只放一个服务出去，并且先加一道登录。",
+      "difficulty": "中等",
+      "minutes": 50,
+      "risk": "high",
+      "riskNote": "这一步做完，互联网上任何人都能敲到你的域名——「别人不知道地址」不算保护，证书透明度和各种资产测绘平台会把新域名在几小时内公开。真正要守的是三件事：只发布一条路由（不是一个网段、不是整台机器）、先建 Access 登录策略再开通入口、令牌当密码保管。任意一条漏掉，你就是在公网上跑一个没上锁的服务，而且不会有人来提醒你。",
+      "lastChecked": "2026-11-05",
+      "intro": "家里的 NAS、Home Assistant、自建的文件服务，想在外面也能打开，最直接的办法是在路由器上做端口映射——那等于在自家网络上凿一个洞，谁扫到谁就能敲。Cloudflare Tunnel 换了个方向：从家里那台机器主动向外连一条长连接，访客从 Cloudflare 进来，再由这条连接转给本机的服务。路由器上不用开任何端口，也不需要公网 IP。它只解决「怎么连出去」，不解决「谁能进来」，后者要靠 Cloudflare Access 再加一道登录——所以这篇的顺序是刻意反的：先把登录建好，再开入口。另外先把话说在前面：路由器后台、NAS 管理页、SSH 这三类别挂上去，它们常年是被爆破的目标，Access 挡得住敲门的人，挡不住页面本身的漏洞。",
+      "why": [
+        "不用公网 IP、不用在路由器上开端口：运营商封 80/443、家里在 NAT 后面都不影响，Tunnel 是主动向外连的。",
+        "比端口映射小一档的暴露面：端口映射把「哪个端口」摊给整个互联网，Tunnel 只放出「哪一条路由」，外面还压着一层登录。",
+        "HTTPS 顺带解决：域名已经在 Cloudflare 上，证书自动签发和续期，不用自己折腾。",
+        "随时能关：删一条路由、删一个 Tunnel，入口立刻消失，不用去动路由器。"
+      ],
+      "prereqs": [
+        "一个域名，并且 DNS 已经托管在 Cloudflare（没做的话先照「Cloudflare 免费套餐」那篇把 NS 改过去，等到域名状态是 Active）。",
+        "一台常开的机器：家里的 NAS、小主机、树莓派都行，能装软件、能访问外网。它关机，服务就断。",
+        "那个服务本身能在本机浏览器里打开，并且你知道它跑在哪个端口。",
+        "一个邮箱：注册 Cloudflare 用，也用来收 Access 的登录验证码。",
+        "先接受一件事：做完之后你的服务就在公网上了。保护它的是 Access 那道登录，不是「没人知道我的域名」。"
+      ],
+      "steps": [
+        {
+          "title": "先决定只放哪一个服务，把地址写死",
+          "body": "在本子上写清楚：要暴露的是哪个服务、跑在哪个端口、本机怎么访问它，例如 http://localhost:8080。规则只有一条：一个 Tunnel 接一个服务、挂一条路由。以后要放第二个，再加一条路由；不要图省事把整台机器或整个网段接出去。做错会怎样：把 192.168.1.0/24 这样的整个网段接进 Tunnel，等于摄像头、路由器后台、打印机全都有了公网入口，而 Access 只保护你写得出来的那个域名，剩下的一概裸着。"
+        },
+        {
+          "title": "确认这个服务只听在本机",
+          "body": "Windows 打开命令行敲 netstat -ano | findstr :8080，Linux 敲 ss -lntp | grep 8080，看「本地地址」那一列。127.0.0.1:8080 表示只有本机能连，最好；0.0.0.0:8080 表示同一局域网里任何设备都能连——那说明这道门在屋里是敞开的。看到 0.0.0.0 就先去服务自己的设置里把监听地址改回 127.0.0.1，或者确认它自带独立口令。做错会怎样：局域网里中招的任何一台设备（智能音箱、监控、别人连过的手机）都能直接连上这个服务，而这一层根本没有 Access 挡着。"
+        },
+        {
+          "title": "把域名接进 Cloudflare",
+          "body": "Tunnel 的路由必须挂在一个由 Cloudflare 托管 DNS 的域名上。如果域名还没接进来，先照「Cloudflare 免费套餐」那篇把 NS 改过去，等到面板上这个域名的状态是 Active。做错会怎样：NS 还没生效就去加路由，面板会找不到域名，或者加了之后访问落到 Cloudflare 的错误页——你会以为是 Tunnel 的问题，其实是域名压根没托进来。"
+        },
+        {
+          "title": "先在 Zero Trust 里建好 Access 应用，再开入口",
+          "body": "打开 one.dash.cloudflare.com（Zero Trust 面板），进 Access controls → Applications，点 Create new application（旧版写作 Add an application），类型选 Self-hosted and private（旧版是 Self-hosted），点 Add public hostname，填你打算用的子域名，例如 home.yourname.com。下面的 Access policies 新建一条 Allow 策略：Include 选 Emails，填你自己的邮箱。身份验证方式（Identity providers）用 One-time PIN，也就是往邮箱发验证码。填完点 Create。顺序不是讲究：官方文档明确建议先建 Access 应用、再建隧道路由，否则从路由发布到策略生效这段时间，任何拿到这个域名的人都能直接打开你的服务。做错会怎样：入口先开着、策略后补，中间那几分钟到几小时就是裸奔，而且事后你未必能从日志里看出有人进来过。"
+        },
+        {
+          "title": "装 cloudflared",
+          "body": "Windows 从 Cloudflare 的 GitHub release 页下载 cloudflared-windows-amd64.msi，双击装完；Mac 用 brew install cloudflared；Linux 用官方的 .deb 或 .rpm 包。装完在终端敲 cloudflared --version，能打出年份版本号就成了。Windows 版不会自动更新，以后要手动升。做错会怎样：从搜索广告或第三方下载站拿 exe——这个程序会以你的身份连出内网，装错等于把钥匙交出去。只从 Cloudflare 官方文档给的链接或 GitHub release 下载。"
+        },
+        {
+          "title": "建 Tunnel，拿到那条带令牌的命令",
+          "body": "回面板，进 Networking → Tunnels（有的版本写作 Networks → Connectors → Cloudflare Tunnels），点新建（Create a tunnel / Create tunnel），起个名字比如 home-gw，确认。面板会让你选操作系统，然后给出一条带令牌的命令，令牌是一长串 eyJ 开头的字符。把这条命令复制到那台机器上执行：Linux 上是 sudo cloudflared service install 加令牌，Windows 上是 cloudflared.exe service install 加令牌——按钮文案和命令原文以你当前面板显示的为准。做错会怎样：这条命令里的令牌就是那台机器的通行证，任何人拿到它都能把流量接进你家网络。别贴进群里、别提交进仓库、别写进公开笔记。"
+        },
+        {
+          "title": "等面板显示 Healthy",
+          "body": "命令执行完回到面板，Tunnel 状态应该变成 Healthy（健康）。显示 Inactive 或 Down 就是没连上：先确认那台机器能出外网的 7844 端口（有些公司网、校园网只放 443），再看命令是不是真的跑完了。做错会怎样：没连上就急着加路由，访问会得到 502 或 Cloudflare 的错误页，然后你去查服务、查端口，白折腾一圈——真正的问题在连接那一层。"
+        },
+        {
+          "title": "加一条路由，和服务对得上",
+          "body": "点开这个 Tunnel，进 Routes 标签页（有的版本叫 Published application routes），点 Add route，选 Published application。子域名和域名填得跟第 4 步 Access 应用里完全一样——差一个字母就是另一个域名，Access 不认；Service URL 填 http://localhost:8080；点 Add route（旧版这一步叫 Complete setup）。只加这一条：不要填 yourname.com 这种上层域名，也不要用通配符。做错会怎样：hostname 和 Access 应用里的不一致，结果是「页面能打开但不用登录」——你亲手绕过了自己刚建的那道门；填上层域名或通配符，则是把整个域都指到这台机器上。"
+        },
+        {
+          "title": "从外网验一次，要看的是登录页",
+          "body": "把手机关掉 Wi-Fi、切到蜂窝数据，打开 https://home.yourname.com。预期是：先出现 Cloudflare Access 的登录页，填邮箱、收验证码，登录之后才看到服务本身。如果直接看到服务首页，说明 Access 没生效——立刻回第 4 步检查应用绑的域名和策略；一时查不出原因，先把第 8 步那条路由删掉，按下面「翻车了怎么办」里的第一步做。做错会怎样：这是全篇唯一的验收标准。跳过它，你交付的只是一个「大概加了鉴权」的东西。"
+        },
+        {
+          "title": "收尾：令牌当密码管，不用的路由删掉",
+          "body": "Tunnel 的令牌可以轮换：详情页的 Overview 标签里点 Refresh token，旧令牌随即失效，然后在机器上按新命令重装一次服务。以后不再用的路由、Access 应用、Tunnel 都要删掉，别留着。做错会怎样：闲置的路由是一扇没人看着的门——服务还在跑、入口还在，只是你先忘掉了。"
+        }
+      ],
+      "fallback": [
+        "立刻关掉公网入口：Networking → Tunnels → 选中这个 Tunnel → Routes 标签页，把那条 Published application 路由删掉。删完域名立刻不可达，这一步不需要动 DNS、也不用停服务。",
+        "连 Tunnel 一起停：同一个 Tunnel 的详情页点 Delete（删除 Tunnel），或者在机器上执行 sudo cloudflared service uninstall（Windows 去掉 sudo，用 cloudflared.exe）。两条都能让连接断掉；删 Tunnel 之后令牌作废，想再用要重建一个。",
+        "撤 DNS 记录：那条子域名的记录如果还在，去 DNS 页面把它删掉，否则访问会落到 Cloudflare 的报错页，而不是干净地不存在。Cloudflare 全量托管时，删路由一般会一起清掉这条记录，以你面板里看到的状态为准。",
+        "关 Access 策略：Access controls → Applications，把这条应用删掉，或把策略里那条 Allow 改成 Block。顺序是先删入口、再删策略——反过来的话，中间会有一小段完全公开的窗口。",
+        "只停服务本身：Windows 在服务管理器里停 cloudflared，Linux 执行 sudo systemctl stop cloudflared。服务一停，Tunnel 还在但后端没了，访问是 502。",
+        "怀疑令牌泄露：面板上 Refresh token 轮换，再在机器上 cloudflared service uninstall 后用新命令重装；同时检查那台机器上有没有别的程序读过这条命令（shell 历史、截图、聊天记录）。"
+      ],
+      "pitfalls": [
+        {
+          "title": "先开路由，后补 Access",
+          "body": "官方文档把「先建 Access 应用」写成建议，不是可选项：从路由发布到策略生效，入口是公开的。这篇把建登录排在开入口之前，就是为这个顺序。"
+        },
+        {
+          "title": "把路由器后台、NAS 管理页挂上去",
+          "body": "这类页面的登录框常年是被爆破的目标。Access 只能挡在前面，挡不住页面本身的漏洞。要看管理页，用 Tailscale 这类私有网络，别给它公网入口。"
+        },
+        {
+          "title": "Service URL 写成 0.0.0.0 或局域网 IP",
+          "body": "Tunnel 是从那台机器上发起的，写 http://localhost:端口 最稳。写局域网 IP，那台机器换网络、换 IP 之后就断了。"
+        },
+        {
+          "title": "用通配符或上层域名",
+          "body": "一条通配符路由就把所有子域名指过去，而 Access 得一条条配。要几个就配几个，别图省事。"
+        },
+        {
+          "title": "令牌进了 git 或聊天记录",
+          "body": "安装命令里就带着令牌，复制时很容易连提交一起带上。放密码管理器，别进仓库、别发群。"
+        },
+        {
+          "title": "手动跑了一次就以为完事",
+          "body": "如果只是在前台敲了 cloudflared tunnel run，窗口一关、机器一重启，连接就没了。要长期在线就用面板给的 service install 命令注册成服务。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "这样算不算「开了端口」？",
+          "body": "不算。Tunnel 是从你家那台机器主动向 Cloudflare 建的长连接，路由器上不用做端口映射，也不需要公网 IP。对外看到的只有 Cloudflare 的 443。"
+        },
+        {
+          "q": "免费版够用吗？",
+          "body": "个人用途一般够。免费版 Access 有人数上限，具体额度以 Cloudflare 官网的套餐页为准，团队规模上去要付费。"
+        },
+        {
+          "q": "一定要有自己的域名吗？",
+          "body": "要。Tunnel 的路由挂在你 Cloudflare 账号下的域名上，没有域名就没有可以发布的 hostname。先去注册一个，再把 NS 改到 Cloudflare。"
+        },
+        {
+          "q": "手机上怎么过 Access 那一步？",
+          "body": "One-time PIN 是把验证码发到邮箱，手机上收邮件一样能登。也可以接 Google、GitHub 这类身份提供商，在 Zero Trust 的 Settings → Authentication 里配。"
+        },
+        {
+          "q": "家里断网或断电会怎样？",
+          "body": "服务不可达，面板上这个 Tunnel 显示掉线，恢复供电供网后会自动重连。不会留下「半开」的入口——没有连接就没有转发。"
+        }
+      ],
+      "tools": [],
+      "links": [
+        { "name": "Cloudflare Tunnel（官方文档总览）", "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/", "note": "Tunnel 是什么、怎么连、有哪些边界" },
+        { "name": "创建 Tunnel（面板版，官方）", "url": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel/", "note": "面板里每一步的按钮与 Published application 路由的填法" },
+        { "name": "把自建应用发布到公网并加 Access（官方）", "url": "https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/", "note": "Access 应用的创建步骤，以及「先建应用再建路由」这条建议的出处" },
+        { "name": "cloudflared 下载页（官方）", "url": "https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/", "note": "Windows / macOS / Linux 各平台的安装方式，Windows 版不自动更新" },
+        { "name": "cloudflared GitHub Releases", "url": "https://github.com/cloudflare/cloudflared/releases", "note": "官方发布页，msi 与各平台二进制都从这里取" }
       ]
     }
   ]

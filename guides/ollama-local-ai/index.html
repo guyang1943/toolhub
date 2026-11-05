@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>在自己电脑上跑一个离线 AI 对话（Ollama 篇） · 教程 · ToolHub</title>
+  <meta name="description" content="免费开源模型本地跑，聊天记录不出设备；旧电脑也能跑小模型。" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/ollama-local-ai/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/ollama-local-ai/" />
+  <meta property="og:title" content="在自己电脑上跑一个离线 AI 对话（Ollama 篇） · 教程 · ToolHub" />
+  <meta property="og:description" content="免费开源模型本地跑，聊天记录不出设备；旧电脑也能跑小模型。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 132 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"在自己电脑上跑一个离线 AI 对话（Ollama 篇）","description":"免费开源模型本地跑，聊天记录不出设备；旧电脑也能跑小模型。","totalTime":"PT60M","dateModified":"2026-11-05","supply":[{"@type":"HowToSupply","name":"一台电脑：Windows 10（22H2 或更新）/ Windows 11，或 macOS 14（Sonoma）或更新，或 Linux。"},{"@type":"HowToSupply","name":"内存对照表（Ollama 官方说明）：8GB 内存跑 7B 模型是底线（能跑但慢）、跑 3B 小模型最稳；16GB 跑 13B；32GB 跑 33B。旧电脑请先看第 1 步。"},{"@type":"HowToSupply","name":"至少 10GB 空闲磁盘空间（一个小模型约 2GB，多备几个模型要更多）。"},{"@type":"HowToSupply","name":"下载模型时需要联网，下载完之后可以断网使用。"}],"step":[{"@type":"HowToStep","position":1,"name":"先看你的电脑能不能跑：查内存","text":"先看自己电脑的内存，再决定跑多大的模型。Windows：按 Ctrl+Shift+Esc 打开任务管理器，点“性能”，点“内存”，看右上角的数字。Mac：点左上角苹果菜单 →“关于本机”，看“内存”。对照表（Ollama 官方说明）：8GB 内存跑 7B 模型是底线（能跑但慢）、跑 3B 小模型最稳；16GB 跑 13B；32GB 跑 33B。低于 8GB 就别试了，先用免费在线聊天。成功标志：你知道了自己的内存数字，也知道了该拉哪个档位的模型。"},{"@type":"HowToStep","position":2,"name":"去官网下载安装 Ollama","text":"打开浏览器，去 ollama.com/download（Ollama 官网下载页）。Windows：下载 OllamaSetup.exe，双击安装，一路点“下一步”，装完右下角托盘会出现一只小羊驼图标。Mac：下载 Ollama.dmg，打开后把 Ollama 拖进“应用程序”，再打开一次。Linux：在终端里粘贴官方安装命令 curl -fsSL https://ollama.com/install.sh | sh，等它跑完。成功标志：电脑上出现 Ollama 的图标或服务（Windows 托盘有图标，Mac 菜单栏有图标）。"},{"@type":"HowToStep","position":3,"name":"确认装好了：输一行命令看版本号","text":"确认 Ollama 装好了。Windows：按 Win+R，输入 cmd 回车，打开黑色命令行窗口；Mac：打开“终端”（在“应用程序 → 实用工具”里）。输入 ollama --version 再回车。成功标志：窗口里出现一串版本号，比如 ollama version is 0.x.x。如果提示“找不到命令”，先重启电脑再试一次。"},{"@type":"HowToStep","position":4,"name":"拉第一个模型：从最小的 3B 开始","text":"拉第一个模型。初学者建议从最小的开始：在命令行里输入 ollama pull llama3.2:3b 再回车。这个模型约 2GB，下载要几分钟到十几分钟，看网速。成功标志：最后一行出现 success，或者进度条走完回到可以输入的状态。下载一半不要关窗口。"},{"@type":"HowToStep","position":5,"name":"开始对话：第一句问候","text":"在命令行里输入 ollama run llama3.2:3b 再回车，第一次会稍等一会儿加载模型，然后出现 >>> 提示符，就可以打字聊天了。试着问一句“用三句话介绍一下你自己”。成功标志：模型用中文回答了你的问题。想退出时输入 /bye 再回车。聊天记录只存在你的电脑上，不会上传。"},{"@type":"HowToStep","position":6,"name":"内存够的话，换个更大的模型试试","text":"如果你的电脑内存有 16GB，可以试试更大的模型，回答质量会好一些。输入 ollama pull qwen2.5:7b（约 4.7GB），下载完再输入 ollama run qwen2.5:7b 开始聊。成功标志：新模型能正常对话。内存只有 8GB 就别试这一步，3B 模型够用了。"},{"@type":"HowToStep","position":7,"name":"看看装了哪些模型，不想要的删掉","text":"输入 ollama list 可以看到你已经下载了哪些模型和它们的大小。某个模型不想留了，输入 ollama rm 模型名 删掉它（比如 ollama rm llama3.2:3b），能腾出磁盘空间。成功标志：ollama list 里不再出现被删的模型。"},{"@type":"HowToStep","position":8,"name":"不想敲命令：装 GPT4All 图形界面","text":"如果你不想碰命令行，还有图形界面的选择：去 gpt4all.io（GPT4All 官网）下载安装，打开后在软件里点一点选模型、下载、聊天，全程不用敲命令。GPT4All 是免费开源软件，模型同样在本地跑。成功标志：打开 GPT4All，选好模型，能打字聊天。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"在自己电脑上跑一个离线 AI 对话（Ollama 篇）","item":"https://toolhub.bot.cd/guides/ollama-local-ai/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"我的旧电脑只有 8GB 内存，能跑吗？","acceptedAnswer":{"@type":"Answer","text":"8GB 内存可以跑 3B 小模型（比如 llama3.2:3b，约 2GB），回答会慢一点，但能用。16GB 内存跑 7B、8B 模型比较顺。低于 8GB 就别试了，先用免费在线聊天。"}},{"@type":"Question","name":"模型存在电脑的哪里？","acceptedAnswer":{"@type":"Answer","text":"Windows 在 C:\\Users\\你的用户名\\.ollama\\models，Mac 在 ~/.ollama/models，Linux 在 /usr/share/ollama/.ollama/models。删模型用 ollama rm 模型名（删了要重新下载才能用，没有确认提示）。"}},{"@type":"Question","name":"本地模型能联网查今天的新闻吗？","acceptedAnswer":{"@type":"Answer","text":"不能。本地模型只知道它训练时学到的东西，不知道今天的新闻、天气和股价。需要查实时信息时，用联网的免费聊天工具。"}},{"@type":"Question","name":"本地模型和 ChatGPT 比，哪个更强？","acceptedAnswer":{"@type":"Answer","text":"写东西、改文章、总结文档，本地 7B、8B 模型够用；复杂推理、写代码、长文创作还是云端大模型更强。本地胜在隐私和免费，不胜在聪明。"}},{"@type":"Question","name":"断网了还能用吗？","acceptedAnswer":{"@type":"Answer","text":"第一次下载模型必须联网（几个 GB）。下载完之后，聊天可以完全断网进行。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>🖥️ 在自己电脑上跑一个离线 AI 对话（Ollama 篇）</h1><p>免费开源模型本地跑，聊天记录不出设备；旧电脑也能跑小模型。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 在自己电脑上跑一个离线 AI 对话（Ollama 篇）</div><div class="guide-meta"><span>难度 <b>中等</b></span><span>约 <b>60</b> 分钟</span><span class="gm-risk gm-warn">风险 <b>中</b></span><span>最后核对 <b>2026-11-05</b></span></div><div class="res-intro">Ollama 是一个免费工具，能让你在自己的电脑上跑开源大模型：下载、聊天都在本机完成，聊天记录不出设备，不用订阅、不用联网也能用。本篇先讲清楚你的电脑能不能跑，再一步步装好、拉模型、开始对话。旧电脑也能跑小模型，只是回答慢一点。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>隐私：聊天记录只存在你的电脑上，不上传、不留痕，问私事也安心。</li><li>免费：模型本身不要钱，不用订阅、不按条数收费，下载一次一直用。</li><li>断网也能用：模型下载完之后，飞机上、没网的地方都能聊。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>一台电脑：Windows 10（22H2 或更新）/ Windows 11，或 macOS 14（Sonoma）或更新，或 Linux。</li><li>内存对照表（Ollama 官方说明）：8GB 内存跑 7B 模型是底线（能跑但慢）、跑 3B 小模型最稳；16GB 跑 13B；32GB 跑 33B。旧电脑请先看第 1 步。</li><li>至少 10GB 空闲磁盘空间（一个小模型约 2GB，多备几个模型要更多）。</li><li>下载模型时需要联网，下载完之后可以断网使用。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>先看你的电脑能不能跑：查内存</b><p>先看自己电脑的内存，再决定跑多大的模型。Windows：按 Ctrl+Shift+Esc 打开任务管理器，点“性能”，点“内存”，看右上角的数字。Mac：点左上角苹果菜单 →“关于本机”，看“内存”。对照表（Ollama 官方说明）：8GB 内存跑 7B 模型是底线（能跑但慢）、跑 3B 小模型最稳；16GB 跑 13B；32GB 跑 33B。低于 8GB 就别试了，先用免费在线聊天。成功标志：你知道了自己的内存数字，也知道了该拉哪个档位的模型。</p></li><li><b>去官网下载安装 Ollama</b><p>打开浏览器，去 ollama.com/download（Ollama 官网下载页）。Windows：下载 OllamaSetup.exe，双击安装，一路点“下一步”，装完右下角托盘会出现一只小羊驼图标。Mac：下载 Ollama.dmg，打开后把 Ollama 拖进“应用程序”，再打开一次。Linux：在终端里粘贴官方安装命令 curl -fsSL https://ollama.com/install.sh | sh，等它跑完。成功标志：电脑上出现 Ollama 的图标或服务（Windows 托盘有图标，Mac 菜单栏有图标）。</p></li><li><b>确认装好了：输一行命令看版本号</b><p>确认 Ollama 装好了。Windows：按 Win+R，输入 cmd 回车，打开黑色命令行窗口；Mac：打开“终端”（在“应用程序 → 实用工具”里）。输入 ollama --version 再回车。成功标志：窗口里出现一串版本号，比如 ollama version is 0.x.x。如果提示“找不到命令”，先重启电脑再试一次。</p></li><li><b>拉第一个模型：从最小的 3B 开始</b><p>拉第一个模型。初学者建议从最小的开始：在命令行里输入 ollama pull llama3.2:3b 再回车。这个模型约 2GB，下载要几分钟到十几分钟，看网速。成功标志：最后一行出现 success，或者进度条走完回到可以输入的状态。下载一半不要关窗口。</p></li><li><b>开始对话：第一句问候</b><p>在命令行里输入 ollama run llama3.2:3b 再回车，第一次会稍等一会儿加载模型，然后出现 &gt;&gt;&gt; 提示符，就可以打字聊天了。试着问一句“用三句话介绍一下你自己”。成功标志：模型用中文回答了你的问题。想退出时输入 /bye 再回车。聊天记录只存在你的电脑上，不会上传。</p></li><li><b>内存够的话，换个更大的模型试试</b><p>如果你的电脑内存有 16GB，可以试试更大的模型，回答质量会好一些。输入 ollama pull qwen2.5:7b（约 4.7GB），下载完再输入 ollama run qwen2.5:7b 开始聊。成功标志：新模型能正常对话。内存只有 8GB 就别试这一步，3B 模型够用了。</p></li><li><b>看看装了哪些模型，不想要的删掉</b><p>输入 ollama list 可以看到你已经下载了哪些模型和它们的大小。某个模型不想留了，输入 ollama rm 模型名 删掉它（比如 ollama rm llama3.2:3b），能腾出磁盘空间。成功标志：ollama list 里不再出现被删的模型。</p></li><li><b>不想敲命令：装 GPT4All 图形界面</b><p>如果你不想碰命令行，还有图形界面的选择：去 gpt4all.io（GPT4All 官网）下载安装，打开后在软件里点一点选模型、下载、聊天，全程不用敲命令。GPT4All 是免费开源软件，模型同样在本地跑。成功标志：打开 GPT4All，选好模型，能打字聊天。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>模型下不动：检查磁盘空间（3B 模型约 2GB），空间够就换个网络环境再试一次；还是不行就换更小的模型。</li><li>对话太慢：先关掉其他占内存的程序（浏览器、视频软件）；还是慢就换 3B 小模型，或者接受它慢一点——本地小模型本来就比云端慢。</li><li>电脑实在跑不动：直接用免费在线聊天（DeepSeek 网页版完全免费，或 ChatGPT 免费版），本地模型以后再试。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>不看内存，硬拉大模型</b></div><div class="res-item-note">模型是按大小分的，7B 模型约 5GB，13B 约 7–9GB（看具体模型），70B 要 64GB 内存。只看名字好听就拉 70B，电脑会直接卡住。先看第 1 步的对照表，按内存选。</div></div><div class="res-item"><div class="res-item-head"><b>拉到 :cloud 模型会花钱</b></div><div class="res-item-note">模型库里名字带 :cloud 后缀的模型（比如 qwen3.5:cloud）是跑在 Ollama 服务器上的，按 token 计费，不是本地免费模型。用 :cloud 模型要先登录 Ollama 账号，聊天内容会发到 Ollama 服务器。拉模型时认准没有 :cloud 的名字。</div></div><div class="res-item"><div class="res-item-head"><b>以为下载是秒完成的</b></div><div class="res-item-note">模型文件几个 GB，第一次下载要几分钟到十几分钟，看网速。下载一半关掉，下次要重新下。</div></div><div class="res-item"><div class="res-item-head"><b>断网了还想下载模型</b></div><div class="res-item-note">下载模型要联网；下载完之后聊天可以断网。别在没网的时候下载。</div></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://ollama.com/download" target="_blank" rel="noopener nofollow">Ollama 官网下载</a></div><div class="res-item-note">Windows、Mac、Linux 安装包都在这里</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://ollama.com/library" target="_blank" rel="noopener nofollow">Ollama 模型库</a></div><div class="res-item-note">查每个模型的大小和名字，拉之前先看</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://gpt4all.io" target="_blank" rel="noopener nofollow">GPT4All 官网</a></div><div class="res-item-note">不想敲命令时的图形界面替代，免费开源</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://github.com/ollama/ollama" target="_blank" rel="noopener nofollow">Ollama GitHub 仓库</a></div><div class="res-item-note">硬件要求和安装说明的出处</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>我的旧电脑只有 8GB 内存，能跑吗？</b></div><div class="res-item-note">8GB 内存可以跑 3B 小模型（比如 llama3.2:3b，约 2GB），回答会慢一点，但能用。16GB 内存跑 7B、8B 模型比较顺。低于 8GB 就别试了，先用免费在线聊天。</div></div><div class="res-item"><div class="res-item-head"><b>模型存在电脑的哪里？</b></div><div class="res-item-note">Windows 在 C:\Users\你的用户名\.ollama\models，Mac 在 ~/.ollama/models，Linux 在 /usr/share/ollama/.ollama/models。删模型用 ollama rm 模型名（删了要重新下载才能用，没有确认提示）。</div></div><div class="res-item"><div class="res-item-head"><b>本地模型能联网查今天的新闻吗？</b></div><div class="res-item-note">不能。本地模型只知道它训练时学到的东西，不知道今天的新闻、天气和股价。需要查实时信息时，用联网的免费聊天工具。</div></div><div class="res-item"><div class="res-item-head"><b>本地模型和 ChatGPT 比，哪个更强？</b></div><div class="res-item-note">写东西、改文章、总结文档，本地 7B、8B 模型够用；复杂推理、写代码、长文创作还是云端大模型更强。本地胜在隐私和免费，不胜在聪明。</div></div><div class="res-item"><div class="res-item-head"><b>断网了还能用吗？</b></div><div class="res-item-note">第一次下载模型必须联网（几个 GB）。下载完之后，聊天可以完全断网进行。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="62 个在本机跑 · 132 个已收录 · 58 条资源 · 无需注册" data-en="62 run in your browser · 132 listed · 50 resources · no sign-up">62 个在本机跑 · 132 个已收录 · 58 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="ollama-local-ai";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
