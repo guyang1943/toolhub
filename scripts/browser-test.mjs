@@ -496,6 +496,26 @@ async function feedFile(selector, dataUrl, name, type) {
   check('工具用法篇步骤数与数据一致', imgSteps === GUIDE_MAP.get('toolhub-image-pipeline').steps.length, `${imgSteps} 步`);
   check('工具用法篇把站内工具渲染成链接', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 3);
 
+  // v3.29 第三批四篇（PWA / 手机自动化 / 小程序注册 / 小程序云开发）取自 muse 分支草稿。
+  // 这一批的风险不在文案，在两处机械规则：围栏前后没留空行就会吐字面三反引号，
+  // risk=mid 的篇目一旦带上 riskNote 就会被渲染成风险块（规定只有 high 才允许有）。
+  await goto('/guides/');
+  await waitText('#page-body', '教程', 8000);
+  const pickedPwa = await evaluate(
+    `(() => { const a = document.querySelector('#page-body a.fl-row[href="/guides/pwa-install/"]'); if (!a) return false; a.click(); return true; })()`,
+  );
+  check('总览里有 PWA 篇的入口', pickedPwa === true);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  check(
+    'PWA 篇步骤数与数据一致',
+    (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
+      GUIDE_MAP.get('pwa-install').steps.length,
+  );
+  check('PWA 篇围栏渲染成代码块而非字面反引号', await evaluate(`!!document.querySelector('#page-body .guide-steps pre code') && !document.querySelector('#page-body').textContent.includes('\`\`\`')`));
+  await goto('/guides/wechat-miniprogram-first/');
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  check('mid 风险篇目不长出风险提示块', await evaluate(`!document.querySelector('.guide-risk')`));
+
   // 高风险篇目是唯一会渲染 .guide-risk 的那一类：数据里 riskNote 有、risk 不是 high，
   // 页面就会安静地少掉整块风险提示——这条块的存在与否只能真打开看。
   await goto('/guides/');

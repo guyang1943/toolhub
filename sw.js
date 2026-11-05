@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.28 · 预缓存 310 个地址 · 约 4.8 MB
+// 版本：toolhub-v3.28 · 预缓存 318 个地址 · 约 5.0 MB
 const VERSION = "toolhub-v3.28";
 const CORE = [
   "/",
@@ -323,12 +323,20 @@ const FULL = [
   "/guides/github-pages-first-site/",
   "/guides/github-pages-first-site.json",
   "/guides/index.json",
+  "/guides/miniprogram-cloud/",
+  "/guides/miniprogram-cloud.json",
   "/guides/ollama-local-ai/",
   "/guides/ollama-local-ai.json",
+  "/guides/phone-automation/",
+  "/guides/phone-automation.json",
+  "/guides/pwa-install/",
+  "/guides/pwa-install.json",
   "/guides/toolhub-image-pipeline/",
   "/guides/toolhub-image-pipeline.json",
   "/guides/tv-box-server/",
   "/guides/tv-box-server.json",
+  "/guides/wechat-miniprogram-first/",
+  "/guides/wechat-miniprogram-first.json",
   "/schemas/resource.json",
   "/tools/schema.json",
   "/workflows/workflows.json"

@@ -48,6 +48,9 @@ const PATHS = [
   // v3.29：教程 5 篇变 8 篇。抽两种最不一样的：一篇是纯站内工具串起来的流程（工具用法），
   // 一篇是 risk=high、唯一会渲染 .guide-risk 风险块的（开源部署）。这两篇坏了的表现完全不同。
   '/guides/toolhub-image-pipeline/', '/guides/cloudflare-tunnel-home/',
+  // v3.29 第三批四篇（muse 草稿）：抽一篇带围栏代码块的（pwa-install，围栏前后少一个空行
+  // 就会把 ``` 原样吐到页面上）和一篇 risk=mid 的（小程序注册，规定不渲染风险块）。
+  '/guides/pwa-install/', '/guides/wechat-miniprogram-first/',
   // 教程页与 SPA 共用的正文渲染模块——它一坏，五篇的代码示例同时出问题。
   '/assets/lib/guide-text.js',
 ];

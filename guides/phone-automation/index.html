@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>手机自动化：快捷指令 / Tasker 入门 · 教程 · ToolHub</title>
+  <meta name="description" content="到公司自动连 Wi-Fi、到点提醒喝水、顺手备份照片，三个现成配方。" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/phone-automation/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/phone-automation/" />
+  <meta property="og:title" content="手机自动化：快捷指令 / Tasker 入门 · 教程 · ToolHub" />
+  <meta property="og:description" content="到公司自动连 Wi-Fi、到点提醒喝水、顺手备份照片，三个现成配方。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 132 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"手机自动化：快捷指令 / Tasker 入门","description":"到公司自动连 Wi-Fi、到点提醒喝水、顺手备份照片，三个现成配方。","totalTime":"PT40M","dateModified":"2026-11-05","supply":[{"@type":"HowToSupply","name":"iPhone：系统自带的\"快捷指令\"App（iOS 13 及以上都有，免费）。安卓：Tasker（Google Play 一次性付费购买，美区现价约 $4.49，按地区定价，以商店页面为准；7 天免费试用版需从官网下载，无订阅）。"},{"@type":"HowToSupply","name":"知道公司和家的地址（配方一要用位置触发）。位置触发需要把定位权限设为\"始终允许\"，否则锁屏时触发不了。"},{"@type":"HowToSupply","name":"做之前先想好：触发条件是什么、触发后要手机做什么。先想后点，少走弯路。"}],"step":[{"@type":"HowToStep","position":1,"name":"先分清你用哪一边","text":"iPhone 只用\"快捷指令\"（免费自带）；安卓用 Tasker；三星手机自带\"模式与日常程序\"（旧称 Bixby Routines，设置里找）、部分小米手机（MIUI 14 / HyperOS 国行等版本）有隐藏的\"自动任务\"功能，但不是每台小米都有，找不到就直接用 Tasker，功能简单但免费，先用它们练手也行。本篇配方一、二是 iPhone，配方三是 Tasker。"},{"@type":"HowToStep","position":2,"name":"配方一：到公司自动连 Wi-Fi、静音（iPhone）","text":"打开\"快捷指令\"→ 底部点\"自动化\"→ 右上角 + → 选\"到达\"→ 点\"选取\"搜公司地址，地图上拖动蓝色圆圈调触发范围（默认 100 米左右）→ 下一步 →\"添加操作\"→ 搜\"设定 Wi-Fi\"选\"开\"→ 再添加动作，搜\"设定专注模式\"，选\"打开\"，专注模式选\"勿扰模式\"→ 点下一步 → 关掉\"运行前询问\"（选\"不询问\"）→ 点\"完成\"。成功的标志：第二天到公司，手机自动连上公司 Wi-Fi、进入勿扰，不用你点任何东西。"},{"@type":"HowToStep","position":3,"name":"为什么要关\"运行前询问\"","text":"默认开着的话，每次触发手机只会弹通知问你\"要不要运行\"，你还得手动点，自动化就白做了。苹果官方说明里，\"到达\"\"特定时间\"\"无线局域网\"这些触发都可以关掉询问、直接运行。注意：个别操作可能仍需单独授权或在锁屏下受限，以实际测试为准；如果某一步总弹确认，把它换成通知提醒、手动确认后再做。"},{"@type":"HowToStep","position":4,"name":"配方二：每天 21:00 提醒喝水、备份照片（iPhone）","text":"自动化 → + → 选\"特定时间\"→ 设 21:00，重复选\"每天\"→ 下一步 → 添加操作 → 搜\"显示通知\"，文字写\"该喝水了，顺手把今天的照片备份一下\"→ 再加一个动作\"打开 App\"选\"照片\"→ 关掉\"运行前询问\"→ 完成。成功的标志：每天 21:00 手机准时弹出这条提醒。"},{"@type":"HowToStep","position":5,"name":"配方三：晚上 23:00 自动进夜间模式（Tasker，安卓）","text":"打开 Tasker → 点 + 新建\"配置文件\"→ 起名\"夜间模式\"→ 选触发条件\"时间\"→ 设 23:00 到 7:00 → 点\"新建任务\"起名\"夜间\"→ 点 + 加动作：先加\"勿扰模式\"设为开，再加\"显示亮度\"设为 20 → 返回保存。Tasker 的逻辑就两层：配置文件就是\"什么时候触发\"，任务就是\"触发后做什么\"。"},{"@type":"HowToStep","position":6,"name":"给夜间模式加一个\"退出任务\"","text":"长按刚才的配置文件 → 点\"添加退出任务\"→ 新建任务\"白天\"→ 动作：勿扰模式关、显示亮度恢复自动。没有退出任务的话，早上 7 点过了，手机还留在勿扰和暗屏状态。"},{"@type":"HowToStep","position":7,"name":"Tasker 的两处权限，别漏","text":"第一处：定位权限设为\"始终允许\"（如果配方里用了位置触发）；第二处：电池优化白名单——长按 Tasker 图标 → 应用信息 → 电池 → 选\"无限制\"（或\"不优化\"，不同手机叫法不同）；三星还需检查\"电池 → 后台使用限制\"，小米还需在\"设置 → 应用 → 自启动\"里打开 Tasker。找不到时直接在设置顶部的搜索框搜\"电池优化\"。不然系统会在后台杀掉它，时间到了也不执行。权限申请时系统会一步步弹窗，照着点\"允许\"就行。"},{"@type":"HowToStep","position":8,"name":"测试与排错：先手动跑一次","text":"每个配方做完先手动点运行按钮试一次，确认动作都对。再等一次真实触发验证。没触发时按顺序查三处：定位权限是不是\"始终\"、\"运行前询问\"关了没有、电池优化有没有放行。三处都对还不行，就把触发范围调大一点（比如公司位置圆圈从 100 米调到 200 米）。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"手机自动化：快捷指令 / Tasker 入门","item":"https://toolhub.bot.cd/guides/phone-automation/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"快捷指令和 Tasker 哪个免费？","acceptedAnswer":{"@type":"Answer","text":"iPhone 的快捷指令是系统自带、免费；Tasker 是安卓上的一次性付费购买（美区现价约 $4.49，按地区定价，以商店页面为准），7 天免费试用版需从官网下载，无订阅。三星「模式与日常程序」（旧称 Bixby Routines）和部分小米手机的「自动任务」免费但功能简单，适合先练手。"}},{"@type":"Question","name":"自动化会不会半夜自己发短信、删照片？","acceptedAnswer":{"@type":"Answer","text":"个别操作可能仍需单独授权或在锁屏下受限，以实际测试为准；如果某一步总弹确认，把它换成通知提醒、手动确认后再做。日常配方（连 Wi-Fi、静音、调亮度、弹通知）可以关掉询问直接运行。"}},{"@type":"Question","name":"位置触发要一直开着定位吗？耗电吗？","acceptedAnswer":{"@type":"Answer","text":"要把定位权限设为「始终允许」，但不用一直开 GPS 高精度定位——系统用基站和 Wi-Fi 大致判断位置，耗电很小。触发范围调得太大（比如 500 米）会提前触发，100–200 米比较合适。"}},{"@type":"Question","name":"一个自动化能做几件事？","acceptedAnswer":{"@type":"Answer","text":"能串一串动作：到公司 → 连 Wi-Fi → 开勿扰 → 调亮度 → 发通知，一次触发全执行。动作越多越要先手动跑一次，确认每一步都对。"}},{"@type":"Question","name":"换了手机，自动化要重做吗？","acceptedAnswer":{"@type":"Answer","text":"iPhone 的快捷指令会通过 iCloud 同步到新手机，但自动化建议在新手机上打开检查一遍触发条件；Tasker 的配置可以导出备份文件，换机后导入恢复。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>⚡ 手机自动化：快捷指令 / Tasker 入门</h1><p>到公司自动连 Wi-Fi、到点提醒喝水、顺手备份照片，三个现成配方。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 手机自动化：快捷指令 / Tasker 入门</div><div class="guide-meta"><span>难度 <b>中等</b></span><span>约 <b>40</b> 分钟</span><span class="gm-risk gm-ok">风险 <b>低</b></span><span>最后核对 <b>2026-11-05</b></span></div><div class="res-intro">手机自动化就是"到条件、做动作"：到了公司就连 Wi-Fi，到了晚上 9 点就提醒你喝水。你不用写代码，只要选一个触发条件（时间、地点、连上某个 Wi-Fi），再选一串动作（开 Wi-Fi、静音、发通知），手机以后就自己执行。iPhone 用系统自带的"快捷指令"，免费；安卓用 Tasker，付费但功能最全。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>每天省掉几十次重复操作。连 Wi-Fi、静音、调亮度这些小事，一天做几十遍，自动化之后一次都不用管。</li><li>不用装一堆 App。一个自动化顶好几个提醒类 App，还不用给它们开一堆权限。</li><li>配方可以照抄。本篇三个配方按步骤点就行，跑通一个，改条件和动作就能变出自己的。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>iPhone：系统自带的"快捷指令"App（iOS 13 及以上都有，免费）。安卓：Tasker（Google Play 一次性付费购买，美区现价约 $4.49，按地区定价，以商店页面为准；7 天免费试用版需从官网下载，无订阅）。</li><li>知道公司和家的地址（配方一要用位置触发）。位置触发需要把定位权限设为"始终允许"，否则锁屏时触发不了。</li><li>做之前先想好：触发条件是什么、触发后要手机做什么。先想后点，少走弯路。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>先分清你用哪一边</b><p>iPhone 只用&quot;快捷指令&quot;（免费自带）；安卓用 Tasker；三星手机自带&quot;模式与日常程序&quot;（旧称 Bixby Routines，设置里找）、部分小米手机（MIUI 14 / HyperOS 国行等版本）有隐藏的&quot;自动任务&quot;功能，但不是每台小米都有，找不到就直接用 Tasker，功能简单但免费，先用它们练手也行。本篇配方一、二是 iPhone，配方三是 Tasker。</p></li><li><b>配方一：到公司自动连 Wi-Fi、静音（iPhone）</b><p>打开&quot;快捷指令&quot;→ 底部点&quot;自动化&quot;→ 右上角 + → 选&quot;到达&quot;→ 点&quot;选取&quot;搜公司地址，地图上拖动蓝色圆圈调触发范围（默认 100 米左右）→ 下一步 →&quot;添加操作&quot;→ 搜&quot;设定 Wi-Fi&quot;选&quot;开&quot;→ 再添加动作，搜&quot;设定专注模式&quot;，选&quot;打开&quot;，专注模式选&quot;勿扰模式&quot;→ 点下一步 → 关掉&quot;运行前询问&quot;（选&quot;不询问&quot;）→ 点&quot;完成&quot;。成功的标志：第二天到公司，手机自动连上公司 Wi-Fi、进入勿扰，不用你点任何东西。</p></li><li><b>为什么要关"运行前询问"</b><p>默认开着的话，每次触发手机只会弹通知问你&quot;要不要运行&quot;，你还得手动点，自动化就白做了。苹果官方说明里，&quot;到达&quot;&quot;特定时间&quot;&quot;无线局域网&quot;这些触发都可以关掉询问、直接运行。注意：个别操作可能仍需单独授权或在锁屏下受限，以实际测试为准；如果某一步总弹确认，把它换成通知提醒、手动确认后再做。</p></li><li><b>配方二：每天 21:00 提醒喝水、备份照片（iPhone）</b><p>自动化 → + → 选&quot;特定时间&quot;→ 设 21:00，重复选&quot;每天&quot;→ 下一步 → 添加操作 → 搜&quot;显示通知&quot;，文字写&quot;该喝水了，顺手把今天的照片备份一下&quot;→ 再加一个动作&quot;打开 App&quot;选&quot;照片&quot;→ 关掉&quot;运行前询问&quot;→ 完成。成功的标志：每天 21:00 手机准时弹出这条提醒。</p></li><li><b>配方三：晚上 23:00 自动进夜间模式（Tasker，安卓）</b><p>打开 Tasker → 点 + 新建&quot;配置文件&quot;→ 起名&quot;夜间模式&quot;→ 选触发条件&quot;时间&quot;→ 设 23:00 到 7:00 → 点&quot;新建任务&quot;起名&quot;夜间&quot;→ 点 + 加动作：先加&quot;勿扰模式&quot;设为开，再加&quot;显示亮度&quot;设为 20 → 返回保存。Tasker 的逻辑就两层：配置文件就是&quot;什么时候触发&quot;，任务就是&quot;触发后做什么&quot;。</p></li><li><b>给夜间模式加一个"退出任务"</b><p>长按刚才的配置文件 → 点&quot;添加退出任务&quot;→ 新建任务&quot;白天&quot;→ 动作：勿扰模式关、显示亮度恢复自动。没有退出任务的话，早上 7 点过了，手机还留在勿扰和暗屏状态。</p></li><li><b>Tasker 的两处权限，别漏</b><p>第一处：定位权限设为&quot;始终允许&quot;（如果配方里用了位置触发）；第二处：电池优化白名单——长按 Tasker 图标 → 应用信息 → 电池 → 选&quot;无限制&quot;（或&quot;不优化&quot;，不同手机叫法不同）；三星还需检查&quot;电池 → 后台使用限制&quot;，小米还需在&quot;设置 → 应用 → 自启动&quot;里打开 Tasker。找不到时直接在设置顶部的搜索框搜&quot;电池优化&quot;。不然系统会在后台杀掉它，时间到了也不执行。权限申请时系统会一步步弹窗，照着点&quot;允许&quot;就行。</p></li><li><b>测试与排错：先手动跑一次</b><p>每个配方做完先手动点运行按钮试一次，确认动作都对。再等一次真实触发验证。没触发时按顺序查三处：定位权限是不是&quot;始终&quot;、&quot;运行前询问&quot;关了没有、电池优化有没有放行。三处都对还不行，就把触发范围调大一点（比如公司位置圆圈从 100 米调到 200 米）。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>到公司没自动执行：按顺序查三处——定位权限是不是「始终允许」（不是「使用期间」）、「运行前询问」关了没有、触发范围够不够大（公司位置圆圈从 100 米调到 200 米）；三处都对还不行，把这个自动化删掉重建一次。</li><li>每天 21:00 的提醒没弹：先确认「运行前询问」已关；再确认手机那段时间不是勿扰或专注模式把通知压住了；最后手动点一次运行按钮，确认动作本身没错。</li><li>Tasker 时间到了不执行：长按 Tasker 图标 → 应用信息 → 电池 → 选「无限制」（或「不优化」，不同手机叫法不同）；三星还需检查「电池 → 后台使用限制」，小米还需在「设置 → 应用 → 自启动」里打开 Tasker。找不到时直接在设置顶部的搜索框搜「电池优化」。系统在后台杀掉它是最常见的原因；再确认 Tasker 的权限都给了（定位「始终」、通知权限）。</li><li>自动化运行时弹了询问还要手动点：个别操作可能仍需单独授权或在锁屏下受限，以实际测试为准，这是系统限制，不是设置错了；如果某一步总弹确认，把它换成通知提醒、手动确认后再做。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>定位权限只给「使用期间」</b></div><div class="res-item-note">位置触发的自动化在锁屏时也要靠定位判断，「使用期间」权限下锁屏后收不到位置，触发不了；必须设「始终允许」。</div></div><div class="res-item"><div class="res-item-head"><b>忘了关「运行前询问」</b></div><div class="res-item-note">默认开着的话，每次触发只弹通知问「要不要运行」，还得手动点，自动化白做了；建好后第一时间关掉。个别操作可能仍需单独授权或在锁屏下受限，以实际测试为准。</div></div><div class="res-item"><div class="res-item-head"><b>Tasker 没进电池优化白名单</b></div><div class="res-item-note">安卓系统会在后台杀掉 Tasker，时间到了也不执行；长按 Tasker 图标 → 应用信息 → 电池 → 选「无限制」（或「不优化」，不同手机叫法不同）；三星还需检查「电池 → 后台使用限制」，小米还需在「设置 → 应用 → 自启动」里打开 Tasker。找不到时直接在设置顶部的搜索框搜「电池优化」。</div></div><div class="res-item"><div class="res-item-head"><b>夜间模式没有退出任务</b></div><div class="res-item-note">只做了 23:00 进夜间模式、没做 7:00 的退出任务，早上起来手机还留在勿扰和暗屏状态；配置文件和退出任务要成对做。</div></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://support.apple.com/zh-cn/guide/shortcuts/apd602971e63/ios" target="_blank" rel="noopener nofollow">Apple 支持：快捷指令自动化</a></div><div class="res-item-note">哪些自动化可以"不询问直接运行"的官方清单</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://tasker.joaoapps.com/" target="_blank" rel="noopener nofollow">Tasker 官网</a></div><div class="res-item-note">7 天免费试用版下载、价格与使用说明</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>快捷指令和 Tasker 哪个免费？</b></div><div class="res-item-note">iPhone 的快捷指令是系统自带、免费；Tasker 是安卓上的一次性付费购买（美区现价约 $4.49，按地区定价，以商店页面为准），7 天免费试用版需从官网下载，无订阅。三星「模式与日常程序」（旧称 Bixby Routines）和部分小米手机的「自动任务」免费但功能简单，适合先练手。</div></div><div class="res-item"><div class="res-item-head"><b>自动化会不会半夜自己发短信、删照片？</b></div><div class="res-item-note">个别操作可能仍需单独授权或在锁屏下受限，以实际测试为准；如果某一步总弹确认，把它换成通知提醒、手动确认后再做。日常配方（连 Wi-Fi、静音、调亮度、弹通知）可以关掉询问直接运行。</div></div><div class="res-item"><div class="res-item-head"><b>位置触发要一直开着定位吗？耗电吗？</b></div><div class="res-item-note">要把定位权限设为「始终允许」，但不用一直开 GPS 高精度定位——系统用基站和 Wi-Fi 大致判断位置，耗电很小。触发范围调得太大（比如 500 米）会提前触发，100–200 米比较合适。</div></div><div class="res-item"><div class="res-item-head"><b>一个自动化能做几件事？</b></div><div class="res-item-note">能串一串动作：到公司 → 连 Wi-Fi → 开勿扰 → 调亮度 → 发通知，一次触发全执行。动作越多越要先手动跑一次，确认每一步都对。</div></div><div class="res-item"><div class="res-item-head"><b>换了手机，自动化要重做吗？</b></div><div class="res-item-note">iPhone 的快捷指令会通过 iCloud 同步到新手机，但自动化建议在新手机上打开检查一遍触发条件；Tasker 的配置可以导出备份文件，换机后导入恢复。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="62 个在本机跑 · 132 个已收录 · 58 条资源 · 无需注册" data-en="62 run in your browser · 132 listed · 50 resources · no sign-up">62 个在本机跑 · 132 个已收录 · 58 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="phone-automation";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
