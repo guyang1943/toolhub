@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.28 · 预缓存 304 个地址 · 约 4.7 MB
+// 版本：toolhub-v3.28 · 预缓存 313 个地址 · 约 4.8 MB
 const VERSION = "toolhub-v3.28";
 const CORE = [
   "/",
@@ -165,6 +165,12 @@ const FULL = [
   "/tools/date-calc/run.js",
   "/tools/bmi-calc/",
   "/tools/bmi-calc/run.js",
+  "/tools/json-diff/",
+  "/tools/json-diff/run.js",
+  "/tools/expense-aa/",
+  "/tools/expense-aa/run.js",
+  "/tools/text-to-pdf/",
+  "/tools/text-to-pdf/run.js",
   "/assets/vendor/jsQR.js",
   "/assets/vendor/marked.min.js",
   "/assets/vendor/pdf-lib.min.js",
@@ -227,6 +233,7 @@ const FULL = [
   "/articles/disk-partition.json",
   "/articles/env-parser.json",
   "/articles/exif-strip.json",
+  "/articles/expense-aa.json",
   "/articles/file-hash.json",
   "/articles/gradient-gen.json",
   "/articles/http-code.json",
@@ -242,6 +249,7 @@ const FULL = [
   "/articles/image-watermark.json",
   "/articles/img-crop.json",
   "/articles/img-to-pdf.json",
+  "/articles/json-diff.json",
   "/articles/json-format.json",
   "/articles/jwt-decode.json",
   "/articles/lorem-kit.json",
@@ -267,6 +275,7 @@ const FULL = [
   "/articles/text-dedupe.json",
   "/articles/text-diff.json",
   "/articles/text-encrypt.json",
+  "/articles/text-to-pdf.json",
   "/articles/timestamp.json",
   "/articles/timezone-convert.json",
   "/articles/token-counter.json",

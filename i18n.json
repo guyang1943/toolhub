@@ -639,6 +639,18 @@
       "bmi-calc": {
         "name": "BMI Calculator",
         "desc": "BMI from height and weight, graded by the Chinese standard."
+      },
+      "json-diff": {
+        "name": "JSON Semantic Diff",
+        "desc": "Compare two JSON documents by path, not by text line."
+      },
+      "expense-aa": {
+        "name": "Bill Split",
+        "desc": "Split a shared bill into the fewest possible transfers."
+      },
+      "text-to-pdf": {
+        "name": "Text to PDF",
+        "desc": "Typeset plain text into a PDF, generated entirely on your device."
       }
     },
     "res": {

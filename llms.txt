@@ -1,7 +1,7 @@
 # ToolHub
 > 开源在线工具目录：能在浏览器里跑的都在本机处理，文件 0 字节上传服务器；第三方工具只做跳转，适用对方隐私政策。
 
-## 本地工具（62 个，在本机运行，0 字节上传）
+## 本地工具（65 个，在本机运行，0 字节上传）
 - [JSON 格式化](https://toolhub.bot.cd/tools/json-format/): 美化/压缩 JSON，自动校验语法错误
 - [图片压缩](https://toolhub.bot.cd/tools/image-compress/): 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器
 - [二维码生成](https://toolhub.bot.cd/tools/qrcode/): 把文本/网址变成二维码，可下载 PNG
@@ -64,6 +64,9 @@
 - [条形码生成器](https://toolhub.bot.cd/tools/barcode-gen/): 生成 Code128 与 EAN-13 条形码并下载 PNG
 - [日期计算器](https://toolhub.bot.cd/tools/date-calc/): 算日期间隔天数，或加减天数与工作日
 - [BMI 计算器](https://toolhub.bot.cd/tools/bmi-calc/): 身高体重算 BMI，按中国标准判区间
+- [JSON 语义对比](https://toolhub.bot.cd/tools/json-diff/): 按路径比两个 JSON 的增删改，不是比文本行
+- [AA 分摊](https://toolhub.bot.cd/tools/expense-aa/): 聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清
+- [文本转 PDF](https://toolhub.bot.cd/tools/text-to-pdf/): 纯文本排成 PDF，内置字体不嵌字，字节全在本机生成
 
 ## 第三方目录（70 个，跳转对方官网，适用对方隐私政策）
 - [Excalidraw](https://toolhub.bot.cd/tools/excalidraw/): 手绘风格白板画图，协作绘图神器（数据边界：看用法）

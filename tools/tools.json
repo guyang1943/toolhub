@@ -1529,6 +1529,73 @@
         "BMI"
       ],
       "since": "v3.27"
+    },
+    {
+      "id": "json-diff",
+      "name": "JSON 语义对比",
+      "desc": "按路径比两个 JSON 的增删改，不是比文本行",
+      "category": "数据",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "JSON",
+        "对比",
+        "diff"
+      ],
+      "aliases": [
+        "yuyiduibi",
+        "yydb",
+        "比对",
+        "差异",
+        "diff",
+        "json semantic diff",
+        "json",
+        "semantic"
+      ]
+    },
+    {
+      "id": "expense-aa",
+      "name": "AA 分摊",
+      "desc": "聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清",
+      "category": "效率",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "AA",
+        "记账",
+        "分摊"
+      ],
+      "aliases": [
+        "fentan",
+        "ft",
+        "bill split",
+        "bill",
+        "split"
+      ]
+    },
+    {
+      "id": "text-to-pdf",
+      "name": "文本转 PDF",
+      "desc": "纯文本排成 PDF，内置字体不嵌字，字节全在本机生成",
+      "category": "文档",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "PDF",
+        "导出",
+        "文本"
+      ],
+      "aliases": [
+        "wenbenzhuan",
+        "wbz",
+        "text to pdf",
+        "text",
+        "to",
+        "pdf"
+      ]
     }
   ]
 }
