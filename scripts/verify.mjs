@@ -1290,6 +1290,13 @@ check('折腾指南（v3.15）', () => {
       assert(visible.includes('<pre><code>'), `${x.slug} 有围栏代码块，但页面上没有 <pre><code>`);
     }
     if (x.risk === 'high') assert(html.includes('guide-risk'), `${x.slug} 风险为 high 但没有风险提示块`);
+    // riskNote 只给 high 用。构建只在 high 时渲染这个字段，mid/low 写了就是没人看得见的死数据
+    // （cloudflare-free 这么躺了两个版本）。低/中风险的风险提示要写进 intro / prereqs / 步骤正文，
+    // 并且放在动作前面——先说会出什么事，再说怎么做。
+    assert(
+      x.risk === 'high' || !x.riskNote,
+      `${x.slug} 的 risk 是 ${x.risk}，不该有 riskNote 字段（改写进 intro / prereqs / 步骤正文，放在动作之前）`,
+    );
     // 站内工具引用必须真的渲染出链接，并且 id 存在（构建期已校验，这里查产物）
     for (const id of x.tools || []) {
       assert(ids.has(id), `${x.slug} 引用了不存在的工具 ${id}`);

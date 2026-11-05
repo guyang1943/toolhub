@@ -45,6 +45,9 @@ const PATHS = [
   // （静态页把 ``` 原样拼进 HTML，示例里的 <html> 会被浏览器吃掉，页面看着「少了一段」而不是报错）。
   // 抽两篇：一篇带围栏代码块（渲染层最容易坏的地方），一篇是最高访问量的入口类目。
   '/guides/github-pages-first-site/', '/guides/custom-domain/',
+  // v3.29：教程 5 篇变 8 篇。抽两种最不一样的：一篇是纯站内工具串起来的流程（工具用法），
+  // 一篇是 risk=high、唯一会渲染 .guide-risk 风险块的（开源部署）。这两篇坏了的表现完全不同。
+  '/guides/toolhub-image-pipeline/', '/guides/cloudflare-tunnel-home/',
   // 教程页与 SPA 共用的正文渲染模块——它一坏，五篇的代码示例同时出问题。
   '/assets/lib/guide-text.js',
 ];

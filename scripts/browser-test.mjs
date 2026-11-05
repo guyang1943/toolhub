@@ -478,6 +478,39 @@ async function feedFile(selector, dataUrl, name, type) {
   check('总览第二篇能点进详情', g2Path === '/guides/github-pages-first-site/', g2Path);
   check('新篇步骤数与数据一致', g2Steps === 7, g2Steps + ' 步');
   check('低风险篇目不渲染风险提示块', await evaluate(`!document.querySelector('.guide-risk')`));
+
+  // v3.29 第二批三篇（工具用法 / AI 应用 / 开源部署）。只 goto 直达等于没验入口：
+  // 总览少一行、链接写错一个字，用户就是点不进去，而直达测试照样全绿。
+  // 所以这里从总览按 href 找到那一行再点——找不到就返回 false，比等到 click 抛 null 更早说清问题。
+  await goto('/guides/');
+  await waitText('#page-body', '教程', 8000);
+  const pickedImg = await evaluate(
+    `(() => { const a = document.querySelector('#page-body a.fl-row[href="/guides/toolhub-image-pipeline/"]'); if (!a) return false; a.click(); return true; })()`,
+  );
+  check('总览里有「工具用法」篇的入口', pickedImg === true);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  const imgPath = await evaluate(`location.pathname`);
+  const imgSteps = await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`);
+  const GUIDE_MAP = new Map(JSON.parse(readFileSync(join(root, 'content/guides.json'), 'utf8')).guides.map((g) => [g.slug, g]));
+  check('工具用法篇能从总览点进详情', imgPath === '/guides/toolhub-image-pipeline/', imgPath);
+  check('工具用法篇步骤数与数据一致', imgSteps === GUIDE_MAP.get('toolhub-image-pipeline').steps.length, `${imgSteps} 步`);
+  check('工具用法篇把站内工具渲染成链接', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 3);
+
+  // 高风险篇目是唯一会渲染 .guide-risk 的那一类：数据里 riskNote 有、risk 不是 high，
+  // 页面就会安静地少掉整块风险提示——这条块的存在与否只能真打开看。
+  await goto('/guides/');
+  await waitText('#page-body', '教程', 8000);
+  const pickedTunnel = await evaluate(
+    `(() => { const a = document.querySelector('#page-body a.fl-row[href="/guides/cloudflare-tunnel-home/"]'); if (!a) return false; a.click(); return true; })()`,
+  );
+  check('总览里有高风险篇的入口', pickedTunnel === true);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  check('高风险篇渲染出风险提示块', await evaluate(`!!document.querySelector('.guide-risk')`));
+  check(
+    '高风险篇步骤数与数据一致',
+    (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
+      GUIDE_MAP.get('cloudflare-tunnel-home').steps.length,
+  );
   await goto('/');
 
   // ---- 1.56 评测列表（v3.13 改为行式列表）----
