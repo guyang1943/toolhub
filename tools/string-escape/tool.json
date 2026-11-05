@@ -1,0 +1,22 @@
+{
+  "id": "string-escape",
+  "name": "字符串转义",
+  "desc": "JS/JSON/URL/HTML/Unicode 转义与反转义",
+  "category": "文本",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "转义",
+    "编码"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "zifuchuanzhuanyi",
+    "zfczy",
+    "string escape / unescape",
+    "string",
+    "escape",
+    "unescape"
+  ]
+}

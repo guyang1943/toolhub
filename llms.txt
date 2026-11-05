@@ -1,7 +1,7 @@
 # ToolHub
 > 开源在线工具目录：能在浏览器里跑的都在本机处理，文件 0 字节上传服务器；第三方工具只做跳转，适用对方隐私政策。
 
-## 本地工具（38 个，在本机运行，0 字节上传）
+## 本地工具（50 个，在本机运行，0 字节上传）
 - [JSON 格式化](https://toolhub.bot.cd/tools/json-format/): 美化/压缩 JSON，自动校验语法错误
 - [图片压缩](https://toolhub.bot.cd/tools/image-compress/): 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器
 - [二维码生成](https://toolhub.bot.cd/tools/qrcode/): 把文本/网址变成二维码，可下载 PNG
@@ -40,6 +40,18 @@
 - [文件哈希校验](https://toolhub.bot.cd/tools/file-hash/): 拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对
 - [CSV 选列与重排](https://toolhub.bot.cd/tools/csv-columns/): CSV 列太多？选列、拖动排序、按列值过滤后导出新表
 - [硬盘整数分区计算器](https://toolhub.bot.cd/tools/disk-partition/): 算出 NTFS / FAT32 下显示整数 GB 分区时该填的精确 MB 值
+- [文本加解密](https://toolhub.bot.cd/tools/text-encrypt/): AES 加密解密文本，密码派生密钥，全程本地
+- [Markdown 表格生成器](https://toolhub.bot.cd/tools/markdown-table/): 按行列数生成可直接粘贴的 Markdown 表格源码
+- [字符串转义](https://toolhub.bot.cd/tools/string-escape/): JS/JSON/URL/HTML/Unicode 转义与反转义
+- [占位文本生成](https://toolhub.bot.cd/tools/lorem-kit/): 中英文占位文本，Mock 页面不用再敲测试测试
+- [Token 估算](https://toolhub.bot.cd/tools/token-counter/): 估算提示词的 Token 消耗，调用 AI 前先看成本
+- [URL 解析构造](https://toolhub.bot.cd/tools/url-kit/): 拆解 URL 各部分，整理 query 参数并重新拼装
+- [子网计算器](https://toolhub.bot.cd/tools/subnet-calc/): IP 加掩码算出网段、广播地址与可用主机数
+- [XML 格式化](https://toolhub.bot.cd/tools/xml-format/): XML 美化压缩并校验合法性，报错给出行号
+- [HTTP 状态码速查](https://toolhub.bot.cd/tools/http-code/): 输入状态码看含义、常见场景与排查方向
+- [进制转换](https://toolhub.bot.cd/tools/radix-convert/): 2/8/10/16/36 进制批量互转，大数不丢精度
+- [.env 解析](https://toolhub.bot.cd/tools/env-parser/): 解析 .env，标重复键与格式错误，转 JSON 或 export
+- [CSS 单位换算](https://toolhub.bot.cd/tools/css-unit/): px/rem/em/vw/vh 互转，基准字号可设
 
 ## 第三方目录（70 个，跳转对方官网，适用对方隐私政策）
 - [Excalidraw](https://toolhub.bot.cd/tools/excalidraw/): 手绘风格白板画图，协作绘图神器（数据边界：看用法）

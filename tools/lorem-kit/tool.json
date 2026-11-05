@@ -1,0 +1,22 @@
+{
+  "id": "lorem-kit",
+  "name": "占位文本生成",
+  "desc": "中英文占位文本，Mock 页面不用再敲测试测试",
+  "category": "文本",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "占位",
+    "Mock"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "zhanweiwenbenshengcheng",
+    "zwwbsc",
+    "placeholder text generator",
+    "placeholder",
+    "text",
+    "generator"
+  ]
+}

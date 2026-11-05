@@ -1176,6 +1176,385 @@
         "fsType": "File system",
         "batch": "Batch sizes (optional, comma or space separated, e.g. 120, 500, 1000)"
       }
+    },
+    "text-encrypt": {
+      "usage": "Encrypt a piece of text into a portable ciphertext with a password, or turn that ciphertext back into plaintext with the same password. Keys are derived with PBKDF2 and encryption is AES-GCM, all inside the browser.",
+      "tips": [
+        "The same text with the same password produces different ciphertext every time — random salt and IV, by design",
+        "A lost password cannot be recovered: there is no reset, no backdoor, no copy kept on a server",
+        "The password field is plain text because HTML forms have no password input type here; mind who is watching",
+        "Ciphertext is fine to paste into chat, but send the password through a different channel"
+      ],
+      "scenarios": [
+        {
+          "scene": "Sending a shared secret to a colleague",
+          "how": "Encrypt it, send the TH1: string, tell the password over the phone",
+          "result": "A forwarded message stays unreadable"
+        },
+        {
+          "scene": "Keeping a private note in a synced folder",
+          "how": "Encrypt the note and store only the ciphertext",
+          "result": "Cloud sync no longer means plaintext exposure"
+        },
+        {
+          "scene": "Checking a ciphertext someone sent you",
+          "how": "Switch to decrypt, paste the ciphertext and their password",
+          "result": "A wrong password fails loudly instead of producing garbage"
+        }
+      ],
+      "runLabel": "Run",
+      "labels": {
+        "text": "Text (plain or ciphertext)",
+        "password": "Password",
+        "op": "Operation"
+      }
+    },
+    "markdown-table": {
+      "usage": "Choose rows, columns, whether there is a header and how to align, then get paste-ready table source: a Markdown pipe table with a header, or an HTML table fragment when you pick no header (Markdown pipe tables require a header row).",
+      "tips": [
+        "Markdown pipe tables always need a header and separator row, so \"no header\" outputs an HTML table fragment instead of faking one",
+        "Alignment applies to the whole table: `:---`, `:---:` or `---:`; mixed alignment needs a manual edit of the separator row",
+        "Cells are left empty — fill them in your editor; column width follows content, no padding needed"
+      ],
+      "scenarios": [
+        {
+          "scene": "A parameter table for a spec document",
+          "how": "5 rows, 3 columns, header on, left aligned",
+          "result": "A renderable skeleton without counting pipes by hand"
+        },
+        {
+          "scene": "Comparing options in a README",
+          "how": "4 rows, 4 columns, header on, centered",
+          "result": "Alignment syntax correct the first time"
+        },
+        {
+          "scene": "A layout table with no header",
+          "how": "Pick \"no header\" to get an HTML fragment",
+          "result": "Still renders cleanly when pasted into Markdown"
+        }
+      ],
+      "runLabel": "Build table",
+      "labels": {
+        "rows": "Data rows",
+        "cols": "Columns",
+        "header": "Header",
+        "align": "Alignment"
+      }
+    },
+    "string-escape": {
+      "usage": "Escape a string the way JS, JSON, URL, HTML or Unicode expects, or reverse an escaped string back to plain text. Pick a type and a direction, paste, copy the result.",
+      "tips": [
+        "JS mode escapes both quote styles, so the result is safe inside '...' and \"...\"",
+        "For a whole URL use encodeURI; encodeURIComponent (used here) is for a single value",
+        "Unicode mode turns 中 into \\u4e2d, which is equivalent when pasted back into JS source",
+        "Unknown escape sequences are left untouched on unescape rather than silently swallowed"
+      ],
+      "scenarios": [
+        {
+          "scene": "Putting a JSON string into source code",
+          "how": "Pick JSON → escape, paste the raw text",
+          "result": "A quoted literal you can assign directly"
+        },
+        {
+          "scene": "Chinese text in a URL parameter",
+          "how": "Pick URL → escape",
+          "result": "A value like %E4%B8%AD ready to concatenate"
+        },
+        {
+          "scene": "Reading a string full of \\u4e2d\\u6587",
+          "how": "Pick Unicode → unescape",
+          "result": "Back to readable text"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "text": "Text",
+        "mode": "Type",
+        "dir": "Direction"
+      }
+    },
+    "lorem-kit": {
+      "usage": "Generate Chinese or English placeholder text in paragraphs, headings or single sentences. Chinese text is assembled from phrase pools so it reads like real prose, and the same settings always produce the same output.",
+      "tips": [
+        "Chinese placeholders are built from phrases, never random characters, so they will not look like a layout bug",
+        "Headings produce one line without punctuation; paragraphs produce three to five sentences",
+        "Same settings give the same text (fixed seed), so repeating screenshots and reviews line up",
+        "None of it means anything — replace it before publishing"
+      ],
+      "scenarios": [
+        {
+          "scene": "A design mockup needs body copy",
+          "how": "Chinese, paragraphs, 6",
+          "result": "Readable paragraphs instead of \"test test test\""
+        },
+        {
+          "scene": "An English page layout",
+          "how": "English, paragraphs, 4",
+          "result": "Lorem Ipsum with realistic length"
+        },
+        {
+          "scene": "A list view needs many titles",
+          "how": "Chinese, headings, 8",
+          "result": "Eight short title lines without punctuation"
+        }
+      ],
+      "runLabel": "Generate",
+      "labels": {
+        "lang": "Language",
+        "paras": "Count",
+        "kind": "Form"
+      }
+    },
+    "token-counter": {
+      "usage": "Estimate how many tokens a prompt will consume by counting character classes (CJK, Latin, digits, punctuation) and showing three common conventions side by side. This is an approximation; billing always follows the official tokenizer.",
+      "tips": [
+        "The number is an approximation — billing follows the official tokenizer, and vendors change vocabularies",
+        "Three conventions are shown together so you can see the error bar; if they differ by 2x, plan for the larger one",
+        "Long text is counted in 20k-character chunks, so a few hundred thousand characters will not freeze the page",
+        "Code and tables are punctuation-heavy; add about 20% headroom for them"
+      ],
+      "scenarios": [
+        {
+          "scene": "Feeding a long document to a model",
+          "how": "Paste it and read the range",
+          "result": "Know whether it fits the context before trimming"
+        },
+        {
+          "scene": "Budgeting a batch of calls",
+          "how": "Multiply the per-call estimate by the count",
+          "result": "Convert to vendor pricing and avoid overruns"
+        },
+        {
+          "scene": "A mixed Chinese and English prompt",
+          "how": "Check the character breakdown",
+          "result": "See which part costs more and compress that"
+        }
+      ],
+      "runLabel": "Estimate",
+      "labels": {
+        "text": "Prompt / text",
+        "model": "Convention"
+      }
+    },
+    "url-kit": {
+      "usage": "Split a URL into protocol, host, port, path, query and fragment; list query parameters one per line, edit or delete lines, then rebuild the address. A missing protocol is filled in as https and the result says so.",
+      "tips": [
+        "A URL without a scheme (example.com/a) gets https prepended, and the result notes that it was added",
+        "Chinese in parameter values is decoded for reading and percent-encoded again when rebuilding",
+        "Duplicate keys (?tag=1&tag=2) stay as two lines; edit the one you mean",
+        "The fragment and any encoding in the path are preserved as-is, never double-encoded"
+      ],
+      "scenarios": [
+        {
+          "scene": "An API URL full of query parameters",
+          "how": "Paste it and read the parameter table",
+          "result": "See every value without hunting for & signs"
+        },
+        {
+          "scene": "Removing utm parameters from a share link",
+          "how": "Delete those lines in the parameter box",
+          "result": "A clean link with no tracking left"
+        },
+        {
+          "scene": "Adding a parameter with Chinese text",
+          "how": "Add a line q=中文 and rebuild",
+          "result": "Correctly encoded URL that opens in a browser"
+        }
+      ],
+      "runLabel": "Parse & rebuild",
+      "labels": {
+        "url": "URL",
+        "params": "Parameters (one key=value per line)"
+      }
+    },
+    "subnet-calc": {
+      "usage": "Enter an IPv4 address and a mask (24 or 255.255.255.0 both work) to get the network address, broadcast address, usable range, host count and wildcard mask, with the mask converted between both notations. IPv4 only.",
+      "tips": [
+        "Both mask notations are accepted: 24 and 255.255.255.0 are the same, and both are shown in the result",
+        "/31 and /32 follow the RFCs: a point-to-point link has 2 usable addresses, a single host has 1 — not 0",
+        "IPv4 only; IPv6 has a different bit width and a very different meaning of \"host count\"",
+        "The address class is a reserved-range check only — private does not mean unreachable, routes and NAT decide that"
+      ],
+      "scenarios": [
+        {
+          "scene": "Assigning a static IP to a new machine",
+          "how": "Enter 192.168.1.10 / 24",
+          "result": "See the usable range so you never pick the broadcast address"
+        },
+        {
+          "scene": "Checking how many addresses a subnet has left",
+          "how": "Enter the network address and mask",
+          "result": "Host count without computing 2^n−2 by hand"
+        },
+        {
+          "scene": "Choosing /30 or /31 for a link",
+          "how": "Compute both and compare",
+          "result": "/31 halves the waste, and the result explains why"
+        }
+      ],
+      "runLabel": "Calculate",
+      "labels": {
+        "ip": "IPv4 address",
+        "mask": "Subnet mask"
+      }
+    },
+    "xml-format": {
+      "usage": "Reformat one-line XML into an indented tree, or squeeze it back into a single line; when parsing fails you get the line number and the reason. Pretty-printing only reflows whitespace between elements — mixed content is left untouched.",
+      "tips": [
+        "Errors say which line and why: unclosed tag, mismatched closing tag, missing quotes on an attribute",
+        "Mixed content (text and child elements in the same element) is left as-is so text spacing is never changed",
+        "Minify only drops whitespace between elements, never spaces inside text — that would change the content",
+        "DTDs, namespaces and custom entities are not validated; this is tag-level well-formedness only"
+      ],
+      "scenarios": [
+        {
+          "scene": "An API returns XML on a single line",
+          "how": "Paste, pick pretty-print with 2 spaces",
+          "result": "The hierarchy becomes visible at a glance"
+        },
+        {
+          "scene": "Sending the smallest possible XML body",
+          "how": "Pick minify",
+          "result": "Indentation gone, text content untouched"
+        },
+        {
+          "scene": "A config file broke after an edit",
+          "how": "Paste and read the line number",
+          "result": "Jump straight to the offending line"
+        }
+      ],
+      "runLabel": "Process",
+      "labels": {
+        "xml": "XML content",
+        "mode": "Mode",
+        "indent": "Indent"
+      }
+    },
+    "http-code": {
+      "usage": "Type a three-digit status code to see its meaning, when you will meet it, and where to look next; or type a symptom such as timeout, upload or cache to find the codes that could explain it. Covers the common 1xx–5xx codes.",
+      "tips": [
+        "Search by symptom: \"timeout\" returns both 408 and 504 and explains that they point in opposite directions",
+        "401 means \"identity unclear\", 403 means \"identity known, not allowed\" — different investigations",
+        "A prefix such as 4 or 50 lists the whole group",
+        "This covers protocol meaning only; business error codes live in each API's docs"
+      ],
+      "scenarios": [
+        {
+          "scene": "A wall of 502s in production",
+          "how": "Look up 502",
+          "result": "Check the upstream process and port instead of blindly restarting the gateway"
+        },
+        {
+          "scene": "Styles vanish after a deploy",
+          "how": "Look up 304",
+          "result": "Recognise a cache revalidation and verify with a hard refresh"
+        },
+        {
+          "scene": "An API says \"timeout\" but you cannot tell where",
+          "how": "Search \"timeout\"",
+          "result": "Separate 408 (client sent slowly) from 504 (upstream answered slowly)"
+        }
+      ],
+      "runLabel": "Look up",
+      "labels": {
+        "code": "Status code or keyword"
+      }
+    },
+    "radix-convert": {
+      "usage": "Convert numbers between base 2, 8, 10, 16 and 36, one per line. BigInt keeps values above 2^53 exact, and lines with invalid digits are flagged with a reason instead of aborting the batch.",
+      "tips": [
+        "BigInt keeps big values exact: 0xFFFFFFFFFFFFFFFF becomes 18446744073709551615, not 1.8e19",
+        "Base 16 accepts a 0x prefix; negatives can be written as -ff or -255",
+        "Invalid lines stay in the results with a reason and never abort the batch; blank lines are skipped",
+        "Base 36 uses 0–9 and a–z; output is uppercased, so watch case when pasting into code"
+      ],
+      "scenarios": [
+        {
+          "scene": "Reading a hex value from a blockchain explorer",
+          "how": "Paste 0x..., base 16 → 10",
+          "result": "The exact decimal value, no lost digits"
+        },
+        {
+          "scene": "Shortening a batch of IDs with base 36",
+          "how": "One number per line, 10 → 36",
+          "result": "Short IDs of consistent length"
+        },
+        {
+          "scene": "Checking a permission bitmask",
+          "how": "Base 2 → 16",
+          "result": "Binary next to hex, so you can see which bits are set"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "numbers": "Numbers (one per line)",
+        "from": "From base",
+        "to": "To base"
+      }
+    },
+    "env-parser": {
+      "usage": "Turn a .env block into key-value pairs: supports the export prefix, single and double quotes, trailing comments and escapes. Duplicate keys and malformed lines are reported with line numbers, and the result can be copied as JSON or shell exports.",
+      "tips": [
+        "Duplicate keys: the later one wins (matching dotenv) but both line numbers are listed — never a silent override",
+        "Single quotes are literal, double quotes process \\n \\t \\\" — same instinct as writing shell",
+        "A trailing comment needs whitespace before it: A=foo#bar keeps the # in the value",
+        "No variable expansion: ${HOME} stays as written, so the result matches the file rather than a runtime"
+      ],
+      "scenarios": [
+        {
+          "scene": "Turning .env into JSON for Docker",
+          "how": "Paste and pick JSON",
+          "result": "A config object you can write straight in, duplicates visible"
+        },
+        {
+          "scene": "Checking a .env a colleague sent",
+          "how": "Paste and read the error list",
+          "result": "Missing quotes and duplicate keys, with line numbers"
+        },
+        {
+          "scene": "Importing variables into a terminal",
+          "how": "Pick shell exports",
+          "result": "Paste and source it; single quotes inside values are already escaped"
+        }
+      ],
+      "runLabel": "Parse",
+      "labels": {
+        "text": ".env content",
+        "out": "Output format"
+      }
+    },
+    "css-unit": {
+      "usage": "Convert between px, rem, em, vw, vh and pt with a configurable base font size. The result lists all six units at once and states the assumptions: vw/vh assume a 1920×1080 viewport, and em assumes the parent font size equals the base.",
+      "tips": [
+        "vw/vh are computed against a fixed 1920×1080 viewport and the result says so",
+        "em refers to the parent font size; this tool can only assume it equals the base, which is why nested em drifts",
+        "pt is a print unit: 1pt = 4/3 px (1/72 inch vs 1/96 inch), so 12pt = 16px",
+        "Changing the base font size (16, 14, 10 are common) changes every rem/em result — check the design source first"
+      ],
+      "scenarios": [
+        {
+          "scene": "The design says 24px, the code uses rem",
+          "how": "24, px → rem, base 16",
+          "result": "1.5rem you can paste straight in"
+        },
+        {
+          "scene": "A heading that scales with the viewport",
+          "how": "A px value → vw",
+          "result": "The vw equivalent, with the assumption stated"
+        },
+        {
+          "scene": "A type scale given in pt",
+          "how": "12pt → px",
+          "result": "16px, matching what the browser renders"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "value": "Value",
+        "from": "From unit",
+        "to": "To unit",
+        "base": "Base font size (px)"
+      }
     }
   }
 }

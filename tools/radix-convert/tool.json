@@ -1,0 +1,24 @@
+{
+  "id": "radix-convert",
+  "name": "进制转换",
+  "desc": "2/8/10/16/36 进制批量互转，大数不丢精度",
+  "category": "数据",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "进制",
+    "转换"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "jinzhizhuanhuan",
+    "jzzh",
+    "转格式",
+    "换格式",
+    "转成",
+    "radix converter",
+    "radix",
+    "converter"
+  ]
+}

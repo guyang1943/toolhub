@@ -1,0 +1,21 @@
+{
+  "id": "xml-format",
+  "name": "XML 格式化",
+  "desc": "XML 美化压缩并校验合法性，报错给出行号",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "XML",
+    "格式化"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "geshihua",
+    "gsh",
+    "xml formatter",
+    "xml",
+    "formatter"
+  ]
+}

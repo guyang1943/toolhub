@@ -1,0 +1,21 @@
+{
+  "id": "env-parser",
+  "name": ".env 解析",
+  "desc": "解析 .env，标重复键与格式错误，转 JSON 或 export",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "env",
+    "配置"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "jiexi",
+    "jx",
+    ".env parser",
+    ".env",
+    "parser"
+  ]
+}

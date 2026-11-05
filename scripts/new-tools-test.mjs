@@ -946,6 +946,209 @@ console.log('\n📊 CSV 选列与重排（自写引号状态机）');
   check('分隔符选错时提示改成实际分隔符', err.includes('分号'), err);
 }
 
+// ---------- 12. TP6 第一批：12 个纯计算工具 ----------
+// 这 12 个工具的正确性都落在「算得对」上，页面渲染得再正常也证明不了：
+// BigInt 换成 Number 会静默丢精度、AES 少一个 roundtrip 就会解出乱码、
+// 子网的广播地址算错一位就整段不可用。所以这里逐一调用 run()，对着可验算的数字断言。
+console.log('\n🧮 TP6 第一批（12 个纯计算工具）');
+{
+  const loadTool = (id) => import('file://' + join(root, 'tools', id, 'run.js').replace(/\\/g, '/'));
+
+  // 1. 文本加解密
+  const crypt = await loadTool('text-encrypt');
+  {
+    const secret = '这是一段要加密的文本 with ASCII & symbols ✓';
+    const enc = await crypt.run({ text: secret, password: 'correct horse battery', op: 'enc' });
+    check('密文以 TH1: 开头', enc.text.startsWith('TH1:'), enc.text.slice(0, 12));
+    const enc2 = await crypt.run({ text: secret, password: 'correct horse battery', op: 'enc' });
+    check('同一明文两次加密结果不同（随机盐）', enc.text !== enc2.text);
+    const dec = await crypt.run({ text: enc.text, password: 'correct horse battery', op: 'dec' });
+    check('加密后解密还原原文', dec.text === secret);
+    let err = '';
+    try {
+      await crypt.run({ text: enc.text, password: 'wrong password', op: 'dec' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('错密码报错而不是解出乱码', err.includes('解密失败'), err);
+    err = '';
+    try {
+      await crypt.run({ text: '不是密文', password: 'x', op: 'dec' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('非本工具密文给明确提示', err.includes('TH1'), err);
+  }
+
+  // 2. Markdown 表格
+  const mdTable = await loadTool('markdown-table');
+  {
+    const r = await mdTable.run({ rows: '2', cols: '2', header: 'yes', align: 'center' });
+    const lines = r.text.split('\n');
+    check('有表头：1 行表头 + 1 行分隔 + 2 行数据', lines.length === 4, `${lines.length} 行`);
+    check('居中分隔行是 | :---: |', lines[1].includes(':---:'), lines[1]);
+    const noHeader = await mdTable.run({ rows: '2', cols: '2', header: 'no', align: 'left' });
+    check('无表头输出 HTML 表格', /<table>[\s\S]*<tr><td><\/td><td><\/td><\/tr>/.test(noHeader.text), noHeader.text.slice(0, 40));
+    let err = '';
+    try {
+      await mdTable.run({ rows: '0', cols: '2', header: 'yes', align: 'left' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('行数超范围报错', err.includes('1–30'), err);
+  }
+
+  // 3. 字符串转义
+  const esc = await loadTool('string-escape');
+  {
+    const raw = '他说："hi"\n第二行 \\ end';
+    for (const mode of ['js', 'json', 'url', 'html', 'unicode']) {
+      const e = await esc.run({ text: raw, mode, dir: 'esc' });
+      const d = await esc.run({ text: e.text, mode, dir: 'unesc' });
+      check(`${mode} 转义→反转义还原`, d.text === raw);
+    }
+    const u = await esc.run({ text: '中', mode: 'unicode', dir: 'esc' });
+    check('Unicode 转义 中 → \\u4e2d', u.text === '\\u4e2d', u.text);
+    const h = await esc.run({ text: '<a href="x">&', mode: 'html', dir: 'esc' });
+    check('HTML 转义尖括号与引号', h.text === '&lt;a href=&quot;x&quot;&gt;&amp;', h.text);
+  }
+
+  // 4. 占位文本
+  const lorem = await loadTool('lorem-kit');
+  {
+    const a = await lorem.run({ lang: 'zh', paras: '3', kind: 'para' });
+    const b = await lorem.run({ lang: 'zh', paras: '3', kind: 'para' });
+    check('同参数生成结果一致（固定种子）', a.text === b.text);
+    check('中文 3 段 = 2 个空行分隔', a.text.split('\n\n').length === 3, `${a.text.split('\n\n').length} 段`);
+    check('中文段落不含随机汉字式空格', !/[A-Za-z]\s/.test(a.text.split('\n')[0]));
+    const en = await lorem.run({ lang: 'en', paras: '2', kind: 'sentence' });
+    check('英文 2 句', (en.text.match(/\./g) || []).length === 2, en.text.slice(0, 40));
+  }
+
+  // 5. Token 估算
+  const token = await loadTool('token-counter');
+  {
+    const zh = await token.run({ text: '这是一段中文提示词，用来估算 token 消耗。', model: 'gpt-4o' });
+    check('结果写明「近似值，计费以官方 tokenizer 为准」', zh.html.includes('近似值，计费以官方 tokenizer 为准'));
+    const one = await token.run({ text: 'hello world', model: 'gpt-4o' });
+    const many = await token.run({ text: 'hello world '.repeat(100), model: 'gpt-4o' });
+    const n1 = Number(one.text.match(/估算 (\d+) tokens/)[1]);
+    const n2 = Number(many.text.match(/估算 (\d+) tokens/)[1]);
+    check('文本变长 token 单调增加', n2 > n1 * 50, `${n1} → ${n2}`);
+    check('中文比同长度英文更贵（同样字符数）', (await token.run({ text: '中文中文中文中文', model: 'gpt-4o' })).text.match(/估算 (\d+)/)[1] >= '2', '中文约 3 token');
+  }
+
+  // 6. URL 解析
+  const urlKit = await loadTool('url-kit');
+  {
+    const r = await urlKit.run({ url: 'https://example.com/a?q=中文&tag=1&tag=2#part', params: '' });
+    check('中文参数被百分号编码', r.text.includes('q=%E4%B8%AD%E6%96%87'), r.text);
+    check('hash 保留', r.text.endsWith('#part'));
+    check('同名参数保留两个', (r.text.match(/tag=/g) || []).length === 2, r.text);
+    const edited = await urlKit.run({ url: 'https://example.com/a?q=1&utm=abc', params: 'q=2' });
+    check('参数区替换原参数（utm 被删）', edited.text === 'https://example.com/a?q=2', edited.text);
+    const noScheme = await urlKit.run({ url: 'example.com/a', params: '' });
+    check('缺协议按 https 补全并注明', noScheme.text === 'https://example.com/a' && noScheme.html.includes('没写协议'));
+  }
+
+  // 7. 子网计算
+  const subnet = await loadTool('subnet-calc');
+  {
+    const r = await subnet.run({ ip: '192.168.1.10', mask: '24' });
+    check('/24 网络地址 192.168.1.0', r.text.includes('网络地址：192.168.1.0/24'));
+    check('/24 广播地址 192.168.1.255', r.text.includes('广播地址：192.168.1.255'));
+    check('/24 可用 254 个', r.text.includes('可用主机数：254'));
+    const dotted = await subnet.run({ ip: '192.168.1.10', mask: '255.255.255.0' });
+    check('点分掩码与前缀等价', dotted.text === r.text);
+    const p31 = await subnet.run({ ip: '10.0.0.0', mask: '31' });
+    check('/31 按 RFC 3021 可用 2 个', p31.text.includes('可用主机数：2'));
+    let err = '';
+    try {
+      await subnet.run({ ip: '192.168.1.300', mask: '24' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('非法 IP 给人话报错', err.includes('超过 255'), err);
+  }
+
+  // 8. XML 格式化
+  const xml = await loadTool('xml-format');
+  {
+    const r = await xml.run({ xml: '<root><a x="1">v</a><b><c/></b></root>', mode: 'pretty', indent: '2' });
+    check('美化按 2 空格缩进', r.text.includes('\n  <a x="1">v</a>') && r.text.includes('\n    <c/>'), r.text.split('\n')[2]);
+    const m = await xml.run({ xml: '<root>\n  <a>1</a>\n</root>', mode: 'minify' });
+    check('压缩成一行且不丢内容', m.text === '<root><a>1</a></root>', m.text);
+    const mixed = await xml.run({ xml: '<p>文字<b>粗</b>尾巴</p>', mode: 'pretty' });
+    check('混合内容原样保留', mixed.text === '<p>文字<b>粗</b>尾巴</p>', mixed.text);
+    let err = '';
+    try {
+      await xml.run({ xml: '<a>\n<b>\n</a>', mode: 'pretty' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('闭合标签对不上时给出行号', err.includes('第 3 行') && err.includes('对不上'), err);
+  }
+
+  // 9. HTTP 状态码
+  const http = await loadTool('http-code');
+  {
+    const r = await http.run({ code: '404' });
+    check('404 给出含义与排查方向', r.text.includes('Not Found') && r.text.includes('排查'));
+    const t = await http.run({ code: '超时' });
+    check('搜「超时」同时命中 408 与 504', t.text.includes('408') && t.text.includes('504'));
+    check('401 与 403 都能查到且方向不同', (await http.run({ code: '401' })).text.includes('身份') && (await http.run({ code: '403' })).text.includes('权限'));
+    let err = '';
+    try {
+      await http.run({ code: '999' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('未收录的码报错而不是瞎猜', err.includes('没有收录'), err);
+  }
+
+  // 10. 进制转换（BigInt 精度是这一条的全部意义）
+  const radix = await loadTool('radix-convert');
+  {
+    const r = await radix.run({ numbers: '0xFFFFFFFFFFFFFFFF', from: '16', to: '10' });
+    check('大于 2^53 的十六进制精确转十进制', r.text === '18446744073709551615', r.text);
+    const back = await radix.run({ numbers: '18446744073709551615', from: '10', to: '16' });
+    check('十进制回转十六进制不丢位', back.text === 'FFFFFFFFFFFFFFFF', back.text);
+    const batch = await radix.run({ numbers: '255\nxyz\n16', from: '10', to: '16' });
+    check('非法行标出但不中断整批', batch.text === 'FF\n10' && batch.html.includes('不是 10 进制的数字'), batch.text);
+    const b36 = await radix.run({ numbers: '1000000', from: '10', to: '36' });
+    check('36 进制输出大写', b36.text === 'LFLS', b36.text);
+  }
+
+  // 11. .env 解析
+  const env = await loadTool('env-parser');
+  {
+    const src = ['# 注释', 'A=1', 'B="two words"', "C='lit $x'", 'export D=4 # 行尾', 'E=foo#bar'].join('\n');
+    const r = await env.run({ text: src, out: 'json' });
+    const obj = JSON.parse(r.text);
+    check('解析出 5 个键', Object.keys(obj).length === 5, Object.keys(obj).join(','));
+    check('双引号保留空格、单引号是字面量', obj.B === 'two words' && obj.C === 'lit $x');
+    check('行尾注释被去掉、无空白的 # 属于值', obj.D === '4' && obj.E === 'foo#bar', `${obj.D} / ${obj.E}`);
+    const dup = await env.run({ text: 'A=1\nA=2', out: 'json' });
+    check('重复键提示两处行号并以后者为准', dup.html.includes('第 1 行与第 2 行') && JSON.parse(dup.text).A === '2');
+    const shell = await env.run({ text: "K=it's", out: 'shell' });
+    check('shell 输出的单引号已转义', shell.text === "export K='it'\\''s'", shell.text);
+  }
+
+  // 12. CSS 单位换算
+  const css = await loadTool('css-unit');
+  {
+    const r = await css.run({ value: '24', from: 'px', to: 'rem', base: '16' });
+    check('24px = 1.5rem（基准 16）', r.text.startsWith('24px = 1.5rem'), r.text);
+    const b20 = await css.run({ value: '1', from: 'rem', to: 'px', base: '20' });
+    check('基准 20 时 1rem = 20px', b20.text.startsWith('1rem = 20px'), b20.text);
+    const vw = await css.run({ value: '192', from: 'px', to: 'vw', base: '' });
+    check('192px = 10vw（按 1920 视口）', vw.text.startsWith('192px = 10vw'), vw.text);
+    check('结果里写明 vw/vh 的假设', vw.html.includes('1920×1080'));
+    const pt = await css.run({ value: '12', from: 'pt', to: 'px', base: '' });
+    check('12pt = 16px（1pt = 4/3 px）', pt.text.startsWith('12pt = 16px'), pt.text);
+  }
+}
+
 // 清理临时文件
 for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {

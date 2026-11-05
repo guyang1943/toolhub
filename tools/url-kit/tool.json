@@ -1,0 +1,22 @@
+{
+  "id": "url-kit",
+  "name": "URL 解析构造",
+  "desc": "拆解 URL 各部分，整理 query 参数并重新拼装",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "URL",
+    "调试"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "jiexigouzao",
+    "jxgz",
+    "url parser & rebuilder",
+    "url",
+    "parser",
+    "rebuilder"
+  ]
+}

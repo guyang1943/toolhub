@@ -1,0 +1,24 @@
+{
+  "id": "css-unit",
+  "name": "CSS 单位换算",
+  "desc": "px/rem/em/vw/vh 互转，基准字号可设",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "CSS",
+    "前端"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "danweihuansuan",
+    "dwhs",
+    "度量衡",
+    "换算",
+    "css unit converter",
+    "css",
+    "unit",
+    "converter"
+  ]
+}

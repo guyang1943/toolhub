@@ -1,0 +1,22 @@
+{
+  "id": "markdown-table",
+  "name": "Markdown 表格生成器",
+  "desc": "按行列数生成可直接粘贴的 Markdown 表格源码",
+  "category": "文本",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "Markdown",
+    "表格"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "biaogeshengchengqi",
+    "bgscq",
+    "markdown table generator",
+    "markdown",
+    "table",
+    "generator"
+  ]
+}

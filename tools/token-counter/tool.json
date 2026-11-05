@@ -1,0 +1,22 @@
+{
+  "id": "token-counter",
+  "name": "Token 估算",
+  "desc": "估算提示词的 Token 消耗，调用 AI 前先看成本",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "AI",
+    "Token",
+    "LLM"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "gusuan",
+    "gs",
+    "token estimator",
+    "token",
+    "estimator"
+  ]
+}

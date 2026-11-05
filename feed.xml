@@ -7,87 +7,87 @@
     <language>zh-CN</language>
     <atom:link href="https://toolhub.bot.cd/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>硬盘整数分区计算器</title>
-      <link>https://toolhub.bot.cd/tools/disk-partition/</link>
-      <guid>https://toolhub.bot.cd/tools/disk-partition/</guid>
-      <description>算出 NTFS / FAT32 下显示整数 GB 分区时该填的精确 MB 值</description>
+      <title>CSS 单位换算</title>
+      <link>https://toolhub.bot.cd/tools/css-unit/</link>
+      <guid>https://toolhub.bot.cd/tools/css-unit/</guid>
+      <description>px/rem/em/vw/vh 互转，基准字号可设</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>CSV 选列与重排</title>
-      <link>https://toolhub.bot.cd/tools/csv-columns/</link>
-      <guid>https://toolhub.bot.cd/tools/csv-columns/</guid>
-      <description>CSV 列太多？选列、拖动排序、按列值过滤后导出新表</description>
+      <title>.env 解析</title>
+      <link>https://toolhub.bot.cd/tools/env-parser/</link>
+      <guid>https://toolhub.bot.cd/tools/env-parser/</guid>
+      <description>解析 .env，标重复键与格式错误，转 JSON 或 export</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>文件哈希校验</title>
-      <link>https://toolhub.bot.cd/tools/file-hash/</link>
-      <guid>https://toolhub.bot.cd/tools/file-hash/</guid>
-      <description>拖入文件算 MD5/SHA-1/SHA-256/SHA-512，与官方校验值比对</description>
+      <title>进制转换</title>
+      <link>https://toolhub.bot.cd/tools/radix-convert/</link>
+      <guid>https://toolhub.bot.cd/tools/radix-convert/</guid>
+      <description>2/8/10/16/36 进制批量互转，大数不丢精度</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>图片裁剪</title>
-      <link>https://toolhub.bot.cd/tools/img-crop/</link>
-      <guid>https://toolhub.bot.cd/tools/img-crop/</guid>
-      <description>拖出选区或填空坐标裁剪图片，支持等比锁定与圆角</description>
+      <title>HTTP 状态码速查</title>
+      <link>https://toolhub.bot.cd/tools/http-code/</link>
+      <guid>https://toolhub.bot.cd/tools/http-code/</guid>
+      <description>输入状态码看含义、常见场景与排查方向</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>身份证 / 银行卡校验</title>
-      <link>https://toolhub.bot.cd/tools/id-validate/</link>
-      <guid>https://toolhub.bot.cd/tools/id-validate/</guid>
-      <description>批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别</description>
+      <title>XML 格式化</title>
+      <link>https://toolhub.bot.cd/tools/xml-format/</link>
+      <guid>https://toolhub.bot.cd/tools/xml-format/</guid>
+      <description>XML 美化压缩并校验合法性，报错给出行号</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>图片格式转换</title>
-      <link>https://toolhub.bot.cd/tools/image-convert/</link>
-      <guid>https://toolhub.bot.cd/tools/image-convert/</guid>
-      <description>PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</description>
+      <title>子网计算器</title>
+      <link>https://toolhub.bot.cd/tools/subnet-calc/</link>
+      <guid>https://toolhub.bot.cd/tools/subnet-calc/</guid>
+      <description>IP 加掩码算出网段、广播地址与可用主机数</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>照片元数据剥离</title>
-      <link>https://toolhub.bot.cd/tools/exif-strip/</link>
-      <guid>https://toolhub.bot.cd/tools/exif-strip/</guid>
-      <description>查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码</description>
+      <title>URL 解析构造</title>
+      <link>https://toolhub.bot.cd/tools/url-kit/</link>
+      <guid>https://toolhub.bot.cd/tools/url-kit/</guid>
+      <description>拆解 URL 各部分，整理 query 参数并重新拼装</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>图片转 PDF</title>
-      <link>https://toolhub.bot.cd/tools/img-to-pdf/</link>
-      <guid>https://toolhub.bot.cd/tools/img-to-pdf/</guid>
-      <description>多张图片合成一个 PDF，A4 或适应图片，本地生成不上传</description>
+      <title>Token 估算</title>
+      <link>https://toolhub.bot.cd/tools/token-counter/</link>
+      <guid>https://toolhub.bot.cd/tools/token-counter/</guid>
+      <description>估算提示词的 Token 消耗，调用 AI 前先看成本</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>时区转换</title>
-      <link>https://toolhub.bot.cd/tools/timezone-convert/</link>
-      <guid>https://toolhub.bot.cd/tools/timezone-convert/</guid>
-      <description>一个时间换算全球 20+ 城市当地时间，标注时差、跨日与夏令时</description>
+      <title>占位文本生成</title>
+      <link>https://toolhub.bot.cd/tools/lorem-kit/</link>
+      <guid>https://toolhub.bot.cd/tools/lorem-kit/</guid>
+      <description>中英文占位文本，Mock 页面不用再敲测试测试</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>房贷计算器</title>
-      <link>https://toolhub.bot.cd/tools/mortgage-calc/</link>
-      <guid>https://toolhub.bot.cd/tools/mortgage-calc/</guid>
-      <description>等额本息与等额本金月供、总利息对比，含逐年还款明细表</description>
+      <title>字符串转义</title>
+      <link>https://toolhub.bot.cd/tools/string-escape/</link>
+      <guid>https://toolhub.bot.cd/tools/string-escape/</guid>
+      <description>JS/JSON/URL/HTML/Unicode 转义与反转义</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>PDF 合并拆分</title>
-      <link>https://toolhub.bot.cd/tools/pdf-merge/</link>
-      <guid>https://toolhub.bot.cd/tools/pdf-merge/</guid>
-      <description>多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</description>
+      <title>Markdown 表格生成器</title>
+      <link>https://toolhub.bot.cd/tools/markdown-table/</link>
+      <guid>https://toolhub.bot.cd/tools/markdown-table/</guid>
+      <description>按行列数生成可直接粘贴的 Markdown 表格源码</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>二维码解析</title>
-      <link>https://toolhub.bot.cd/tools/qr-decode/</link>
-      <guid>https://toolhub.bot.cd/tools/qr-decode/</guid>
-      <description>上传图片本地识别二维码内容，图片不上传，标注识别位置</description>
+      <title>文本加解密</title>
+      <link>https://toolhub.bot.cd/tools/text-encrypt/</link>
+      <guid>https://toolhub.bot.cd/tools/text-encrypt/</guid>
+      <description>AES 加密解密文本，密码派生密钥，全程本地</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>

@@ -2,7 +2,7 @@
   "site": "ToolHub",
   "version": 1,
   "updated": "2026-11-05",
-  "total": 108,
+  "total": 120,
   "tools": [
     {
       "id": "json-format",
@@ -579,6 +579,177 @@
         "FAT32",
         "整数",
         "装机"
+      ]
+    },
+    {
+      "id": "text-encrypt",
+      "name": "文本加解密",
+      "desc": "AES 加密解密文本，密码派生密钥，全程本地",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/text-encrypt/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "加密",
+        "AES",
+        "隐私"
+      ]
+    },
+    {
+      "id": "markdown-table",
+      "name": "Markdown 表格生成器",
+      "desc": "按行列数生成可直接粘贴的 Markdown 表格源码",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/markdown-table/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "Markdown",
+        "表格"
+      ]
+    },
+    {
+      "id": "string-escape",
+      "name": "字符串转义",
+      "desc": "JS/JSON/URL/HTML/Unicode 转义与反转义",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/string-escape/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "转义",
+        "编码"
+      ]
+    },
+    {
+      "id": "lorem-kit",
+      "name": "占位文本生成",
+      "desc": "中英文占位文本，Mock 页面不用再敲测试测试",
+      "category": "文本",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/lorem-kit/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "占位",
+        "Mock"
+      ]
+    },
+    {
+      "id": "token-counter",
+      "name": "Token 估算",
+      "desc": "估算提示词的 Token 消耗，调用 AI 前先看成本",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/token-counter/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "AI",
+        "Token",
+        "LLM"
+      ]
+    },
+    {
+      "id": "url-kit",
+      "name": "URL 解析构造",
+      "desc": "拆解 URL 各部分，整理 query 参数并重新拼装",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/url-kit/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "URL",
+        "调试"
+      ]
+    },
+    {
+      "id": "subnet-calc",
+      "name": "子网计算器",
+      "desc": "IP 加掩码算出网段、广播地址与可用主机数",
+      "category": "网络",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/subnet-calc/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "IP",
+        "子网",
+        "运维"
+      ]
+    },
+    {
+      "id": "xml-format",
+      "name": "XML 格式化",
+      "desc": "XML 美化压缩并校验合法性，报错给出行号",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/xml-format/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "XML",
+        "格式化"
+      ]
+    },
+    {
+      "id": "http-code",
+      "name": "HTTP 状态码速查",
+      "desc": "输入状态码看含义、常见场景与排查方向",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/http-code/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "HTTP",
+        "手册"
+      ]
+    },
+    {
+      "id": "radix-convert",
+      "name": "进制转换",
+      "desc": "2/8/10/16/36 进制批量互转，大数不丢精度",
+      "category": "数据",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/radix-convert/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "进制",
+        "转换"
+      ]
+    },
+    {
+      "id": "env-parser",
+      "name": ".env 解析",
+      "desc": "解析 .env，标重复键与格式错误，转 JSON 或 export",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/env-parser/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "env",
+        "配置"
+      ]
+    },
+    {
+      "id": "css-unit",
+      "name": "CSS 单位换算",
+      "desc": "px/rem/em/vw/vh 互转，基准字号可设",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/css-unit/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "CSS",
+        "前端"
       ]
     },
     {
