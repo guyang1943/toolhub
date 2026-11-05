@@ -30,6 +30,16 @@ const PATHS = [
   // v3.24：资源正文从 resources.json 拆出来了。它是合集页唯一的正文来源，
   // 漏传这一份不会报错，只会让所有合集页的正文变成空白——线上核对必须盯着它。
   '/resources.json', '/resources-notes.json', '/resources/icons/',
+  // v3.25 / v3.26 / v3.27 连着三版都在「手抽探活」：发完版拿浏览器点几个新页面看 200，
+  // 因为这份清单一直没跟着长。/categories/ai/ 尤其冤——它是 10 个分类页里唯一没被探过的，
+  // 而分类页是 SPA 的主入口之一，静态文件缺席时线上表现是「点进去空白」，不是 404。
+  '/categories/ai/',
+  // 本地工具页：抽三个不同技术路线的（Canvas / 媒体解码 / 动态注入第三方库），
+  // 它们坏掉的方式各不相同（白屏 / 静默无反应 / 点了没反应），只探首页发现不了。
+  '/tools/image-round/', '/tools/media-info/', '/tools/barcode-gen/',
+  // 工具目录里的同源第三方库：它只被 barcode-gen 动态 <script> 注入，页面本身 200 也可能是 404 的库。
+  // 漏传这一个文件，线上表现是「条码工具点了没反应」，控制台才有一行 404。
+  '/tools/barcode-gen/jsbarcode.min.js',
 ];
 
 async function get(path, tries = 3) {
