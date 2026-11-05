@@ -64,11 +64,18 @@
 | **工具用法** | 0 篇 | **完全空缺，优先** |
 | **AI 应用** | 0 篇 | **完全空缺，优先** |
 
-**建议选题**（按优先级，可换，换了在交付说明里写理由）：
+**本批选题**（来源不同，别搞混）：
 
-1. `toolhub-image-pipeline`｜工具用法｜用本站工作流把图片压到 200KB 再转格式（覆盖 image-press → image-convert 流程，纯本地、零风险，正好验证工作流页）
-2. `ollama-local-llm`｜AI 应用｜在自己电脑上跑一个本地大模型（Ollama + 可选 Open WebUI，risk=mid：要下载几 GB 模型、占内存）
-3. `cloudflare-tunnel-home`｜开源部署｜把家里的服务安全暴露到公网（risk=high：这一步做错就是把内网摊开，必须写清「只暴露单一端口 + 加 Access 鉴权」与回退）
+1. `toolhub-image-pipeline`｜工具用法｜**自己写**。用本站工作流把图片压到 200KB 再转格式（覆盖
+   image-press → image-convert 流程，纯本地、零风险，正好验证工作流页）。
+2. `ollama-local-ai`｜AI 应用｜**不写，直接取草稿**。`origin/muse-guides-batch-2` 的
+   `guides/ollama-local-ai.json` 是 Muse 已审校的成品（risk=mid、无 riskNote、8 步），
+   只做合并所需的格式适配，**不改写正文、不换 slug**。
+3. `cloudflare-tunnel-home`｜开源部署｜**自己写**。把家里的服务安全暴露到公网（risk=high：
+   做错就是把内网摊开，必须写清「只暴露单一端口 + 加 Access 鉴权」与回退）。
+
+> 同分支里还有 `ai-batch-media`、`ai-prompts-resume`、`github-actions-deploy` 三篇草稿（都是低风险），
+> 属后续批次，本批不取——一次只加三篇，别把一批做成两批。
 
 **每篇必须四件套，缺一项构建失败**：前置条件（`prereqs`）、操作过程（`steps`）、
 风险（`risk` 只能 `low`/`mid`/`high`）、回退方法（`fallback`）。
@@ -77,8 +84,10 @@
 
 **写之前必须知道的四件事**：
 
-- `riskNote` **只在 `risk=high` 时渲染**。`mid` 写了就是死数据（`cloudflare-free` 现在就是这样，
-  这是已知遗留，别照抄）。`mid` 的风险提示写进 `intro` 或对应的 `steps[].body`。
+- **`riskNote` 只给 `risk=high` 用**。`mid` / `low` 一律不写这个字段——构建只在 high 时渲染它，
+  写了就是没人看得见的死数据（`cloudflare-free` 这么躺了两个版本，v3.29 已清掉）。
+  低/中风险的风险提示写进 `intro`、`prereqs` 或对应步骤的 `body`，并且要**放在动作前面**：
+  先说会出什么事，再说怎么做。`verify` 已加断言，`risk != high` 带 `riskNote` 直接红。
 - 正文没有富文本。`steps[].body` 是一整段纯文本，换行不生效，代码只能靠 ``` 围栏。
 - `lastChecked` 填今天；这是「最后核对日期」，不是发布日期。
 - `faq` 少于 2 条会让 `verify` 红（`t.guides.length < 2` 那条断言）。
@@ -355,3 +364,26 @@ T1 23:25 / T2 23:40 / T3 次日 09:30 都是**无人值守**自动跑的。跑�
 
 **8. worktree 复用要小心。** 目录已存在时先 `cd` 进去 `git status`，有未提交改动先 commit，
 再 `git worktree remove --force`。别把上一个任务没提交的劳动直接删掉。
+
+---
+
+## 九、riskNote 规则（2026-11-05 定）
+
+**规则**：`riskNote` 只写给 `risk=high` 的教程。`mid` / `low` 不写这个字段，风险提示写进
+`intro`、`prereqs` 或对应步骤的 `body`，并且**放在动作前面**——先说会出什么事，再说怎么做。
+
+**为什么**：构建只在 `risk=high` 时渲染这个字段。`mid` 写它就是一份页面上看不见的死数据。
+`cloudflare-free` 这么躺了两个版本：那段「改 NS 前先截图备份 DNS」的提醒，读者从来没看到过。
+数据合法、校验全绿，只有把 JSON 和渲染出的页面并排读才发现。
+
+**已落地**：
+
+- `cloudflare-free`（`risk=mid`）：删掉 `riskNote` 字段，把备份提醒移到 `prereqs` 第一条。
+  正文第二步原本就有「漏记一条，网站或邮箱就可能断」的等价表述，语义没丢。
+- `verify` 新增断言：`risk != high` 却带 `riskNote` 直接红，报错点名篇目并给出该往哪写。
+  已做故障注入确认会红（给 `github-first-lesson` 塞一个 `riskNote`，校验当场点名）。
+- 另三篇 mid（`ollama-local-ai`、`miniprogram-cloud`、`wechat-miniprogram-first`）由 Muse 核对过，
+  正文里已有等价表述、字段已删，不需要再动。
+
+**以后加篇目**：先定 `risk`，再决定风险提示写在哪。`high` 才用 `riskNote`；其余三处选一处，
+且必须在动作之前。写完了跑 `npm run verify`，写错位置它会拦。
