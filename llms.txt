@@ -41,7 +41,7 @@
 - [CSV 选列与重排](https://toolhub.bot.cd/tools/csv-columns/): CSV 列太多？选列、拖动排序、按列值过滤后导出新表
 - [硬盘整数分区计算器](https://toolhub.bot.cd/tools/disk-partition/): 算出 NTFS / FAT32 下显示整数 GB 分区时该填的精确 MB 值
 
-## 第三方目录（62 个，跳转对方官网，适用对方隐私政策）
+## 第三方目录（70 个，跳转对方官网，适用对方隐私政策）
 - [Excalidraw](https://toolhub.bot.cd/tools/excalidraw/): 手绘风格白板画图，协作绘图神器（数据边界：看用法）
 - [tldraw](https://toolhub.bot.cd/tools/tldraw/): 精致的无限画布白板，交互丝滑（数据边界：看用法）
 - [draw.io](https://toolhub.bot.cd/tools/diagrams/): 最流行的流程图/架构图绘制工具（数据边界：看用法）
@@ -104,6 +104,14 @@
 - [Vert](https://toolhub.bot.cd/tools/vert/): 文件格式转换器（支持批量，跨平台开源）（数据边界：本机处理）
 - [IT-Tools](https://toolhub.bot.cd/tools/it-tools/): 几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码（数据边界：本机处理）
 - [ffmpeg.wasm](https://toolhub.bot.cd/tools/ffmpeg-wasm/): 浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF（数据边界：本机处理）
+- [Ollama](https://toolhub.bot.cd/tools/ollama/): 一条命令在本机跑开源大模型（数据边界：本机处理）
+- [GPT4All](https://toolhub.bot.cd/tools/gpt4all/): 全本地的桌面 AI 客户端，文档问答也在本机（数据边界：本机处理）
+- [AnythingLLM](https://toolhub.bot.cd/tools/anythingllm/): 全本地的 AI 助手，文档问答与会议记录都在本机跑（数据边界：本机处理）
+- [ComfyUI](https://toolhub.bot.cd/tools/comfyui/): 节点式图像生成工作流，本地跑扩散模型（数据边界：本机处理）
+- [Open WebUI](https://toolhub.bot.cd/tools/open-webui/): 自托管的 AI 对话界面，可接本地或云端模型（数据边界：看用法）
+- [Dify](https://toolhub.bot.cd/tools/dify/): 自托管的工作流与智能体平台，可视化搭 AI 应用（数据边界：看用法）
+- [WebLLM](https://toolhub.bot.cd/tools/webllm/): 在浏览器里跑大模型，WebGPU 加速，不用装东西（数据边界：本机处理）
+- [Cline](https://toolhub.bot.cd/tools/cline/): 编辑器里的编码智能体，自带 Key 或接本地模型（数据边界：看用法）
 
 ## 工作流
 - [图片发布包](https://toolhub.bot.cd/workflows/?flow=image-publish): 把一张手机照片变成能直接发出去的图

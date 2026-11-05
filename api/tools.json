@@ -2,7 +2,7 @@
   "site": "ToolHub",
   "version": 1,
   "updated": "2026-11-05",
-  "total": 100,
+  "total": 108,
   "tools": [
     {
       "id": "json-format",
@@ -1451,6 +1451,126 @@
         "压缩",
         "gif",
         "ffmpeg"
+      ]
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "desc": "一条命令在本机跑开源大模型",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://ollama.com",
+      "source": "github.com/ollama/ollama",
+      "license": "MIT",
+      "tags": [
+        "本地大模型",
+        "模型运行",
+        "离线"
+      ]
+    },
+    {
+      "id": "gpt4all",
+      "name": "GPT4All",
+      "desc": "全本地的桌面 AI 客户端，文档问答也在本机",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://www.nomic.ai/gpt4all",
+      "source": "github.com/nomic-ai/gpt4all",
+      "license": "MIT",
+      "tags": [
+        "本地大模型",
+        "文档问答",
+        "离线"
+      ]
+    },
+    {
+      "id": "anythingllm",
+      "name": "AnythingLLM",
+      "desc": "全本地的 AI 助手，文档问答与会议记录都在本机跑",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://anythingllm.com",
+      "source": "github.com/Mintplex-Labs/anything-llm",
+      "license": "MIT",
+      "tags": [
+        "本地助手",
+        "文档问答",
+        "离线"
+      ]
+    },
+    {
+      "id": "comfyui",
+      "name": "ComfyUI",
+      "desc": "节点式图像生成工作流，本地跑扩散模型",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://www.comfy.org",
+      "source": "github.com/comfyanonymous/ComfyUI",
+      "license": "GPL-3.0（核心）",
+      "tags": [
+        "图像生成",
+        "工作流",
+        "Stable Diffusion"
+      ]
+    },
+    {
+      "id": "open-webui",
+      "name": "Open WebUI",
+      "desc": "自托管的 AI 对话界面，可接本地或云端模型",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://openwebui.com",
+      "source": "github.com/open-webui/open-webui",
+      "license": "BSD-3-Clause（含品牌条款）",
+      "tags": [
+        "自托管",
+        "对话界面",
+        "本地部署"
+      ]
+    },
+    {
+      "id": "dify",
+      "name": "Dify",
+      "desc": "自托管的工作流与智能体平台，可视化搭 AI 应用",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://dify.ai",
+      "source": "github.com/langgenius/dify",
+      "license": "Apache-2.0（附加条款）",
+      "tags": [
+        "工作流",
+        "智能体",
+        "自托管"
+      ]
+    },
+    {
+      "id": "webllm",
+      "name": "WebLLM",
+      "desc": "在浏览器里跑大模型，WebGPU 加速，不用装东西",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://chat.webllm.ai",
+      "source": "github.com/mlc-ai/web-llm",
+      "license": "Apache-2.0",
+      "tags": [
+        "浏览器",
+        "本地推理",
+        "WebGPU"
+      ]
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "desc": "编辑器里的编码智能体，自带 Key 或接本地模型",
+      "category": "AI",
+      "runtime": "link",
+      "url": "https://cline.bot",
+      "source": "github.com/cline/cline",
+      "license": "Apache-2.0",
+      "tags": [
+        "编码助手",
+        "编辑器扩展",
+        "自带 Key"
       ]
     }
   ]

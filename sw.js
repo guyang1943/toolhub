@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.24.1 · 预缓存 220 个地址 · 约 3.6 MB
-const VERSION = "toolhub-v3.24.1";
+// 版本：toolhub-v3.25 · 预缓存 222 个地址 · 约 3.7 MB
+const VERSION = "toolhub-v3.25";
 const CORE = [
   "/",
   "/offline/",
@@ -217,6 +217,8 @@ const FULL = [
   "/evaluations/photocraft-review.json",
   "/evaluations/voicestudio-review/",
   "/evaluations/voicestudio-review.json",
+  "/categories/ai/",
+  "/categories/ai.json",
   "/categories/data/",
   "/categories/data.json",
   "/categories/design/",
