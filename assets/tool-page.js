@@ -159,7 +159,66 @@ function triggerDownload(url, name) {
   a.click();
   setTimeout(() => a.remove(), 120);
 }
-function renderResultActions(out, box, id, manifest) {
+/** 把这次产物收成可接力的载荷；产物只有 url 时先取回 blob（同一次会话，不发往服务器） */
+async function payloadOf(files, out) {
+  const payload = { files: [], text: out.text || '' };
+  for (const f of files) {
+    let blob = f.blob;
+    if (!blob) {
+      try {
+        blob = await (await fetch(f.url)).blob();
+      } catch {
+        continue;
+      }
+    }
+    payload.files.push({ name: f.name, blob });
+  }
+  return payload;
+}
+
+/* ---------- 加入流程（v3.24） ----------
+   单跳「→ 再压缩体积」只能一次走一步。真实需求常常是「压完转格式再合成 PDF」，
+   那本来就是一条链。这里把这次的产物直接送进一条已有流程的入口，剩下的步骤由
+   流程引擎跑完。
+
+   两个边界，都写死在这里：
+   1. **只有以当前工具为第 1 步的流程才算候选。** 流程入口只收一份文件或一段文本，
+      「把产物塞进第 3 步」不是接力，是改流程定义——那属于 workflows.json。
+   2. **产物类型必须和流程入口对得上。** 文件型流程要有文件、文本型流程要有文本，
+      文件型还要求 MIME 落在 accept 里。构建期的 check-workflows 只保证了「入口类型
+      与第一步工具的输入类型一致」，管不到「这次真的产出了那种东西」——所以运行时
+      再判一次。列一个点进去发现喂不进去的流程，比不列更糟。
+
+   不预取 workflows.json：只看一眼结果的人不该为这个按钮多付一次请求，按下才去拿。 */
+async function joinCandidates(id, payload) {
+  let data;
+  try {
+    data = await (await fetch('/workflows/workflows.json')).json();
+  } catch {
+    return { error: true, list: [] };
+  }
+  const acceptOk = (accept, blob) => {
+    const type = (blob && blob.type) || '';
+    return String(accept || '')
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean)
+      .some((a) => (a.endsWith('/*') ? type.startsWith(a.slice(0, -1)) : a.startsWith('.') ? false : a === type));
+  };
+  const list = (data.flows || []).filter((f) => {
+    if (!f.steps || !f.steps.length || f.steps[0].tool !== id) return false;
+    if (f.input && f.input.kind === 'file') {
+      const f0 = payload.files[0];
+      if (!f0) return false;
+      // accept 写了通配符之外的 MIME（如只收 image/jpeg）时，PNG 产物不能硬塞进去
+      return !f.input.accept || !f0.blob || acceptOk(f.input.accept, f0.blob);
+    }
+    return !!payload.text;
+  });
+  return { error: false, list };
+}
+
+function renderResultActions(out, box, id, manifest, toolLabel) {
   const files = (Array.isArray(out.files) ? out.files : [])
     .map((f) => ({ name: f.name || 'output', kind: f.kind || '', blob: f.blob || null, url: blobUrlOf(f) }))
     .filter((f) => f.url);
@@ -187,8 +246,12 @@ function renderResultActions(out, box, id, manifest) {
     parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 逐个下载', 'downloadAll')}</button>`);
   }
   // 工具链：把这次产出直接交给下游工具，不用先下载再上传
+  // v3.24 起它只是半个答案：单跳只能一次只走一步，而「压完还要转格式再合成 PDF」
+  // 这种真实需求本来就是一条链。所以旁边再给一个「加入流程」，把这批产物直接
+  // 送进一条已经写好的流程的入口——两步都留着，各管各的场景。
   const chains = (CHAINS && typeof CHAINS === 'object' && CHAINS[id]) || [];
   for (const c of chains) parts.push(`<button type="button" class="btn ghost" data-go="${c.to}">→ ${esc(c.label)}</button>`);
+  parts.push(`<button type="button" class="btn ghost" data-act="join">＋ 加入流程</button>`);
   parts.push(`<button type="button" class="btn ghost" data-act="share">${t('🔗 分享此结果', 'shareResult')}</button>`);
   // 加密分享：内容走 URL 片段，服务器与 CDN 日志里看不到明文（v3.0 E2）
   parts.push(`<button type="button" class="btn ghost" data-act="share-enc">${t('🔒 加密分享', 'shareEnc')}</button>`);
@@ -258,26 +321,65 @@ function renderResultActions(out, box, id, manifest) {
   bar.querySelectorAll('[data-go]').forEach((btn) => {
     btn.onclick = async () => {
       btn.disabled = true;
-      const payload = { from: id, files: [], text: out.text || '' };
-      for (const f of files) {
-        let blob = f.blob;
-        if (!blob) {
-          try {
-            blob = await (await fetch(f.url)).blob();
-          } catch {
-            continue;
-          }
-        }
-        payload.files.push({ name: f.name, blob });
-      }
+      const payload = await payloadOf(files, out);
       if (!payload.files.length && !payload.text) {
         btn.disabled = false;
         return;
       }
+      payload.from = id;
       setHandoff(payload);
       navigate('/tools/' + btn.dataset.go + '/');
     };
   });
+
+  // 「加入流程」：产物直接成为某条流程的入口，中间不下载、不上传。
+  // 候选在按下那一刻才去取（几 KB 的本地 JSON），选定后带着 flow id 跳转，
+  // 由流程页消费 handoff 把文件/文本填进入口。
+  const joinBtn = bar.querySelector('[data-act="join"]');
+  if (joinBtn)
+    joinBtn.onclick = async () => {
+      const old = bar.parentElement.querySelector('.join-menu');
+      if (old) {
+        old.remove(); // 再点一次收起
+        return;
+      }
+      joinBtn.disabled = true;
+      joinBtn.textContent = '读取流程…';
+      const payload = await payloadOf(files, out);
+      const { error, list } = await joinCandidates(id, payload);
+      joinBtn.disabled = false;
+      joinBtn.textContent = '＋ 加入流程';
+
+      const menu = document.createElement('div');
+      menu.className = 'join-menu';
+      if (error) {
+        menu.innerHTML = `<p>流程定义没读到（离线包里可能缺了 workflows.json）。</p>`;
+      } else if (!list.length) {
+        // 说清为什么没有，别让人以为是坏了：入口类型对不上是最常见的原因
+        menu.innerHTML = `<p>还没有以「${esc(toolLabel || id)}」为第 1 步的流程。
+          ${payload.files.length ? '这次产出的是文件，' : ''}流程入口只收一份文件或一段文本，
+          所以只能接在第 1 步。 <a href="/workflows/">看看现有的流程 →</a></p>`;
+      } else {
+        menu.innerHTML = `<p>把这次结果直接接进一条流程（不用先下载再上传）：</p>
+          <ul>${list
+            .map(
+              (f) =>
+                `<li><div><b>${esc(f.name)}</b><span class="jm-goal">${esc(f.goal || '')}</span></div>
+                 <button type="button" class="btn ghost" data-join="${esc(f.id)}">接进去</button></li>`
+            )
+            .join('')}</ul>`;
+        menu.querySelectorAll('[data-join]').forEach((b) => {
+          b.onclick = () => {
+            payload.from = id;
+            payload.flow = b.dataset.join;
+            setHandoff(payload);
+            navigate('/workflows/?flow=' + encodeURIComponent(b.dataset.join));
+          };
+        });
+      }
+      bar.after(menu);
+    };
+
   box.appendChild(bar);
   return bar;
 }
@@ -669,7 +771,7 @@ export async function openTool(id) {
       const out = await mod.run(values);
       releaseResultUrls();
       box.innerHTML = out.html;
-      renderResultActions(out, box, meta.id, manifest);
+      renderResultActions(out, box, meta.id, manifest, toolMeta(meta).name);
       if (out.after) out.after(box);
       pushUsage(meta.id); // 仅本机计数
       record(meta.id, 'ok'); // v3.20：只记「跑成了」，不记输入

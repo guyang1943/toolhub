@@ -34,6 +34,22 @@
 }
 .result-actions .ra-note { font-size: 12px; color: var(--muted); margin-left: auto; }
 
+/* 加入流程：候选列表贴在结果条下面，不弹全屏遮罩——这里是一次轻选择，不是一次决策 */
+.join-menu {
+  margin-top: 10px; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--bg); font-size: 13px;
+}
+.join-menu p { margin: 0 0 8px; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+.join-menu p a { color: var(--accent); }
+.join-menu ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.join-menu li {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 7px 9px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel);
+}
+.join-menu li b { display: block; font-size: 13px; }
+.join-menu .jm-goal { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.join-menu li .btn { flex: none; padding: 5px 10px; font-size: 12.5px; }
+
 /* ===== 结果表格（个税 / 单位换算等） ===== */
 .tbl { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }
 .tbl th, .tbl td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }

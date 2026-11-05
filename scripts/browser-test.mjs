@@ -1406,6 +1406,105 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await goto('/');
   }
 
+  // ---- 9.13d 工具页「加入流程」（v3.24）----
+  // 这条链最容易假通过：按钮点得动、页面也跳过去了，但产物根本没带过去，
+  // 用户到了流程页还得手动再上传一次——那这个功能等于没有。
+  // 所以断言必须落在「流程入口里真的有东西」，而不是「跳转发生了」。
+  {
+    // ① 文本工具 → 流程：编码出来的 Base64 直接成为「编码串还原 JSON」的入口
+    // 用编码而不是解码：这条流程的第 1 步就是解码，从解码结果再进去等于解码两次。
+    await goto('/tools/base64-url/');
+    await waitText('#tool-form', 'Base64', 12000);
+    await evaluate(`(() => {
+      const t = document.getElementById('f-text');
+      t.value = '{"name":"张三"}';
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await clickRun();
+    await waitEl('#tool-result [data-act="join"]', 15000);
+    await evaluate(`document.querySelector('[data-act="join"]').click()`);
+    await waitEl('.join-menu', 8000);
+    const cand = await evaluate(`[...document.querySelectorAll('.join-menu [data-join]')].map((b) => b.dataset.join)`);
+    check('「加入流程」列出以本工具为第 1 步的流程', cand.includes('b64-to-json'), cand.join(',') || '（空）');
+
+    await evaluate(`document.querySelector('.join-menu [data-join="b64-to-json"]').click()`);
+    await waitEl('#wf-text', 12000);
+    const joined = await evaluate(`({
+      url: location.pathname + location.search,
+      text: document.getElementById('wf-text').value,
+      note: !!document.querySelector('.wf-join-note'),
+      picked: !!document.querySelector('[data-flow="b64-to-json"]'),
+      sel: (document.querySelector('[data-flow="b64-to-json"]') || { dataset: {} }).dataset
+        ? document.querySelector('[data-flow="b64-to-json"]').getAttribute('aria-selected') : '',
+    })`);
+    check('加入流程后 URL 带上了 flow', /flow=b64-to-json/.test(joined.url), joined.url);
+    check(
+      '加入流程把上一步的文本填进了入口',
+      /^eyJ/.test((joined.text || '').trim()),
+      String(joined.text).trim().slice(0, 60)
+    );
+    check('加入流程自动选中目标流程并说明来源', joined.sel === 'true' && joined.note === true, `aria-selected=${joined.sel}`);
+    await evaluate(`document.querySelector('.wf-runner').scrollIntoView({ block: 'start' })`);
+    await sleep(300);
+    await shot('09d-join-flow');
+
+    // 填好就能直接跑：入口带过来的内容必须是这一步真正吃的那份
+    await evaluate(`document.getElementById('wf-run').click()`);
+    const joinRun = await waitText('#wf-out', '跑完', 20000);
+    const joinOut = await evaluate(`(document.querySelector('#wf-out pre') || {}).textContent || ''`);
+    check(
+      '加入流程后直接跑完，产出是格式化后的 JSON',
+      joinRun === true && /张三/.test(joinOut) && /\n/.test(joinOut),
+      joinOut.slice(0, 80).replace(/\n/g, ' ')
+    );
+
+    // ② 文件工具 → 流程：换一种载荷（DataTransfer 构造 FileList），这条最容易坏
+    const { makeJpeg } = await import('file://' + join(root, 'scripts/lib/jpeg-fixture.mjs').replace(/\\/g, '/'));
+    const jpgDataUrl = 'data:image/jpeg;base64,' + makeJpeg({ gps: true, xmp: false }).toString('base64');
+    await goto('/tools/exif-strip/');
+    await waitText('#tool-body', '照片', 12000);
+    await feedFile('#f-files', jpgDataUrl, 'IMG_0002.jpg', 'image/jpeg');
+    await evaluate(
+      `(() => { const s = document.getElementById('f-mode'); s.value = 'strip'; s.dispatchEvent(new Event('change', { bubbles: true })); })()`
+    );
+    await clickRun();
+    await waitText('#tool-result', '已删除', 15000);
+    await evaluate(`document.querySelector('[data-act="join"]').click()`);
+    await waitEl('.join-menu', 8000);
+    const fileCand = await evaluate(`[...document.querySelectorAll('.join-menu [data-join]')].map((b) => b.dataset.join)`);
+    check('文件工具的产物也能接进流程', fileCand.includes('image-publish'), fileCand.join(',') || '（空）');
+
+    await evaluate(`document.querySelector('.join-menu [data-join="image-publish"]').click()`);
+    await waitEl('#wf-file', 12000);
+    const fedCount = await evaluate(`document.getElementById('wf-file').files.length`);
+    check('加入流程把文件填进了流程入口', fedCount === 1, fedCount + ' 个文件');
+
+    // ③ 没有任何流程以它为第 1 步时，不能只留一个点不动或点了没解释的按钮。
+    //    选 sha256-hash：它只出现在「算哈希」这类单跳里，不是任何流程的入口。
+    await goto('/tools/sha256-hash/');
+    await waitText('#tool-form', '哈希', 12000);
+    await evaluate(`(() => {
+      const t = document.getElementById('f-text');
+      t.value = 'hello';
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await clickRun();
+    await waitEl('#tool-result [data-act="join"]', 20000);
+    await evaluate(`document.querySelector('[data-act="join"]').click()`);
+    await waitEl('.join-menu', 8000);
+    const noCand = await evaluate(`({
+      n: document.querySelectorAll('.join-menu [data-join]').length,
+      txt: (document.querySelector('.join-menu') || {}).textContent || '',
+      link: !!document.querySelector('.join-menu a[href="/workflows/"]'),
+    })`);
+    check(
+      '没有以它为第 1 步的流程时说明原因并给入口',
+      noCand.n === 0 && /还没有以/.test(noCand.txt) && noCand.link === true,
+      `${noCand.n} 个候选 · ${noCand.txt.slice(0, 40).replace(/\s+/g, ' ')}`
+    );
+    await goto('/');
+  }
+
   // ---- 9.14 v3.24 三条新流程 ----
   // 这一段专治「流程能跑完，但跑的是工具自带的示例数据」。
   // 三条流程的第一步都吃用户粘贴的文本，而这些工具的输入框都带示例默认值——

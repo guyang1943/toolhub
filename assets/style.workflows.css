@@ -68,6 +68,11 @@
 /* ===== 动作与结果 ===== */
 .wf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
 .wf-tip { font-size: 12px; color: var(--muted); line-height: 1.7; }
+/* 「加入流程」带过来的产物（v3.24）：紧跟在入口下方，说明这次的文件/文本是从哪来的 */
+.wf-join-note {
+  margin-top: 10px; padding: 9px 11px; border-radius: 8px; font-size: 12.5px; line-height: 1.7;
+  background: var(--accent-soft); color: var(--text); border: 1px solid var(--border);
+}
 .wf-out:empty { display: none; }
 .wf-out { margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 14px; font-size: 13px; }
 .wf-files { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }

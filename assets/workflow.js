@@ -20,6 +20,9 @@ import { buildValues } from './lib/workflow-core.js';
 // 只 import store.js（它本来就在首屏，被 app.js 静态引用），**不** import store-keys.js：
 // 那份清单 3 KB，这一页只需要一个键名，为它多付一次请求不值得。
 import * as store from './lib/store.js';
+// 工具页的「加入流程」把产物放进同一个会话级 handoff 里再跳过来。pipeline.js 本来就在
+// 首屏（app.js 静态 import），这里是缓存命中，不产生新请求。
+import { peekHandoff, takeHandoff } from './pipeline.js';
 
 const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -95,7 +98,55 @@ export async function mountWorkflows(box, reg) {
     runner.hidden = false;
     runner.innerHTML = runnerHTML(flow);
     bindRunner(flow);
+    applyJoinHandoff(flow);
     runner.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  /**
+   * 「加入流程」（v3.24）：工具页把这次的产物放进 handoff 带过来，这里填进流程入口。
+   *
+   * 三条边界：
+   * 1. **只认带 flow 字段的 handoff。** 工具页的「单跳」传的是 {from, files, text}，
+   *    那种 handoff 到了别的机制里被消费掉就没了，不能在这里顺手吃掉。
+   * 2. **填好不自动跑。** 流程页有参数面板，先跑一遍再改参数等于白跑一次；
+   *    工具页的接力也是「填好 + 提示」，两处说法保持一致。
+   * 3. **填不进去就静默。** 产物类型对不上的组合在工具页已经被过滤掉了，
+   *    走到这里还填不进去说明 FileList 构造失败（老浏览器），退回手动选择。
+   */
+  function applyJoinHandoff(flow) {
+    const h = peekHandoff();
+    if (!h || !h.flow || h.flow !== flow.id) return;
+    takeHandoff();
+    const isFile = flow.input && flow.input.kind === 'file';
+    let fed = false;
+    if (isFile) {
+      const el = runner.querySelector('#wf-file');
+      const f0 = h.files && h.files[0];
+      if (el && f0) {
+        try {
+          const dt = new DataTransfer();
+          dt.items.add(new File([f0.blob], f0.name, { type: f0.blob.type || 'application/octet-stream' }));
+          el.files = dt.files;
+          fed = true;
+        } catch {
+          fed = false; // 老浏览器不支持构造 FileList，退回手动选择
+        }
+      }
+    } else {
+      const el = runner.querySelector('#wf-text');
+      if (el && h.text) {
+        el.value = h.text;
+        fed = true;
+      }
+    }
+    if (!fed) return;
+    const note = document.createElement('div');
+    note.className = 'wf-join-note';
+    note.innerHTML = `↪ 已带入「${esc(toolName(h.from))}」的结果${
+      isFile ? `（${esc(h.files[0].name)}）` : ''
+    }，确认参数后点「开始运行」。`;
+    const inputBox = runner.querySelector('.wf-input');
+    if (inputBox) inputBox.after(note);
   }
 
   const nameOf = new Map((reg?.tools || []).map((t) => [t.id, t.name || t.id]));
