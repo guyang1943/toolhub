@@ -2,7 +2,11 @@
    v3.13 从 app.js 整体搬出来。理由很直接：这五类页面占了近 400 行，
    而首页一个都不渲染——每个访客却要把它们下载并解析一遍。
    依赖由 bindContentPages 注入（与 tool-page.js 同一套做法），
-   避免子模块反过来 import 主模块造成循环引用。 */
+   避免子模块反过来 import 主模块造成循环引用。
+   v3.28：教程正文改用 assets/lib/guide-text.js。它是叶子模块（不依赖任何注入），
+   静态构建那边 import 的是同一个文件——正文的渲染不该有两份实现。 */
+import { guideText } from './lib/guide-text.js';
+
 let $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE;
 
 // v3.25：目录工具按真实运行位置标，不再一律「在线」——Ollama 要装客户端、Dify 要自己部署，
@@ -241,7 +245,7 @@ async function openGuides() {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
       <h1>📖 教程</h1>
-      <p class="lead">要先装、先刷、先配才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，教程是一条要走完的路。</p>
+      <p class="lead">要先装、先配、先走一遍才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，教程是一条要走完的路。</p>
       ${rows}
       <h2 class="res-group-title">这一类内容的三条纪律</h2>
       <ul>
@@ -286,7 +290,7 @@ async function openGuide(slug) {
       <h2 class="res-group-title">为什么值得折腾</h2><ul>${g.why.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
       <h2 class="res-group-title">开工前要有的</h2><ul>${g.prereqs.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
       <h2 class="res-group-title">步骤</h2><ol class="guide-steps">${g.steps
-        .map((s) => `<li><b>${esc(s.title)}</b><p>${esc(s.body)}</p></li>`)
+        .map((s) => `<li><b>${esc(s.title)}</b>${guideText(s.body)}</li>`)
         .join('')}</ol>
       <h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback">${g.fallback.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
       <h2 class="res-group-title">容易踩的坑</h2>${g.pitfalls

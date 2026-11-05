@@ -1280,6 +1280,15 @@ check('折腾指南（v3.15）', () => {
     assert(html.includes(`PT${x.minutes}M`), `${x.slug} 的 HowTo 时长不是 ISO 8601`);
     assert(html.includes('翻车了怎么办'), `${x.slug} 没有回退章节`);
     assert(html.includes('最后核对'), `${x.slug} 没有标注最后核对日期`);
+    // 围栏代码块（```lang … ```）必须渲染成 <pre><code>：
+    // 教程正文是按 HTML 拼进去的，原样输出会让示例里的 <html>/<title> 被浏览器当成真标签，
+    // 整段示例在页面上消失、后面的正文被挤到步骤外面。v3.28 的 GitHub Pages 篇就踩了这个。
+    // 只看 <main> 之内：JSON-LD 里的 HowToStep 文本本来就该带着原文（换行在 JSON 里是 \n 转义）。
+    const visible = html.slice(html.indexOf('<main'), html.lastIndexOf('</main>'));
+    assert(!visible.includes('```'), `${x.slug} 页面上出现了字面的三反引号（围栏没被渲染）`);
+    if (x.steps.some((s) => /^\s*```/m.test(s.body))) {
+      assert(visible.includes('<pre><code>'), `${x.slug} 有围栏代码块，但页面上没有 <pre><code>`);
+    }
     if (x.risk === 'high') assert(html.includes('guide-risk'), `${x.slug} 风险为 high 但没有风险提示块`);
     // 站内工具引用必须真的渲染出链接，并且 id 存在（构建期已校验，这里查产物）
     for (const id of x.tools || []) {
