@@ -6,7 +6,7 @@
 //   2. 版本号要跟 changelog 走，否则新 SW 不会替换旧缓存
 //
 // 用法：node scripts/gen-sw.mjs [--quiet]
-import { readFileSync, statSync, existsSync, writeFileSync, realpathSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, realpathSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { corePages, fullPages } from './lib/pages-registry.mjs';
@@ -28,9 +28,18 @@ const isMain = (() => {
 /** 把站点路径映射到磁盘相对路径（目录末尾补 index.html） */
 const toRel = (p) => (p === '/' ? 'index.html' : p.replace(/^\//, '') + (p.endsWith('/') ? 'index.html' : ''));
 const onDisk = (p) => existsSync(join(root, toRel(p)));
+
+// 统计口径与 perf-budget 一致：文本文件先按 LF 计。
+// 仓库与线上都是 LF，只有本机检出（core.autocrlf=true）是 CRLF；不归一化时，同一份代码在
+// Windows 上会凭空多出约 25 KB 离线包体积，写进 /offline/ 页的 __OFFLINE_META__ 就是假数字，
+// 而它在 Linux CI 上又会变成另一个值——这类「本地红、线上绿」的账最耗人。
+const TEXT_EXT = /\.(js|mjs|css|html|json|txt|xml|svg|webmanifest|md)$/i;
 const sizeOf = (p) => {
   try {
-    return statSync(join(root, toRel(p))).size;
+    const file = join(root, toRel(p));
+    const buf = readFileSync(file);
+    if (!TEXT_EXT.test(file)) return buf.length;
+    return Buffer.byteLength(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
   } catch {
     return 0;
   }
