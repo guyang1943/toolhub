@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-02",
+  "updated": "2026-11-05",
   "guides": [
     {
       "slug": "tv-box-server",
@@ -110,6 +110,410 @@
         { "name": "balenaEtcher", "url": "https://etcher.balena.io/", "note": "跨平台写盘工具，写 .img 最省事" },
         { "name": "Rufus", "url": "https://rufus.ie/", "note": "Windows 下的写盘工具，注意选「DD 模式」" },
         { "name": "EmuELEC", "url": "https://emuelec.cn/", "note": "同一个盒子的另一种玩法：刷成复古游戏机" }
+      ]
+    },
+    {
+      "slug": "github-pages-first-site",
+      "icon": "🌐",
+      "title": "零基础发布第一个网站（GitHub Pages 篇）",
+      "tagline": "注册 GitHub、建仓库、传一个 HTML 文件，45 分钟让网站在网上能打开，全程免费、不碰命令行。",
+      "difficulty": "入门",
+      "minutes": 45,
+      "risk": "low",
+      "lastChecked": "2026-11-05",
+      "intro": "GitHub Pages 是 GitHub 免费提供的静态网站托管：你把网页文件放进一个仓库，它就帮你发布成全世界都能打开的网站。不用买服务器、不用装软件、不用学命令行，全程在浏览器里点鼠标就能完成。做完这篇，你会得到一个属于自己的网址：https://你的用户名.github.io/仓库名/。",
+      "why": [
+        "全程免费：公开仓库开 Pages 不花钱，个人主页、小作品、简历站都够用。",
+        "不用买服务器：文件放在 GitHub，发布和 HTTPS 证书都由它负责。",
+        "改了就自动更新：仓库里的文件一改，几分钟后网上的页面跟着变。"
+      ],
+      "prereqs": [
+        "一个常用邮箱，用来收 GitHub 的验证码。",
+        "一台能上网的电脑或手机，浏览器即可。",
+        "一段想放上网的内容：自我介绍、简历、作品链接都可以，没有的话跟着第 3 步抄示例代码。"
+      ],
+      "steps": [
+        {
+          "title": "注册一个 GitHub 账号",
+          "body": "打开 github.com/signup。按顺序填三样：邮箱（常用邮箱，验证码发到这里）、密码（至少 8 位，包含数字和小写字母）、用户名（小写字母、数字和连字符；用户名会出现在你的网址里，起个你喜欢的）。点继续后，GitHub 会往邮箱发一个验证码，回到邮箱找到发件人是 noreply@github.com 的邮件，把验证码填回去点 Verify。接下来会问要不要选付费计划，选 Free（免费）即可；个性化问卷可以直接点 Skip personalization 跳过。看到页面左上角出现你的头像和 Dashboard（仪表盘），账号就建好了。术语解释：用户名（username）就是你在 GitHub 上的公开名字，别人通过 github.com/你的用户名找到你。"
+        },
+        {
+          "title": "新建一个仓库（放网站文件的文件夹）",
+          "body": "登录后点页面右上角的 + 号，选 New repository（新建仓库）。Repository name（仓库名）填一个英文名，比如 my-first-site（小写字母、数字、连字符，不要用中文和空格）。下面选 Public（公开）——免费账号只有公开仓库能开 Pages，这一步别选错。再把 Add a README file（添加说明文件）勾上。最后点绿色的 Create repository（创建仓库）。成功后你会进入仓库页面，看到一个 README.md 文件。术语解释：仓库（repository）就是 GitHub 上放文件的文件夹，一个网站对应一个仓库；README.md 是项目的说明书，打开仓库第一眼看到的就是它。"
+        },
+        {
+          "title": "把首页文件 index.html 传上去",
+          "body": "点仓库上方的 Code（代码）标签页，再点绿色的 Add file（添加文件）按钮，选 Upload files（上传文件）。把你准备好的 index.html 文件拖进虚线框。如果你没有现成文件，改用另一条路：点 Add file → Create new file（新建文件），文件名框里填 index.html，下面编辑框粘贴这段最简单的网页代码：\n\n```html\n<!DOCTYPE html>\n<html lang=\"zh-CN\">\n<head><meta charset=\"utf-8\"><title>我的第一个网站</title></head>\n<body><h1>你好，这是我的第一个网站</h1><p>用 GitHub Pages 免费发布。</p></body>\n</html>\n```\n\n然后拉到页面下方，Commit changes（提交更改）区域不用改，直接点绿色的 Commit changes 按钮。成功后文件列表里出现 index.html。术语解释：index.html 是网站首页的固定文件名，浏览器打开网址时默认找的就是它；Commit（提交）就是把这次改动存成一个版本，之后随时能找回。"
+        },
+        {
+          "title": "打开 Pages 开关",
+          "body": "点仓库名下方的 Settings（设置）标签页。在左侧菜单找到 Code, planning, and automation 这一组，点里面的 Pages。（若界面分组名略有不同，以 Pages 为准。）页面上方 Build and deployment（构建与部署）下面，Source（来源）选 Deploy from a branch（从分支部署）。Branch（分支）那里选 main，右边文件夹选 /(root)（根目录），点 Save（保存）。术语解释：分支（branch）是仓库里的一条文件线，默认就叫 main；/(root) 意思是网站文件放在仓库最外层，不用进子文件夹。"
+        },
+        {
+          "title": "等几分钟，打开你的网址",
+          "body": "保存后页面上方会出现一行提示：Your site is live at https://你的用户名.github.io/仓库名/（你的网站已上线）。点这个链接打开，看到你写的页面就成功了。做完可把网址生成二维码印在名片上（ToolHub 的二维码生成工具）。如果点开是 404（找不到页面），先别慌：第一，确认文件名是 index.html 且在仓库根目录；第二，确认第 4 步的分支选的是 main；第三，等一等——官方说明改动后最多 10 分钟才生效，刷新几次或换个浏览器再试。"
+        },
+        {
+          "title": "改一行字，验证它真的会更新",
+          "body": "回到仓库，点开 index.html 文件，再点右上角的铅笔图标（Edit，编辑）。改一行字，比如把标题改成你的名字，拉到下方点 Commit changes。等几分钟后刷新你的网址，看到新标题，就说明你已经掌握了“改文件 → 自动发布”的完整循环。以后想换内容，重复这一步就行。"
+        },
+        {
+          "title": "（可选）把仓库改名，做成个人主页",
+          "body": "如果你想让地址更短，可以把仓库名改成 你的用户名.github.io（比如用户名是 xiaoming，仓库名就叫 xiaoming.github.io）。改法：Settings → General → Repository name → Rename（重命名）。改完后网址变成 https://你的用户名.github.io/，不用再带仓库名。注意：改名后旧地址会失效，已经分享出去的链接要更新；而且一个账号只能有一个这样的“用户主页”仓库。术语解释：这种叫用户主页（user site），一个账号一个；前面做的叫项目主页（project site），一个仓库一个，可以有无数个。"
+        }
+      ],
+      "fallback": [
+        "打开是 404：先确认文件名是 index.html（不是 index.htm、不是 Index.html，大小写敏感），且放在仓库根目录；再确认 Settings → Pages 里分支是 main、文件夹是 /(root)；最后等满 10 分钟再刷新。",
+        "页面还是旧内容：构建需要几分钟；按 Ctrl+F5（Mac 是 Command+Shift+R）强制刷新，绕开浏览器缓存。",
+        "Settings 里找不到 Pages：仓库必须是 Public（公开）；私有仓库开 Pages 要付费版——个人仓库需 Pro，组织仓库需 Team 及以上，免费账号不行。",
+        "想删掉网站：Settings → Pages → 把 Source 改回 None（不部署），或直接删除仓库。"
+      ],
+      "pitfalls": [
+        {
+          "title": "仓库名用了中文或空格",
+          "body": "仓库名会直接出现在网址里，中文和空格会变成一串百分号编码，又长又难看。只用小写字母、数字和连字符。"
+        },
+        {
+          "title": "把 Pages 当成动态服务器",
+          "body": "Pages 只托管静态文件（HTML、CSS、JavaScript、图片），跑不了 PHP、Python、数据库，也不能收表单、做登录。想做这些要另外找后端服务，Pages 本身免费但能力边界就在这里。"
+        },
+        {
+          "title": "公开仓库里放了隐私内容",
+          "body": "Public 仓库人人可见：别放密码、密钥、身份证号、手机号。只放愿意公开的东西。"
+        },
+        {
+          "title": "一个账号的网站数没概念",
+          "body": "一个仓库对应一个网站，但一个账号可以建很多个仓库，也就是很多个网站。只有 用户名.github.io 那个是特殊的个人主页，一个账号只能有一个。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "真的全程免费吗？有什么限额？",
+          "body": "免费账号的公开仓库开 Pages 不花钱。官方限额（以官网为准）：发布后的网站不大于 1 GB，仓库建议不大于 1 GB，每月流量软限额 100 GB，每小时构建软限额 10 次（用 GitHub Actions 部署的不计这 10 次）。个人主页和作品站离这些上限远得很。"
+        },
+        {
+          "q": "网站能用来做网店或接单吗？",
+          "body": "不行。GitHub 明确说明 Pages 不适合、也不允许用作在线商店、电商或主要面向商业交易的网站。个人主页、作品集、博客、文档站是它的正确用途。"
+        },
+        {
+          "q": "改了文件多久能看到？",
+          "body": "官方说明最多 10 分钟，通常几分钟。一直不变就按 Ctrl+F5 强制刷新，或检查是不是改错了文件。"
+        },
+        {
+          "q": "以后想换个好看的主题怎么办？",
+          "body": "GitHub Pages 内置 Jekyll 主题，在仓库里加一个 _config.yml 文件写一行 theme: jekyll-theme-minimal 就能换——但只对 Markdown 页面生效，本篇的纯 HTML index.html 不受它影响。这是进阶玩法，先把这篇跑通再说。"
+        }
+      ],
+      "tools": ["qrcode"],
+      "links": [
+        { "name": "GitHub Pages 快速上手（官方）", "url": "https://docs.github.com/en/pages/quickstart", "note": "从建仓库到上线，官方原版步骤" },
+        { "name": "GitHub Pages 限额（官方）", "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits", "note": "网站大小、流量、构建次数的官方数字" }
+      ]
+    },
+    {
+      "slug": "custom-domain",
+      "icon": "🔗",
+      "title": "给网站绑一个自己的域名",
+      "tagline": "免费域名、改 DNS 解析、打开 HTTPS，告别 github.io 的长地址。",
+      "difficulty": "入门",
+      "minutes": 30,
+      "risk": "low",
+      "lastChecked": "2026-11-05",
+      "intro": "https://你的用户名.github.io/仓库名/ 能打开，但又长又难记。域名就是网站的门牌号：换成 www.yourname.bot.cd 这样的短地址，别人一眼记住、分享也方便。这篇用 DNSHE 的免费域名做例子，注册不要钱，解析自己说了算，30 分钟把新地址挂到你的 GitHub Pages 网站上，并打开免费的 HTTPS。",
+      "why": [
+        "地址变短变好记，印在名片、发到群里都体面。",
+        "换地方托管不用换地址：以后网站搬家，域名不变。",
+        "HTTPS 免费：GitHub 自动发证书，浏览器显示小锁头。"
+      ],
+      "prereqs": [
+        "一个已经上线的 GitHub Pages 网站（第 1 篇的成果）。",
+        "一个 DNSHE 账号：用邮箱注册，不用信用卡、不用实名。",
+        "想好域名前缀，比如你的名字或项目名（小写字母、数字、连字符）。"
+      ],
+      "steps": [
+        {
+          "title": "在 DNSHE 注册一个免费域名",
+          "body": "打开 my.dnshe.com，点注册，用邮箱和密码建账号（不用绑信用卡，也不用实名认证）。登录后进「免费域名」或 Domain Hub，选一个后缀：.bot.cd 适合机器人和自动化项目，还有 .de5.net、.us.ci、.cc.cd 等可选（以后缀列表以控制台为准）。在输入框填你想要的前缀，比如 yourname，系统会实时告诉你能不能注册，确认后点「确认注册」。注册成功先别走，看一眼有效期：免费域名默认 1 年，到期前 180 天内可以免费续期，不续期会失效——在手机日历上记一个到期提醒。术语解释：域名分两段，前缀（yourname）是你起的名字，后缀（.bot.cd）是 DNSHE 提供的公共后缀；合起来 yourname.bot.cd 就是你的完整域名。"
+        },
+        {
+          "title": "决定地址形式：www 开头最稳",
+          "body": "填 GitHub 之前先定好用哪种地址。GitHub 官方推荐用 www 子域名做主地址（比如 www.yourname.bot.cd），因为它最稳：GitHub 换服务器 IP 也不会影响你。根域名（不带 www 的 yourname.bot.cd）也可以用，但要配 A 记录。本篇两个都配：www 走 CNAME，根域名走 A 记录，配好后两个地址都能打开，GitHub 还会自动在两者之间跳转。术语解释：子域名是域名前面的那一段（www 就是最常见的子域名）；根域名（apex domain）是不带任何前缀的裸域名。"
+        },
+        {
+          "title": "在 GitHub 填上自定义域名",
+          "body": "打开你的 GitHub 仓库，点 Settings → 左侧 Pages。找到 Custom domain（自定义域名）输入框，填 www.yourname.bot.cd，点 Save（保存）。保存后 GitHub 会在你的仓库里自动生成一个 CNAME 文件，里面就是你的域名——这个文件别删、别改，删了域名就掉了。填完先别急着勾 HTTPS，往下看第 5、6 步。"
+        },
+        {
+          "title": "在 DNSHE 里加解析记录",
+          "body": "回到 DNSHE 的域名管理，找到你的域名，点 DNS 解析（或 DNS 记录）。先加一条 CNAME 记录：主机/名称填 www，记录值填 你的用户名.github.io（只填用户名，不要带仓库名）。再加四条 A 记录：主机/名称填 @（@ 就代表根域名本身），记录值依次填 185.199.108.153、185.199.109.153、185.199.110.153、185.199.111.153——这是 GitHub Pages 的四个官方 IP。TTL（生效时间）不用动，默认即可。保存后列表里应该有 1 条 CNAME 和 4 条 A 记录。如果域名之前有系统自带的“停放页”解析，把它删掉，否则会冲突。"
+        },
+        {
+          "title": "等 DNS 生效（几分钟到几小时）",
+          "body": "DNS 不是改完立刻全世界生效的：它要一层层同步，通常几分钟到几小时，官方说最多 24 小时。验证办法：打开 dnschecker.org，输入你的域名选 A 记录查——看到 185.199.108.153 这些 IP 在全球陆续变绿，就是生效了。也可以直接在浏览器打开 http://www.yourname.bot.cd（注意先用 http 不是 https），能打开你的页面就说明通了。还没通就等一等，改解析后反复点保存没有用。"
+        },
+        {
+          "title": "打开 Enforce HTTPS，看到小锁头",
+          "body": "DNS 检查通过后，回到仓库的 Settings → Pages，Enforce HTTPS（强制 HTTPS）复选框会从灰色变成可选，勾上它。GitHub 会免费发一张证书（Let's Encrypt，自动续期），一般几分钟到 1 小时完成；官方说最多可能要 24 小时才出现这个选项。再打开 https://www.yourname.bot.cd，地址栏出现小锁头，点锁头能看到证书信息，就成功了。从此别人输 http 也会自动跳到 https。做完后可以用 ToolHub 的二维码生成工具把新域名做成二维码，印在名片上。"
+        }
+      ],
+      "fallback": [
+        "DNS 一直不生效：检查 CNAME 值是不是只写了 用户名.github.io（带仓库名就错了）；检查旧的停放解析删了没有；等满 24 小时再看。",
+        "Enforce HTTPS 一直是灰色：等证书，最多 24 小时；还不行就把 Custom domain 删掉重填一次，再等一轮。",
+        "打开域名看到别人的网站：CNAME 值填错了，回去核对是不是你的用户名。",
+        "根域名能打开，www 打不开（或反过来）：两边记录都要配齐，CNAME 和 A 记录缺一不可。"
+      ],
+      "pitfalls": [
+        {
+          "title": "改解析时删了 MX 记录",
+          "body": "MX 记录管邮箱收信。只动 A 记录和 CNAME，别碰 MX、TXT 这些不认识的记录，删了邮箱就收不到信了。"
+        },
+        {
+          "title": "建了通配符 * 解析",
+          "body": "别建 *.yourname.bot.cd 这样的通配符记录。GitHub 官方明确不建议：它会让别人有机会抢注你的子域名，带来域名劫持风险。"
+        },
+        {
+          "title": "域名到期忘了续",
+          "body": "免费域名默认 1 年，到期不续会被收回，别人能注册走。到期前 180 天内就能免费续期，设个日历提醒。"
+        },
+        {
+          "title": "CNAME 文件被删了",
+          "body": "GitHub 在仓库里生成的 CNAME 文件就是域名配置本身。清理仓库文件时别删它，删了域名就解绑了。"
+        },
+        {
+          "title": "域名还没生效就反复改",
+          "body": "DNS 同步要时间，改完就等。用 dnschecker.org 看全球进度，别一小时改三遍，越改越慢。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "域名真的免费吗？",
+          "body": "DNSHE 的免费域名注册不要钱，不用绑信用卡，有效期默认 1 年，到期前 180 天内免费续期（续期次数不设上限）。它也提供“好友助力免费升级永久有效”的入口，以控制台为准。如果想要 .com 这样的顶级域名，就要去 Namecheap、Cloudflare Registrar 这些地方付费买，.com 大约每年 10 美元上下，以官网标价为准。（这是 DNSHE 后缀下的免费子域名；具体有效期以控制台显示为准，不同后缀可能不同。）"
+        },
+        {
+          "q": "一定要用 www 吗？",
+          "body": "不一定，但 GitHub 官方推荐 www 做主地址，因为它不受 GitHub 服务器换 IP 的影响，最稳定。根域名和 www 一起配，两个都能打开，GitHub 会自动跳转。"
+        },
+        {
+          "q": "证书要钱吗？多久续一次？",
+          "body": "不要钱。GitHub 用 Let's Encrypt 免费发，自动续期，你不用管。"
+        },
+        {
+          "q": "以后网站不想放 GitHub 了，域名怎么办？",
+          "body": "域名是你的，改解析就行：把 CNAME/A 记录指向新地方，地址不变，访客无感。这就是自己域名的好处。"
+        }
+      ],
+      "tools": ["qrcode"],
+      "links": [
+        { "name": "GitHub 自定义域名管理（官方）", "url": "https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site", "note": "A 记录 IP 与 Enforce HTTPS 的官方步骤" },
+        { "name": "DNSHE 官网", "url": "https://my.dnshe.com/", "note": "免费域名注册与 DNS 管理" },
+        { "name": "DNS Checker", "url": "https://dnschecker.org/", "note": "查你的域名在全球生效了没有" }
+      ]
+    },
+    {
+      "slug": "cloudflare-free",
+      "icon": "☁️",
+      "title": "Cloudflare 免费套餐：给网站加速和挡爬虫",
+      "tagline": "免费 CDN、缓存、基础防护三件套，不用改代码。",
+      "difficulty": "中等",
+      "minutes": 40,
+      "risk": "mid",
+      "riskNote": "改 NS（nameserver）后，域名的全部 DNS 解析都由 Cloudflare 接管。操作前先在原服务商后台把现有 DNS 记录截图备份；改错或漏记一条记录，可能导致网站或邮箱暂时中断。按步骤来、改完逐项核对，都可以恢复。",
+      "lastChecked": "2026-11-05",
+      "intro": "Cloudflare 是一层挡在访客和你网站之间的免费服务：它替你管 DNS、把页面缓存到全球节点加速打开、免费发 SSL 证书、还能挡住流量攻击。免费版每月 0 美元，不用绑信用卡，个人网站完全够用。这篇把你的域名接进 Cloudflare，改几处设置就完成。",
+      "why": [
+        "全球 CDN 加速：访客从离他最近的节点拿页面，打开更快。",
+        "免费挡攻击：不限量的 DDoS 防护和基础防火墙，小站不用再怕被刷。",
+        "免费 SSL：证书自动发、自动续，不用自己折腾。",
+        "不用改代码：接在域名层面，网站本身一行业不用动。"
+      ],
+      "prereqs": [
+        "一个已有域名，并且你能进它的注册商后台改设置（第 2 篇注册的 DNSHE 域名就行）。",
+        "一个已经上线的网站（GitHub Pages 就可以）。",
+        "一个邮箱，用来注册 Cloudflare 账号。"
+      ],
+      "steps": [
+        {
+          "title": "注册 Cloudflare，添加域名",
+          "body": "打开 cloudflare.com，点右上角 Sign up（注册），用邮箱建账号（不用绑信用卡）。登录后点 Domains → Onboard a domain（旧版面板叫 Add site），输入你的域名（比如 yourname.bot.cd，不用带 www），点 Continue。选计划时点 Free（免费，$0/月）→ Continue。注意别手滑点成 Pro（$20/月按年付）。"
+        },
+        {
+          "title": "核对 Cloudflare 扫出来的 DNS 记录",
+          "body": "Cloudflare 会自动扫描你现在的 DNS 记录并列出来。逐条核对：原来在 DNSHE 配的 CNAME（www → 你的用户名.github.io）和 4 条 A 记录都在吗？邮箱的 MX 记录在吗？缺了就点 Add record（添加记录）手动补一条，错了就点 Edit 改。核对完点 Continue。这一步是整篇最重要的一步——漏记一条，网站或邮箱就可能断。"
+        },
+        {
+          "title": "去注册商改 NS，把域名交接给 Cloudflare",
+          "body": "Cloudflare 会给你两个 nameserver（域名服务器），长得像 ada.ns.cloudflare.com 和 bob.ns.cloudflare.com（每人分到的不一样，以页面显示为准）。去你的域名注册商后台（DNSHE 里叫“修改 NS”或“域名服务器”），把原来的 NS 换成这两个，保存。回来点 Done, check nameservers（完成，检查 NS）。生效一般几分钟到几小时，期间网站不会断——旧的 DNS 还在工作，新旧交接是平滑的。术语解释：NS（nameserver）就是“域名归谁管”的指向标，改了它，域名的所有解析记录就都由 Cloudflare 说了算。"
+        },
+        {
+          "title": "确认小黄云亮了",
+          "body": "NS 生效后，在 Cloudflare 的 DNS 页面，每条记录后面都有一个云朵图标。橙色小黄云（Proxied，代理）表示流量走 Cloudflare，又快又有防护；灰色云（DNS only，仅 DNS）表示直接指向原地址，不经过 Cloudflare。网站的 CNAME 和 A 记录保持橙色就行。如果看到记录是灰色，点一下云朵切成橙色。"
+        },
+        {
+          "title": "SSL 模式选 Full (strict)",
+          "body": "点左侧 SSL/TLS → Overview（概览），把 SSL 模式选成 Full (strict)（完全严格）。Cloudflare 有四种模式：Off（不加密）、Flexible（灵活）、Full（完全）、Full (strict)（完全严格）。对 GitHub Pages 这样本身带 HTTPS 的站，选 Full (strict)：浏览器到 Cloudflare、Cloudflare 到 GitHub 两段都加密，还会校验对方证书，是最稳的。千万别选 Flexible：Flexible 下 Cloudflare 用 HTTP 回源，GitHub Pages 把 HTTP 请求 301 到 HTTPS，Cloudflare 又用 HTTP 再请求一次，就这样循环下去，浏览器报“重定向次数过多”——这是最常见的翻车。切 Full (strict) 前先确认 GitHub Pages 的证书已签发完成（Pages 设置里自定义域名旁有绿勾），否则会报 526 错误。"
+        },
+        {
+          "title": "缓存：改完看不到更新怎么办",
+          "body": "Cloudflare 默认会缓存你的图片、CSS、JS 等静态文件，访客打开更快。但这也意味着你改了网站内容，自己刷新可能还是旧页面。排错办法有两个：第一，Caching（缓存）→ Configuration（配置）→ Purge Cache（清除缓存）→ Purge Everything（全部清除），清完再刷新；第二，临时排错用 Development Mode（开发模式）：同一个页面里打开它，3 小时内所有缓存失效、改动即时可见，3 小时后自动关闭，不用记着关。注意开发模式只绕过缓存、不删除已缓存的文件，想彻底更新还是要 Purge。"
+        },
+        {
+          "title": "顺手开两道免费防护",
+          "body": "最后顺手开两道免费防护。Security（安全）→ WAF（防火墙）：免费的 Managed Ruleset（托管规则集）默认就是开的，能挡常见攻击手法，不用动。再往下找到 Bot Fight Mode（机器人对抗模式），打开：它会自动挑战疑似爬虫的访问。免费版还包含 5 条自定义 WAF 规则和 1 条限速规则（比如“同一 IP 10 秒内超过 20 次请求就拦 10 秒”），个人站基本用不上，先知道有这功能就行。免费版的支持是社区论坛和文档，没有工单、没有 SLA——个人站够用。"
+        }
+      ],
+      "fallback": [
+        "改完 NS 网站打不开：先等 NS 生效（几分钟到几小时）；再检查第 2 步是不是漏扫了一条 DNS 记录，漏了就补上。",
+        "浏览器说“重定向次数过多”：SSL 模式改成 Full (strict)，别用 Flexible。",
+        "改了网站还是旧页面：Caching → Purge Everything 清一次缓存；或开 Development Mode 看即时效果。",
+        "NS 改了半天 Cloudflare 还显示未激活：去注册商后台确认 NS 是不是真的改了、有没有多填空格；再等一等，全球同步最多 24 小时。"
+      ],
+      "pitfalls": [
+        {
+          "title": "改 NS 前没备份旧 DNS 记录",
+          "body": "NS 一改，旧服务商那边的记录就不再生效。操作前把现有 DNS 记录截图或导出存好，漏了能照着补。"
+        },
+        {
+          "title": "SSL 选了 Flexible",
+          "body": "Flexible 只加密浏览器到 Cloudflare 这一段，Cloudflare 到源站走明文；源站强制 HTTPS 时会来回跳转，页面打不开。GitHub Pages 这种自带 HTTPS 的站，直接选 Full (strict)。"
+        },
+        {
+          "title": "照着老教程找 Page Rules 和 Auto Minify",
+          "body": "Auto Minify 已于 2024 年 8 月 5 日下线；Page Rules 已标记为弃用（deprecated），新功能改用 Cache Rules 等替代——老入口可能还在，但新建规则别再用它。看到老教程提到它们，直接跳过，不影响本篇操作。"
+        },
+        {
+          "title": "把 Development Mode 当常开开关",
+          "body": "开发模式 3 小时自动关，期间所有缓存失效、网站变慢。只在排错时临时开，平时保持关闭。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "免费版到底包含什么？",
+          "body": "以 Cloudflare 官网为准。免费版（$0/月，不用信用卡）包括：DNS、全球 CDN（流量不限，常规网页内容流量不计费；但按 Cloudflare 服务条款，不能拿免费版主要做视频或大文件分发）、免费 Universal SSL 证书、不限量 DDoS 防护、免费 WAF 托管规则集、5 条自定义 WAF 规则、1 条限速规则、Bot Fight Mode。Pro 是 $20/月（按年付）或 $25/月（按月付），主要多的是更全的 WAF 规则、图片优化和工单支持。"
+        },
+        {
+          "q": "Cloudflare 能代替网站托管吗？",
+          "body": "不能。Cloudflare 是挡在前面的加速和防护层，你的网站文件还得住在 GitHub Pages、Vercel 这些地方。它不提供“放网站文件”的服务。"
+        },
+        {
+          "q": "改了 NS，以后还能在 DNSHE 改解析吗？",
+          "body": "不能。NS 改到 Cloudflare 后，所有 DNS 记录都要在 Cloudflare 的 DNS 页面里改，DNSHE 那边只剩“域名归属”和续期。想换回去，把 NS 改回原来的就行。"
+        },
+        {
+          "q": "免费版有流量上限吗？",
+          "body": "CDN 流量在免费版不单独计费。卡你的是规则数量（比如第 6 条自定义 WAF 规则就要升 Pro），不是流量。个人站基本碰不到上限。"
+        }
+      ],
+      "tools": [],
+      "links": [
+        { "name": "Cloudflare 套餐（官方）", "url": "https://www.cloudflare.com/plans/", "note": "免费版包含内容，以官网为准" },
+        { "name": "Development Mode（官方文档）", "url": "https://developers.cloudflare.com/cache/reference/development-mode/", "note": "开发模式 3 小时绕过缓存的官方说明" }
+      ]
+    },
+    {
+      "slug": "github-first-lesson",
+      "icon": "🐙",
+      "title": "GitHub 新手第一课：注册、建仓库、传文件、提 PR",
+      "tagline": "全程网页操作，不碰命令行；做完能看懂别人的开源项目、敢提第一个 PR。",
+      "difficulty": "入门",
+      "minutes": 40,
+      "risk": "low",
+      "lastChecked": "2026-11-05",
+      "intro": "GitHub 是全世界程序员放代码、一起改代码的地方，也是普通人参与开源的入口。你不需要会写代码、不用装软件、不用碰命令行——这篇只用浏览器，带你注册账号、建仓库、传文件，最后给别人的项目提一个 PR（Pull Request，合并请求）。做完你就能看懂开源项目的页面，敢动手改一个错字、提一个建议。",
+      "why": [
+        "看懂开源项目：README 是说明书，Issues 是问题单，PR 是别人的改动提案。",
+        "能动手参与：改错字、补翻译、报问题，都是对开源的真实贡献。",
+        "自己的文件也有版本：每次提交都有记录，改错了能找回。"
+      ],
+      "prereqs": [
+        "一个常用邮箱，用来收验证码。",
+        "一台能上网的电脑或手机，浏览器即可。",
+        "一个想练手的公开项目：比如本站的开源仓库 github.com/guyang1943/toolhub（ToolHub 本身就是开源的）。"
+      ],
+      "steps": [
+        {
+          "title": "注册 GitHub 账号",
+          "body": "打开 github.com/signup。填邮箱、密码、用户名：邮箱用常看的（验证码发到这里）；密码至少 8 位，包含数字和小写字母；用户名用小写字母、数字和连字符，它会出现在你的个人主页地址 github.com/你的用户名 里。点继续后，GitHub 会往邮箱发验证码（发件人 noreply@github.com），把验证码填回去点 Verify。找不到邮件先看垃圾邮件箱，或点重发。接下来选 Free（免费）计划，个性化问卷点 Skip personalization 跳过。看到 Dashboard（仪表盘）就是注册成功了。建议顺手开两步验证（2FA）：头像 → Settings →（左侧 Access 分组下）Password and authentication → 找到 Two-factor authentication 分区，点 Enable two-factor authentication，账号被盗的概率会小很多。术语解释：两步验证就是登录时除了密码，还要手机上的一次性验证码。"
+        },
+        {
+          "title": "认识一个仓库页面",
+          "body": "打开一个公开仓库看看，比如 github.com/guyang1943/toolhub。页面上方是文件列表，点文件名就能看内容；README.md 是项目的说明书，打开仓库第一眼看到的就是它，一般会写项目是干什么的、怎么用。再看右上角三个按钮：Watch（关注，有更新会通知你）、Star（收藏，相当于点赞）、Fork（复刻，复制一份到你名下自己改）。页面上方还能看到 Issues（问题单）和 Pull requests（合并请求）两个标签页——那是大家讨论和提交改动的地方。"
+        },
+        {
+          "title": "建自己的第一个仓库",
+          "body": "点右上角 + 号 → New repository（新建仓库）。Repository name（仓库名）填英文名，比如 my-notes（小写字母、数字、连字符）。Visibility（可见性）选 Public（公开）：免费账号功能最全，公开仓库人人可见；Private（私有）只有你和你邀请的人能看。勾上 Add a README file，点 Create repository。成功后进入仓库页，看到 README.md 文件。提醒：公开仓库不要放密码、密钥、身份证号、手机号——这些东西一公开，机器人几分钟就能扫到。"
+        },
+        {
+          "title": "用网页上传文件",
+          "body": "点仓库上方的 Code 标签页，再点绿色 Add file（添加文件）→ Upload files（上传文件）。把电脑里的文件拖进虚线框（比如一张图片、一个文档）。页面下方 Commit changes（提交更改）区域有一行说明文字，默认是 Add files via upload，改成一句人话，比如“上传第一张图片”，再点绿色 Commit changes。文件出现在列表里就是传成功了。术语解释：Commit（提交）就是把这次改动存成一个版本，附带一句说明；之后在 History（历史）里能看到每一次提交，改错了能找回。"
+        },
+        {
+          "title": "用网页改文件",
+          "body": "点开仓库里的任意文件（比如 README.md），再点右上角的铅笔图标（Edit，编辑）。在编辑框里改几个字，拉到下方，Commit message（提交说明）写一句改了什么，比如“修正错别字”，点 Commit changes。回到文件页就能看到新内容。想看改了什么：点文件上方的 History，能看到每次提交的记录和差异。"
+        },
+        {
+          "title": "Fork（复刻）别人的仓库",
+          "body": "想改别人的项目，先 Fork。打开目标仓库（比如 github.com/guyang1943/toolhub），点右上角 Fork 按钮，选你的账号（如果有多个组织会让你选放哪里）。几秒后页面跳转到 github.com/你的用户名/toolhub——这就是你名下的一份完整复制件，随便改都不会影响原仓库。术语解释：Fork（复刻/分叉）就是把别人的仓库完整复制一份到自己名下，是开源协作的起点；原仓库和你的复刻之间保持着关联，之后才能提 PR。"
+        },
+        {
+          "title": "提第一个 PR",
+          "body": "在你 fork 的仓库里改一个文件：比如打开 README.md，点铅笔图标改一个错字，Commit message 写“修正 README 错别字”，点 Commit changes。回到你 fork 的仓库首页，页面上方会出现一条绿色提示和 Compare & pull request（比较并创建合并请求）按钮，点它。确认页面：左边 base repository（目标仓库）是原作者的仓库、base 分支是 main；右边 head repository（来源仓库）是你的 fork、compare 是你改动的分支。没错的话，写标题（比如“修正 README 中的错别字”）和一句话说明（改了哪一行、为什么改），点 Create pull request（创建合并请求）。成功后页面显示你的 PR 编号，比如 #10。术语解释：PR（Pull Request）就是“请你把我的改动拉过去”——你把改动提案发给原作者，对方审核后决定合不合进来。"
+        },
+        {
+          "title": "看懂 PR 的状态和回复",
+          "body": "PR 建好后有三种状态：Open（打开，等作者回复）、Merged（已合并，你的改动进原仓库了）、Closed（已关闭，没采纳或你自己关了）。作者可能会在页面下方评论、让你再改一改——直接在评论框回复就行；你再去 fork 里改文件、提交，PR 会自动更新，不用重新提。第一次提 PR 不用紧张：改错字、补翻译、修文档都是最受欢迎的新手贡献。如果 PR 被合并不了（比如原仓库同时改了同一行），页面会提示冲突（conflict），先放一放，等熟练了再处理。"
+        }
+      ],
+      "fallback": [
+        "收不到验证码：先看垃圾邮件和推广标签；发件人是 noreply@github.com；等几分钟点重发；还不行换个邮箱注册。",
+        "用户名被占了：GitHub 用户名全站唯一，换一个，加数字或连字符，比如把 xiaoming 换成 xiaoming-2026。",
+        "Compare & pull request 按钮没出现：点仓库上方的 Pull requests 标签页 → New pull request（新建合并请求），点 compare across forks（跨 fork 比较）→ base 选原仓库的 main，head fork 选你的 fork、compare 选你的分支。",
+        "PR 显示冲突（conflict）：说明原仓库同时改了同一处。先别硬来，可以在 PR 页面下方直接编辑解决，或关掉这个 PR 换个小改动再提。"
+      ],
+      "pitfalls": [
+        {
+          "title": "公开仓库里放了密码或密钥",
+          "body": "Public 仓库人人可见，还有机器人专门扫新公开的密钥。密码、API 密钥、私钥、身份证号一律别放仓库里。已经误传了就立刻换掉（改密码、吊销密钥），光删文件没用——历史记录里还有。"
+        },
+        {
+          "title": "PR 标题写“改了点东西”",
+          "body": "作者每天可能收到很多 PR，标题要写清改了什么、为什么改，比如“修正 README 中的错别字”。标题不清的 PR 很容易被直接忽略。"
+        },
+        {
+          "title": "直接在原仓库点编辑以为能改",
+          "body": "没有写权限的仓库，你点编辑时 GitHub 会自动帮你 fork 一份——这不是 bug，是正常流程。改动发生在你的 fork 里，最后要走 PR 才能回到原仓库。"
+        },
+        {
+          "title": "Fork 完就不管，原仓库更新了",
+          "body": "Fork 是复制那一刻的快照，原仓库之后的新改动不会自动同步到你的 fork。长期参与一个项目要定期点 Sync fork（同步复刻）更新。网页上就有这个按钮，在 fork 首页点 Sync fork → Update branch。"
+        }
+      ],
+      "faq": [
+        {
+          "q": "GitHub 免费吗？",
+          "body": "个人账号免费。公开仓库的功能基本全开；私有仓库也能免费建，高级功能（比如某些代码审查、Actions 用量）要付费，以官网为准。学生可以用 GitHub Education 申请更多免费额度。"
+        },
+        {
+          "q": "一定要学 git 命令行吗？",
+          "body": "不用。这篇全程网页操作。等你改得多了、想一次改很多文件，再学 git 也不迟——那时你已经理解仓库、提交、分支这些概念了，学命令只是换个工具。"
+        },
+        {
+          "q": "Star 和 Fork 有什么区别？",
+          "body": "Star 是收藏（点赞），只表示你喜欢这个项目；Fork 是复制一份到你名下，可以自己改、再提 PR。看项目热度看 Star 数，想参与就 Fork。"
+        },
+        {
+          "q": "提 PR 会不会被骂？",
+          "body": "正规开源项目欢迎新手 PR，尤其是文档类改动。先从错别字、翻译、补充说明这类小改动开始，标题和说明写清楚，被接受的概率很高。被拒绝也很正常，看看评论里的原因，下次再提。"
+        },
+        {
+          "q": "README 到底是干什么的？",
+          "body": "README.md 是每个仓库的“说明书”，打开仓库第一眼就是它。好的 README 会写：项目是干什么的、怎么安装、怎么用、怎么参与。自己建仓库也记得写几句，否则别人不知道你的项目是干嘛的。"
+        }
+      ],
+      "tools": [],
+      "links": [
+        { "name": "注册 GitHub 账号（官方）", "url": "https://docs.github.com/en/account-and-profile/how-tos/account-management/creating-an-account-on-github", "note": "邮箱验证与免费账号的官方说明" },
+        { "name": "在 GitHub 上创建合并请求（Microsoft Learn）", "url": "https://learn.microsoft.com/en-us/contribute/content/create-pull-request", "note": "从 fork 到 PR 的网页端完整流程" },
+        { "name": "ToolHub 开源仓库", "url": "https://github.com/guyang1943/toolhub", "note": "练手用的公开仓库：可以 Star、Fork，也可以从改文档开始提 PR" }
       ]
     }
   ]

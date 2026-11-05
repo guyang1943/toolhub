@@ -465,6 +465,19 @@ async function feedFile(selector, dataUrl, name, type) {
   check('教程页有风险提示与元信息条', await evaluate(`!!document.querySelector('.guide-risk') && !!document.querySelector('.guide-meta')`));
   check('教程页互链站内工具', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 2);
   await shot('17-guide');
+
+  // 新篇目也要从总览真点一次：直接 goto('/guides/<slug>/') 对「总览里有没有这一行」一无所知，
+  // 而第一批四篇（GitHub Pages / 绑域名 / Cloudflare / GitHub 新手课）正是只加数据、不新写模板的那种，
+  // 唯一可能坏的地方就是「列出来但点不进去」和「进去了但步骤没渲染」。
+  await goto('/guides/');
+  await waitText('#page-body', '教程', 8000);
+  await evaluate(`document.querySelectorAll('#page-body a.fl-row')[1].click()`);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  const g2Path = await evaluate(`location.pathname`);
+  const g2Steps = await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`);
+  check('总览第二篇能点进详情', g2Path === '/guides/github-pages-first-site/', g2Path);
+  check('新篇步骤数与数据一致', g2Steps === 7, g2Steps + ' 步');
+  check('低风险篇目不渲染风险提示块', await evaluate(`!document.querySelector('.guide-risk')`));
   await goto('/');
 
   // ---- 1.56 评测列表（v3.13 改为行式列表）----

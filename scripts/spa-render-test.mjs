@@ -257,6 +257,16 @@ check('高风险指南有风险提示块', g0.risk !== 'high' || gHtml.includes(
 check('指南页含回退章节', gHtml.includes('翻车了怎么办'));
 check('指南页互链站内工具', (g0.tools || []).every((id) => gHtml.includes('/tools/' + id + '/')));
 
+// 围栏代码块：静态页与 SPA 共用 assets/lib/guide-text.js，两边都必须出 <pre><code>。
+// 只测静态页会漏掉 SPA——而用户看到的恰恰是 SPA 那一版。
+const gFence = guideData.find((x) => x.steps.some((s) => /^\s*```/m.test(s.body)));
+if (gFence) {
+  await go('/guides/' + gFence.slug);
+  const fHtml = document.getElementById('page-body').innerHTML;
+  check('指南里的围栏代码块渲染成 pre/code', fHtml.includes('<pre><code>') && !fHtml.includes('```'), gFence.slug);
+  check('代码示例里的标签被转义成文本', fHtml.includes('&lt;!DOCTYPE html&gt;'));
+}
+
 // 2) 评测详情页
 await go('/evaluations/pdf-tools');
 const detailHtml = document.getElementById('page-body').innerHTML;

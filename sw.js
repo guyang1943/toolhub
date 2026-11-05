@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.27 · 预缓存 295 个地址 · 约 4.5 MB
+// 版本：toolhub-v3.27 · 预缓存 304 个地址 · 约 4.7 MB
 const VERSION = "toolhub-v3.27";
 const CORE = [
   "/",
@@ -191,6 +191,7 @@ const FULL = [
   "/assets/drop.js",
   "/assets/lib/drop-route.js",
   "/assets/lib/events.js",
+  "/assets/lib/guide-text.js",
   "/assets/lib/intent.js",
   "/assets/lib/json-schema.js",
   "/assets/lib/pages.js",
@@ -311,6 +312,14 @@ const FULL = [
   "/categories/text.json",
   "/categories/web/",
   "/categories/web.json",
+  "/guides/cloudflare-free/",
+  "/guides/cloudflare-free.json",
+  "/guides/custom-domain/",
+  "/guides/custom-domain.json",
+  "/guides/github-first-lesson/",
+  "/guides/github-first-lesson.json",
+  "/guides/github-pages-first-site/",
+  "/guides/github-pages-first-site.json",
   "/guides/index.json",
   "/guides/tv-box-server/",
   "/guides/tv-box-server.json",

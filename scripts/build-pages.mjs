@@ -16,6 +16,9 @@ import { matchPage } from './lib/pages-registry.mjs';
 // 构建期（这里是静态正文，爬虫与禁用 JS 时看到的）与 pages.js（站内跳转后重渲染）调的是
 // 同一个 renderKeyTable()——两份文案共用一段代码，才谈得上「不可能各说各的」。
 import { renderKeyTable } from '../assets/lib/store-keys.js';
+// 教程正文的渲染：静态页与 SPA 共用同一段（v3.28）。围栏代码块两边都得变成 <pre><code>，
+// 否则同一段正文在「爬虫看到的」和「用户看到的」之间会悄悄长出两套样子。
+import { guideText } from '../assets/lib/guide-text.js';
 
 // 模块级 HTML 转义。注意本文件内部还有几处**函数内局部**的 `esc`（如目录页那个），
 // 它们在各自作用域里有效，模块级代码里直接用会 ReferenceError——v3.21 就踩了这一次。
@@ -960,7 +963,7 @@ for (const p of staticPages) {
 }
 
 // 3.5e) 教程：/guides/ 总览 + 每篇一页（v3.15；v3.16 从「折腾指南」改名「教程」）
-// 这一层和 /tools/ 的分工必须写在脸上：工具是「点开就能用」，教程是「先装、先刷、先配」。
+// 这一层和 /tools/ 的分工必须写在脸上：工具是「点开就能用」，教程是「要走完一遍才算会」。
 // 硬塞进工具清单的代价不是多一个条目，而是把「标本地=打开即用、文件不出电脑」的承诺稀释掉。
 // 所以教程页的固定结构是：能做什么 → 为什么要折腾 → 开工前的门槛 → 步骤 → 翻车了怎么办 → 坑。
 // 「翻车了怎么办」不是礼貌性章节：这类内容一旦省略回退路径，就是把人往不可逆的操作上推。
@@ -981,7 +984,7 @@ for (const p of staticPages) {
   {
     const url = `${BASE}/guides/`;
     const body =
-      `<div class="res-intro">这里放的是「要先装、先刷、先配」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器。它们和工具清单不是一回事——工具是打开网页就能用，教程是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div>` +
+      `<div class="res-intro">这里放的是「要先装、先配、先走一遍」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器，也包括从零把一个网站发布上线。它们和工具清单不是一回事——工具是打开网页就能用，教程是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div>` +
       `<h2 class="res-group-title">全部教程 · ${GUIDES.length} 篇</h2>` +
       GUIDES.map(guideRow).join('') +
       `<h2 class="res-group-title">这一类内容的三条纪律</h2>` +
@@ -996,7 +999,7 @@ for (const p of staticPages) {
 
     let html = fillMeta(tpl, {
       title: `教程 · ${GUIDES.length} 篇 · ToolHub`,
-      desc: '刷机、自建服务、把闲置硬件改成能干活的机器。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。',
+      desc: '刷机、自建服务、把闲置硬件改成能干活的机器，也包括从零发布一个网站。每篇都写明前置条件、风险与翻车之后的回退办法——和「点开即用」的工具清单分开，是因为这两类东西的门槛完全不同。',
       url,
       botInject: `window.__PAGE__='guides';`,
       jsonld: {
@@ -1007,7 +1010,7 @@ for (const p of staticPages) {
         hasPart: GUIDES.map((g) => ({ '@type': 'TechArticle', name: g.title, url: `${BASE}/guides/${g.slug}/` })),
       },
     });
-    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '教程', desc: '要先装、先刷、先配才能用起来的东西', extra: body })}`);
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '教程', desc: '要先装、先配、先走一遍才能用起来的东西', extra: body })}`);
     writeFileSync(join(gDir, 'index.html'), html, 'utf8');
     // 总览的轻量索引：SPA 只取标题与三个数字，不为整篇正文买单
     writeFileSync(
@@ -1045,7 +1048,7 @@ for (const p of staticPages) {
       `<h2 class="res-group-title">为什么值得折腾</h2><ul>${g.why.map((s) => `<li>${s}</li>`).join('')}</ul>` +
       `<h2 class="res-group-title">开工前要有的</h2><ul>${g.prereqs.map((s) => `<li>${s}</li>`).join('')}</ul>` +
       `<h2 class="res-group-title">步骤</h2><ol class="guide-steps">${g.steps
-        .map((s) => `<li><b>${s.title}</b><p>${s.body}</p></li>`)
+        .map((s) => `<li><b>${s.title}</b>${guideText(s.body)}</li>`)
         .join('')}</ol>` +
       `<h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback">${g.fallback.map((s) => `<li>${s}</li>`).join('')}</ul>` +
       `<h2 class="res-group-title">容易踩的坑</h2>${g.pitfalls
