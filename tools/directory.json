@@ -1917,6 +1917,288 @@
         "视频压缩",
         "ffmpeg.wasm"
       ]
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "desc": "一条命令在本机跑开源大模型",
+      "category": "AI",
+      "url": "https://ollama.com",
+      "source": "github.com/ollama/ollama",
+      "license": "MIT",
+      "runtime": "desktop",
+      "privacy": "local",
+      "privacyNote": "模型权重下载到本机后推理全程在本机完成，官方首页写明「zero data retention / your prompts are never stored or trained on」。只有你主动改用 ollama.com 的云端模型，内容才发到他们的服务器。",
+      "promptNote": "提示词进本机的推理进程，不出机器；显式切到云端模型才会外发。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 ollama.com 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官方首页的数据说明（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "本地大模型",
+        "模型运行",
+        "离线"
+      ],
+      "aliases": [
+        "本地模型",
+        "大模型运行",
+        "ollama"
+      ],
+      "blurb": "装完在终端敲一行 ollama run 就能对话，不用注册、不用 Key、断网也能用；代价是模型文件几个 GB，7B 级别大约要 8GB 内存才跑得舒服。"
+    },
+    {
+      "id": "gpt4all",
+      "name": "GPT4All",
+      "desc": "全本地的桌面 AI 客户端，文档问答也在本机",
+      "category": "AI",
+      "url": "https://www.nomic.ai/gpt4all",
+      "source": "github.com/nomic-ai/gpt4all",
+      "license": "MIT",
+      "runtime": "desktop",
+      "privacy": "local",
+      "privacyNote": "官方首页写的是 no cloud required, no data leaves your machine：模型在本机推理，LocalDocs 的文档索引也留在本机。Nomic 的商业平台是另一条产品线，与这个客户端不是一回事。",
+      "promptNote": "提示词与文档索引都在本机，不出机器。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 nomic.ai/gpt4all 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官方页面的本地推理说明（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "本地大模型",
+        "文档问答",
+        "离线"
+      ],
+      "aliases": [
+        "本地聊天机器人",
+        "LocalDocs"
+      ],
+      "blurb": "装完就能用，不用配命令行：模型从内置列表下载，把文档目录挂进 LocalDocs 就能针对自己的资料提问，索引也留在本机。MIT 开源，在意许可证的人比用闭源客户端更放心。"
+    },
+    {
+      "id": "anythingllm",
+      "name": "AnythingLLM",
+      "desc": "全本地的 AI 助手，文档问答与会议记录都在本机跑",
+      "category": "AI",
+      "url": "https://anythingllm.com",
+      "source": "github.com/Mintplex-Labs/anything-llm",
+      "license": "MIT",
+      "runtime": "desktop",
+      "privacy": "local",
+      "privacyNote": "官方首页写明 No accounts, no API keys，内置 llama.cpp 引擎在本机推理，文档索引与对话都不出设备；只有你手动切到云模型并填了 Key 才会外发。",
+      "promptNote": "提示词与文档索引都在本机，官方口径是不离开设备；切云模型才外发。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 anythingllm.com 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官方首页的本地推理说明（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "本地助手",
+        "文档问答",
+        "离线"
+      ],
+      "aliases": [
+        "文档问答",
+        "本地知识库"
+      ],
+      "blurb": "把 PDF、Word 丢进工作区就能针对它们提问，检索与生成都在本机完成；一个安装包，Windows / macOS / Linux 都有，还能接管会议录音的转写与摘要。"
+    },
+    {
+      "id": "comfyui",
+      "name": "ComfyUI",
+      "desc": "节点式图像生成工作流，本地跑扩散模型",
+      "category": "AI",
+      "url": "https://www.comfy.org",
+      "source": "github.com/comfyanonymous/ComfyUI",
+      "license": "GPL-3.0（核心）",
+      "runtime": "desktop",
+      "privacy": "local",
+      "privacyNote": "桌面版把模型和推理放在你自己的显卡上，提示词与参考图不出机器；Comfy Cloud 是另一条产品线，用它时图像与提示词会上传。",
+      "promptNote": "桌面版全在本机显卡上跑；用 Comfy Cloud 才会把提示词与图片传上去。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 comfy.org 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官网 Desktop / Cloud 两条产品线（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "图像生成",
+        "工作流",
+        "Stable Diffusion"
+      ],
+      "aliases": [
+        "文生图",
+        "节点式出图"
+      ],
+      "blurb": "比「一个输入框出图」麻烦，但每一步都可调、可复用：搭好一条工作流就能反复出图，代价是要有独立显卡，第一次配模型得折腾一阵。"
+    },
+    {
+      "id": "open-webui",
+      "name": "Open WebUI",
+      "desc": "自托管的 AI 对话界面，可接本地或云端模型",
+      "category": "AI",
+      "url": "https://openwebui.com",
+      "source": "github.com/open-webui/open-webui",
+      "license": "BSD-3-Clause（含品牌条款）",
+      "runtime": "selfhost",
+      "privacy": "optional",
+      "privacyNote": "它只是界面，数据去哪取决于你接的后端：接本机 Ollama 时提示词不出机器；接 OpenAI / Anthropic 等云接口时，提示词会发给对应厂商。多用户部署时对话记录存在你自己的服务器上。",
+      "promptNote": "接本地模型就不出机器；接云接口时直接发给那家厂商，Open WebUI 只做转发。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 openwebui.com 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官网与文档的可接模型清单（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "自托管",
+        "对话界面",
+        "本地部署"
+      ],
+      "aliases": [
+        "openwebui",
+        "自建对话界面"
+      ],
+      "blurb": "想要 ChatGPT 那种界面、又想自己掌控数据，就用它：Docker 一条命令起来，接上本机 Ollama 就是完全离线的对话站，团队用还能开账号、分权限。"
+    },
+    {
+      "id": "dify",
+      "name": "Dify",
+      "desc": "自托管的工作流与智能体平台，可视化搭 AI 应用",
+      "category": "AI",
+      "url": "https://dify.ai",
+      "source": "github.com/langgenius/dify",
+      "license": "Apache-2.0（附加条款）",
+      "runtime": "selfhost",
+      "privacy": "optional",
+      "privacyNote": "社区版用 Docker 部署在你自己的服务器上，应用与知识库数据都在那台机器；但模型推理要么接本地模型（不出机器），要么填厂商 Key（提示词发给厂商）。云端版由 Dify 托管，是另一回事。",
+      "promptNote": "自托管 + 本地模型就不出你的服务器；填了厂商 Key 就发给那家厂商。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 dify.ai 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官网三种部署方式与许可证说明（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "工作流",
+        "智能体",
+        "自托管"
+      ],
+      "aliases": [
+        "智能体平台",
+        "工作流编排"
+      ],
+      "blurb": "把「调模型」变成拖节点：知识库检索、条件分支、工具调用都能连起来，做完能直接发布成网页或 API；装起来比 Open WebUI 重，适合真要搭应用的人。"
+    },
+    {
+      "id": "webllm",
+      "name": "WebLLM",
+      "desc": "在浏览器里跑大模型，WebGPU 加速，不用装东西",
+      "category": "AI",
+      "url": "https://chat.webllm.ai",
+      "source": "github.com/mlc-ai/web-llm",
+      "license": "Apache-2.0",
+      "runtime": "web",
+      "privacy": "local",
+      "privacyNote": "模型权重下载进浏览器缓存后用 WebGPU 在本机推理，提示词不发服务器；首次打开要下载几 GB 的模型，之后可以离线使用。",
+      "promptNote": "提示词留在浏览器里，由本机 GPU 推理，不出机器。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 chat.webllm.ai 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对 MLC 官方文档的浏览器内推理说明（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "浏览器",
+        "本地推理",
+        "WebGPU"
+      ],
+      "aliases": [
+        "浏览器跑模型",
+        "网页端大模型"
+      ],
+      "blurb": "想试本地大模型又不想装任何东西，就在浏览器里跑：模型下载一次，之后断网也能聊；代价是首次加载慢，且需要较新的 Chrome 或 Edge。"
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "desc": "编辑器里的编码智能体，自带 Key 或接本地模型",
+      "category": "AI",
+      "url": "https://cline.bot",
+      "source": "github.com/cline/cline",
+      "license": "Apache-2.0",
+      "runtime": "extension",
+      "privacy": "optional",
+      "keyRequired": true,
+      "privacyNote": "它本身不转发数据：你填哪家的 Key，代码上下文就发给哪家；接本机 Ollama / LM Studio 时不出机器。默认配置要求自备模型凭据，官方口径是 bring your own key or your own weights。",
+      "promptNote": "用云模型时代码片段发给那家厂商；接本机 Ollama / LM Studio 就不出机器。",
+      "evidence": {
+        "link": {
+          "at": "2026-11-05",
+          "by": "打开 cline.bot 核对（2026-11-05）",
+          "method": "manual"
+        },
+        "boundary": {
+          "at": "2026-11-05",
+          "by": "核对官网的模型接入方式（2026-11-05）",
+          "method": "manual"
+        }
+      },
+      "tags": [
+        "编码助手",
+        "编辑器扩展",
+        "自带 Key"
+      ],
+      "aliases": [
+        "vs code 智能体",
+        "编码智能体"
+      ],
+      "blurb": "装进 VS Code 或 JetBrains 就能让它读项目、改多文件、跑命令；不给它 Key 它什么也不做，这既是门槛也是它的边界——数据发给谁由你选。"
     }
   ]
 }

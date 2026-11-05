@@ -18,6 +18,8 @@ let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArti
 let kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive;
 let getRegistry, getLang, getD18N, getSeoBody, stateHTML;
 let CHAINS, setHandoff, takeHandoff, setProgressHandler, ensureCss;
+// v3.25：外链详情页复用首页那两枚徽标（位置 + 边界），口径只留一份
+let privBadge, accessText;
 
 export function bindToolPage(ctx) {
   ({
@@ -25,6 +27,7 @@ export function bindToolPage(ctx) {
     kbLink, pushRecent, usageMap, pushUsage, cmpList, toggleCompare, CAT_ICONS, SITE, renderNavActive,
     getRegistry, getLang, getD18N, getSeoBody, stateHTML,
     CHAINS, setHandoff, takeHandoff, setProgressHandler, ensureCss,
+    privBadge, accessText,
   } = ctx);
 }
 
@@ -523,6 +526,10 @@ export async function openTool(id) {
           <h1><span class="h-icon">${icon2}</span>${m.name}<button class="share-btn" id="share-btn" title="复制链接">🔗</button></h1>
           <p class="desc">${m.desc}</p>
           <p class="src">✦ ${t('来源', 'sourceLabel')}：${esc(meta.source)} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}</p>
+          ${/* v3.25：从首页点进来的人看不到静态页那张「数据边界」，等于所有边界说明只喂给了搜索引擎。
+                 这里补上同一套口径：跑在哪（+要不要 Key）、传不传、提示词具体去哪。 */ ''}
+          <p class="src" data-boundary>${accessText(meta)} · ${t('数据边界', 'dataBoundary')}：<b>${privBadge(meta)}</b>${meta.privacyNote ? ' —— ' + esc(meta.privacyNote) : ''}</p>
+          ${meta.promptNote ? `<p class="src" data-prompt>${t('你的提示词会去哪里', 'promptGoes')}：${esc(meta.promptNote)}</p>` : ''}
         </div>
         <div class="dir-cta">
           <div class="dir-cta-text">

@@ -18,11 +18,19 @@
       "favorites": "⭐ Favorites",
       "badgeLocal": "🔒 Runs locally",
       "badgeLink": "🌐 External site",
+      "badgeClient": "💻 Desktop app",
+      "badgeSelfhost": "🐳 Self-hosted",
+      "badgeCli": "⌨️ Command line",
+      "badgeExt": "🧩 Editor extension",
+      "badgeMobile": "📱 Mobile app",
+      "badgeKey": "🔑 API key needed",
       "privacyLocal": "On-device",
       "privacyP2P": "Device-to-device",
       "privacyUpload": "Uploads data",
       "privacyOptional": "Depends on usage",
       "privacyUnknown": "Unverified",
+      "dataBoundary": "Data boundary",
+      "promptGoes": "Where your prompt goes",
       "tryThese": "Or try these popular tools:",
       "taskLabel": "I want to…",
       "emptyAll": "No tools matched. Try another keyword",
@@ -125,7 +133,8 @@
       "设计": "Design",
       "音视频": "Media",
       "效率": "Productivity",
-      "网络": "Web"
+      "网络": "Web",
+      "AI": "AI"
     },
     "tasks": [
       {
@@ -502,6 +511,38 @@
       "disk-partition": {
         "name": "Disk Partition MB Calculator",
         "desc": "Compute the exact MB to enter so a partition shows as a whole GB in NTFS or FAT32."
+      },
+      "ollama": {
+        "name": "Ollama",
+        "desc": "Run open models on your own machine with one command"
+      },
+      "gpt4all": {
+        "name": "GPT4All",
+        "desc": "Fully local desktop chatbot with on-device document chat"
+      },
+      "anythingllm": {
+        "name": "AnythingLLM",
+        "desc": "Fully local AI assistant for document chat and meeting notes"
+      },
+      "comfyui": {
+        "name": "ComfyUI",
+        "desc": "Node-based image generation workflows on your own GPU"
+      },
+      "open-webui": {
+        "name": "Open WebUI",
+        "desc": "Self-hosted chat interface for local or cloud models"
+      },
+      "dify": {
+        "name": "Dify",
+        "desc": "Self-hosted platform for building AI workflows and agents"
+      },
+      "webllm": {
+        "name": "WebLLM",
+        "desc": "Run LLMs in the browser with WebGPU, nothing to install"
+      },
+      "cline": {
+        "name": "Cline",
+        "desc": "Coding agent inside your editor; bring your own key or local model"
       }
     },
     "res": {

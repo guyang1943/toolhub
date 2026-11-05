@@ -3,7 +3,7 @@
 [![五套测试 + 性能预算](https://github.com/guyang1943/toolhub/actions/workflows/ci.yml/badge.svg)](https://github.com/guyang1943/toolhub/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**100 个开源工具收录，其中 38 个在浏览器里跑 —— 本地工具的输入不上传服务器，62 条外链逐个标注数据边界并写明这个标注是怎么核出来的。**
+**108 个开源工具收录，其中 38 个在浏览器里跑 —— 本地工具的输入不上传服务器，70 条外链逐个标注数据边界并写明这个标注是怎么核出来的。**
 
 ### ▶ <https://toolhub.bot.cd>
 
@@ -12,8 +12,8 @@
 在线工具通常要把文件传到服务器上处理。这个站点有 38 个工具不是——它们用 Canvas、WebCrypto、
 WebAssembly 在浏览器里直接算，文件从头到尾没有离开你的设备。可以拔掉网线验证：页面照样能用。
 
-> **No upload, no sign-up, no install.** 38 of the 100 tools run entirely in your browser
-> via Canvas / WebCrypto / WebAssembly — your files never leave the device. The other 62 are
+> **No upload, no sign-up, no install.** 38 of the 108 tools run entirely in your browser
+> via Canvas / WebCrypto / WebAssembly — your files never leave the device. The other 70 are
 > curated links to well-known open-source projects (each URL is verified, not scraped).
 
 ![工具页](docs/images/tool.png)
@@ -24,7 +24,7 @@ WebAssembly 在浏览器里直接算，文件从头到尾没有离开你的设�
 
 把 GitHub 上好用的开源工具"工具化"：无需安装环境、无需命令行，打开网页填参数即出结果。
 
-**当前收录 100 个工具**：38 个本地执行（浏览器内完成，数据不上传）+ 62 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 6 个资源合集（50 条）、10 个专题、5 篇工具横评、34 篇使用教程——教程累计 185 条问答，每条都写具体的技术边界而不是套模板。
+**当前收录 108 个工具**：38 个本地执行（浏览器内完成，数据不上传）+ 70 个在线直达（知名开源项目官网，URL 已逐个拨测验证）。另有 7 个资源合集（58 条）、10 个专题、5 篇工具横评、34 篇使用教程——教程累计 185 条问答，每条都写具体的技术边界而不是套模板。
 
 
 ## 架构（可扩展核心）

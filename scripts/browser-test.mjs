@@ -367,6 +367,32 @@ async function feedFile(selector, dataUrl, name, type) {
   check('分类页列出同类工具', catRows >= 10, catRows + ' 行');
   check('分类页带挑选建议与常见问题', await evaluate(`document.querySelectorAll('#page-body .res-item').length >= 3`));
   await shot('14-category');
+
+  // ---- 1.56 AI 分类（v3.25）----
+  // 这一栏的价值全在「跑在哪」这句话上，所以验的是三件会被静默写错的事：
+  // 首页点得到、分类页列全 8 条、卡片与详情页不再把要装客户端的工具说成「在线直达」。
+  const aiChip = await evaluate(`!!document.querySelector('#chips a.chip[href="/categories/ai/"]')`);
+  check('首页有 AI 分类入口', aiChip);
+  await goto('/categories/ai/');
+  await waitText('#page-body', '适合这些场景', 8000);
+  const aiRows = await evaluate(`document.querySelectorAll('#page-body a.fl-row').length`);
+  check('AI 分类页列出 8 条', aiRows === 8, aiRows + ' 行');
+  const aiText = await evaluate(`document.querySelector('#page-body').textContent`);
+  check('AI 列表区分客户端与自部署', aiText.includes('💻 客户端') && aiText.includes('🐳 自部署'), '');
+  check('AI 列表标出需 Key 的条目', aiText.includes('🔑 Key'));
+  await goto('/tools/ollama/');
+  await waitText('#page-body', '你的提示词会去哪里', 8000);
+  // 详情页有两条渲染路径：整页加载走静态 HTML，点卡片进来走 SPA。两边都要有这句话，
+  // 所以断言读整页正文，而不是只读其中一个容器。
+  const ollamaPage = await evaluate(`document.body.innerText`);
+  check('Ollama 详情页写清提示词去向', ollamaPage.includes('不出机器'));
+  // 负面断言：这台工具要装客户端，页面绝不能出现「在线直达」
+  check('Ollama 详情页没说成在线直达', !ollamaPage.includes('在线直达'));
+  // 卡片侧同样不能再说「在线直达」（v3.25 之前所有目录工具统一是这句）
+  await goto('/?q=ollama');
+  await waitForCount('#grid .card', 1, 8000);
+  const ollamaCard = await evaluate(`(document.querySelector('#grid .card .badge.link') || {}).textContent || ''`);
+  check('Ollama 卡片标为需安装客户端', ollamaCard.includes('需安装客户端'), ollamaCard.trim());
   await goto('/');
 
   // ---- 1.55b 全部工具页（v3.14）----

@@ -402,8 +402,12 @@ for (const tool of dirTools) {
     // 就是把 v3.17 刚分开的 LocalSend（要装客户端）、Stirling-PDF（要自己部署）
     // 又混回「打开网页就能用」，等于白分。
     (() => {
-      const rtLabel = { web: '网页版', desktop: '桌面应用', selfhost: '可自托管', cli: '命令行', extension: '浏览器扩展', mobile: '手机应用' }[tool.runtime] || tool.runtime;
-      const accessLabel = { web: '🌐 在线直达', extension: '🧩 浏览器扩展', desktop: '💻 需安装客户端', cli: '⌨️ 需安装命令行', mobile: '📱 需安装 App', selfhost: '🐳 需自行部署' }[tool.runtime] || '🔗 官网';
+      const rtLabel = { web: '网页版', desktop: '桌面应用', selfhost: '可自托管', cli: '命令行', extension: '编辑器扩展', mobile: '手机应用' }[tool.runtime] || tool.runtime;
+      const accessLabel = { web: '🌐 在线直达', extension: '🧩 编辑器扩展', desktop: '💻 需安装客户端', cli: '⌨️ 需安装命令行', mobile: '📱 需安装 App', selfhost: '🐳 需自行部署' }[tool.runtime] || '🔗 官网';
+      // v3.25：「需 API Key」与「跑在哪」是两个维度，硬压成一个徽标就会丢掉事实
+      // （Cline 是装在编辑器里的本地程序，但仍要你自备模型凭据）。所以位置一个徽标、
+      // Key 一个徽标，可以同时出现。
+      const keyLabel = tool.keyRequired === true ? ' · 🔑 需 API Key' : '';
       const pvLabel = PRIVACY_LABEL[tool.privacy] || '未核实';
       // local 时保留作者写的 privacyNote；没有才退到一句按 runtime 区分的话——
       // 桌面应用不可能「在浏览器内完成」，照抄那句话就是新的口径错误。
@@ -423,11 +427,15 @@ for (const tool of dirTools) {
           : bnd.method === 'inferred'
             ? `按机制推断，尚未逐页核实（${bnd.at}）`
             : `取自上游清单，尚未核实（${bnd.at}）`;
-      const lnkTxt = tool.linkStatus === 'dead' ? '探活返回 404，可能已失效' : lnk.at ? `${lnk.at} 探活正常` : '尚未探活';
+      const lnkTxt = tool.linkStatus === 'dead' ? '探活返回 404，可能已失效' : lnk.at ? (lnk.method === 'manual' ? `${lnk.at} 人工打开正常` : `${lnk.at} 探活正常`) : '尚未探活';
       return (
         `<h2>数据边界</h2>` +
-        `<p>怎么用上：${accessLabel}（${rtLabel}，官网 ${host}）</p>` +
+        `<p>怎么用上：${accessLabel}${keyLabel}（${rtLabel}，官网 ${host}）</p>` +
         `<p>数据边界：<b>${pvLabel}</b>${pvNote ? ` —— ${pvNote}` : ''}</p>` +
+        // v3.25：AI 工具单独回答一句「提示词会去哪里」。上面那句 privacy 说「传不传」，
+        // 这句说「传给谁」——接本地模型和填厂商 Key 是两种完全不同的后果，
+        // 只写「看用法」等于什么都没说。
+        (tool.promptNote ? `<h2>你的提示词会去哪里</h2><p>${tool.promptNote}</p>` : '') +
         `<p class="evi">证据：边界${bndTxt} · 链接 ${lnkTxt}</p>` +
         `<p>跳转到对方站点后，适用对方的隐私政策，ToolHub 无法控制也不负责。敏感数据请先看<a href="/privacy/">隐私说明</a>。</p>`
       );
