@@ -40,6 +40,13 @@ const PATHS = [
   // 工具目录里的同源第三方库：它只被 barcode-gen 动态 <script> 注入，页面本身 200 也可能是 404 的库。
   // 漏传这一个文件，线上表现是「条码工具点了没反应」，控制台才有一行 404。
   '/tools/barcode-gen/jsbarcode.min.js',
+  // v3.28：教程从 1 篇变 5 篇，新增的四篇共用一层正文渲染（assets/lib/guide-text.js）。
+  // 只探 /guides/ 总览是不够的：总览 200 只说明列表在，单篇的正文渲染坏了要真打开才看得见
+  // （静态页把 ``` 原样拼进 HTML，示例里的 <html> 会被浏览器吃掉，页面看着「少了一段」而不是报错）。
+  // 抽两篇：一篇带围栏代码块（渲染层最容易坏的地方），一篇是最高访问量的入口类目。
+  '/guides/github-pages-first-site/', '/guides/custom-domain/',
+  // 教程页与 SPA 共用的正文渲染模块——它一坏，五篇的代码示例同时出问题。
+  '/assets/lib/guide-text.js',
 ];
 
 async function get(path, tries = 3) {
