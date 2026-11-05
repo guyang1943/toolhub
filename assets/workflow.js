@@ -16,7 +16,7 @@
 //      本来就是干净的照片时不会产出新文件（它没东西可删）。若因为「这一步没产出」就判失败，
 //      用户会以为工具坏了。所以沿用时会在界面上写「完成（无新产物）」，不假装这一步做了事。
 
-import { buildValues } from './lib/workflow-core.js';
+import { buildValues, runBanner } from './lib/workflow-core.js';
 // 只 import store.js（它本来就在首屏，被 app.js 静态引用），**不** import store-keys.js：
 // 那份清单 3 KB，这一页只需要一个键名，为它多付一次请求不值得。
 import * as store from './lib/store.js';
@@ -72,6 +72,16 @@ export async function mountWorkflows(box, reg) {
     </div>
     <div class="wf-runner" hidden></div>`;
   box.appendChild(el);
+
+  // 英文界面下导航写的是 Workflows，但这一页与引擎的界面文案只有中文。
+  // 与其让人点进来发现整页中文，不如在顶部说明——工具页对「详细说明只有中文」也是这么处理的。
+  if (store.get('lang', 'zh') === 'en') {
+    const note = document.createElement('p');
+    note.className = 'wf-dim wf-lang-note';
+    note.textContent =
+      'The workflow runner is currently Chinese-only. Everything still runs locally in this browser — no file ever leaves your device.';
+    box.insertBefore(note, el);
+  }
 
   const picker = el.querySelector('.wf-picker');
   const runner = el.querySelector('.wf-runner');
@@ -266,6 +276,41 @@ export async function mountWorkflows(box, reg) {
       return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
     };
 
+    /**
+     * 流程指纹：每一步「是哪个工具、有哪些可改参数」。
+     *
+     * 不带这个就埋了个静默错误：`workflows.json` 以后调换步骤顺序、换掉某个工具、或删掉一个
+     * 参数，旧参数仍会按**下标**套到新步骤上——键名碰巧相同就直接跑，产出看着正常、内容却是错的。
+     * 所以套用前先比指纹，对不上就不盲套。
+     */
+    const toolsOf = (fl) => (fl.steps || []).map((s) => s.tool || '');
+    const sigOf = (fl) =>
+      (fl.steps || []).map((s) => `${s.tool || ''}:${Object.keys(s.args || {}).sort().join(',')}`).join('|');
+
+    /**
+     * 把一套存量参数裁到「当前流程还认」的形状：步骤下标还在、工具没换、参数键还在才留。
+     * 丢掉的数量一并返回，用来在界面上说清楚「丢了几个」，而不是悄悄改掉用户存的东西。
+     */
+    const fitArgs = (args, tools, fl) => {
+      const out = {};
+      let dropped = 0;
+      for (const [key, obj] of Object.entries(args || {})) {
+        const idx = Number(key);
+        const step = (fl.steps || [])[idx];
+        const cur = step && step.args;
+        const sameTool = !tools || !tools[idx] || tools[idx] === step?.tool;
+        if (!cur || !sameTool) {
+          dropped += Object.keys(obj || {}).length;
+          continue;
+        }
+        for (const [k, v] of Object.entries(obj || {})) {
+          if (k in cur) (out[idx] = out[idx] || {})[k] = v;
+          else dropped++;
+        }
+      }
+      return { args: out, dropped };
+    };
+
     // 「用这个跑」套用的参数，以及面板没展开时的取值来源。
     // 注意它不能替代 DOM：面板展开后用户改了输入框，DOM 才是最新值。
     let applied = {};
@@ -387,12 +432,24 @@ export async function mountWorkflows(box, reg) {
           return;
         }
         const id = same ? same[0] : Date.now().toString(36);
-        saved[id] = { name: name.slice(0, NAME_MAX), flow: flow.id, args: readOverrides(), at: Date.now() };
+        // 存的时候一起记下「这套参数是配着哪一版流程存的」，套用时才有东西可核。
+        saved[id] = {
+          name: name.slice(0, NAME_MAX),
+          flow: flow.id,
+          sig: sigOf(flow),
+          tools: toolsOf(flow),
+          args: readOverrides(),
+          at: Date.now(),
+        };
         if (!store.set(FLOW_KEY, saved)) {
           saveNote('存不进去（浏览器存储被禁用或已满）。');
           return;
         }
-        saveNote(`已保存「${saved[id].name}」，下次选这条流程就能套用。`);
+        saveNote(
+          same
+            ? `已覆盖同名的「${saved[id].name}」——同一条流程下重名就是覆盖，不会存成两套。`
+            : `已保存「${saved[id].name}」，下次选这条流程就能套用。`
+        );
         renderSaved(flow);
       };
 
@@ -437,12 +494,27 @@ export async function mountWorkflows(box, reg) {
           if (runBtn.disabled) return; // 正在跑，别插队
           const v = loadSaved()[use.dataset.use];
           if (!v) return;
-          applyArgs(v.args);
+          // 先核对「这套参数是配着哪一版流程存的」。指纹对不上（步骤换序、换工具、删参数）
+          // 就只套还对得上的那部分，并且**不自动开跑**——旧参数跑出来的是「看着正常但内容错」的结果。
+          const stale = !v.sig || v.sig !== sigOf(flow);
+          const fit = stale ? fitArgs(v.args, v.tools, flow) : { args: v.args, dropped: 0 };
+          applyArgs(fit.args);
           const nameEl = runner.querySelector('#wf-save-name');
           if (nameEl) nameEl.value = v.name;
-          saveNote(`已套用「${v.name}」。`);
           const input = readInput();
           const ready = flow.input.kind === 'file' ? !!input.picked : !!input.text.trim();
+          if (stale) {
+            const lost = fit.dropped ? `，${fit.dropped} 个对不上的参数已忽略` : '';
+            out.innerHTML = `<div class="msg-warn">「${esc(v.name)}」是按旧版流程存的：这条流程后来改过步骤或参数${esc(
+              lost
+            )}。已把还对得上的值填进参数面板，<b>没有自动运行</b>——先核对，再点「开始运行」。${
+              ready ? '' : `另外还要先${flow.input.kind === 'file' ? '选一个文件' : '把内容粘进来'}。`
+            }</div>`;
+            const pe = runner.querySelector('#wf-params');
+            if (pe) pe.open = true; // 让用户能直接看到被填进去的是什么
+            return;
+          }
+          saveNote(`已套用「${v.name}」。`);
           if (ready) start({});
           else {
             out.innerHTML = `<div class="msg-warn">参数已按「${esc(v.name)}」填好——先${
@@ -637,9 +709,7 @@ export async function mountWorkflows(box, reg) {
         .join('');
 
       out.innerHTML = `
-        <div class="msg-ok">✓ ${fl.name}：${fl.steps.length} 步跑完，用时 ${(ms / 1000).toFixed(1)} 秒${
-          resumedFrom ? `（从第 ${resumedFrom + 1} 步继续，前 ${resumedFrom} 步没有重跑）` : ''
-        }</div>
+        <div class="msg-ok">${runBanner(fl.name, fl.steps.length, ms, resumedFrom)}</div>
         ${items ? `<ul class="wf-files">${items}</ul>` : ''}
         ${text ? `<div class="wf-text-out"><pre>${esc(text)}</pre><button type="button" class="btn ghost" id="wf-copy">复制文本</button></div>` : ''}
         ${lastOut && lastOut.html ? `<details class="wf-detail"><summary>最后一步的完整输出</summary><div class="wf-toolhtml">${lastOut.html}</div></details>` : ''}
@@ -662,5 +732,15 @@ export async function mountWorkflows(box, reg) {
 
   // 深链：#flow=image-publish 直接打开那一条（供文档与测试用，也方便贴给别人）
   const want = new URLSearchParams(location.search).get('flow') || (location.hash || '').replace(/^#(flow=)?/, '');
-  if (want && flows.some((f) => f.id === want)) select(want);
+  if (want) {
+    if (flows.some((f) => f.id === want)) select(want);
+    else {
+      // 静默什么都不发生，是最难排查的一种失败：用户点了「加入流程」或别人贴来的链接，
+      // 页面上看不出区别，只会以为功能坏了。所以这里明说一句，并把列表留在下面。
+      const note = document.createElement('div');
+      note.className = 'wf-join-note';
+      note.textContent = `链接里的流程「${want}」不在这台设备的流程表里（可能已下线或改了名字）。下面是全部可用的流程。`;
+      picker.before(note);
+    }
+  }
 }

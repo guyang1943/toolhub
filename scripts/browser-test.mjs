@@ -1406,6 +1406,83 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await goto('/');
   }
 
+  // ---- 9.13e 打磨：旧参数、错链接、同名覆盖、英文提示（v3.24.1）----
+  // 这四条都属于「不报错，但结果不对 / 用户不知道发生了什么」：
+  //   ① 流程改版后旧参数仍按下标盲套 → 产出看着正常、内容错；
+  //   ② 链接里的流程不存在 → 页面毫无反应，用户以为功能坏了；
+  //   ③ 同名保存其实是覆盖 → 用户以为存了第二套；
+  //   ④ 英文界面点进来整页中文，导航却写着 Workflows。
+  {
+    // ① 按旧版流程存的参数：指纹对不上，且多一个已经不存在的键
+    //    第一步的工具 id 从流程数据里取，不手抄——手抄的那份一旦和 workflows.json 不同步，
+    //    这条断言就会「因为数据错」而红，看起来像功能坏了。
+    await goto('/workflows/');
+    await waitText('.wf-picker', '表格提列转 JSON', 12000);
+    const firstTool = await evaluate(
+      `fetch('/workflows/workflows.json').then((r) => r.json()).then((d) => d.flows.find((f) => f.id === 'csv-pick-to-json').steps[0].tool)`
+    );
+    await evaluate(`localStorage.setItem('toolhub:flows', JSON.stringify({
+      stale1: { name: '旧版参数', flow: 'csv-pick-to-json', sig: 'old|sig', tools: [${JSON.stringify(firstTool)}],
+        args: { 0: { cols: '订单号', filterCol: '客户', filterVal: '张', gone: 'x' } }, at: Date.now() },
+    }))`);
+    await goto('/workflows/');
+    await waitText('.wf-picker', '表格提列转 JSON', 12000);
+    await evaluate(`document.querySelector('[data-flow="csv-pick-to-json"]').click()`);
+    await waitEl('#wf-saved [data-use]', 8000);
+    await evaluate(`(() => {
+      const t = document.getElementById('wf-text');
+      t.value = '订单号,客户,金额\\nA001,张三,128\\nA002,李四,340';
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+      document.querySelector('[data-use]').click();
+    })()`);
+    const staleWarn = await waitText('#wf-out', '旧版流程', 8000);
+    await waitEl('[data-arg="0:cols"]', 15000);
+    const stale = await evaluate(`({
+      ran: document.querySelectorAll('.wf-step[data-state="done"], .wf-step[data-state="fail"]').length,
+      open: document.getElementById('wf-params').open,
+      cols: (document.querySelector('[data-arg="0:cols"]') || {}).value || '',
+      warn: (document.querySelector('#wf-out .msg-warn') || {}).textContent || '',
+    })`);
+    check('旧参数不自动开跑（流程改过就先让人核对）', staleWarn === true && stale.ran === 0, `${stale.ran} 步`);
+    check('对不上的参数被忽略，且说清丢了几个', /1 个对不上的参数已忽略/.test(stale.warn), stale.warn.slice(0, 80));
+    check('还对得上的值仍填进面板', stale.open === true && stale.cols === '订单号', `open=${stale.open} cols=${stale.cols}`);
+
+    // ② 链接里的流程不存在：必须说一句，不能静默
+    await goto('/workflows/?flow=no-such-flow-xyz');
+    await waitEl('.wf-picker', 12000);
+    const badLink = await waitText('body', '不在这台设备的流程表里', 8000);
+    const listed = await evaluate(`document.querySelectorAll('[data-flow]').length`);
+    check('链接里的流程不存在时说清楚，并留下完整列表', badLink === true && listed >= 6, `${listed} 条`);
+
+    // ③ 同名保存：必须明说是覆盖，且只留一套
+    await goto('/workflows/');
+    await waitText('.wf-picker', '表格提列转 JSON', 12000);
+    await evaluate(`document.querySelector('[data-flow="csv-pick-to-json"]').click()`);
+    await waitEl('#wf-params', 8000);
+    await evaluate(`document.getElementById('wf-params').open = true`);
+    await waitEl('[data-arg="0:cols"]', 15000);
+    await evaluate(`(() => {
+      document.getElementById('wf-save-name').value = '同名测试';
+      document.getElementById('wf-save').click();
+      document.getElementById('wf-save').click();
+    })()`);
+    const overwrite = await waitText('#wf-save-note', '覆盖', 5000);
+    const sameName = await evaluate(`(() => {
+      const all = JSON.parse(localStorage.getItem('toolhub:flows') || '{}');
+      return Object.values(all).filter((v) => v && v.name === '同名测试').length;
+    })()`);
+    check('同名保存明确说是覆盖，且只留一套', overwrite === true && sameName === 1, `${sameName} 套`);
+
+    // ④ 英文界面：明说这一页只有中文（而不是让人自己猜）
+    await evaluate(`localStorage.setItem('toolhub:lang', '"en"')`);
+    await goto('/workflows/');
+    await waitEl('.wf-picker', 12000);
+    const enNote = await waitText('body', 'Chinese-only', 8000);
+    check('英文界面下明说「这一页只有中文」', enNote === true);
+    await evaluate(`localStorage.removeItem('toolhub:lang'); localStorage.removeItem('toolhub:flows')`);
+    await goto('/');
+  }
+
   // ---- 9.13d 工具页「加入流程」（v3.24）----
   // 这条链最容易假通过：按钮点得动、页面也跳过去了，但产物根本没带过去，
   // 用户到了流程页还得手动再上传一次——那这个功能等于没有。

@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readManifest } from './lib/tool-manifest.mjs';
-import { parseRef, planStep, buildValues, validateArgs, acceptMismatch, inputKind, exampleDefaultPorts, REF_FORMS } from '../assets/lib/workflow-core.js';
+import { parseRef, planStep, buildValues, validateArgs, acceptMismatch, inputKind, exampleDefaultPorts, REF_FORMS, runBanner } from '../assets/lib/workflow-core.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 let pass = 0;
@@ -233,6 +233,22 @@ console.log('· 示例默认值');
     flow('qr-embed').steps[1].args.dataUri === '',
     JSON.stringify(flow('qr-embed').steps[1].args.dataUri)
   );
+}
+
+/* ---------- 结果条文案（v3.24.1） ---------- */
+console.log('· 结果条文案');
+{
+  const full = runBanner('图片发布包', 3, 4200);
+  check('整条跑完：写清总步数与用时', /3 步跑完/.test(full) && /4\.2 秒/.test(full), full);
+  check('整条跑完：不提「从第 N 步」', !/从第/.test(full), full);
+
+  const resumed = runBanner('图片发布包', 3, 1200, 2);
+  check('续跑：不写「3 步跑完」（那会让人以为整条重跑）', !/3 步跑完/.test(resumed), resumed);
+  check('续跑：说清从第 3 步起、前 2 步沿用', /从第 3 步跑到最后/.test(resumed) && /前 2 步沿用/.test(resumed), resumed);
+
+  // 边界：从第 0 步「续跑」等于整条跑，但调用方只在失败后传 >=1，这里只保证不炸、不写负号
+  const fromZero = runBanner('X', 1, 0, 0);
+  check('续跑的 resumedFrom=0 不当作续跑', /1 步跑完/.test(fromZero), fromZero);
 }
 
 /* ---------- 输出 ---------- */

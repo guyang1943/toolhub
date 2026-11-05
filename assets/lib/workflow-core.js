@@ -271,3 +271,20 @@ export function acceptMismatch(flowAccept, toolAccept) {
     });
   return flow.filter((t) => !ok(t));
 }
+
+/**
+ * 结果条文案。
+ *
+ * 单独拎出来是因为「续跑成功」这条分支在界面上几乎走不到（失败通常是确定的，同一份输入重跑
+ * 还是失败），真浏览器测试很难构造一次「先失败、再成功」——所以它必须能在单测里被直接调用，
+ * 否则就是一段谁也没验过的文案。
+ *
+ * 口径：续跑不能写「N 步跑完」。整条流程是 3 步，续跑只跑了 2 步，两种读法都会让人判错进度。
+ */
+export function runBanner(name, stepCount, ms, resumedFrom = null) {
+  const time = `${((Number(ms) || 0) / 1000).toFixed(1)} 秒`;
+  if (resumedFrom) {
+    return `✓ ${name}：从第 ${resumedFrom + 1} 步跑到最后，用时 ${time}（前 ${resumedFrom} 步沿用上次的产物，没有重跑）`;
+  }
+  return `✓ ${name}：${stepCount} 步跑完，用时 ${time}`;
+}
