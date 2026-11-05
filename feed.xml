@@ -7,87 +7,87 @@
     <language>zh-CN</language>
     <atom:link href="https://toolhub.bot.cd/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>CSS 单位换算</title>
-      <link>https://toolhub.bot.cd/tools/css-unit/</link>
-      <guid>https://toolhub.bot.cd/tools/css-unit/</guid>
-      <description>px/rem/em/vw/vh 互转，基准字号可设</description>
+      <title>BMI 计算器</title>
+      <link>https://toolhub.bot.cd/tools/bmi-calc/</link>
+      <guid>https://toolhub.bot.cd/tools/bmi-calc/</guid>
+      <description>身高体重算 BMI，按中国标准判区间</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>.env 解析</title>
-      <link>https://toolhub.bot.cd/tools/env-parser/</link>
-      <guid>https://toolhub.bot.cd/tools/env-parser/</guid>
-      <description>解析 .env，标重复键与格式错误，转 JSON 或 export</description>
+      <title>日期计算器</title>
+      <link>https://toolhub.bot.cd/tools/date-calc/</link>
+      <guid>https://toolhub.bot.cd/tools/date-calc/</guid>
+      <description>算日期间隔天数，或加减天数与工作日</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>进制转换</title>
-      <link>https://toolhub.bot.cd/tools/radix-convert/</link>
-      <guid>https://toolhub.bot.cd/tools/radix-convert/</guid>
-      <description>2/8/10/16/36 进制批量互转，大数不丢精度</description>
+      <title>条形码生成器</title>
+      <link>https://toolhub.bot.cd/tools/barcode-gen/</link>
+      <guid>https://toolhub.bot.cd/tools/barcode-gen/</guid>
+      <description>生成 Code128 与 EAN-13 条形码并下载 PNG</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>HTTP 状态码速查</title>
-      <link>https://toolhub.bot.cd/tools/http-code/</link>
-      <guid>https://toolhub.bot.cd/tools/http-code/</guid>
-      <description>输入状态码看含义、常见场景与排查方向</description>
+      <title>音视频信息</title>
+      <link>https://toolhub.bot.cd/tools/media-info/</link>
+      <guid>https://toolhub.bot.cd/tools/media-info/</guid>
+      <description>本地读取音视频时长分辨率与体积，不上传</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>XML 格式化</title>
-      <link>https://toolhub.bot.cd/tools/xml-format/</link>
-      <guid>https://toolhub.bot.cd/tools/xml-format/</guid>
-      <description>XML 美化压缩并校验合法性，报错给出行号</description>
+      <title>CSS 阴影生成器</title>
+      <link>https://toolhub.bot.cd/tools/shadow-gen/</link>
+      <guid>https://toolhub.bot.cd/tools/shadow-gen/</guid>
+      <description>可视化调 box-shadow 与 text-shadow</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>子网计算器</title>
-      <link>https://toolhub.bot.cd/tools/subnet-calc/</link>
-      <guid>https://toolhub.bot.cd/tools/subnet-calc/</guid>
-      <description>IP 加掩码算出网段、广播地址与可用主机数</description>
+      <title>CSS 渐变生成器</title>
+      <link>https://toolhub.bot.cd/tools/gradient-gen/</link>
+      <guid>https://toolhub.bot.cd/tools/gradient-gen/</guid>
+      <description>可视化调 CSS 渐变，复制即用的 background</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>URL 解析构造</title>
-      <link>https://toolhub.bot.cd/tools/url-kit/</link>
-      <guid>https://toolhub.bot.cd/tools/url-kit/</guid>
-      <description>拆解 URL 各部分，整理 query 参数并重新拼装</description>
+      <title>图片取色</title>
+      <link>https://toolhub.bot.cd/tools/palette-extract/</link>
+      <guid>https://toolhub.bot.cd/tools/palette-extract/</guid>
+      <description>从图片提取主色板，输出 HEX 与 RGB</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Token 估算</title>
-      <link>https://toolhub.bot.cd/tools/token-counter/</link>
-      <guid>https://toolhub.bot.cd/tools/token-counter/</guid>
-      <description>估算提示词的 Token 消耗，调用 AI 前先看成本</description>
+      <title>图片信息</title>
+      <link>https://toolhub.bot.cd/tools/image-info/</link>
+      <guid>https://toolhub.bot.cd/tools/image-info/</guid>
+      <description>查看图片尺寸格式体积与 EXIF 关键字段</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>占位文本生成</title>
-      <link>https://toolhub.bot.cd/tools/lorem-kit/</link>
-      <guid>https://toolhub.bot.cd/tools/lorem-kit/</guid>
-      <description>中英文占位文本，Mock 页面不用再敲测试测试</description>
+      <title>图片圆角</title>
+      <link>https://toolhub.bot.cd/tools/image-round/</link>
+      <guid>https://toolhub.bot.cd/tools/image-round/</guid>
+      <description>图片一键变圆角或圆形，可加描边</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>字符串转义</title>
-      <link>https://toolhub.bot.cd/tools/string-escape/</link>
-      <guid>https://toolhub.bot.cd/tools/string-escape/</guid>
-      <description>JS/JSON/URL/HTML/Unicode 转义与反转义</description>
+      <title>图片滤镜</title>
+      <link>https://toolhub.bot.cd/tools/image-filter/</link>
+      <guid>https://toolhub.bot.cd/tools/image-filter/</guid>
+      <description>预设滤镜叠加亮度对比度饱和度，本地调色</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>Markdown 表格生成器</title>
-      <link>https://toolhub.bot.cd/tools/markdown-table/</link>
-      <guid>https://toolhub.bot.cd/tools/markdown-table/</guid>
-      <description>按行列数生成可直接粘贴的 Markdown 表格源码</description>
+      <title>图片拼接</title>
+      <link>https://toolhub.bot.cd/tools/image-merge/</link>
+      <guid>https://toolhub.bot.cd/tools/image-merge/</guid>
+      <description>多张图片横向纵向或网格拼成一张</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
-      <title>文本加解密</title>
-      <link>https://toolhub.bot.cd/tools/text-encrypt/</link>
-      <guid>https://toolhub.bot.cd/tools/text-encrypt/</guid>
-      <description>AES 加密解密文本，密码派生密钥，全程本地</description>
+      <title>图片水印</title>
+      <link>https://toolhub.bot.cd/tools/image-watermark/</link>
+      <guid>https://toolhub.bot.cd/tools/image-watermark/</guid>
+      <description>给图片加文字水印，位置透明度大小可调</description>
       <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>

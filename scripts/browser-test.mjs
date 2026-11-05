@@ -2283,6 +2283,183 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     check('空输入点运行给出明确提示', radixHint);
   }
 
+  // ---- TP6 第二批：12 个 Canvas / 文件 / 媒体工具 ----
+  // 这一批的正确性全在「真画出来了吗」上：降采样有没有生效、圆形是不是按短边裁的、
+  // 校验位算没算对。结构校验与功能测试都证明不了这些，只能真开页面真喂文件。
+  {
+    const BATCH2 = [
+      'image-watermark',
+      'image-merge',
+      'image-filter',
+      'image-round',
+      'image-info',
+      'palette-extract',
+      'gradient-gen',
+      'shadow-gen',
+      'media-info',
+      'barcode-gen',
+      'date-calc',
+      'bmi-calc',
+    ];
+    const missing = [];
+    for (const id of BATCH2) {
+      await goto(`/tools/${id}/`);
+      const ok = await evaluate(`(() => {
+        const f = document.getElementById('tool-form');
+        const btn = document.getElementById('run-btn');
+        return !!f && !!btn && f.querySelectorAll('input,textarea,select').length > 0;
+      })()`);
+      if (!ok) missing.push(id);
+    }
+    check('12 个第二批工具页都能渲染出表单与运行按钮', missing.length === 0, missing.length ? missing.join(',') : '12/12');
+
+    // 在页面里画一张图并转成 data URL，供 feedFile 使用
+    const drawPng = (w, h, painter) =>
+      evaluate(`(() => {
+        const c = document.createElement('canvas');
+        c.width = ${w}; c.height = ${h};
+        const g = c.getContext('2d');
+        ${painter}
+        return c.toDataURL('image/png');
+      })()`);
+
+    // 1) 圆角工具：圆形必须按短边裁成正方形
+    await goto('/tools/image-round/');
+    await fill({ 'f-shape': 'circle', 'f-radius': '50', 'f-border': '8', 'f-borderColor': '#ffffff' });
+    const rect = await drawPng(400, 200, `g.fillStyle = '#e23b3b'; g.fillRect(0, 0, 400, 200);`);
+    await feedFile('#f-file', rect, 'rect.png', 'image/png');
+    await clickRun();
+    const roundTxt = await waitText('#tool-result', '200×200', 15000);
+    const roundAll = await evaluate(`document.getElementById('tool-result').textContent`);
+    check('圆形按短边 200px 裁切成正方形', roundTxt && roundAll.includes('按短边'), (roundAll.match(/已生成[^\n]{0,24}/) || [''])[0].trim());
+    check('圆形模式说明长边被裁掉', roundAll.includes('长边两侧已被裁掉'), '');
+
+    // 2) 水印：字号按宽度的百分比算（400 × 4% = 16px）
+    await goto('/tools/image-watermark/');
+    await fill({ 'f-text': 'TEST', 'f-position': 'br', 'f-opacity': '40', 'f-size': '4' });
+    await feedFile('#f-file', rect, 'rect.png', 'image/png');
+    await clickRun();
+    const wmOk = await waitText('#tool-result', '字号 16px', 15000);
+    check('水印字号按宽度百分比换算（400×4% = 16px）', wmOk, '');
+
+    // 3) 滤镜：>4096 长边必须先降采样，否则大图会卡死
+    await goto('/tools/image-filter/');
+    await fill({ 'f-preset': 'gray', 'f-brightness': '100', 'f-contrast': '100', 'f-saturate': '100' });
+    const wide = await drawPng(5000, 10, `g.fillStyle = '#3388ff'; g.fillRect(0, 0, 5000, 10);`);
+    await feedFile('#f-file', wide, 'wide.png', 'image/png');
+    await clickRun();
+    const filterOk = await waitText('#tool-result', '4096×8', 15000);
+    const filterAll = await evaluate(`document.getElementById('tool-result').textContent`);
+    check('5000px 宽的图被降到 4096 长边（4096×8）', filterOk, (filterAll.match(/已应用滤镜[^\n]{0,20}/) || [''])[0].trim());
+    check('降采样在结果里说明比例', filterAll.includes('已按 82% 缩到'), '');
+
+    // 4) 拼接：横向按最高那张对齐，尺寸可预测
+    await goto('/tools/image-merge/');
+    await fill({ 'f-dir': 'h', 'f-gap': '10', 'f-bg': '#ffffff' });
+    const a = await drawPng(200, 100, `g.fillStyle = '#ff0000'; g.fillRect(0, 0, 200, 100);`);
+    const b = await drawPng(100, 200, `g.fillStyle = '#0000ff'; g.fillRect(0, 0, 100, 200);`);
+    await feedFile('#f-files', a, 'a.png', 'image/png', true);
+    // 多文件：再补一张，保持顺序
+    await evaluate(`(async () => {
+      const blob = await (await fetch(${JSON.stringify(b)})).blob();
+      const f2 = new File([blob], 'b.png', { type: 'image/png' });
+      const input = document.querySelector('#f-files');
+      const dt = new DataTransfer();
+      for (const f of input.files) dt.items.add(f);
+      dt.items.add(f2);
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      return input.files.length;
+    })()`);
+    await clickRun();
+    const mergeOk = await waitText('#tool-result', '510×200', 15000);
+    check('横向拼接：400 + 100 + 间距 10 = 510×200', mergeOk, '');
+
+    // 5) 图片信息：PNG 没有 EXIF，要说「未读到」，且不编造 GPS
+    await goto('/tools/image-info/');
+    await feedFile('#f-file', rect, 'rect.png', 'image/png');
+    await clickRun();
+    const infoAll = await waitText('#tool-result', '400 × 200', 15000).then(() => evaluate(`document.getElementById('tool-result').textContent`));
+    check('图片信息读出 400 × 200', String(infoAll).includes('400 × 200'), '');
+    check('PNG 没有 EXIF 时如实说未读到', /未读到/.test(String(infoAll)), '');
+    check('GPS 只给有 / 无，不展开坐标', /位置信息（GPS）/.test(String(infoAll)) && !/\d+\.\d{4,}/.test(String(infoAll).split('位置信息')[1] || ''), '');
+
+    // 6) 取色：左红右蓝，两个主色都要出现
+    await goto('/tools/palette-extract/');
+    await fill({ 'f-count': '4' });
+    const twoTone = await drawPng(200, 100, `g.fillStyle = '#ff0000'; g.fillRect(0, 0, 100, 100); g.fillStyle = '#0000ff'; g.fillRect(100, 0, 100, 100);`);
+    await feedFile('#f-file', twoTone, 'two.png', 'image/png');
+    await clickRun();
+    await waitText('#tool-result', '主色', 15000);
+    const palAll = await evaluate(`document.getElementById('tool-result').textContent`);
+    check('取色取到红色 #FF0000', palAll.includes('#FF0000'), '');
+    check('取色取到蓝色 #0000FF', palAll.includes('#0000FF'), '');
+
+    // 7) 渐变：实时预览要跟着输入走，输出要能直接当 CSS 用
+    await goto('/tools/gradient-gen/');
+    await fill({ 'f-c1': '#ff7a59', 'f-c2': '#6a5cff', 'f-angle': '135', 'f-type': 'linear' });
+    const live = await evaluate(`(() => {
+      const sw = document.getElementById('grad-swatch');
+      return sw ? sw.style.background || sw.style.backgroundImage || '' : 'no-el';
+    })()`);
+    check('渐变实时预览在输入后立刻更新', String(live).includes('linear-gradient(135deg'), String(live).slice(0, 60));
+    await clickRun();
+    const gradCss = await waitText('#tool-result', 'linear-gradient(135deg, #ff7a59 0%, #6a5cff 100%)', 12000);
+    check('渐变输出的是可直接粘贴的 CSS', gradCss, '');
+
+    // 8) 阴影：实时预览 + 输出值
+    await goto('/tools/shadow-gen/');
+    await fill({ 'f-x': '0', 'f-y': '4', 'f-blur': '12', 'f-spread': '0', 'f-color': '#0000001a', 'f-kind': 'box', 'f-inset': 'no' });
+    const shadowLive = await evaluate(`(() => {
+      const el = document.getElementById('shadow-demo');
+      return el ? el.style.boxShadow : 'no-el';
+    })()`);
+    check('阴影实时预览带上 box-shadow', String(shadowLive).includes('12px'), String(shadowLive).slice(0, 50));
+    await clickRun();
+    const shadowCss = await waitText('#tool-result', 'box-shadow: 0px 4px 12px 0px #0000001a;', 12000);
+    check('阴影输出完整五段值', shadowCss, '');
+
+    // 9) 音视频：合成一段 2 秒 WAV，时长要读对
+    await goto('/tools/media-info/');
+    // 就地构造 WAV 塞进 file input（object URL 跨页面用不了）
+    const wavFed = await evaluate(`(async () => {
+      const rate = 8000, secs = 2, n = rate * secs;
+      const buf = new ArrayBuffer(44 + n);
+      const dv = new DataView(buf);
+      const ws = (off, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(off + i, s.charCodeAt(i)); };
+      ws(0, 'RIFF'); dv.setUint32(4, 36 + n, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, rate, true); dv.setUint32(28, rate, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true);
+      ws(36, 'data'); dv.setUint32(40, n, true);
+      for (let i = 0; i < n; i++) dv.setUint8(44 + i, 128);
+      const f = new File([buf], 'tone.wav', { type: 'audio/wav' });
+      const dt = new DataTransfer();
+      dt.items.add(f);
+      const input = document.querySelector('#f-file');
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      return input.files.length;
+    })()`);
+    check('合成 WAV 已放进文件框', wavFed === 1, String(wavFed));
+    await clickRun();
+    const wavOk = await waitText('#tool-result', '2 秒', 20000);
+    check('音视频工具读出 2 秒（WAV 元数据）', wavOk, '');
+
+    // 10) 条码：EAN-13 校验位自动计算；填错要明确指出
+    await goto('/tools/barcode-gen/');
+    await fill({ 'f-text': '690123456789', 'f-format': 'EAN13' });
+    await clickRun();
+    const eanOk = await waitText('#tool-result', '6901234567892', 20000);
+    check('EAN-13 自动补校验位（…789 → …7892）', eanOk, '');
+    await fill({ 'f-text': '6901234567890' });
+    await clickRun();
+    const eanErr = await waitText('#tool-result', '校验位', 15000);
+    const eanErrTxt = await evaluate(`document.getElementById('tool-result').textContent`);
+    check('填错校验位时明确告知正确值', eanErr && String(eanErrTxt).includes('6901234567892'), (String(eanErrTxt).match(/校验位[^\n]{0,40}/) || [''])[0].trim());
+
+    await shot('21-batch2');
+  }
+
   // ---- 汇总 ----
   const bad = results.filter((r) => !r.ok);
   console.log(`\n${bad.length ? '❌' : '✅'} 浏览器测试 ${results.length - bad.length}/${results.length}`);

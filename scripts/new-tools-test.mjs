@@ -1149,6 +1149,138 @@ console.log('\n🧮 TP6 第一批（12 个纯计算工具）');
   }
 }
 
+// ---------- 13. TP6 第二批：4 个纯计算工具 ----------
+// 这一批 12 个里只有 4 个不碰 DOM（日期、BMI、渐变、阴影），剩下 8 个是 Canvas / 媒体，
+// 在 node 里没有画布也没有解码器，硬测只能测到「函数存在」。那 8 个放到浏览器测试里真跑。
+console.log('\n🧮 TP6 第二批（日期 / BMI / 渐变 / 阴影）');
+{
+  const loadTool = (id) => import('file://' + join(root, 'tools', id, 'run.js').replace(/\\/g, '/'));
+
+  // 1. 日期计算
+  const dateCalc = await loadTool('date-calc');
+  {
+    const leap = await dateCalc.run({ d1: '2024-02-28', d2: '2024-03-01', op: 'diff', n: '' });
+    check('闰年 2 月：2024-02-28 → 03-01 相差 2 天', leap.text.includes('相差天数：2 天'), leap.text.split('\n')[1]);
+    const common = await dateCalc.run({ d1: '2023-02-28', d2: '2023-03-01', op: 'diff', n: '' });
+    check('平年同日相差 1 天', common.text.includes('相差天数：1 天'), common.text.split('\n')[1]);
+
+    // 用 Date.UTC 当独立参照算「加 90 天」，避免把我的手算错误写进断言
+    const expect = new Date(Date.UTC(2026, 10, 5) + 90 * 86400000).toISOString().slice(0, 10);
+    const add = await dateCalc.run({ d1: '2026-11-05', d2: '', op: 'add', n: '90' });
+    check(`加 90 天 = ${expect}`, add.html.includes(expect), add.text.split('\n')[1]);
+
+    const neg = await dateCalc.run({ d1: '2026-11-05', d2: '', op: 'add', n: '-5' });
+    check('负天数往前推 5 天 = 2026-10-31', neg.html.includes('2026-10-31'), neg.text.split('\n')[1]);
+
+    // 「中间工作日」是结果里最容易算错的一行（含不含首尾、跳不跳周末），
+    // 而它原先一条断言都没有：故障注入把 countWorkdays 的周末判断删掉，289 条照样全绿。
+    // 2026-11-05 是周四，到 11-12 也是周四，中间正好一个完整周末，
+    // 落 11-06(五)、11-09(一)、11-10、11-11、11-12 共 5 天。
+    const gap = await dateCalc.run({ d1: '2026-11-05', d2: '2026-11-12', op: 'diff', n: '' });
+    check('跨一个周末的 7 天里有 5 个工作日', gap.text.includes('中间工作日：5 天'), gap.text.split('\n')[3] || '');
+    const gapRev = await dateCalc.run({ d1: '2026-11-12', d2: '2026-11-05', op: 'diff', n: '' });
+    check('结束日期在前时工作日同样跳过周末', gapRev.text.includes('中间工作日：5 天'), gapRev.text.split('\n')[3] || '');
+    check('自然日与工作日分开给（7 天 vs 5 天）', gap.html.includes('7 天') && gap.html.includes('5 天'), '');
+
+    // 2026-11-06 是周五，+1 个工作日应落到周一 11-09，并跳过 2 天周末
+    const wk = await dateCalc.run({ d1: '2026-11-06', d2: '', op: 'work', n: '1' });
+    check('工作日跳过周末：周五 +1 天 = 周一', wk.html.includes('2026-11-09'), wk.text.split('\n')[1]);
+    check('工作日结果给出跳过的周末天数', wk.html.includes('2 天'), '');
+
+    let err = '';
+    try {
+      await dateCalc.run({ d1: '2023-02-29', d2: '', op: 'add', n: '1' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('不存在的日期直接报错（不悄悄滚到下个月）', err.includes('这一天不存在'), err);
+
+    const holi = await dateCalc.run({ d1: '2026-11-05', d2: '', op: 'work', n: '3' });
+    check('结果里写明不含法定节假日', holi.html.includes('不含法定节假日'), '');
+  }
+
+  // 2. BMI
+  const bmi = await loadTool('bmi-calc');
+  {
+    const normal = await bmi.run({ height: '175', weight: '70' });
+    check('175cm / 70kg → BMI 22.9 判正常', normal.text.includes('BMI：22.9') && normal.text.includes('正常'), normal.text.split('\n')[1]);
+    const over = await bmi.run({ height: '175', weight: '80' });
+    check('175cm / 80kg（BMI 26.1）判超重', over.text.includes('26.1') && over.text.includes('超重'), over.text.split('\n')[1]);
+    const fat = await bmi.run({ height: '160', weight: '90' });
+    check('160cm / 90kg（BMI 35.2）判肥胖', fat.text.includes('35.2') && fat.text.includes('肥胖'), fat.text.split('\n')[1]);
+    const thin = await bmi.run({ height: '170', weight: '45' });
+    check('170cm / 45kg（BMI 15.6）判偏瘦', thin.text.includes('15.6') && thin.text.includes('偏瘦'), thin.text.split('\n')[1]);
+    check('175cm 的正常体重范围 56.7–73.2 kg', normal.text.includes('56.7') && normal.text.includes('73.2'), '');
+
+    let err = '';
+    try {
+      await bmi.run({ height: '0', weight: '70' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('身高 0 被拦下', err.includes('大于 0'), err);
+    err = '';
+    try {
+      await bmi.run({ height: '175', weight: '-5' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('负体重被拦下', err.includes('大于 0'), err);
+    err = '';
+    try {
+      await bmi.run({ height: '1.75', weight: '70' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('把米当厘米填会提示单位', err.includes('1.75 米') || err.includes('厘米'), err);
+  }
+
+  // 3. CSS 渐变
+  const grad = await loadTool('gradient-gen');
+  {
+    const lin = await grad.run({ c1: '#ff7a59', c2: '#6a5cff', angle: '135', type: 'linear' });
+    check(
+      '线性渐变输出可直接使用的 CSS',
+      lin.text === 'background: linear-gradient(135deg, #ff7a59 0%, #6a5cff 100%);',
+      lin.text
+    );
+    const short = await grad.run({ c1: '#f70', c2: '#06f', angle: '90', type: 'linear' });
+    check('3 位十六进制自动补全为 6 位', short.text.includes('#ff7700') && short.text.includes('#0066ff'), short.text);
+    const rad = await grad.run({ c1: '#fff', c2: '#000', angle: '45', type: 'radial' });
+    check('径向渐变忽略角度并注明', rad.text.startsWith('background: radial-gradient(circle at center') && rad.html.includes('无效'), rad.text);
+    const clamp = await grad.run({ c1: '#000000', c2: '#ffffff', angle: '400', type: 'linear' });
+    check('角度超范围收到 360', clamp.text.includes('360deg'), clamp.text);
+    let err = '';
+    try {
+      await grad.run({ c1: 'red', c2: '#fff', angle: '0', type: 'linear' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('颜色名不被接受并给出写法', err.includes('十六进制'), err);
+  }
+
+  // 4. CSS 阴影
+  const shadow = await loadTool('shadow-gen');
+  {
+    const box = await shadow.run({ x: '0', y: '4', blur: '12', spread: '0', color: '#0000001a', kind: 'box', inset: 'no' });
+    check('box-shadow 输出五段完整值', box.text === 'box-shadow: 0px 4px 12px 0px #0000001a;', box.text);
+    const neg = await shadow.run({ x: '-6', y: '4', blur: '12', spread: '0', color: '#000000', kind: 'box', inset: 'no' });
+    check('负偏移原样保留（-6px）', neg.text.includes('-6px'), neg.text);
+    const inset = await shadow.run({ x: '0', y: '2', blur: '4', spread: '0', color: '#000000', kind: 'box', inset: 'yes' });
+    check('inset 内阴影带上关键字', inset.text.includes('inset 0px'), inset.text);
+    const txt = await shadow.run({ x: '0', y: '2', blur: '4', spread: '6', color: '#000000', kind: 'text', inset: 'yes' });
+    check('text-shadow 不输出 spread / inset', txt.text === 'text-shadow: 0px 2px 4px #000000;', txt.text);
+    check('text-shadow 忽略的参数写进结果', txt.html.includes('不支持') && txt.html.includes('spread'), '');
+    let err = '';
+    try {
+      await shadow.run({ x: '0', y: '2', blur: '-4', spread: '0', color: '#000000', kind: 'box', inset: 'no' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('负模糊半径报错（浏览器会丢弃整条声明）', err.includes('不能是负数'), err);
+  }
+}
+
 // 清理临时文件
 for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {

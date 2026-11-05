@@ -85,6 +85,18 @@
     "http-code",
     "radix-convert",
     "env-parser",
-    "css-unit"
+    "css-unit",
+    "image-watermark",
+    "image-merge",
+    "image-filter",
+    "image-round",
+    "image-info",
+    "palette-extract",
+    "gradient-gen",
+    "shadow-gen",
+    "media-info",
+    "barcode-gen",
+    "date-calc",
+    "bmi-calc"
   ]
 }

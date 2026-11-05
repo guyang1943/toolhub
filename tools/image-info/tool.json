@@ -1,0 +1,14 @@
+{
+  "id": "image-info",
+  "name": "图片信息",
+  "desc": "查看图片尺寸格式体积与 EXIF 关键字段",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "EXIF",
+    "信息"
+  ],
+  "since": "v3.27"
+}

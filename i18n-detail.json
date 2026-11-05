@@ -1555,6 +1555,396 @@
         "to": "To unit",
         "base": "Base font size (px)"
       }
+    },
+    "image-watermark": {
+      "usage": "Add a text watermark to an image: pick one of nine positions, adjust opacity and font size (as a percentage of image width), then export PNG. Everything is composited in the browser Canvas — the image never leaves your device.",
+      "tips": [
+        "Font size is a percentage of image width, so the same setting looks right on an 800px screenshot and a 6000px camera photo",
+        "Opacity between 30% and 50% usually keeps the mark visible without ruining the picture",
+        "The text carries a soft drop shadow so it stays legible on both light and dark areas",
+        "Exporting as PNG drops the original EXIF — camera model and location do not travel with the watermarked file"
+      ],
+      "scenarios": [
+        {
+          "scene": "Watermark before posting to social media",
+          "how": "Pick image → type \"© my name\" → bottom right → 40% opacity",
+          "result": "A ready PNG with the mark in a sensible place"
+        },
+        {
+          "scene": "Stamp \"internal use only\" on a screenshot",
+          "how": "Position centre, opacity 25%",
+          "result": "Visible across the whole image without blocking content"
+        },
+        {
+          "scene": "Small images look over-watermarked",
+          "how": "Set size to 2%–3%",
+          "result": "The mark scales with the image instead of swamping it"
+        }
+      ],
+      "runLabel": "Add watermark",
+      "labels": {
+        "file": "Image",
+        "text": "Watermark text",
+        "position": "Position",
+        "opacity": "Opacity (%)",
+        "size": "Font size (% of width)"
+      }
+    },
+    "image-merge": {
+      "usage": "Combine several images into one: horizontal row, vertical long image, or a grid. Horizontal align on the tallest image, vertical on the widest, and the grid uses the largest image as the cell. Set a gap and a background colour, then export PNG.",
+      "tips": [
+        "Selection order is the output order: left to right for horizontal, top to bottom for vertical",
+        "Horizontal stitching scales everything to the tallest image, so mixing a screenshot with a photo will stretch the shorter one",
+        "The grid does not scale: each image is centred in a cell sized to the largest one",
+        "Canvases above 40 megapixels are refused — they fail on mobile browsers instead of rendering"
+      ],
+      "scenarios": [
+        {
+          "scene": "Turn chat screenshots into one long image",
+          "how": "Select screenshots, vertical, gap 0",
+          "result": "A single tall image in the order you picked"
+        },
+        {
+          "scene": "Before/after comparison",
+          "how": "Two images, horizontal, gap 12, white background",
+          "result": "Aligned to the same height with a clean divider"
+        },
+        {
+          "scene": "Quick contact sheet",
+          "how": "Six to nine images, grid mode",
+          "result": "Column count is derived from the image count"
+        }
+      ],
+      "runLabel": "Merge",
+      "labels": {
+        "files": "Images (Ctrl/⌘ to multi-select)",
+        "dir": "Layout",
+        "gap": "Gap (px)",
+        "bg": "Background (HEX)"
+      }
+    },
+    "image-filter": {
+      "usage": "Apply a preset (original, grayscale, high-contrast black and white, vintage, cool, warm) and fine-tune brightness, contrast and saturation, then export. Images wider than 4096px are scaled down first to keep the page responsive, and the result states the actual processing size.",
+      "tips": [
+        "100% means \"unchanged\", not \"half\" — go above 100 to increase an adjustment",
+        "Presets and sliders stack; saturation has no effect after grayscale, which is expected",
+        "The filter chain order is brightness → contrast → saturation → preset, and the order changes the result",
+        "Anything above 4096px on the long edge is downscaled before filtering to avoid freezing the page"
+      ],
+      "scenarios": [
+        {
+          "scene": "Unify the look of screenshots",
+          "how": "Warm preset, saturation 110",
+          "result": "A slight warm cast that is not muddy"
+        },
+        {
+          "scene": "Turn a colour photo black and white",
+          "how": "Black and white preset",
+          "result": "Grayscale with the shadows held down, not just desaturated"
+        },
+        {
+          "scene": "Phone photos freeze the page",
+          "how": "Just pick the image",
+          "result": "Processed at 4096px long edge, with the scale noted in the result"
+        }
+      ],
+      "runLabel": "Apply filter",
+      "labels": {
+        "file": "Image",
+        "preset": "Preset",
+        "brightness": "Brightness (%, 100 = unchanged)",
+        "contrast": "Contrast (%, 100 = unchanged)",
+        "saturate": "Saturation (%, 100 = unchanged)"
+      }
+    },
+    "image-round": {
+      "usage": "Round the corners of an image or cut it into a circle, optionally with a border, and export a PNG that keeps the transparency. Rounded mode keeps the original size; circle mode first crops to a centred square based on the short edge, so a 16:9 photo does not become an ellipse.",
+      "tips": [
+        "Radius is a percentage of the short edge: 50 is the maximum, which fully rounds that edge",
+        "Circle mode crops the long edge — the crop is centred and not adjustable",
+        "Only PNG keeps transparent corners; converting to JPEG fills them with white",
+        "The border is drawn inside the shape, so the canvas size does not change"
+      ],
+      "scenarios": [
+        {
+          "scene": "Make a round avatar",
+          "how": "Circle mode, 4px white border",
+          "result": "A square avatar with transparent corners"
+        },
+        {
+          "scene": "Round the corners of a card screenshot",
+          "how": "Rounded mode, radius 8%",
+          "result": "Same size, corners cut, no white edges when pasted"
+        },
+        {
+          "scene": "Give an icon a white outline",
+          "how": "Circle plus 6px border",
+          "result": "The outline stays visible on dark backgrounds"
+        }
+      ],
+      "runLabel": "Render image",
+      "labels": {
+        "file": "Image",
+        "shape": "Shape",
+        "radius": "Corner radius (% of short edge)",
+        "border": "Border width (px)",
+        "borderColor": "Border colour (HEX)"
+      }
+    },
+    "image-info": {
+      "usage": "Inspect an image without modifying it: pixel dimensions, format, file size, aspect ratio, and common EXIF fields such as camera, lens, capture time, exposure and orientation. GPS is reported only as present or absent — coordinates are never printed.",
+      "tips": [
+        "GPS is deliberately reduced to yes/no; listing coordinates would hand over the very thing you are checking for",
+        "Images exported from WeChat or social platforms usually have no EXIF — those platforms strip it",
+        "Dimensions are the decoded pixel size, not the display size; a phone photo may be stored rotated with an orientation flag",
+        "HEIC and RAW cannot be decoded by most browsers, and the tool says so instead of inventing dimensions"
+      ],
+      "scenarios": [
+        {
+          "scene": "Decide whether an image needs compressing",
+          "how": "Check dimensions and size",
+          "result": "Large pixels with a small size means it is already compressed"
+        },
+        {
+          "scene": "Check for location leakage before posting",
+          "how": "Look at the GPS row",
+          "result": "A \"yes\" means strip the metadata first"
+        },
+        {
+          "scene": "Find out which device shot it",
+          "how": "Check camera and lens fields",
+          "result": "Camera originals carry them; screenshots and platform images do not"
+        }
+      ],
+      "runLabel": "Inspect",
+      "labels": {
+        "file": "Image (read only)"
+      }
+    },
+    "palette-extract": {
+      "usage": "Extract 4, 6 or 8 dominant colours from an image with median cut quantisation. Each swatch shows HEX, RGB and its share of the pixels, and clicking a swatch copies the HEX. The algorithm is deterministic, so the same image always yields the same palette.",
+      "tips": [
+        "It picks colours by area, not by contrast: a poster that is 90% white will return white as the main colour",
+        "Crop away large flat backgrounds before extracting if you want the accent colour",
+        "Swatches are sorted by share, so the first one is the dominant colour of the image",
+        "Sampling happens on a 120px thumbnail, so very small accents may not appear at all"
+      ],
+      "scenarios": [
+        {
+          "scene": "Match a deck to a reference image",
+          "how": "Upload the reference, choose 6 colours",
+          "result": "A palette you can drop straight into theme colours"
+        },
+        {
+          "scene": "Pull the brand colours out of a poster",
+          "how": "Upload the poster, choose 4 colours",
+          "result": "Background first, accents below it"
+        },
+        {
+          "scene": "The accent colour never shows up",
+          "how": "Crop down to the accent area first",
+          "result": "Once it covers enough area it gets selected"
+        }
+      ],
+      "runLabel": "Extract palette",
+      "labels": {
+        "file": "Image",
+        "count": "Number of colours"
+      }
+    },
+    "gradient-gen": {
+      "usage": "Build a CSS gradient from two hex colours and an angle, with a live preview and a ready-to-paste background declaration. Linear gradients rotate with the angle; radial gradients are centred circles where the angle has no effect, which the output states explicitly.",
+      "tips": [
+        "0deg points bottom to top, 90deg left to right — not the clockwise dial you may expect from design tools",
+        "The angle is ignored for radial gradients; direction comes from the circle position instead",
+        "Both colour stops are pinned to 0% and 100% so every browser interpolates identically",
+        "Only hex colours are accepted: 3, 6 or 8 digits, no rgb() and no colour names"
+      ],
+      "scenarios": [
+        {
+          "scene": "A gradient button",
+          "how": "Two close colours, 135deg",
+          "result": "One background line, diagonal and product-like"
+        },
+        {
+          "scene": "A card glow",
+          "how": "Radial, darker colour on the outside",
+          "result": "A centred circular falloff"
+        },
+        {
+          "scene": "Check which way the angle goes",
+          "how": "Drag the angle and watch the preview",
+          "result": "The preview uses the same maths as the output"
+        }
+      ],
+      "runLabel": "Generate CSS",
+      "labels": {
+        "c1": "Start colour (HEX)",
+        "c2": "End colour (HEX)",
+        "angle": "Angle (deg, ignored for radial)",
+        "type": "Gradient type"
+      }
+    },
+    "shadow-gen": {
+      "usage": "Dial in a box-shadow or text-shadow with a live preview, supporting negative offsets, spread and inset for boxes. The output is a single declaration you can paste. Switching to text-shadow disables spread and inset, and the result says which parameters were ignored.",
+      "tips": [
+        "Positive y pushes the shadow down; a floating card that looks sunken usually has a sign flipped",
+        "Blur controls softness, spread controls size — to make a shadow crisper, lower the blur",
+        "Use a translucent hex colour such as #0000001a instead of solid black; solid black looks dirty on dark backgrounds",
+        "text-shadow has no spread and no inset in the CSS spec itself, not because this tool omits them"
+      ],
+      "scenarios": [
+        {
+          "scene": "A card that floats",
+          "how": "x=0, y=4, blur=12, spread=0, colour #0000001a",
+          "result": "A soft downward shadow that does not grey the card"
+        },
+        {
+          "scene": "A pressed-in button",
+          "how": "box, inset, y=2",
+          "result": "An inner shadow that reads as pressed"
+        },
+        {
+          "scene": "A text outline",
+          "how": "text-shadow with blur 0",
+          "result": "A hard edge usable as a fake stroke"
+        }
+      ],
+      "runLabel": "Generate CSS",
+      "labels": {
+        "x": "Offset X (px)",
+        "y": "Offset Y (px)",
+        "blur": "Blur radius (px)",
+        "spread": "Spread radius (px, box only)",
+        "color": "Colour (HEX)",
+        "kind": "Shadow type",
+        "inset": "Inset (box only)"
+      }
+    },
+    "media-info": {
+      "usage": "Read duration, resolution, file size and average bitrate from a local video or audio file. Metadata comes from the browser decoder via an object URL, so nothing is uploaded and nothing is transcoded; container-level details such as the codec are not available to the page.",
+      "tips": [
+        "Bitrate here is size ÷ duration, an average — VBR files have much higher peaks",
+        "Two numbers matter before uploading: duration against the platform limit, size against the upload limit",
+        "MKV, AVI and some MOV files cannot be decoded and fail with a plain explanation after 8 seconds instead of hanging",
+        "Resolution is the display size; a portrait clip reporting 1080×1920 is normal"
+      ],
+      "scenarios": [
+        {
+          "scene": "Check a clip before posting",
+          "how": "Pick the file and read duration and size",
+          "result": "Compress first if either limit is exceeded"
+        },
+        {
+          "scene": "Estimate transcription cost",
+          "how": "Read the duration",
+          "result": "Pricing is per minute, so know the minutes first"
+        },
+        {
+          "scene": "A downloaded video will not play",
+          "how": "Try reading it here",
+          "result": "No metadata means the codec is unsupported — transcode it"
+        }
+      ],
+      "runLabel": "Read info",
+      "labels": {
+        "file": "Video or audio"
+      }
+    },
+    "barcode-gen": {
+      "usage": "Generate a Code128 or EAN-13 barcode and download it as PNG. EAN-13 accepts 12 digits and computes the check digit, or 13 digits and verifies it. Code128 covers letters, digits and common symbols; Chinese text needs a QR code instead.",
+      "tips": [
+        "EAN-13 is a retail code: 12 or 13 digits, with 690–699 assigned to mainland China",
+        "With 12 digits the check digit is computed for you; with 13 digits a wrong check digit is reported with the correct value",
+        "Code128 is ASCII only — Chinese characters cannot be encoded in a linear barcode",
+        "Print at native size or larger and keep the quiet zones; shrinking is what makes barcodes unreadable"
+      ],
+      "scenarios": [
+        {
+          "scene": "Label internal stock items",
+          "how": "Code128 with your item number",
+          "result": "A printable PNG without installing barcode software"
+        },
+        {
+          "scene": "Make a retail label",
+          "how": "EAN-13 with 12 digits",
+          "result": "The check digit is appended automatically"
+        },
+        {
+          "scene": "A 13-digit code will not scan",
+          "how": "Paste all 13 digits",
+          "result": "A wrong check digit is pointed out immediately"
+        }
+      ],
+      "runLabel": "Generate barcode",
+      "labels": {
+        "text": "Barcode content",
+        "format": "Format"
+      }
+    },
+    "date-calc": {
+      "usage": "Three date operations in one form: the difference between two dates (with working days), adding or subtracting days, and adding or subtracting working days that skip weekends. All arithmetic is calendar-day based and unaffected by time zones or daylight saving.",
+      "tips": [
+        "Dates must exist: 2026-02-30 is rejected instead of silently rolling over to 2 March",
+        "Working days skip Saturdays and Sundays only — public holidays and make-up workdays are not included, because that schedule changes every year",
+        "Differences come back as three numbers: days apart, inclusive days, and working days in between",
+        "Negative numbers are fine: minus 30 walks backwards through the real calendar"
+      ],
+      "scenarios": [
+        {
+          "scene": "Project duration",
+          "how": "2026-11-05 to 2026-12-20, difference",
+          "result": "Days apart plus the working days between them"
+        },
+        {
+          "scene": "Contract expiry",
+          "how": "Signing date plus 90 days",
+          "result": "The date and weekday, so a weekend expiry is visible"
+        },
+        {
+          "scene": "\"Deliver in 5 working days\"",
+          "how": "Start date plus 5 working days",
+          "result": "Weekends skipped, with the count of days skipped"
+        }
+      ],
+      "runLabel": "Calculate",
+      "labels": {
+        "d1": "Start date",
+        "d2": "End date (difference mode only)",
+        "op": "Operation",
+        "n": "Days (ignored in difference mode)"
+      }
+    },
+    "bmi-calc": {
+      "usage": "Enter height in centimetres and weight in kilograms to get BMI, the band it falls into under the Chinese standard (18.5 / 24 / 28 rather than the WHO 25 / 30), and the healthy weight range for that height.",
+      "tips": [
+        "The Chinese cut-off for overweight is 24, the WHO uses 25 — the same person can be \"overweight\" under one and \"normal\" under the other",
+        "BMI cannot tell muscle from fat; strength-trained people often score high with low body fat",
+        "Not applicable to pregnancy, children, or adults over 65",
+        "The healthy range is computed from height squared × 18.5 and × 23.9"
+      ],
+      "scenarios": [
+        {
+          "scene": "A physical says BMI 24.3",
+          "how": "Enter height and weight",
+          "result": "Classified as overweight under the Chinese standard, with the cut-off explained"
+        },
+        {
+          "scene": "What should I weigh at this height",
+          "how": "Read the healthy range row",
+          "result": "Lower and upper bounds, no manual arithmetic"
+        },
+        {
+          "scene": "Set a weight-loss target",
+          "how": "Read the distance to the upper bound",
+          "result": "A concrete number of kilograms instead of a BMI figure"
+        }
+      ],
+      "runLabel": "Calculate",
+      "labels": {
+        "height": "Height (cm)",
+        "weight": "Weight (kg)"
+      }
     }
   }
 }

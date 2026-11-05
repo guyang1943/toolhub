@@ -591,6 +591,54 @@
       "css-unit": {
         "name": "CSS Unit Converter",
         "desc": "Convert px, rem, em, vw, vh and pt with a configurable root font size."
+      },
+      "image-watermark": {
+        "name": "Image Watermark",
+        "desc": "Add a text watermark with adjustable position, opacity and size."
+      },
+      "image-merge": {
+        "name": "Image Merge",
+        "desc": "Stitch images into a row, a long image or a grid."
+      },
+      "image-filter": {
+        "name": "Image Filter",
+        "desc": "Presets plus brightness, contrast and saturation, tuned locally."
+      },
+      "image-round": {
+        "name": "Image Rounder",
+        "desc": "Round the corners of an image or cut it to a circle with a border."
+      },
+      "image-info": {
+        "name": "Image Info",
+        "desc": "Inspect dimensions, format, size and key EXIF fields without editing."
+      },
+      "palette-extract": {
+        "name": "Palette Extractor",
+        "desc": "Extract a dominant colour palette with HEX and RGB values."
+      },
+      "gradient-gen": {
+        "name": "CSS Gradient Generator",
+        "desc": "Build a CSS gradient visually and copy the background declaration."
+      },
+      "shadow-gen": {
+        "name": "CSS Shadow Generator",
+        "desc": "Tune box-shadow and text-shadow visually, then copy the CSS."
+      },
+      "media-info": {
+        "name": "Media Info",
+        "desc": "Read duration, resolution and size of local audio or video."
+      },
+      "barcode-gen": {
+        "name": "Barcode Generator",
+        "desc": "Generate Code128 and EAN-13 barcodes and download them as PNG."
+      },
+      "date-calc": {
+        "name": "Date Calculator",
+        "desc": "Days between two dates, plus add or subtract days and working days."
+      },
+      "bmi-calc": {
+        "name": "BMI Calculator",
+        "desc": "BMI from height and weight, graded by the Chinese standard."
       }
     },
     "res": {

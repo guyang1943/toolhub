@@ -1,0 +1,14 @@
+{
+  "id": "gradient-gen",
+  "name": "CSS 渐变生成器",
+  "desc": "可视化调 CSS 渐变，复制即用的 background",
+  "category": "设计",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "CSS",
+    "渐变"
+  ],
+  "since": "v3.27"
+}

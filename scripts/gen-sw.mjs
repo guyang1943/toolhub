@@ -115,6 +115,16 @@ export function buildSw({ quiet = false } = {}) {
   for (const t of tools) {
     full.add(`/tools/${t.id}/`);
     full.add(`/tools/${t.id}/run.js`);
+    // 工具自带的同源脚本（v3.27）：barcode-gen 把 JsBarcode 放进自己的目录而不是 assets/vendor/，
+    // 因为它只有一个工具用、不该让所有页面为它多下一次。但上面这行只收 run.js，
+    // 于是断网时条码工具会在动态 loadLib() 那一步挂掉——而它看起来只是「点了没反应」。
+    // 扫目录而不是写死文件名：以后再有工具带库，自动进包。
+    const dir = join(root, 'tools', t.id);
+    if (existsSync(dir)) {
+      for (const f of readdirSync(dir)) {
+        if (f.endsWith('.js') && f !== 'run.js') full.add(`/tools/${t.id}/${f}`);
+      }
+    }
   }
   for (const v of VENDOR) if (existsSync(join(root, 'assets', 'vendor', v))) full.add(`/assets/vendor/${v}`);
   // 固定页面来自注册表。以前这里是手写清单，v3.14 / v3.15 补两次、v3.20 又补一次，

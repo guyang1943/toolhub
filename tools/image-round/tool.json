@@ -1,0 +1,14 @@
+{
+  "id": "image-round",
+  "name": "图片圆角",
+  "desc": "图片一键变圆角或圆形，可加描边",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "圆角",
+    "头像"
+  ],
+  "since": "v3.27"
+}

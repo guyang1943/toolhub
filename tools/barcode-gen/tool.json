@@ -1,0 +1,14 @@
+{
+  "id": "barcode-gen",
+  "name": "条形码生成器",
+  "desc": "生成 Code128 与 EAN-13 条形码并下载 PNG",
+  "category": "开发",
+  "source": "内置实现 (JsBarcode)",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "条码",
+    "商品"
+  ],
+  "since": "v3.27"
+}

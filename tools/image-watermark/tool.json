@@ -1,0 +1,14 @@
+{
+  "id": "image-watermark",
+  "name": "图片水印",
+  "desc": "给图片加文字水印，位置透明度大小可调",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "水印",
+    "版权"
+  ],
+  "since": "v3.27"
+}
