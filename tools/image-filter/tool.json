@@ -1,0 +1,14 @@
+{
+  "id": "image-filter",
+  "name": "图片滤镜",
+  "desc": "预设滤镜叠加亮度对比度饱和度，本地调色",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "滤镜",
+    "调色"
+  ],
+  "since": "v3.27"
+}

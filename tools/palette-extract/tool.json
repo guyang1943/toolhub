@@ -1,0 +1,14 @@
+{
+  "id": "palette-extract",
+  "name": "图片取色",
+  "desc": "从图片提取主色板，输出 HEX 与 RGB",
+  "category": "设计",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "取色",
+    "配色"
+  ],
+  "since": "v3.27"
+}

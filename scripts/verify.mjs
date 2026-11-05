@@ -139,6 +139,20 @@ check('工具自身 usage/tips/scenarios', () => {
   return `${local.tools.length} 个模块导出正常`;
 });
 
+// v3.27：上一条只查「文件里有没有 export 这两行」，查不出反引号没配对这类语法错——
+// 而 run.js 是浏览器动态 import 的，构建期不解析它，于是页面生成成功、结构断言全过，
+// 用户打开才看到「工具加载失败」。media-info 漏一个反引号就是这么漏过去的（浏览器测试抓到的）。
+// 这里真的让 V8 解析一遍：只解析不执行（不碰 DOM），一个进程跑完 62 个约 0.25 秒。
+check('工具脚本语法可解析（run.js）', () => {
+  const r = spawnSync(process.execPath, ['--experimental-vm-modules', '--no-warnings', 'scripts/lib/parse-tools.cjs', root], {
+    cwd: root,
+    encoding: 'utf8',
+  });
+  const out = (r.stdout || '').trim();
+  assert(r.status === 0, '有 run.js 解析失败：' + out.split('\n').slice(0, 3).join(' | '));
+  return `${out.replace(/^OK /, '')} 个 run.js 通过 V8 解析`;
+});
+
 // ---------- 2.5 资源库 ----------
 check('资源库数据结构', () => {
   assert(res.collections?.length, '没有 collections');
@@ -1037,6 +1051,12 @@ check('离线包清单（E1）', () => {
   for (const t of all.filter((x) => existsSync(join(root, 'tools', x.id, 'run.js')))) {
     if (!set.has(`/tools/${t.id}/`)) bad.push(`${t.id} 页`);
     if (!set.has(`/tools/${t.id}/run.js`)) bad.push(`${t.id} run.js`);
+    // 工具目录里自带的同源脚本（v3.27 起 barcode-gen 的 jsbarcode.min.js）：
+    // 它们是动态 <script> 注入的，漏了不白屏，只是「断网点运行没反应」。
+    // 断言在这里而不是只在 gen-sw 里扫：扫目录写错一处，闸门要能喊。
+    for (const f of readdirSync(join(root, 'tools', t.id))) {
+      if (f.endsWith('.js') && f !== 'run.js' && !set.has(`/tools/${t.id}/${f}`)) bad.push(`${t.id}/${f} 不在离线清单`);
+    }
   }
   for (const p of ['/', '/offline/', '/site.webmanifest', '/assets/app.js', '/assets/style.css']) {
     if (!set.has(p)) bad.push(p);

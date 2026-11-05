@@ -1,7 +1,7 @@
 # ToolHub
 > 开源在线工具目录：能在浏览器里跑的都在本机处理，文件 0 字节上传服务器；第三方工具只做跳转，适用对方隐私政策。
 
-## 本地工具（50 个，在本机运行，0 字节上传）
+## 本地工具（62 个，在本机运行，0 字节上传）
 - [JSON 格式化](https://toolhub.bot.cd/tools/json-format/): 美化/压缩 JSON，自动校验语法错误
 - [图片压缩](https://toolhub.bot.cd/tools/image-compress/): 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器
 - [二维码生成](https://toolhub.bot.cd/tools/qrcode/): 把文本/网址变成二维码，可下载 PNG
@@ -52,6 +52,18 @@
 - [进制转换](https://toolhub.bot.cd/tools/radix-convert/): 2/8/10/16/36 进制批量互转，大数不丢精度
 - [.env 解析](https://toolhub.bot.cd/tools/env-parser/): 解析 .env，标重复键与格式错误，转 JSON 或 export
 - [CSS 单位换算](https://toolhub.bot.cd/tools/css-unit/): px/rem/em/vw/vh 互转，基准字号可设
+- [图片水印](https://toolhub.bot.cd/tools/image-watermark/): 给图片加文字水印，位置透明度大小可调
+- [图片拼接](https://toolhub.bot.cd/tools/image-merge/): 多张图片横向纵向或网格拼成一张
+- [图片滤镜](https://toolhub.bot.cd/tools/image-filter/): 预设滤镜叠加亮度对比度饱和度，本地调色
+- [图片圆角](https://toolhub.bot.cd/tools/image-round/): 图片一键变圆角或圆形，可加描边
+- [图片信息](https://toolhub.bot.cd/tools/image-info/): 查看图片尺寸格式体积与 EXIF 关键字段
+- [图片取色](https://toolhub.bot.cd/tools/palette-extract/): 从图片提取主色板，输出 HEX 与 RGB
+- [CSS 渐变生成器](https://toolhub.bot.cd/tools/gradient-gen/): 可视化调 CSS 渐变，复制即用的 background
+- [CSS 阴影生成器](https://toolhub.bot.cd/tools/shadow-gen/): 可视化调 box-shadow 与 text-shadow
+- [音视频信息](https://toolhub.bot.cd/tools/media-info/): 本地读取音视频时长分辨率与体积，不上传
+- [条形码生成器](https://toolhub.bot.cd/tools/barcode-gen/): 生成 Code128 与 EAN-13 条形码并下载 PNG
+- [日期计算器](https://toolhub.bot.cd/tools/date-calc/): 算日期间隔天数，或加减天数与工作日
+- [BMI 计算器](https://toolhub.bot.cd/tools/bmi-calc/): 身高体重算 BMI，按中国标准判区间
 
 ## 第三方目录（70 个，跳转对方官网，适用对方隐私政策）
 - [Excalidraw](https://toolhub.bot.cd/tools/excalidraw/): 手绘风格白板画图，协作绘图神器（数据边界：看用法）

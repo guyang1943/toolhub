@@ -1,0 +1,14 @@
+{
+  "id": "bmi-calc",
+  "name": "BMI 计算器",
+  "desc": "身高体重算 BMI，按中国标准判区间",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "健康",
+    "BMI"
+  ],
+  "since": "v3.27"
+}

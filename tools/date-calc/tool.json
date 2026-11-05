@@ -1,0 +1,14 @@
+{
+  "id": "date-calc",
+  "name": "日期计算器",
+  "desc": "算日期间隔天数，或加减天数与工作日",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "日期",
+    "计算"
+  ],
+  "since": "v3.27"
+}

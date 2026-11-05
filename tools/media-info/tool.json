@@ -1,0 +1,14 @@
+{
+  "id": "media-info",
+  "name": "音视频信息",
+  "desc": "本地读取音视频时长分辨率与体积，不上传",
+  "category": "音视频",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "媒体",
+    "信息"
+  ],
+  "since": "v3.27"
+}

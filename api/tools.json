@@ -2,7 +2,7 @@
   "site": "ToolHub",
   "version": 1,
   "updated": "2026-11-05",
-  "total": 120,
+  "total": 132,
   "tools": [
     {
       "id": "json-format",
@@ -750,6 +750,174 @@
       "tags": [
         "CSS",
         "前端"
+      ]
+    },
+    {
+      "id": "image-watermark",
+      "name": "图片水印",
+      "desc": "给图片加文字水印，位置透明度大小可调",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/image-watermark/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "水印",
+        "版权"
+      ]
+    },
+    {
+      "id": "image-merge",
+      "name": "图片拼接",
+      "desc": "多张图片横向纵向或网格拼成一张",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/image-merge/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "拼接",
+        "长图"
+      ]
+    },
+    {
+      "id": "image-filter",
+      "name": "图片滤镜",
+      "desc": "预设滤镜叠加亮度对比度饱和度，本地调色",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/image-filter/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "滤镜",
+        "调色"
+      ]
+    },
+    {
+      "id": "image-round",
+      "name": "图片圆角",
+      "desc": "图片一键变圆角或圆形，可加描边",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/image-round/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "圆角",
+        "头像"
+      ]
+    },
+    {
+      "id": "image-info",
+      "name": "图片信息",
+      "desc": "查看图片尺寸格式体积与 EXIF 关键字段",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/image-info/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "EXIF",
+        "信息"
+      ]
+    },
+    {
+      "id": "palette-extract",
+      "name": "图片取色",
+      "desc": "从图片提取主色板，输出 HEX 与 RGB",
+      "category": "设计",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/palette-extract/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "取色",
+        "配色"
+      ]
+    },
+    {
+      "id": "gradient-gen",
+      "name": "CSS 渐变生成器",
+      "desc": "可视化调 CSS 渐变，复制即用的 background",
+      "category": "设计",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/gradient-gen/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "CSS",
+        "渐变"
+      ]
+    },
+    {
+      "id": "shadow-gen",
+      "name": "CSS 阴影生成器",
+      "desc": "可视化调 box-shadow 与 text-shadow",
+      "category": "设计",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/shadow-gen/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "CSS",
+        "阴影"
+      ]
+    },
+    {
+      "id": "media-info",
+      "name": "音视频信息",
+      "desc": "本地读取音视频时长分辨率与体积，不上传",
+      "category": "音视频",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/media-info/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "媒体",
+        "信息"
+      ]
+    },
+    {
+      "id": "barcode-gen",
+      "name": "条形码生成器",
+      "desc": "生成 Code128 与 EAN-13 条形码并下载 PNG",
+      "category": "开发",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/barcode-gen/",
+      "source": "内置实现 (JsBarcode)",
+      "license": "MIT",
+      "tags": [
+        "条码",
+        "商品"
+      ]
+    },
+    {
+      "id": "date-calc",
+      "name": "日期计算器",
+      "desc": "算日期间隔天数，或加减天数与工作日",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/date-calc/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "日期",
+        "计算"
+      ]
+    },
+    {
+      "id": "bmi-calc",
+      "name": "BMI 计算器",
+      "desc": "身高体重算 BMI，按中国标准判区间",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/bmi-calc/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "健康",
+        "BMI"
       ]
     },
     {

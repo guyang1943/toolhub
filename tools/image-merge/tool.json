@@ -1,0 +1,14 @@
+{
+  "id": "image-merge",
+  "name": "图片拼接",
+  "desc": "多张图片横向纵向或网格拼成一张",
+  "category": "图片",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "拼接",
+    "长图"
+  ],
+  "since": "v3.27"
+}

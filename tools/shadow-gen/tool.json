@@ -1,0 +1,14 @@
+{
+  "id": "shadow-gen",
+  "name": "CSS 阴影生成器",
+  "desc": "可视化调 box-shadow 与 text-shadow",
+  "category": "设计",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "CSS",
+    "阴影"
+  ],
+  "since": "v3.27"
+}
