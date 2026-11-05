@@ -73,6 +73,18 @@
     "img-crop",
     "file-hash",
     "csv-columns",
-    "disk-partition"
+    "disk-partition",
+    "text-encrypt",
+    "markdown-table",
+    "string-escape",
+    "lorem-kit",
+    "token-counter",
+    "url-kit",
+    "subnet-calc",
+    "xml-format",
+    "http-code",
+    "radix-convert",
+    "env-parser",
+    "css-unit"
   ]
 }

@@ -543,6 +543,54 @@
       "cline": {
         "name": "Cline",
         "desc": "Coding agent inside your editor; bring your own key or local model"
+      },
+      "text-encrypt": {
+        "name": "Text Encrypt & Decrypt",
+        "desc": "Encrypt text with a password, key derived locally; decrypt it back with the same password."
+      },
+      "markdown-table": {
+        "name": "Markdown Table Generator",
+        "desc": "Pick rows, columns and alignment to get table source you can paste straight into Markdown."
+      },
+      "string-escape": {
+        "name": "String Escape / Unescape",
+        "desc": "Escape and unescape strings for JS, JSON, URL, HTML and Unicode in one place."
+      },
+      "lorem-kit": {
+        "name": "Placeholder Text Generator",
+        "desc": "Chinese and English placeholder text — paragraphs, headings or single sentences."
+      },
+      "token-counter": {
+        "name": "Token Estimator",
+        "desc": "Estimate the token cost of a prompt before calling a model — clearly an approximation."
+      },
+      "url-kit": {
+        "name": "URL Parser & Rebuilder",
+        "desc": "Break a URL into parts, edit its query parameters line by line, and rebuild it."
+      },
+      "subnet-calc": {
+        "name": "Subnet Calculator",
+        "desc": "IPv4 address plus mask: network, broadcast, usable range and host count."
+      },
+      "xml-format": {
+        "name": "XML Formatter",
+        "desc": "Pretty-print, minify and validate XML, with error messages that point at a line."
+      },
+      "http-code": {
+        "name": "HTTP Status Code Lookup",
+        "desc": "Look up a status code for its meaning, typical causes and where to dig next."
+      },
+      "radix-convert": {
+        "name": "Radix Converter",
+        "desc": "Batch convert between base 2/8/10/16/36 with BigInt — no precision loss on big numbers."
+      },
+      "env-parser": {
+        "name": ".env Parser",
+        "desc": "Parse .env files, flag duplicate keys and syntax errors, output JSON or shell exports."
+      },
+      "css-unit": {
+        "name": "CSS Unit Converter",
+        "desc": "Convert px, rem, em, vw, vh and pt with a configurable root font size."
       }
     },
     "res": {

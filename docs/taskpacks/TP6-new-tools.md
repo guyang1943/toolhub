@@ -191,6 +191,7 @@
 ## 第三批：需第三方库或有风险项（12 个，先确认再做）
 
 > 本批每个条目有"先决条件"，实现前必须先确认，不确定的先问。
+> 2026-11-05 已定两条：#32 text-to-pdf 首期仅英文/数字（不嵌字体）；#36 pinyin-convert 运行时数据源用 `tiny-pinyin/dist` 打成的 16 KB 包。其余条目按批次实现时逐条确认。
 
 ### 25. json-yaml｜JSON⇄YAML 互转
 - desc: JSON 与 YAML 双向转换
@@ -247,8 +248,8 @@
 - desc: 纯文本排版生成 PDF
 - category: 文档 / tags: PDF,导出
 - inputs: text(textarea), title(text), fontSize(select), margin(select)
-- 先决条件：**中文需要字体嵌入**——先评估字体子集化方案；搞不定则首期仅英文/数字，文案写明
-- 验收：分页不切断段落；中文不乱码（或明确提示仅英文）
+- 先决条件（已定，2026-11-05）：**首期仅英文/数字**。用 PDF 内置的 Helvetica，不嵌字体、0 新增字节；输入里出现中文时，结果区明确提示「首期仅支持英文/数字」，不静默出乱码。中文子集化方案（fontkit + 中文字体子集）体积约 1.1 MB、且需重编码，暂不采用。
+- 验收：分页不切断段落；中文输入给明确提示而不是乱码
 
 ### 33. note-local｜本地便签
 - desc: 浏览器本地便签，多条、导出、清空
@@ -275,7 +276,7 @@
 - desc: 汉字转拼音，声调/数字/首字母可选
 - category: 文本 / tags: 拼音,中文
 - inputs: text(textarea), style(select: 带声调/数字声调/无声调/首字母)
-- 先决条件：**先确认运行时拼音数据源**——`scripts/vendor/tiny-pinyin` 是构建期用的，运行时需要 dist 或精简拼音表（目标 <100KB）；多音字取常用读法并文案注明
+- 先决条件（已定，2026-11-05）：运行时数据源 = `scripts/vendor/tiny-pinyin/dist`（已在仓库里），用 `build-pinyin-bundle.mjs` 打包成 `assets/vendor/pinyin.min.js`，preflight 实测约 16 KB。该预研目录（字体、fontkit、预生成包）已在 v3.25 前清出仓库，**第三批实现时按上述路径重写打包脚本再搬运**，数据源与方案不再重新设计。多音字取常用读法并文案注明。
 - 验收：常用 3500 字覆盖；声调标注正确
 
 ## 分批与验收链

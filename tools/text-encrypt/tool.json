@@ -1,0 +1,25 @@
+{
+  "id": "text-encrypt",
+  "name": "文本加解密",
+  "desc": "AES 加密解密文本，密码派生密钥，全程本地",
+  "category": "文本",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "加密",
+    "AES",
+    "隐私"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "wenbenjiajiemi",
+    "wbjjm",
+    "加密码",
+    "设置密码",
+    "text encrypt & decrypt",
+    "text",
+    "encrypt",
+    "decrypt"
+  ]
+}

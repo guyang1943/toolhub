@@ -2237,6 +2237,52 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     await evaluate(`['favs','recent','compare','sets','usage','events'].forEach((k) => localStorage.removeItem('toolhub:' + k))`);
   }
 
+  // ---- TP6 第一批：12 个纯计算工具（入口 + 真算一次）----
+  // 结构校验只能证明「页面在」「manifest 合规」，证明不了「点得进去、点得动」。
+  // 这里把 12 个新页面逐个打开确认表单渲染出来，再挑子网计算真填真算一次。
+  {
+    const BATCH1 = [
+      'text-encrypt',
+      'markdown-table',
+      'string-escape',
+      'lorem-kit',
+      'token-counter',
+      'url-kit',
+      'subnet-calc',
+      'xml-format',
+      'http-code',
+      'radix-convert',
+      'env-parser',
+      'css-unit',
+    ];
+    const noForm = [];
+    for (const id of BATCH1) {
+      await goto(`/tools/${id}/`);
+      const fields = await evaluate(`(() => {
+        const f = document.getElementById('tool-form');
+        if (!f) return 0;
+        return f.querySelectorAll('input,textarea,select').length;
+      })()`);
+      if (!fields) noForm.push(id);
+    }
+    check('12 个新工具页都能渲染出表单', noForm.length === 0, noForm.length ? noForm.join(',') : '12/12');
+
+    await goto('/tools/subnet-calc/');
+    await fill({ 'f-ip': '192.168.1.10', 'f-mask': '24' });
+    await clickRun();
+    const subnetOk = await waitText('#tool-result', '192.168.1.255', 10000);
+    const subnetText = await evaluate(`document.getElementById('tool-result').textContent`);
+    check('子网计算在浏览器里算出广播地址', subnetOk);
+    check('子网计算结果给出可用主机数 254', subnetText.includes('254'), (subnetText.match(/可用主机数[^\n]{0,16}/) || [''])[0].trim());
+    await shot('20-subnet');
+
+    // 空输入必须给提示而不是静默无反应：这是「点了没动静」类工单的来源
+    await goto('/tools/radix-convert/');
+    await clickRun();
+    const radixHint = await waitText('#tool-result', '请先输入', 8000);
+    check('空输入点运行给出明确提示', radixHint);
+  }
+
   // ---- 汇总 ----
   const bad = results.filter((r) => !r.ok);
   console.log(`\n${bad.length ? '❌' : '✅'} 浏览器测试 ${results.length - bad.length}/${results.length}`);

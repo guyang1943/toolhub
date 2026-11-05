@@ -1068,6 +1068,276 @@
         "mb",
         "calculator"
       ]
+    },
+    {
+      "id": "text-encrypt",
+      "name": "文本加解密",
+      "desc": "AES 加密解密文本，密码派生密钥，全程本地",
+      "category": "文本",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "加密",
+        "AES",
+        "隐私"
+      ],
+      "aliases": [
+        "wenbenjiajiemi",
+        "wbjjm",
+        "加密码",
+        "设置密码",
+        "text encrypt & decrypt",
+        "text",
+        "encrypt",
+        "decrypt"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "markdown-table",
+      "name": "Markdown 表格生成器",
+      "desc": "按行列数生成可直接粘贴的 Markdown 表格源码",
+      "category": "文本",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "Markdown",
+        "表格"
+      ],
+      "aliases": [
+        "biaogeshengchengqi",
+        "bgscq",
+        "markdown table generator",
+        "markdown",
+        "table",
+        "generator"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "string-escape",
+      "name": "字符串转义",
+      "desc": "JS/JSON/URL/HTML/Unicode 转义与反转义",
+      "category": "文本",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "转义",
+        "编码"
+      ],
+      "aliases": [
+        "zifuchuanzhuanyi",
+        "zfczy",
+        "string escape / unescape",
+        "string",
+        "escape",
+        "unescape"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "lorem-kit",
+      "name": "占位文本生成",
+      "desc": "中英文占位文本，Mock 页面不用再敲测试测试",
+      "category": "文本",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "占位",
+        "Mock"
+      ],
+      "aliases": [
+        "zhanweiwenbenshengcheng",
+        "zwwbsc",
+        "placeholder text generator",
+        "placeholder",
+        "text",
+        "generator"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "token-counter",
+      "name": "Token 估算",
+      "desc": "估算提示词的 Token 消耗，调用 AI 前先看成本",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "AI",
+        "Token",
+        "LLM"
+      ],
+      "aliases": [
+        "gusuan",
+        "gs",
+        "token estimator",
+        "token",
+        "estimator"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "url-kit",
+      "name": "URL 解析构造",
+      "desc": "拆解 URL 各部分，整理 query 参数并重新拼装",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "URL",
+        "调试"
+      ],
+      "aliases": [
+        "jiexigouzao",
+        "jxgz",
+        "url parser & rebuilder",
+        "url",
+        "parser",
+        "rebuilder"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "subnet-calc",
+      "name": "子网计算器",
+      "desc": "IP 加掩码算出网段、广播地址与可用主机数",
+      "category": "网络",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "IP",
+        "子网",
+        "运维"
+      ],
+      "aliases": [
+        "ziwangjisuanqi",
+        "zwjsq",
+        "subnet calculator",
+        "subnet",
+        "calculator"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "xml-format",
+      "name": "XML 格式化",
+      "desc": "XML 美化压缩并校验合法性，报错给出行号",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "XML",
+        "格式化"
+      ],
+      "aliases": [
+        "geshihua",
+        "gsh",
+        "xml formatter",
+        "xml",
+        "formatter"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "http-code",
+      "name": "HTTP 状态码速查",
+      "desc": "输入状态码看含义、常见场景与排查方向",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "HTTP",
+        "手册"
+      ],
+      "aliases": [
+        "zhuangtaimasucha",
+        "ztmsc",
+        "http status code lookup",
+        "http",
+        "status",
+        "code",
+        "lookup"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "radix-convert",
+      "name": "进制转换",
+      "desc": "2/8/10/16/36 进制批量互转，大数不丢精度",
+      "category": "数据",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "进制",
+        "转换"
+      ],
+      "aliases": [
+        "jinzhizhuanhuan",
+        "jzzh",
+        "转格式",
+        "换格式",
+        "转成",
+        "radix converter",
+        "radix",
+        "converter"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "env-parser",
+      "name": ".env 解析",
+      "desc": "解析 .env，标重复键与格式错误，转 JSON 或 export",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "env",
+        "配置"
+      ],
+      "aliases": [
+        "jiexi",
+        "jx",
+        ".env parser",
+        ".env",
+        "parser"
+      ],
+      "since": "v3.26"
+    },
+    {
+      "id": "css-unit",
+      "name": "CSS 单位换算",
+      "desc": "px/rem/em/vw/vh 互转，基准字号可设",
+      "category": "开发",
+      "source": "内置实现",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "CSS",
+        "前端"
+      ],
+      "aliases": [
+        "danweihuansuan",
+        "dwhs",
+        "度量衡",
+        "换算",
+        "css unit converter",
+        "css",
+        "unit",
+        "converter"
+      ],
+      "since": "v3.26"
     }
   ]
 }

@@ -1,0 +1,23 @@
+{
+  "id": "http-code",
+  "name": "HTTP 状态码速查",
+  "desc": "输入状态码看含义、常见场景与排查方向",
+  "category": "开发",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "HTTP",
+    "手册"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "zhuangtaimasucha",
+    "ztmsc",
+    "http status code lookup",
+    "http",
+    "status",
+    "code",
+    "lookup"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "subnet-calc",
+  "name": "子网计算器",
+  "desc": "IP 加掩码算出网段、广播地址与可用主机数",
+  "category": "网络",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "IP",
+    "子网",
+    "运维"
+  ],
+  "since": "v3.26",
+  "aliases": [
+    "ziwangjisuanqi",
+    "zwjsq",
+    "subnet calculator",
+    "subnet",
+    "calculator"
+  ]
+}
