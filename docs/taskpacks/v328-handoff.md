@@ -108,7 +108,15 @@
 
 ### T2｜找工具（目录扩充 / 新增本地工具）
 
-**目标**：给下一版定「加什么」。两个方向，选一个做深，别两个都浅尝：
+**目标**：给下一版定「加什么」。这一版的重点是**找**，不是一口气加完。
+
+**实际口径（与 prompt 一致，别读岔）**：
+
+1. **必做**：产出一份 `docs/taskpacks/TP7-tool-candidates.md`，12 条候选，每条带「跑在哪 / 数据边界 /
+   实现成本 / 预算影响 / 先决条件」。
+2. **能落地就落地**：从清单里挑 3 个「零依赖、纯计算、无先决条件」的做出来，跑全量八套。
+   挑不出来或预算不允许，就只交清单——**半成品不许塞进来**。
+3. 下面两个方向是清单的**来源**，不是二选一的任务：
 
 **方向 A：目录外链扩充**（`TP5-directory.md`，内容型，快）
 
@@ -148,8 +156,8 @@
 `scripts/new-tools-test.mjs`。
 **不许碰**：`content/guides.json`、`assets/lib/guide-text.js`。
 
-**交付**：分支 `feat/tp6-batch-3` 或 `feat/directory-batch-2`；全量八套绿；PR 描述写清
-「本批清单 + 每项先决条件结论 + 预算账（代码变胖还是内容变厚）」。不推 `main`。
+**交付**：分支 `feat/tools-candidates`（worktree `../toolhub-tools`，端口 8792）；全量八套绿；
+PR 描述写清「清单路径 + 实际落地哪几个 + 每项先决条件结论 + 预算账（代码变胖还是内容变厚）」。不推 `main`。
 
 ---
 
@@ -158,15 +166,24 @@
 **这不是一个可以随便并行的任务**：它把 `main` 推到 GitHub Pages，40 秒后线上就变了。
 所以它有硬前置：
 
-1. `git status` 必须干净、当前在 `main`、且 `origin/main` 与本地一致。
-2. `changelog.json` 的 `entries[0].version` 必须**已经**是本版号（`v3.29`），且不等于线上版本。
-   线上版本查法：`curl -s https://toolhub.bot.cd/sw.js | head -3` 里的 `toolhub-vX.YY`。
-3. 若 1 或 2 不满足 → **不发版**，输出一份「当前为什么不能发」的报告就结束。别自己造版本号、
-   别把没合并的分支合进去。
+1. 当前在 `main`，工作区干净。落后 `origin/main` 就 `git pull --ff-only`（用户可能在网页上合并了
+   PR，本地落后是正常状态）；不能快进或工作区脏，就停下报告。
+2. `changelog.json` 的 `entries[0].version` 记为 V，线上版本记为 W
+   （`curl -s https://toolhub.bot.cd/sw.js` 里的 `toolhub-vX.YY`）。
+   **正常待发状态是 `V == W`**——changelog 顶部还停在上一版，本版还没写。
+   `V != W` 说明有人写了 changelog 却没发出去，停下报告，别重复写。
+3. 「有没有内容可发」：上一个发版提交之后，除了 changelog / 产物 / 纯文档，得真有代码或内容改动。
+   没有就报告「当前无待发内容」。
+4. 改动里混着不属于同一主题的东西（比如既改工具又改教程）→ **不发**，列出来让人定版本号与拆法。
+
+版本号由 T3 自己算：W 的末位 +1（`v3.28 → v3.29`）。但 changelog 文案必须基于真实 diff 写，
+并在报告里单列「版本号 + 文案」供人复核。
 
 **发版步骤（按顺序，别跳）**：
 
 ```bash
+# 0. 合并后先跑全量，红着不发布
+npm run check
 # 1. 插 changelog（LF 换行，顶部插 entries[0]，版本号从它派生到 sw.js）
 # 2. 重建产物（必须带域名）
 npm run build:prod
@@ -179,6 +196,9 @@ git push origin main
 # 6. 等 40 秒再探活
 npm run online -- --wait 120
 ```
+
+第 0 步不能省：**分支上绿不等于合并后绿**。两条分支各改各的 `verify.mjs`，单看都过，
+合到一起可能撞断言或撞节号。
 
 **发版时必做的三件核验**：
 
@@ -205,8 +225,8 @@ npm run online -- --wait 120
 
 ```bash
 cd "C:/Users/huwei/WorkBuddy/2026-10-20-10-57-11/toolhub"
-git worktree add ../toolhub-guides -b feat/guides-batch-2 main
-git worktree add ../toolhub-tools  -b feat/tp6-batch-3   main
+git worktree add ../toolhub-guides -b feat/guides-batch-2 origin/main
+git worktree add ../toolhub-tools  -b feat/tools-candidates origin/main
 ```
 
 | 时间 | T1 教程 | T2 工具 | T3 发版 |
@@ -302,3 +322,36 @@ npm run online             # 线上探活（三态，查不到跳过，不判「
 - 测试红了先判断是真问题还是断言本身错了。要改断言，必须在交付说明里单列「为什么这条断言是错的」。
 - 预算超了先分账：**代码变胖要优化，内容变厚可抬 total**（须在 note 与提交信息写清是哪种账）。
 - 不加 `"type": "module"`（UMD 崩）。安全头只改 `assets/lib/security-headers.js`。
+
+---
+
+## 八、无人值守时补的交代
+
+T1 23:25 / T2 23:40 / T3 次日 09:30 都是**无人值守**自动跑的。跑起来之后没人能救场，
+所以下面这些不是建议，是硬规矩。三份 prompt 里都写死了，改 prompt 时别弄丢：
+
+**1. 增量提交。** 写完一篇教程（过 build + verify）就 commit 一次，落地一个工具就 commit 一次。
+任务随时可能被中断，攒到最后一次性提交等于全丢。半成品分支比空目录有用。
+
+**2. 不许编造。** 版本号、按钮名、命令输出、界面文案，没实际见过的不要写死。教程里没法实测的
+步骤要写明「以你当前版本界面为准」，并在报告里单列「哪几步没有实测」。本站的立站之本是实测，
+写错比少写更糟。候选清单里的外链必须真访问过（`curl -sI`），404 直接剔除；许可证、最近提交查不到
+就写「未核实」，不许估。
+
+**3. 遇审批 / 权限 / SSH 失败：停下，不绕过。** 不改密钥、不改 `~/.ssh/config`、不关沙箱、
+不换 `dangerouslyDisableSandbox`。把原始报错写进报告。这条尤其重要——为了「把活干完」去动发布链路，
+是把一次失败换成一堆故障。
+
+**4. `git` 报 `index.lock`：** 另一个任务在同时 `worktree add`，等 5 秒重试一次即可。
+
+**5. 并发下的假红。** 两个任务同时跑浏览器套件会拖慢甚至超时。先确认 serve 还活着、端口是自己的
+（T1 8791 / T2 8792），重试一次再判定。**别把「慢」当「坏」，更不要因此改断言。**
+
+**6. 90 分钟止损。** 到点没全绿就停，commit 已完成的部分，交付「做到哪、卡在哪、报错原文」。
+
+**7. 高风险教程的回退必须真能撤销。** `risk=high` 那篇（把家里服务暴露到公网）每一步要写清
+「做错会怎样」；`fallback` 得是删 Tunnel、撤 DNS 记录、关 Access 策略这种可执行动作，
+不能写「重新配置一下」。
+
+**8. worktree 复用要小心。** 目录已存在时先 `cd` 进去 `git status`，有未提交改动先 commit，
+再 `git worktree remove --force`。别把上一个任务没提交的劳动直接删掉。
