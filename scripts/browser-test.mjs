@@ -531,6 +531,30 @@ async function feedFile(selector, dataUrl, name, type) {
     (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
       GUIDE_MAP.get('cloudflare-tunnel-home').steps.length,
   );
+
+  // muse-guides-batch-4 第四批三篇（Actions / AI 提示词 / AI 批量处理）。
+  // 三篇都是 risk=low、没有 riskNote：既要从总览按 href 真点一次（直达测不出「总览少一行」），
+  // 也要确认低风险篇不长出 .guide-risk 块，步骤数与数据源一致。
+  for (const [slug, name] of [
+    ['github-actions-deploy', 'Actions 篇'],
+    ['ai-prompts-resume', 'AI 提示词篇'],
+    ['ai-batch-media', 'AI 批量处理篇'],
+  ]) {
+    await goto('/guides/');
+    await waitText('#page-body', '教程', 8000);
+    const picked = await evaluate(
+      `(() => { const a = document.querySelector('#page-body a.fl-row[href="/guides/${slug}/"]'); if (!a) return false; a.click(); return true; })()`,
+    );
+    check(`总览里有${name}的入口`, picked === true);
+    await waitText('#page-body', '翻车了怎么办', 8000);
+    check(`${name}能从总览点进详情`, (await evaluate(`location.pathname`)) === `/guides/${slug}/`, slug);
+    check(
+      `${name}步骤数与数据一致`,
+      (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
+        GUIDE_MAP.get(slug).steps.length,
+    );
+    check(`${name}为 low 风险，不渲染风险提示块`, await evaluate(`!document.querySelector('.guide-risk')`));
+  }
   await goto('/');
 
   // ---- 1.56 评测列表（v3.13 改为行式列表）----
