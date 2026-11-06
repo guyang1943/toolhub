@@ -1,0 +1,11 @@
+{
+  "id": "json-yaml",
+  "name": "JSON ⇄ YAML",
+  "desc": "JSON 与 YAML 互转，锚点与多文档给人话提示",
+  "category": "数据",
+  "source": "js-yaml 4.1.0（MIT，按需加载）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": ["JSON", "YAML", "配置", "转换"],
+  "aliases": ["yaml", "yml", "json to yaml", "yaml to json", "配置转换", "yaml zhuan json"]
+}

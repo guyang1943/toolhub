@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>测试假数据 · ToolHub</title>
+  <meta name="description" content="造姓名、手机号、邮箱、地址与带校验位的身份证号" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/tools/mock-data/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/tools/mock-data/" />
+  <meta property="og:title" content="测试假数据 · ToolHub" />
+  <meta property="og:description" content="造姓名、手机号、邮箱、地址与带校验位的身份证号" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 140 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"测试假数据","description":"造姓名、手机号、邮箱、地址与带校验位的身份证号","url":"https://toolhub.bot.cd/tools/mock-data/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"生成的手机号能过运营商校验吗？","acceptedAnswer":{"@type":"Answer","text":"能过「格式 + 号段」这一层：号码 11 位，前三位取自 2026-11-06 核对过的已分配号段（130–139、15x、16x、17x、18x、19x），不含 154 / 164 这类空段。但后 8 位是随机的，不代表真实放号，也不保证这个号没被真人使用——任何声称「保证不撞号」的假数据生成器都不可信。"}},{"@type":"Question","name":"身份证号的校验位是怎么算的？","acceptedAnswer":{"@type":"Answer","text":"按 GB 11643（等同 ISO 7064 MOD 11-2）：前 17 位分别乘权重 7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2，求和后对 11 取模，用「10X98765432」这串按余数取一位。工具生成完会立刻按同一算法自检，算错就抛错，不把坏数据交给你。"}},{"@type":"Question","name":"地区码是真实存在的吗？","acceptedAnswer":{"@type":"Answer","text":"是。前六位取自 GB/T 2260 里真实存在的市辖区代码（如 110105 北京市朝阳区、440305 广东省深圳市南山区）。这里收录的是常见区县而不是全量表，够用来造能过校验的假数据。街道名与门牌号是编的，不属于行政区划。"}},{"@type":"Question","name":"为什么邮箱都是 example.com？","acceptedAnswer":{"@type":"Answer","text":"example.com / .net / .org 是 RFC 2606 明确保留给文档与示例的域名，不会指向真实收件人。用真实域名造邮箱，一旦测试数据被误塞进注册或邮件接口，就可能给陌生人发信；用保留域可以把这个风险直接消掉。"}},{"@type":"Question","name":"会不会碰巧生成真实人物的身份证号？","acceptedAnswer":{"@type":"Answer","text":"有可能，工具不承诺零碰撞。生日限定在 1970–2005，顺序码优先取 000–009 与 990–999 两端，都是为了把概率压低；但只要编号空间是有限的，随机生成就存在碰撞可能。所以结果区用醒目的黄条标注「仅供测试，非真实号码」，并且这些号码不应用于实名、注册或任何对外用途。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用测试假数据","description":"造姓名、手机号、邮箱、地址与带校验位的身份证号","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"测试假数据"}],"step":[{"@type":"HowToStep","position":1,"name":"选数据类型：可以只造手机号、姓名、邮箱、地址或身份证，也可以一次生成全套字段","text":"选数据类型：可以只造手机号、姓名、邮箱、地址或身份证，也可以一次生成全套字段","url":"https://toolhub.bot.cd/tools/mock-data/#step1"},{"@type":"HowToStep","position":2,"name":"填条数（1–100）和输出格式：每行一个、带表头的 CSV，或 JSON 数组","text":"填条数（1–100）和输出格式：每行一个、带表头的 CSV，或 JSON 数组","url":"https://toolhub.bot.cd/tools/mock-data/#step2"},{"@type":"HowToStep","position":3,"name":"点「生成」，先读结果区顶部那条黄色提示——所有号码仅供测试，不是真实号码","text":"点「生成」，先读结果区顶部那条黄色提示——所有号码仅供测试，不是真实号码","url":"https://toolhub.bot.cd/tools/mock-data/#step3"},{"@type":"HowToStep","position":4,"name":"把结果复制进测试用例、CSV 文件或脚本；身份证号可以再贴进站内「身份证校验…","text":"把结果复制进测试用例、CSV 文件或脚本；身份证号可以再贴进站内「身份证校验」工具复核","url":"https://toolhub.bot.cd/tools/mock-data/#step4"},{"@type":"HowToStep","position":5,"name":"需要稳定可复现的数据时，把生成结果存进测试夹具，不要每次运行时重新随机生成","text":"需要稳定可复现的数据时，把生成结果存进测试夹具，不要每次运行时重新随机生成","url":"https://toolhub.bot.cd/tools/mock-data/#step5"}]}</script>
+  <link rel="stylesheet" href="/assets/style.tool.css" />
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>测试假数据</h1><p>造姓名、手机号、邮箱、地址与带校验位的身份证号</p><h2>关于测试假数据</h2><p>写测试用例时最容易随手编一个「13800138000」，然后被测系统一校验就崩：号段不存在、身份证校验位不对、地区码是假的。这个工具造的是能过常见校验的假数据——手机号只从已分配的号段前缀里取，身份证按 GB 11643 的 MOD 11-2 算出校验位并使用真实存在的县级行政区划代码，生成后还会自己再验一遍。它同时把边界写在结果区最显眼的位置：所有号码随机生成，仅供测试，不是真实号码，也不承诺零碰撞；邮箱一律落在 RFC 2606 的保留域，误填进注册表单也不会往真人邮箱发信。数据全程只在本机内存里生成。</p><h2>使用步骤</h2><ol><li>选数据类型：可以只造手机号、姓名、邮箱、地址或身份证，也可以一次生成全套字段</li><li>填条数（1–100）和输出格式：每行一个、带表头的 CSV，或 JSON 数组</li><li>点「生成」，先读结果区顶部那条黄色提示——所有号码仅供测试，不是真实号码</li><li>把结果复制进测试用例、CSV 文件或脚本；身份证号可以再贴进站内「身份证校验」工具复核</li><li>需要稳定可复现的数据时，把生成结果存进测试夹具，不要每次运行时重新随机生成</li></ol><h2>常见错误</h2><h3>把假身份证号拿去实名认证</h3><p>这是最不该做的事。号码虽然能通过校验位算法，但它不是有权机关签发的身份标识。把它填进任何实名、开户、签约流程都可能违法，结果区那条提示就是为这个写的。</p><h3>每次跑测试都重新生成数据</h3><p>随机数据会让断言不稳定：今天通过的用例明天可能因为某个号码恰好落在边界上而失败。生成一次，把结果存成测试夹具文件，让被测逻辑面对固定的输入。</p><h3>拿它验证完整地址库</h3><p>工具只保证省市区名称与代码真实，路名和门牌是拼出来的，也没有邮编和经纬度。要测地址解析、行政区划联动或物流可达性，得用真实的地址数据集，这份假数据覆盖不了。</p><h2>常见问题</h2><h3>生成的手机号能过运营商校验吗？</h3><p>能过「格式 + 号段」这一层：号码 11 位，前三位取自 2026-11-06 核对过的已分配号段（130–139、15x、16x、17x、18x、19x），不含 154 / 164 这类空段。但后 8 位是随机的，不代表真实放号，也不保证这个号没被真人使用——任何声称「保证不撞号」的假数据生成器都不可信。</p><h3>身份证号的校验位是怎么算的？</h3><p>按 GB 11643（等同 ISO 7064 MOD 11-2）：前 17 位分别乘权重 7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2，求和后对 11 取模，用「10X98765432」这串按余数取一位。工具生成完会立刻按同一算法自检，算错就抛错，不把坏数据交给你。</p><h3>地区码是真实存在的吗？</h3><p>是。前六位取自 GB/T 2260 里真实存在的市辖区代码（如 110105 北京市朝阳区、440305 广东省深圳市南山区）。这里收录的是常见区县而不是全量表，够用来造能过校验的假数据。街道名与门牌号是编的，不属于行政区划。</p><h3>为什么邮箱都是 example.com？</h3><p>example.com / .net / .org 是 RFC 2606 明确保留给文档与示例的域名，不会指向真实收件人。用真实域名造邮箱，一旦测试数据被误塞进注册或邮件接口，就可能给陌生人发信；用保留域可以把这个风险直接消掉。</p><h3>会不会碰巧生成真实人物的身份证号？</h3><p>有可能，工具不承诺零碰撞。生日限定在 1970–2005，顺序码优先取 000–009 与 990–999 两端，都是为了把概率压低；但只要编号空间是有限的，随机生成就存在碰撞可能。所以结果区用醒目的黄条标注「仅供测试，非真实号码」，并且这些号码不应用于实名、注册或任何对外用途。</p><p>来源：内置实现（GB 11643 校验位） · License: MIT · 分类：<a href="/categories/data/">数据</a></p><h2>相关阅读</h2><ul><li><a href="/tools/csv-json/">CSV ↔ JSON</a> —— CSV 与 JSON 数组互转，正确处理引号与换行</li><li><a href="/tools/py-stats/">数值统计</a> —— 用 Python statistics 计算均值/中位数/标准差/四分位</li><li><a href="/tools/pandas-csv/">CSV 数据体检</a> —— pandas 自动分析 CSV：行列数、类型、缺失值、统计摘要</li><li><a href="/tools/cyberchef/">CyberChef</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/transform/">Transform</a> —— 同类第三方工具（官方在线版）</li><li><a href="/categories/data/">全部数据类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__TOOL__="mock-data";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

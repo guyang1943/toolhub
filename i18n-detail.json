@@ -2042,6 +2042,175 @@
         "fontSize": "Font size",
         "margin": "Margins"
       }
+    },
+    "ua-parse": {
+      "usage": "Paste a User-Agent string and get its browser, engine, OS and device broken out. Leave the box empty to parse your own browser. Anything the regex table cannot recognise is reported as unknown and echoed back verbatim - it never guesses a brand from a similar-looking token. The table carries a last-checked date because UA tokens go stale.",
+      "tips": [
+        "An empty input parses this browser's own UA; pasting someone else's UA does not read or overwrite yours",
+        "The regex table was last checked on 2026-11-06 - new browsers (Arc, Quark, WeChat XWEB/X5) change their UA tokens roughly every six months",
+        "Unrecognised fields stay \"unknown\" and the original string is shown; no guessing, no brand inference",
+        "Windows 10 and 11 both report NT 10.0, and iPadOS 13+ may report itself as macOS - UA alone cannot tell them apart",
+        "The whole string is matched in local memory only: no request, no upload, no local storage"
+      ],
+      "scenarios": [
+        {
+          "scene": "A support ticket says \"what browser is this\"",
+          "how": "Paste the UA from the log and parse it",
+          "result": "Four dimensions with versions, plus notes on the common disguises"
+        },
+        {
+          "scene": "Check your own browser",
+          "how": "Leave the input empty and click parse",
+          "result": "The current UA string and its breakdown"
+        },
+        {
+          "scene": "Validate a synthetic test UA",
+          "how": "Paste a custom UA string",
+          "result": "Recognised fields listed; anything else echoed back verbatim"
+        }
+      ],
+      "runLabel": "Parse",
+      "labels": {
+        "ua": "User-Agent (empty = this browser)"
+      }
+    },
+    "mock-data": {
+      "usage": "Pick a data type and a count to generate fake data for tests. Mobile numbers only use allocated Chinese prefixes; ID numbers carry a real GB 11643 (MOD 11-2) check digit and a real region code. Everything is random and clearly marked as test-only. Export as plain lines, CSV or JSON.",
+      "tips": [
+        "Results are labelled \"for testing only, not real numbers\": ID sequence codes favour the 000/999 ends to lower collision risk, but zero collisions are not guaranteed",
+        "Emails use example.com / .net / .org (RFC 2606 reserved domains) so a stray signup form cannot mail a real person",
+        "Mobile prefixes come from the allocated ranges checked on 2026-11-06 - empty ranges like 154 / 164 are excluded",
+        "The last ID digit follows GB 11643 MOD 11-2 and is verified again right after generation; you can cross-check it with the ID Validator tool",
+        "Only province/city/district names and codes are real; street names and house numbers are made up. Postcodes and coordinates are out of scope",
+        "Everything is generated in local memory: no request, no upload, no local storage"
+      ],
+      "scenarios": [
+        {
+          "scene": "Seed a signup form with test users",
+          "how": "Pick \"all fields\", count 20, format CSV",
+          "result": "20 rows with a header, ready to save as .csv for a script"
+        },
+        {
+          "scene": "Check a mobile-number regex",
+          "how": "Generate 50 mobile numbers",
+          "result": "All 11 digits with allocated prefixes, so a correct regex matches every one"
+        },
+        {
+          "scene": "Verify an ID check-digit implementation",
+          "how": "Generate ID numbers and paste them into the ID Validator tool",
+          "result": "Every check digit passes, which validates the algorithm under test"
+        }
+      ],
+      "runLabel": "Generate",
+      "labels": {
+        "kind": "Data type",
+        "count": "Count (1-100)",
+        "format": "Output format"
+      }
+    },
+    "json-yaml": {
+      "usage": "Convert JSON to YAML or YAML to JSON, with an automatic direction. Uses js-yaml 4.1.0 (MIT) with an explicit DEFAULT_SCHEMA. Anchors, multiple documents and custom !! tags produce Chinese explanations instead of raw parser exceptions.",
+      "tips": [
+        "Multi-document YAML (--- separated) is one document at a time: the tool tells you to split it instead of silently dropping the rest",
+        "Anchors &a / aliases *a are expanded into real data, so the same content may appear twice in the JSON result - a notice is shown",
+        "Custom tags like !!str are not understood by DEFAULT_SCHEMA; the error tells you to remove the tag or use a plain scalar",
+        "Object key order is preserved; YAML comments are lost in conversion because JSON has nowhere to put them",
+        "YAML dates such as 2026-01-01 become strings in JSON, not Date objects",
+        "The library is only loaded when you click convert (~39 KB / 13 KB gzip) and never forms part of the first screen"
+      ],
+      "scenarios": [
+        {
+          "scene": "Rewrite a Kubernetes or CI config",
+          "how": "Paste JSON, pick JSON -> YAML",
+          "result": "Cleanly indented YAML, ready to save as .yaml"
+        },
+        {
+          "scene": "Read someone else's YAML config",
+          "how": "Paste YAML, pick YAML -> JSON",
+          "result": "Formatted JSON you can diff or drop into code"
+        },
+        {
+          "scene": "A YAML error you cannot decode",
+          "how": "Paste the original and convert",
+          "result": "Line and column plus the offending line, instead of a single English sentence"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "text": "JSON or YAML source",
+        "direction": "Direction",
+        "indent": "Indent spaces"
+      }
+    },
+    "ascii-art": {
+      "usage": "Turn English letters and digits into ASCII art with three figlet fonts (Standard / Slant / Small). Long text wraps at the chosen render width and only breaks at spaces, so words are never split. Non-ASCII input (Chinese, emoji) is rejected with a clear message instead of producing boxes.",
+      "tips": [
+        "Long text wraps at the render width and only at spaces (whitespaceBreak), so words stay intact",
+        "Width counts rendered characters, not input characters: the same word is narrower in Small than in Standard",
+        "Only English / digits / ASCII punctuation are supported; Chinese and emoji are reported, not rendered as squares",
+        "All three fonts measure 58.5 KB raw / 9.8 KB gzip, far below the 200 KB per-tool ceiling, so none were cut",
+        "The engine and font data load only when you click generate and never form part of the first screen"
+      ],
+      "scenarios": [
+        {
+          "scene": "Add a big title to a README",
+          "how": "Type the project name, pick Standard, width 80",
+          "result": "Monospaced banner text to paste into a Markdown code block"
+        },
+        {
+          "scene": "A terminal startup banner",
+          "how": "Pick Small and set width to the terminal columns",
+          "result": "Compact art that does not wrap into a mess on a narrow screen"
+        },
+        {
+          "scene": "Lay out a long slogan",
+          "how": "Type a whole sentence, set width 60",
+          "result": "Several lines split at spaces, each line made of whole words"
+        }
+      ],
+      "runLabel": "Generate",
+      "labels": {
+        "text": "English / digits (no Chinese)",
+        "font": "Font",
+        "width": "Wrap width (20-200 chars)",
+        "layout": "Character spacing"
+      }
+    },
+    "pinyin-convert": {
+      "usage": "Convert Chinese characters to pinyin: full syllables or initials, with configurable case and separator. English words and digits are kept verbatim. The bundled dictionary gives syllables only - it does not carry tone marks and never guesses a tone. Polyphonic characters use their common reading (Chongqing becomes \"zhong qing\"), and this policy is stated on the page and in the result.",
+      "tips": [
+        "No tone marks: the data source only has syllables; the same syllable can have four tones, so guessing a default tone would produce random-looking results",
+        "Polyphones use the common reading: \"Chongqing\" becomes zhong qing; fix place names and personal names by hand",
+        "English words and digits stay intact as a block instead of being split into H e l l o; separators only go between adjacent Hanzi",
+        "Initials + no separator gives the usual abbreviation, e.g. the People's Republic of China -> zhrmghg",
+        "The pinyin bundle is built from the in-repo tiny-pinyin dictionary (~15 KB) and only loads when you click convert",
+        "Text is converted in local memory only: no request, no upload, no local storage"
+      ],
+      "scenarios": [
+        {
+          "scene": "Build a username from a Chinese name",
+          "how": "Full pinyin, no separator, lowercase",
+          "result": "A continuous syllable string ready to append to an account name"
+        },
+        {
+          "scene": "Build an initial-based search index",
+          "how": "Initials, no separator",
+          "result": "An abbreviation like zhrmghg, good as a grouping key"
+        },
+        {
+          "scene": "Annotate mixed Chinese/English text",
+          "how": "Keep non-Hanzi, space separator",
+          "result": "Hanzi become pinyin while English words and digits stay in place"
+        }
+      ],
+      "runLabel": "Convert",
+      "labels": {
+        "text": "Chinese text",
+        "mode": "Output mode",
+        "caseMode": "Case",
+        "sep": "Separator between Hanzi",
+        "keepOther": "Non-Hanzi (letters / digits / punctuation)"
+      }
     }
   }
 }

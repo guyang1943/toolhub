@@ -112,7 +112,12 @@ export function buildSw({ quiet = false } = {}) {
 
   // 完整离线包：全部本地工具页 + 执行文件 + 它们用到的第三方库
   // 不含 Pyodide 运行时（核心 13MB / pandas 36MB）：那属于「按需下载」，不能算进安装包
-  const VENDOR = ['jsQR.js', 'marked.min.js', 'pdf-lib.min.js', 'purify.min.js', 'qrcode.min.js', 'pyodide-loader.js'];
+  // TP7（v3.30）：JSON⇄YAML / ASCII 艺术字 / 汉字转拼音 三个工具用到的按需库。
+  // 它们都由工具页动态 <script> 注入，漏进包的症状不是白屏而是「断网点运行没反应」。
+  const VENDOR = [
+    'jsQR.js', 'marked.min.js', 'pdf-lib.min.js', 'purify.min.js', 'qrcode.min.js', 'pyodide-loader.js',
+    'js-yaml.min.js', 'figlet.min.js', 'figlet-fonts.js', 'pinyin.min.js',
+  ];
   const full = new Set(CORE_ALL);
   for (const t of tools) {
     full.add(`/tools/${t.id}/`);

@@ -397,6 +397,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://toolhub.bot.cd/tools/ua-parse/</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.bot.cd/tools/mock-data/</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.bot.cd/tools/json-yaml/</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.bot.cd/tools/ascii-art/</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://toolhub.bot.cd/tools/pinyin-convert/</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://toolhub.bot.cd/tools/excalidraw/</loc>
     <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>

@@ -61,6 +61,11 @@ const paths = [
   '/assets/vendor/pyodide/pyodide.asm.js',
   '/assets/vendor/jsQR.js',
   '/assets/vendor/pdf-lib.min.js',
+  // TP7：三个按需库 + 拼音自建包，漏传的表现是「工具页 200，但点运行没反应」
+  '/assets/vendor/js-yaml.min.js',
+  '/assets/vendor/figlet.min.js',
+  '/assets/vendor/figlet-fonts.js',
+  '/assets/vendor/pinyin.min.js',
 ];
 
 let ok = 0;

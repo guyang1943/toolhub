@@ -120,7 +120,10 @@ function run(s) {
   const r = spawnSync(process.execPath, [join(root, 'scripts', s.script), ...(s.args || [])], {
     cwd: root,
     encoding: 'utf8',
-    timeout: 600000,
+    // TP7 之后真浏览器套件要跑满 200+ 个用例（新增 5 个工具页逐个 goto + 填值 + 点运行），
+    // 连对本地服务器时实测超过 600s；原来的 10 分钟上限会把还在跑的进程 SIGTERM 掉，
+    // 表现成「退出码 null」而不是任何一条用例失败。留 20 分钟，别让调度器冒充回归。
+    timeout: 1200000,
     env: { ...process.env, MSYS_NO_PATHCONV: '1' },
   });
   const out = `${r.stdout || ''}\n${r.stderr || ''}`;
@@ -157,6 +160,20 @@ async function waitServer(timeoutMs = 20000) {
 
 let server = null;
 if (needServer) {
+  // 端口被别的副本占着时，spawn 出来的 serve.mjs 会 EADDRINUSE 直接退出，
+  // 而 waitServer() 探到的却是「别人那台服务器」的 200 —— 于是整套测试安静地连去
+  // 别人的旧站点，跑十几分钟才在计数文案与 404 上报红。v3.30 四条并行线各起各的
+  // serve，这个坑踩过一次（19 分钟）。起服务之前先确认端口是空的。
+  const occupied = await fetch(`${LOCAL}/`, { signal: AbortSignal.timeout(1500) })
+    .then((r) => r.ok)
+    .catch(() => false);
+  if (occupied) {
+    console.error(
+      `❌ ${LOCAL} 已经有服务在监听（多半是另一条并行线的 serve）。\n` +
+        '   换一个空闲端口再跑：PORT=<空闲端口> npm run check'
+    );
+    process.exit(2);
+  }
   server = spawn(process.execPath, [join(root, 'scripts', 'serve.mjs'), String(PORT)], { cwd: root, stdio: 'ignore' });
   if (!(await waitServer())) {
     console.error(`❌ 本地服务器没起来（${LOCAL}），先单独跑 node scripts/serve.mjs ${PORT} 看看`);

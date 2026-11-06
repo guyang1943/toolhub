@@ -7,6 +7,41 @@
     <language>zh-CN</language>
     <atom:link href="https://toolhub.bot.cd/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>汉字转拼音</title>
+      <link>https://toolhub.bot.cd/tools/pinyin-convert/</link>
+      <guid>https://toolhub.bot.cd/tools/pinyin-convert/</guid>
+      <description>汉字转全拼或首字母，注明多音字与声调口径</description>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>ASCII 艺术字</title>
+      <link>https://toolhub.bot.cd/tools/ascii-art/</link>
+      <guid>https://toolhub.bot.cd/tools/ascii-art/</guid>
+      <description>英文转 ASCII 艺术字，三种字体、长文本自动折行</description>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>JSON ⇄ YAML</title>
+      <link>https://toolhub.bot.cd/tools/json-yaml/</link>
+      <guid>https://toolhub.bot.cd/tools/json-yaml/</guid>
+      <description>JSON 与 YAML 互转，锚点与多文档给人话提示</description>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>测试假数据</title>
+      <link>https://toolhub.bot.cd/tools/mock-data/</link>
+      <guid>https://toolhub.bot.cd/tools/mock-data/</guid>
+      <description>造姓名、手机号、邮箱、地址与带校验位的身份证号</description>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>UA 解析</title>
+      <link>https://toolhub.bot.cd/tools/ua-parse/</link>
+      <guid>https://toolhub.bot.cd/tools/ua-parse/</guid>
+      <description>把 User-Agent 拆成浏览器、内核、系统与设备</description>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>文本转 PDF</title>
       <link>https://toolhub.bot.cd/tools/text-to-pdf/</link>
       <guid>https://toolhub.bot.cd/tools/text-to-pdf/</guid>
@@ -53,41 +88,6 @@
       <link>https://toolhub.bot.cd/tools/media-info/</link>
       <guid>https://toolhub.bot.cd/tools/media-info/</guid>
       <description>本地读取音视频时长分辨率与体积，不上传</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>CSS 阴影生成器</title>
-      <link>https://toolhub.bot.cd/tools/shadow-gen/</link>
-      <guid>https://toolhub.bot.cd/tools/shadow-gen/</guid>
-      <description>可视化调 box-shadow 与 text-shadow</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>CSS 渐变生成器</title>
-      <link>https://toolhub.bot.cd/tools/gradient-gen/</link>
-      <guid>https://toolhub.bot.cd/tools/gradient-gen/</guid>
-      <description>可视化调 CSS 渐变，复制即用的 background</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>图片取色</title>
-      <link>https://toolhub.bot.cd/tools/palette-extract/</link>
-      <guid>https://toolhub.bot.cd/tools/palette-extract/</guid>
-      <description>从图片提取主色板，输出 HEX 与 RGB</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>图片信息</title>
-      <link>https://toolhub.bot.cd/tools/image-info/</link>
-      <guid>https://toolhub.bot.cd/tools/image-info/</guid>
-      <description>查看图片尺寸格式体积与 EXIF 关键字段</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>图片圆角</title>
-      <link>https://toolhub.bot.cd/tools/image-round/</link>
-      <guid>https://toolhub.bot.cd/tools/image-round/</guid>
-      <description>图片一键变圆角或圆形，可加描边</description>
       <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>

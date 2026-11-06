@@ -1372,6 +1372,18 @@ checkAsync('意图解析规则（E4）', async () => {
   return `${cases.length} 条用例 + 参数合法性`;
 });
 
+// TP7：拼音包是构建产物，数据源在 scripts/vendor/tiny-pinyin/dist。
+// 改了字典却忘了重打包，页面上不会报错，只会静默沿用旧字音——这种漂移只有断言抓得住。
+checkAsync('拼音包与数据源同步（TP7）', async () => {
+  const { buildPinyinBundle } = await import(pathToFileURL(join(root, 'scripts', 'build-pinyin-bundle.mjs')).href);
+  const want = buildPinyinBundle();
+  const p = join(root, 'assets', 'vendor', 'pinyin.min.js');
+  assert(existsSync(p), '缺 assets/vendor/pinyin.min.js，请跑 node scripts/build-pinyin-bundle.mjs');
+  const got = readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+  assert(got === want, 'pinyin.min.js 与 dist 数据源不一致，请跑 node scripts/build-pinyin-bundle.mjs');
+  return `${(Buffer.byteLength(want) / 1024).toFixed(1)} KB，与数据源逐字一致`;
+});
+
 // ---------- 异步检查 ----------
 for (const p of pending) {
   try {

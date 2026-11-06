@@ -1,0 +1,11 @@
+{
+  "id": "pinyin-convert",
+  "name": "汉字转拼音",
+  "desc": "汉字转全拼或首字母，注明多音字与声调口径",
+  "category": "文本",
+  "source": "tiny-pinyin 1.3.2（MIT，自建按需包）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": ["拼音", "首字母", "汉字", "注音"],
+  "aliases": ["pinyin", "拼音", "hanzizhuanpinyin", "首字母", "zhuyin", "汉字拼音"]
+}

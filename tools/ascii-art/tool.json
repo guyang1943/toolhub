@@ -1,0 +1,11 @@
+{
+  "id": "ascii-art",
+  "name": "ASCII 艺术字",
+  "desc": "英文转 ASCII 艺术字，三种字体、长文本自动折行",
+  "category": "文本",
+  "source": "figlet 1.12.0（MIT，按需加载）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": ["ASCII", "艺术字", "figlet", "标题"],
+  "aliases": ["ascii", "figlet", "艺术字", "字符画", "zifuhua", "ascii art", "banner"]
+}

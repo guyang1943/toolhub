@@ -53,6 +53,11 @@ const PATHS = [
   '/guides/pwa-install/', '/guides/wechat-miniprogram-first/',
   // 教程页与 SPA 共用的正文渲染模块——它一坏，五篇的代码示例同时出问题。
   '/assets/lib/guide-text.js',
+  // TP7：5 个新工具页逐个探（页面 200 不代表工具能用），外加它们按需注入的四个 vendor 文件。
+  // 这四个漏传时页面照常 200，只有点「运行」才会发现库 404，所以必须主动探。
+  '/tools/ua-parse/', '/tools/mock-data/', '/tools/json-yaml/', '/tools/ascii-art/', '/tools/pinyin-convert/',
+  '/assets/vendor/js-yaml.min.js', '/assets/vendor/figlet.min.js', '/assets/vendor/figlet-fonts.js',
+  '/assets/vendor/pinyin.min.js',
 ];
 
 async function get(path, tries = 3) {

@@ -651,6 +651,26 @@
       "text-to-pdf": {
         "name": "Text to PDF",
         "desc": "Typeset plain text into a PDF, generated entirely on your device."
+      },
+      "ua-parse": {
+        "name": "User-Agent Parser",
+        "desc": "Break a User-Agent into browser, engine, OS and device."
+      },
+      "mock-data": {
+        "name": "Test Data Generator",
+        "desc": "Generate names, mobiles, emails, addresses and valid ID numbers."
+      },
+      "json-yaml": {
+        "name": "JSON to YAML",
+        "desc": "Convert between JSON and YAML with human-readable errors for anchors and multi-doc input."
+      },
+      "ascii-art": {
+        "name": "ASCII Art Text",
+        "desc": "Turn English text into ASCII art with three fonts and automatic word-safe wrapping."
+      },
+      "pinyin-convert": {
+        "name": "Hanzi to Pinyin",
+        "desc": "Convert Chinese to full pinyin or initials, with an explicit tone and polyphone policy."
       }
     },
     "res": {

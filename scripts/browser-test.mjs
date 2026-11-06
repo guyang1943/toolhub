@@ -2383,7 +2383,12 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     const missing = [];
     for (const id of BATCH2) {
       await goto(`/tools/${id}/`);
-      const ok = await evaluate(`(() => {
+      // 工具表单是懒渲染的：goto() 只等 #main-content 有 20 个元素，并不等表单画完。
+      // 以前这里 goto 完直接查 #tool-form，机器忙的时候会撞上竞态，报出「某两个页面没表单」
+      // 的假红（v3.29 并发跑、TP7 单跑都遇到过）。用轮询等，不要用固定 sleep：
+      // 真渲染不出来时 waitEl 会等满 15s 后照样判红，不会掩盖回归。
+      const ready = await waitEl('#tool-form', 15000);
+      const ok = ready && await evaluate(`(() => {
         const f = document.getElementById('tool-form');
         const btn = document.getElementById('run-btn');
         return !!f && !!btn && f.querySelectorAll('input,textarea,select').length > 0;
@@ -2538,6 +2543,65 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
 
     await shot('21-batch2');
   }
+
+  // ---- TP7：5 个新工具逐个真打开、真点运行 ----
+  // goto() 直达对「用户能不能走到这个页面」一无所知，所以先探全部工具页的入口，
+  // 再逐个填值点运行。vendor 工具必须真的把按需库加载起来才算过：只探页面 200 会漏掉
+  // 「页面在、点运行没反应」这类故障。
+  const TP7_IDS = ['ua-parse', 'mock-data', 'json-yaml', 'ascii-art', 'pinyin-convert'];
+  await goto('/tools/');
+  const tp7Links = await evaluate(`(() => {
+    const ids = ${JSON.stringify(TP7_IDS)};
+    return ids.filter((id) => !!document.querySelector('a[href="/tools/' + id + '/"]')).length;
+  })()`);
+  check('TP7 五个工具在「全部工具」页都有入口', tp7Links === TP7_IDS.length, `${tp7Links}/${TP7_IDS.length}`);
+
+  // 1) UA 解析：贴一段含 Chrome 的 UA，再留空解析本机 UA
+  await goto('/tools/ua-parse/');
+  check('TP7 ua-parse 表单渲染', await waitEl('#tool-form', 15000), '');
+  await fill({ 'f-ua': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' });
+  await clickRun();
+  const uaChrome = await waitText('#tool-result', 'Chrome 120.0.0.0', 15000);
+  check('TP7 ua-parse 拆出 Chrome 与版本', uaChrome, '');
+  await fill({ 'f-ua': '' });
+  await clickRun();
+  const uaLocal = await waitText('#tool-result', 'UA 原文', 15000);
+  check('TP7 ua-parse 留空解析本机 UA', uaLocal, '');
+
+  // 2) 假数据：必须有醒目提示，手机号得是 11 位且号段合法
+  await goto('/tools/mock-data/');
+  await fill({ 'f-kind': 'mobile', 'f-count': '5', 'f-format': 'lines' });
+  await clickRun();
+  const mockWarn = await waitText('#tool-result', '仅供测试，非真实号码', 15000);
+  const mockText = String(await evaluate(`document.getElementById('tool-result').textContent`));
+  check('TP7 mock-data 结果区有测试号码警示', mockWarn, '');
+  check('TP7 mock-data 生成现行号段手机号', /1[3-9]\d{9}/.test(mockText), (mockText.match(/1[3-9]\d{9}/) || [''])[0]);
+
+  // 3) JSON ⇄ YAML：vendor js-yaml 按需注入并真的产出 YAML
+  await goto('/tools/json-yaml/');
+  await fill({ 'f-text': '{"name":"demo","items":[1,2]}', 'f-direction': 'auto', 'f-indent': '2' });
+  await clickRun();
+  const yamlOk = await waitText('#tool-result', 'name: demo', 20000);
+  check('TP7 json-yaml 按需加载 js-yaml 并转出 YAML', yamlOk, '');
+
+  // 4) ASCII 艺术字：figlet + 字体数据都按需加载，结果里得有真正的字符画
+  await goto('/tools/ascii-art/');
+  await fill({ 'f-text': 'Hello', 'f-font': 'standard', 'f-width': '80', 'f-layout': 'default' });
+  await clickRun();
+  const artOk = await waitText('#tool-result', 'Standard（标准）', 20000);
+  const artPre = String(await evaluate(`(() => { const p = document.querySelector('#tool-result pre'); return p ? p.textContent : ''; })()`));
+  check('TP7 ascii-art 按需加载 figlet 并生成字符画', artOk && artPre.trim().length > 20, `${artPre.split('\n').length} 行`);
+
+  // 5) 汉字转拼音：自建包按需加载，结果带口径说明
+  await goto('/tools/pinyin-convert/');
+  await fill({ 'f-text': '中华人民共和国', 'f-mode': 'full', 'f-caseMode': 'lower', 'f-sep': 'space', 'f-keepOther': 'keep' });
+  await clickRun();
+  const pyOk = await waitText('#tool-result', 'zhong hua ren min gong he guo', 20000);
+  check('TP7 pinyin-convert 按需加载拼音包并转出全拼', pyOk, '');
+  const pyBoundary = await waitText('#tool-result', '不带声调', 15000);
+  check('TP7 pinyin-convert 页面写明声调与多音字口径', pyBoundary, '');
+
+  await shot('22-tp7');
 
   // ---- 汇总 ----
   const bad = results.filter((r) => !r.ok);

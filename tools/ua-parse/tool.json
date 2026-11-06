@@ -1,0 +1,11 @@
+{
+  "id": "ua-parse",
+  "name": "UA 解析",
+  "desc": "把 User-Agent 拆成浏览器、内核、系统与设备",
+  "category": "开发",
+  "source": "内置实现（正则表，最后核对 2026-11-06）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": ["UA", "浏览器", "内核", "设备识别"],
+  "aliases": ["ua", "user agent", "useragent", "ua jiexi", "浏览器识别", "设备识别", "yonghudaili"]
+}
