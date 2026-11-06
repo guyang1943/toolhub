@@ -11,84 +11,84 @@
       <link>https://toolhub.bot.cd/tools/text-to-pdf/</link>
       <guid>https://toolhub.bot.cd/tools/text-to-pdf/</guid>
       <description>纯文本排成 PDF，内置字体不嵌字，字节全在本机生成</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>AA 分摊</title>
       <link>https://toolhub.bot.cd/tools/expense-aa/</link>
       <guid>https://toolhub.bot.cd/tools/expense-aa/</guid>
       <description>聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>JSON 语义对比</title>
       <link>https://toolhub.bot.cd/tools/json-diff/</link>
       <guid>https://toolhub.bot.cd/tools/json-diff/</guid>
       <description>按路径比两个 JSON 的增删改，不是比文本行</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>BMI 计算器</title>
       <link>https://toolhub.bot.cd/tools/bmi-calc/</link>
       <guid>https://toolhub.bot.cd/tools/bmi-calc/</guid>
       <description>身高体重算 BMI，按中国标准判区间</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>日期计算器</title>
       <link>https://toolhub.bot.cd/tools/date-calc/</link>
       <guid>https://toolhub.bot.cd/tools/date-calc/</guid>
       <description>算日期间隔天数，或加减天数与工作日</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>条形码生成器</title>
       <link>https://toolhub.bot.cd/tools/barcode-gen/</link>
       <guid>https://toolhub.bot.cd/tools/barcode-gen/</guid>
       <description>生成 Code128 与 EAN-13 条形码并下载 PNG</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>音视频信息</title>
       <link>https://toolhub.bot.cd/tools/media-info/</link>
       <guid>https://toolhub.bot.cd/tools/media-info/</guid>
       <description>本地读取音视频时长分辨率与体积，不上传</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>CSS 阴影生成器</title>
       <link>https://toolhub.bot.cd/tools/shadow-gen/</link>
       <guid>https://toolhub.bot.cd/tools/shadow-gen/</guid>
       <description>可视化调 box-shadow 与 text-shadow</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>CSS 渐变生成器</title>
       <link>https://toolhub.bot.cd/tools/gradient-gen/</link>
       <guid>https://toolhub.bot.cd/tools/gradient-gen/</guid>
       <description>可视化调 CSS 渐变，复制即用的 background</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>图片取色</title>
       <link>https://toolhub.bot.cd/tools/palette-extract/</link>
       <guid>https://toolhub.bot.cd/tools/palette-extract/</guid>
       <description>从图片提取主色板，输出 HEX 与 RGB</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>图片信息</title>
       <link>https://toolhub.bot.cd/tools/image-info/</link>
       <guid>https://toolhub.bot.cd/tools/image-info/</guid>
       <description>查看图片尺寸格式体积与 EXIF 关键字段</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>图片圆角</title>
       <link>https://toolhub.bot.cd/tools/image-round/</link>
       <guid>https://toolhub.bot.cd/tools/image-round/</guid>
       <description>图片一键变圆角或圆形，可加描边</description>
-      <pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>
 </rss>
