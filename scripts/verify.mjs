@@ -1427,6 +1427,28 @@ check('README 头部数字与数据一致（v3.22.1）', () => {
   return `${totalN} 收录 / ${localN} 本地，三处一致`;
 });
 
+// ---------- v3.29.1：页脚合集数由数据推导 ----------
+// 页脚那句「全部 N 个合集 →」一直写死在 index.html（构建把它当模板读），第 8 个合集进来后
+// 全站 200 个页面的页脚都停在 6。这类数字最难受的地方是：它出现在每一页，却没有任何人核对，
+// 而「全部 6 个合集」下面正好列着 8 个。现在构建按 resources.collections.length 归一，
+// 这里反过来验产物——只验首页不够，模板一歪，歪的是 200 页。
+check('页脚合集数与资源数据一致（v3.29.1）', () => {
+  const n = res.collections.length;
+  const probe = ['index.html', 'about/index.html', 'categories/index.html', 'resources/index.html', 'tools/index.html'];
+  const bad = [];
+  for (const p of probe) {
+    const f = join(root, p);
+    if (!existsSync(f)) continue;
+    const h = readFileSync(f, 'utf8');
+    const zh = h.match(/全部 (\d+) 个合集/);
+    const en = h.match(/All (\d+) collections/);
+    if (!zh || Number(zh[1]) !== n) bad.push(`${p} 写「全部 ${zh ? zh[1] : '?'} 个合集」`);
+    if (en && Number(en[1]) !== n) bad.push(`${p} 写「All ${en[1]} collections」`);
+  }
+  assert(!bad.length, `合集数写成死数（数据是 ${n} 个）：${bad.slice(0, 4).join('；')}`);
+  return `${n} 个合集，${probe.length} 个页面一致（中英双语）`;
+});
+
 // ---------- v3.24：llms.txt 不能漂 ----------
 // llms.txt 是给 AI 抓取的「一页说清」，它和站点数据是两份东西——不做闸门就一定会漂：
 // 加了一条工具、忘了重建，链接里少一条，而页面上完全看不出来（AI 拿到的就是缺的）。
