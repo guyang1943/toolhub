@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-11-04",
+  "updated": "2026-11-06",
   "policy": "本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。",
   "groups": [
     {
@@ -753,6 +753,91 @@
           "tags": [
             "开源",
             "替代"
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "dev-clients",
+      "title": "本地优先的开发者客户端",
+      "icon": "🧰",
+      "group": "dev",
+      "desc": "接口调试与数据库客户端：装在本地或自己部署，数据不出你的机器",
+      "intro": "接口调试和数据库这两件事，过去十年基本被几个云端 SaaS 占着——接口集合存在别人的服务器上，登录才能用。这几年风向变了：一批开源客户端把数据拉回本地，接口定义变成能用 git 管理的纯文本，数据库连接直连你自己的库。这里收的六个都属于这一类：Bruno、Hoppscotch、Yaak 管接口，drawDB 画表结构，DbGate 与 DBeaver 连库。共同点是开源、可离线、不用注册账号；差别在于你更看重「团队协作走 git」「打开网页就能用」还是「一个客户端连遍所有库」。",
+      "choices": [
+        "接口集合要跟代码一起进 git、走评审：用 Bruno",
+        "只是临时发个请求、不想装客户端：用 Hoppscotch 网页版",
+        "先理清表结构和外键关系再动手建库：用 drawDB",
+        "本机装着 MySQL / PostgreSQL / SQLite 好几个库：用 DbGate",
+        "要一个客户端连遍所有库（含 Oracle、各类国产库）：用 DBeaver",
+        "想要比 Bruno 更轻、同样能 git 同步的 API 客户端：用 Yaak"
+      ],
+      "relatedTools": [
+        "json-diff",
+        "devdocs"
+      ],
+      "items": [
+        {
+          "name": "Bruno",
+          "url": "https://www.usebruno.com/",
+          "source": "GitHub · usebruno/bruno",
+          "license": "MIT",
+          "tags": [
+            "API 调试",
+            "git 管理"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Hoppscotch",
+          "url": "https://hoppscotch.io/",
+          "source": "GitHub · hoppscotch/hoppscotch",
+          "license": "MIT",
+          "tags": [
+            "API 调试",
+            "网页版"
+          ]
+        },
+        {
+          "name": "drawDB",
+          "url": "https://www.drawdb.app/",
+          "source": "GitHub · drawdb-io/drawdb",
+          "license": "AGPL-3.0",
+          "tags": [
+            "数据库设计",
+            "ER 图"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "DbGate",
+          "url": "https://dbgate.org/",
+          "source": "GitHub · dbgate/dbgate",
+          "license": "GPL-3.0",
+          "tags": [
+            "数据库客户端",
+            "跨平台"
+          ]
+        },
+        {
+          "name": "DBeaver",
+          "url": "https://dbeaver.io/",
+          "source": "GitHub · dbeaver/dbeaver",
+          "license": "Apache-2.0",
+          "tags": [
+            "数据库客户端",
+            "JDBC"
+          ],
+          "recommended": true
+        },
+        {
+          "name": "Yaak",
+          "url": "https://yaak.app/",
+          "source": "GitHub · mountain-loop/yaak",
+          "license": "MIT",
+          "tags": [
+            "API 调试",
+            "轻量"
           ]
         }
       ]

@@ -677,6 +677,10 @@
       "templates": {
         "title": "Templates & design assets",
         "desc": "Slides, posters, résumés and flowcharts — note that licensing here is the messiest"
+      },
+      "dev-clients": {
+        "title": "Local-first developer clients",
+        "desc": "API and database clients that run on your machine or self-host, so the data stays with you"
       }
     }
   }

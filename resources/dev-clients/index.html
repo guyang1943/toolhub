@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>本地优先的开发者客户端 · 资源库 · ToolHub</title>
+  <meta name="description" content="接口调试与数据库客户端：装在本地或自己部署，数据不出你的机器" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/resources/dev-clients/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/resources/dev-clients/" />
+  <meta property="og:title" content="本地优先的开发者客户端 · 资源库 · ToolHub" />
+  <meta property="og:description" content="接口调试与数据库客户端：装在本地或自己部署，数据不出你的机器" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 135 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"本地优先的开发者客户端","description":"接口调试与数据库客户端：装在本地或自己部署，数据不出你的机器","url":"https://toolhub.bot.cd/resources/dev-clients/","numberOfItems":6,"itemListElement":[{"@type":"ListItem","position":1,"name":"Bruno","url":"https://www.usebruno.com/"},{"@type":"ListItem","position":2,"name":"Hoppscotch","url":"https://hoppscotch.io/"},{"@type":"ListItem","position":3,"name":"drawDB","url":"https://www.drawdb.app/"},{"@type":"ListItem","position":4,"name":"DbGate","url":"https://dbgate.org/"},{"@type":"ListItem","position":5,"name":"DBeaver","url":"https://dbeaver.io/"},{"@type":"ListItem","position":6,"name":"Yaak","url":"https://yaak.app/"}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>本地优先的开发者客户端</h1><p>接口调试与数据库客户端：装在本地或自己部署，数据不出你的机器</p><h2>合集导语</h2><p>接口调试和数据库这两件事，过去十年基本被几个云端 SaaS 占着——接口集合存在别人的服务器上，登录才能用。这几年风向变了：一批开源客户端把数据拉回本地，接口定义变成能用 git 管理的纯文本，数据库连接直连你自己的库。这里收的六个都属于这一类：Bruno、Hoppscotch、Yaak 管接口，drawDB 画表结构，DbGate 与 DBeaver 连库。共同点是开源、可离线、不用注册账号；差别在于你更看重「团队协作走 git」「打开网页就能用」还是「一个客户端连遍所有库」。</p><h2>怎么选</h2><ul><li>接口集合要跟代码一起进 git、走评审：用 Bruno</li><li>只是临时发个请求、不想装客户端：用 Hoppscotch 网页版</li><li>先理清表结构和外键关系再动手建库：用 drawDB</li><li>本机装着 MySQL / PostgreSQL / SQLite 好几个库：用 DbGate</li><li>要一个客户端连遍所有库（含 Oracle、各类国产库）：用 DBeaver</li><li>想要比 Bruno 更轻、同样能 git 同步的 API 客户端：用 Yaak</li></ul><h2>全部来源</h2><h3>Bruno</h3><p>Postman 的替代品，但把接口集合存成本地文件夹里的纯文本（.bru 文件），能直接 git 管理、diff、走评审——接口定义终于和代码在同一个流程里。官方明说数据不出本机、无账号、无云同步。代价是团队共享靠 git 而不是云端协作，对不熟 git 的产品同学不算友好。</p><p>授权：MIT · 来源：GitHub · usebruno/bruno · <a href="https://www.usebruno.com/" target="_blank" rel="noopener">访问 ↗</a></p><h3>Hoppscotch</h3><p>打开网页就能发请求，REST / GraphQL / WebSocket / SSE 都支持，还能装成 PWA 离线用。适合「临时验一个接口、不想为此装客户端」的场景。但网页版把请求历史存在哪里，官方文档没写死；碰敏感内网接口建议自己部署实例，别用公共站点。</p><p>授权：MIT · 来源：GitHub · hoppscotch/hoppscotch · <a href="https://hoppscotch.io/" target="_blank" rel="noopener">访问 ↗</a></p><h3>drawDB</h3><p>浏览器里画 ER 图，建表、加字段、拉关系，画完直接导出 MySQL / PostgreSQL / SQLite 的建表语句，不用注册。官方 FAQ 写明数据存在浏览器本地（IndexedDB），换机器或清缓存就没了——重要模型记得导出 SQL 或 JSON 备份。</p><p>授权：AGPL-3.0 · 来源：GitHub · drawdb-io/drawdb · <a href="https://www.drawdb.app/" target="_blank" rel="noopener">访问 ↗</a></p><h3>DbGate</h3><p>一个客户端连 MySQL、PostgreSQL、SQLite、SQL Server、MongoDB，带数据表格编辑和 SQL 编辑器，社区版开源。适合「本机装着好几个库、不想为每个库装一个 GUI」的人。注意 GPL-3.0 是社区版授权，想把它的代码集成进闭源产品需要另谈商业授权。</p><p>授权：GPL-3.0 · 来源：GitHub · dbgate/dbgate · <a href="https://dbgate.org/" target="_blank" rel="noopener">访问 ↗</a></p><h3>DBeaver</h3><p>通用数据库客户端，靠 JDBC 驱动连 MySQL、PostgreSQL、Oracle、SQL Server 乃至各类国产库，社区版 Apache-2.0 免费。启动慢、界面重，但 SQL 编辑器、数据导出、ER 图、跨库对比都有，属于「装一个顶十个」的兜底选择。连接配置存在本机，没有云端同步；它自带使用统计开关，默认值与上报范围官方文档没查到明确说明（未核实），连生产库前建议先翻一遍偏好设置。</p><p>授权：Apache-2.0 · 来源：GitHub · dbeaver/dbeaver · <a href="https://dbeaver.io/" target="_blank" rel="noopener">访问 ↗</a></p><h3>Yaak</h3><p>新一代 API 客户端，Rust + Tauri 写的，安装包比 Electron 系小一圈。MIT 授权、开源、不用注册账号。官方文档把「Git 同步工作区」列为协作方式，也就是接口集合按文件管、能进仓库走评审；具体落盘位置以官方文档为准（未逐条核实）。生态比 Bruno 年轻，插件还在长，适合想要轻量离线 REST / GraphQL 客户端的人。</p><p>授权：MIT · 来源：GitHub · mountain-loop/yaak · <a href="https://yaak.app/" target="_blank" rel="noopener">访问 ↗</a></p><p>本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。</p><p><a href="/resources/">← 返回资源库</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="hero">
+        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
+        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
+        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="65 个在本机跑 · 135 个已收录 · 64 条资源 · 无需注册" data-en="65 run in your browser · 135 listed · 64 resources · no sign-up">65 个在本机跑 · 135 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+        <div class="featured-list" id="featured-grid"></div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__RES__="dev-clients";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
