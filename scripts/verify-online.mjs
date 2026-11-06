@@ -51,6 +51,9 @@ const PATHS = [
   // v3.29 第三批四篇（muse 草稿）：抽一篇带围栏代码块的（pwa-install，围栏前后少一个空行
   // 就会把 ``` 原样吐到页面上）和一篇 risk=mid 的（小程序注册，规定不渲染风险块）。
   '/guides/pwa-install/', '/guides/wechat-miniprogram-first/',
+  // muse-guides-batch-4 第四批三篇：Actions 工作流 / AI 提示词 / AI 批量处理，都是 risk=low。
+  // 三篇全探，不只抽样：这一批的正文里有整段 YAML 和提示词模板，渲染坏了是「少一段」而不是 404。
+  '/guides/github-actions-deploy/', '/guides/ai-prompts-resume/', '/guides/ai-batch-media/',
   // 教程页与 SPA 共用的正文渲染模块——它一坏，五篇的代码示例同时出问题。
   '/assets/lib/guide-text.js',
 ];
