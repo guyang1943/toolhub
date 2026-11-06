@@ -1945,6 +1945,103 @@
         "height": "Height (cm)",
         "weight": "Weight (kg)"
       }
+    },
+    "json-diff": {
+      "usage": "Paste the old JSON on the left and the new one on the right, then compare. Formatting, indentation and key order are ignored; arrays are compared by position or by a primary key. Differences are reported as paths like a.b[2].c.",
+      "tips": [
+        "Paste raw JSON only - code fences are rejected with a message instead of being guessed at",
+        "Arrays are compared by position by default: one insertion makes every later item look changed, so switch to key mode",
+        "Key mode requires that field to exist and be unique on both sides; it errors rather than guessing",
+        "null and a missing key are different: removed keys and nulled values are reported separately"
+      ],
+      "scenarios": [
+        {
+          "scene": "An API response changed after a deploy",
+          "how": "Paste the before and after payloads",
+          "result": "Every added, removed and changed field, listed by path"
+        },
+        {
+          "scene": "Someone edited a config file",
+          "how": "Paste both versions of the JSON",
+          "result": "Only the changed keys, so review stays short"
+        },
+        {
+          "scene": "List order changed but content did not",
+          "how": "Pick key mode and enter id",
+          "result": "No noise from reordering, only real additions and edits"
+        }
+      ],
+      "runLabel": "Compare",
+      "labels": {
+        "a": "Old JSON (A)",
+        "b": "New JSON (B)",
+        "arrayBy": "Compare arrays by",
+        "keyName": "Key field name (key mode)"
+      }
+    },
+    "expense-aa": {
+      "usage": "Write one person per line as name and amount, where the amount is what that person paid. Anyone who ate but paid nothing goes in with 0. You get each person's share, their balance, and the minimum number of transfers that settles the bill.",
+      "tips": [
+        "List people who ate but paid nothing with 0 - leaving them out inflates everyone else's share",
+        "The same person can appear on several lines and the amounts are summed",
+        "Transfers are minimised: the largest creditor is matched with the largest debtor, so N people need at most N-1 transfers",
+        "When rounding to whole yuan, the leftover cents are assigned to the largest payer and stated in the result"
+      ],
+      "scenarios": [
+        {
+          "scene": "One colleague paid for the whole team lunch",
+          "how": "Payer enters the total, everyone else enters 0",
+          "result": "A short list of who transfers how much to whom"
+        },
+        {
+          "scene": "Several people covered different parts",
+          "how": "One line per person with what they actually paid",
+          "result": "Balances netted out, with the fewest transfers instead of everyone paying everyone"
+        },
+        {
+          "scene": "Collecting round yuan amounts in cash",
+          "how": "Set precision to yuan",
+          "result": "Whole-yuan shares, with the leftover cents explicitly assigned"
+        }
+      ],
+      "runLabel": "Settle",
+      "labels": {
+        "bill": "One line per person: name and amount (0 if they paid nothing)",
+        "roundTo": "Round each share to"
+      }
+    },
+    "text-to-pdf": {
+      "usage": "Paste plain text, optionally add a title, pick a font size and margin. The PDF is assembled byte by byte in your browser: nothing is uploaded, and it works offline. Paragraphs are never split across pages.",
+      "tips": [
+        "English, digits and common punctuation only for now: the PDF built-in Helvetica is used, so no font bytes are embedded",
+        "Paragraphs stay whole - a paragraph that does not fit is moved to the next page",
+        "Blank lines become paragraph spacing; runs of blank lines collapse to one",
+        "Very long unbroken strings such as URLs are broken by character so they never overflow the margin"
+      ],
+      "scenarios": [
+        {
+          "scene": "Send a log excerpt as a PDF",
+          "how": "Paste the text, choose 10pt and narrow margins",
+          "result": "A small PDF you can forward, produced without any server"
+        },
+        {
+          "scene": "Hand in an English draft with a title",
+          "how": "Type a title and paste the body",
+          "result": "A bold title on page one and automatic pagination"
+        },
+        {
+          "scene": "Produce a PDF on an offline machine",
+          "how": "Open the tool offline and paste the text",
+          "result": "No font pack and no network needed"
+        }
+      ],
+      "runLabel": "Make PDF",
+      "labels": {
+        "text": "Body text (plain text)",
+        "title": "Title (optional)",
+        "fontSize": "Font size",
+        "margin": "Margins"
+      }
     }
   }
 }

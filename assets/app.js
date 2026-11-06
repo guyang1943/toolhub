@@ -256,6 +256,39 @@ async function loadRegistry() {
   return REGISTRY;
 }
 
+/* ---------- 搜索别名：按需加载（v3.30，还 v3.27 欠下的那 2.1 KB） ----------
+   别名（拼音全拼 / 首字母 / 英文词）不再压首屏，搬进 /tools/aliases.json；第一次「要搜」时才取，
+   取完补触发一次筛选——不补的话，第一次搜拼音会先看到空结果，用户以为搜不到。 */
+let ALIAS_PROMISE = null;
+let ALIAS_READY = false; // 到货（含失败）就置真：空态据此区分「还没有」和「没有」
+function loadAliases() {
+  if (!ALIAS_PROMISE) {
+    ALIAS_PROMISE = fetch('/tools/aliases.json')
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((map) => {
+        // haystack() 把结果缓存在 __hay 上，换别名必须一起清掉
+        for (const t of REGISTRY ? REGISTRY.tools : []) if (map[t.id]) (t.aliases = map[t.id]), (t.__hay = null);
+        ALIAS_READY = true;
+        return true;
+      })
+      .catch(() => ((ALIAS_READY = true), false)); // 失败也置真：空态不再显示「加载中」，也别每次按键都打一轮请求
+  }
+  return ALIAS_PROMISE;
+}
+function ensureAliases() {
+  if (ALIAS_PROMISE) return; // 已取过（或在路上）：只触发一次
+  loadAliases().then((ok) => {
+    if (!ok || !REGISTRY) return;
+    if (RES) PALETTE.items = buildPaletteItems(REGISTRY, RES, EVALDATA); // 面板条目里也带别名
+    const q = (($('#search') || {}).value || (document.getElementById('hero-search') || {}).value || '').trim();
+    if (q) {
+      curPage = 1;
+      renderFeatured(REGISTRY.tools);
+      renderGrid(REGISTRY.tools, q);
+    }
+  });
+}
+
 const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐', AI: '🤖' };
 
 // 目录工具的数据边界标注。键名须与 scripts/lib/tool-meta.mjs 的 PRIVACY_KINDS 一致。
@@ -584,7 +617,9 @@ function renderFeatured(tools) {
 }
 
 function renderGrid(tools, keyword) {
-  const kw = (keyword || '').trim().toLowerCase();
+  const raw = (keyword || '').trim();
+  if (raw) ensureAliases(); // 有搜索词才需要别名；到货后 ensureAliases 会重画一次
+  const kw = raw.toLowerCase();
   const favList = favs();
   const usage = usageMap();
   const idxOf = new Map((REGISTRY ? REGISTRY.tools : tools).map((x, i) => [x.id, i]));
@@ -646,7 +681,14 @@ function renderGrid(tools, keyword) {
   if (countEl) countEl.textContent = LANG === 'en' ? `${total} tool${total === 1 ? '' : 's'}` : `共 ${total} 个`;
 
   if (!list.length) {
-    const emptyMsg =
+    // 别名是按需加载的：第一次搜拼音/口语词时它可能还在路上。这时候说「没有匹配」是错的，
+    // 用户会以为搜不到就退出；等它到货后 ensureAliases 会重画一次，结果自己就出来了。
+    const loadingAlias = kw && ALIAS_PROMISE && !ALIAS_READY;
+    const emptyMsg = loadingAlias
+      ? LANG === 'en'
+        ? 'Loading the search index…'
+        : '正在加载搜索词库…'
+      :
       activeCategory === '⭐ 收藏' ? t('收藏夹是空的，点卡片右上角 ☆ 添加', 'emptyFav')
       : activeCategory === '🔥 最常用' ? t('还没有使用记录，运行任意工具后这里会自动统计', 'emptyUsed')
       : activeRuntime !== 'all' ? t('当前筛选下没有工具，试试切回「全部」', 'emptyRuntime')
@@ -875,6 +917,7 @@ function ensureIntent() {
 function openPalette() {
   const el = document.getElementById('palette');
   if (!el) return;
+  ensureAliases(); // 面板搜的是全站条目，同样吃别名
   el.classList.add('show');
   el.setAttribute('aria-hidden', 'false'); // 面板可见后必须对辅助技术开放
   PALETTE.open = true;

@@ -97,6 +97,9 @@
     "media-info",
     "barcode-gen",
     "date-calc",
-    "bmi-calc"
+    "bmi-calc",
+    "json-diff",
+    "expense-aa",
+    "text-to-pdf"
   ]
 }

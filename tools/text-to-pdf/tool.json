@@ -1,0 +1,22 @@
+{
+  "id": "text-to-pdf",
+  "name": "文本转 PDF",
+  "desc": "纯文本排成 PDF，内置字体不嵌字，字节全在本机生成",
+  "category": "文档",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "PDF",
+    "导出",
+    "文本"
+  ],
+  "aliases": [
+    "wenbenzhuan",
+    "wbz",
+    "text to pdf",
+    "text",
+    "to",
+    "pdf"
+  ]
+}

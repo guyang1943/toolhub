@@ -1281,6 +1281,159 @@ console.log('\n🧮 TP6 第二批（日期 / BMI / 渐变 / 阴影）');
   }
 }
 
+// ---------- 14. TP7 第三批：3 个零依赖工具（json-diff / expense-aa / text-to-pdf） ----------
+// text-to-pdf 不只要「能出字节」，还要「字节指得对」：PDF 的 xref 表里每个对象都得能被偏移量
+// 精确找到，错一位阅读器整份打不开。v3.27 的 media-info 就是栽在「结构对、跑起来炸」上，
+// 所以这里真的把 xref 逐条解析一遍，而不是只看文件头是不是 %PDF。
+console.log('\n🧾 TP7 第三批（JSON 对比 / AA 分摊 / 文本转 PDF）');
+{
+  const loadTool = (id) => import('file://' + join(root, 'tools', id, 'run.js').replace(/\\/g, '/'));
+
+  // 1. JSON 语义对比
+  const jd = await loadTool('json-diff');
+  {
+    const a = JSON.stringify({ a: 1, b: { c: [1, 2, 3], d: 'x' }, e: null });
+    const b = JSON.stringify({ a: 1, b: { c: [1, 2, 3, 4], d: 'y' }, e: null, f: true });
+    const out = await jd.run({ a, b, arrayBy: 'index', keyName: '' });
+    check('数组新增定位到 b.c[3]', out.text.includes('+ b.c[3] = 4'), out.text.split('\n')[1]);
+    check('改值给出新旧值', out.text.includes('~ b.d') && out.text.includes('"x" → "y"'));
+    check('新增键单独一行', out.text.includes('+ f = true'));
+    check('总数 = 3 处', out.text.includes('共 3 处差异'));
+
+    // 键顺序与缩进不算改动
+    const same = await jd.run({ a: '{"x":1,"y":[1,2]}', b: '{ "y":[1, 2],\n "x":1 }', arrayBy: 'index', keyName: '' });
+    check('格式化与键顺序不算改动', same.text.includes('语义相同'), same.text);
+
+    // 按主键对齐：换位置 + 改值 + 新增
+    const x = JSON.stringify({ list: [{ id: 1, v: 'a' }, { id: 2, v: 'b' }] });
+    const y = JSON.stringify({ list: [{ id: 2, v: 'b' }, { id: 1, v: 'A' }, { id: 3, v: 'c' }] });
+    const keyed = await jd.run({ a: x, b: y, arrayBy: 'key', keyName: 'id' });
+    check('按主键：换位置不报改动', keyed.text.includes('共 2 处差异'), keyed.text.split('\n')[0]);
+    check('按主键：路径带 [id=1]', keyed.text.includes('list[id=1].v'));
+
+    // null 与缺键分开报
+    const nul = await jd.run({ a: '{"k":1}', b: '{"k":null}' });
+    check('null 是改值不是删除', nul.text.includes('~ k') && !nul.text.includes('- k'), nul.text);
+
+    // 类型变化只报一条，不摊成几十行
+    const typ = await jd.run({ a: '{"u":{"a":1}}', b: '{"u":[1]}' });
+    check('对象→数组归为类型变化一条', typ.text.includes('类型变化 1'), typ.text.split('\n')[0]);
+
+    let err = '';
+    try {
+      await jd.run({ a: '{"x":1,}', b: '{}' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('坏 JSON 指出行列', err.includes('第 1 行'), err.split('\n')[0]);
+
+    err = '';
+    try {
+      await jd.run({ a: '{"l":[{"v":1}]}', b: '{"l":[]}', arrayBy: 'key', keyName: 'id' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('主键缺失直接报错而不是猜', err.includes('没有主键'), err.slice(0, 40));
+  }
+
+  // 2. AA 分摊
+  const aa = await loadTool('expense-aa');
+  {
+    const out = await aa.run({ bill: '张三 100\n李四 0\n王五 0', roundTo: 'cent' });
+    check('3 人 100 元 → 2 笔转账', out.text.includes('转账方案（2 笔）'), out.text.split('\n')[0]);
+    check('垫付人应收回 66.66', out.text.includes('应收回 66.66'));
+    check('零头归垫付最多的人（应摊 33.34）', out.html.includes('33.34'));
+
+    // 转账总额必须等于垫付人应收，不能凭空多钱少钱
+    const t = [...out.text.matchAll(/→ \S+ ([\d.]+) 元/g)].map((m) => Math.round(Number(m[1]) * 100));
+    const sum = t.reduce((x, y) => x + y, 0);
+    check('转账金额合计 = 应收 6666 分', sum === 6666, String(sum));
+
+    const yr = await aa.run({ bill: '张三 100\n李四 0\n王五 0', roundTo: 'yuan' });
+    check('取整到元：34 / 33 / 33', yr.html.includes('34.00') && yr.html.includes('33.00'));
+
+    // 多人各垫一部分：环形转账要被抵消掉
+    const many = await aa.run({ bill: '甲 300\n乙 200\n丙 100\n丁 0', roundTo: 'cent' });
+    const n = (many.text.match(/→/g) || []).length;
+    check('4 人最多 3 笔转账', n > 0 && n <= 3, n + ' 笔');
+
+    // 同一个人多行要相加
+    const dup = await aa.run({ bill: '甲 100\n甲 50\n乙 0', roundTo: 'cent' });
+    check('同名多行相加（垫付 150）', dup.html.includes('150.00'));
+
+    let err = '';
+    try {
+      await aa.run({ bill: '甲 12.345', roundTo: 'cent' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('三位小数报错（不悄悄进位）', err.includes('两位小数'), err.slice(0, 30));
+
+    err = '';
+    try {
+      await aa.run({ bill: '', roundTo: 'cent' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('空账单报错', err.includes('人名 金额'), err.slice(0, 20));
+  }
+
+  // 3. 文本转 PDF
+  const pdf = await loadTool('text-to-pdf');
+  {
+    const body = Array.from({ length: 40 }, (_, i) => 'Paragraph ' + (i + 1) + ': ' + 'the quick brown fox jumps over the lazy dog. '.repeat(3)).join('\n\n');
+    const out = await pdf.run({ text: body, title: 'Test Report', fontSize: '11', margin: 'normal' });
+    const buf = Buffer.from(await out.files[0].blob.arrayBuffer());
+    const str = buf.toString('latin1');
+    check('产物是 PDF 且带二进制标记', str.startsWith('%PDF-1.4'), str.slice(0, 8));
+    check('多页：40 段产生 ≥2 页', /\/Count ([2-9]|\d\d)/.test(str), (str.match(/\/Count (\d+)/) || [])[1] + ' 页');
+
+    // xref 逐条核对：偏移量必须正好指向「N 0 obj」
+    const sx = /startxref\n(\d+)\n%%EOF/.exec(str);
+    check('尾部有 startxref', !!sx, sx ? '@' + sx[1] : '缺少');
+    let bad = 0;
+    if (sx) {
+      const at = Number(sx[1]);
+      check('startxref 指向 xref 表', str.slice(at, at + 4) === 'xref', JSON.stringify(str.slice(at, at + 8)));
+      const tail = str.slice(at);
+      const total = Number((/\/Size (\d+)/.exec(tail) || [])[1]);
+      const lines = tail.split('\n');
+      for (let i = 1; i < total; i++) {
+        const off = Number((lines[2 + i] || '').slice(0, 10));
+        if (str.slice(off, off + String(i).length + 6) !== i + ' 0 obj') bad++;
+      }
+      check('xref 里每个对象偏移都对得上', bad === 0 && total > 0, bad + ' 条错 / 共 ' + total + ' 个对象');
+      // 页面树里的 Kids 必须指向页面对象（指成内容流会「打开成功但一个字都没有」）
+      const kids = (/\/Kids \[([^\]]*)\]/.exec(str) || [])[1] || '';
+      const first = Number(kids.split(' ')[0]);
+      check('Kids 指向页面对象而非内容流', new RegExp('\\n' + first + ' 0 obj\\n<< /Type /Page ').test(str), 'kid #' + first);
+    }
+
+    // 中文必须明确报错，不能给乱码 PDF
+    let err = '';
+    try {
+      await pdf.run({ text: '这是中文' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('中文输入明确报错并说明原因', err.includes('首期仅支持英文') && err.includes('1.1 MB'), err.slice(0, 24));
+
+    err = '';
+    try {
+      await pdf.run({ text: '   \n  ' });
+    } catch (e) {
+      err = e.message;
+    }
+    check('空正文报错', err.includes('正文是空的'), err.slice(0, 16));
+
+    // 长串（无空格）不能越界：折行后每行宽度都必须小于可用宽度
+    const long = await pdf.run({ text: 'A'.repeat(400), fontSize: '10', margin: 'normal' });
+    const ls = Buffer.from(await long.files[0].blob.arrayBuffer()).toString('latin1');
+    const tj = [...ls.matchAll(/\((A+)\) Tj/g)].map((m) => m[1].length);
+    check('超长串被折行而不是一行溢出', tj.length > 1 && Math.max(...tj) < 200, tj.join('/'));
+  }
+}
+
 // 清理临时文件
 for (const f of [imgA, imgB, qrPng, qrRgba, qrInv, qrNoise, join(root, '.tmp-qr.dims.json')]) {
   try {

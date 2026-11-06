@@ -1,0 +1,21 @@
+{
+  "id": "expense-aa",
+  "name": "AA 分摊",
+  "desc": "聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清",
+  "category": "效率",
+  "source": "内置实现",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "AA",
+    "记账",
+    "分摊"
+  ],
+  "aliases": [
+    "fentan",
+    "ft",
+    "bill split",
+    "bill",
+    "split"
+  ]
+}

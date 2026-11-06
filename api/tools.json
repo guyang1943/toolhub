@@ -1,8 +1,8 @@
 {
   "site": "ToolHub",
   "version": 1,
-  "updated": "2026-11-05",
-  "total": 132,
+  "updated": "2026-11-06",
+  "total": 135,
   "tools": [
     {
       "id": "json-format",
@@ -918,6 +918,51 @@
       "tags": [
         "健康",
         "BMI"
+      ]
+    },
+    {
+      "id": "json-diff",
+      "name": "JSON 语义对比",
+      "desc": "按路径比两个 JSON 的增删改，不是比文本行",
+      "category": "数据",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/json-diff/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "JSON",
+        "对比",
+        "diff"
+      ]
+    },
+    {
+      "id": "expense-aa",
+      "name": "AA 分摊",
+      "desc": "聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清",
+      "category": "效率",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/expense-aa/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "AA",
+        "记账",
+        "分摊"
+      ]
+    },
+    {
+      "id": "text-to-pdf",
+      "name": "文本转 PDF",
+      "desc": "纯文本排成 PDF，内置字体不嵌字，字节全在本机生成",
+      "category": "文档",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/text-to-pdf/",
+      "source": "内置实现",
+      "license": "MIT",
+      "tags": [
+        "PDF",
+        "导出",
+        "文本"
       ]
     },
     {
