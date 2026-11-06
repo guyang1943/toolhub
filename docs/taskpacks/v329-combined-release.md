@@ -13,7 +13,8 @@
 `origin/main`（96557cf）之后，main 领先 13 个提交，结构是：
 
 - `feat/tools-candidates` 合入：新增 json-diff / expense-aa / text-to-pdf 三个零依赖工具；
-  把 tools.json 的 aliases 拆到 tools/aliases.json 按需加载（首屏 93.2 → 92.5 KB）。
+  把 tools.json 的 aliases 拆到 tools/aliases.json 按需加载（工具批次内首屏 93.2 → 92.5 KB；
+  随后资源库合集并入，实测终值 **93.4 KB**，见下文校正）。
 - `feat/guides-batch-2` 合入：教程 5 篇 → 12 篇。
   - T1 自己写：toolhub-image-pipeline、cloudflare-tunnel-home。
   - 取自已审校分支：ollama-local-ai（muse-guides-batch-2）。
@@ -36,9 +37,13 @@
 | test:func | 321/321 |
 | smoke | 192/192 |
 | browser | 338/338 |
-| perf | 92.5 KB / 9 请求（预算 94.0 / 10） |
+| perf | 93.4 KB / 9 请求（预算 94.0 / 10） |
 | audit | 273 次页面检查无问题 |
 | idem | 389 个产物零差异 |
+
+> **2026-11-06 校正**：perf 原写 92.5 KB，那是资源库第 8 个合集 `dev-clients` 合并**之前**的数。
+> 合集并入后 `resources.json` 7.5 → 8.4 KB，实测 **93.4 KB**（启动数据 41.9）——比 v3.28 的
+> 93.2 是**涨 0.2 KB**，不是降。预算 94.0，余量 0.6 KB。
 
 T3 仍需自己复跑一遍：分支绿不等于合并后绿，这是本项目的老账。
 

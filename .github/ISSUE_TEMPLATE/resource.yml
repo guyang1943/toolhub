@@ -24,6 +24,7 @@ body:
         - 值得收藏的开源项目清单
         - 模板与设计素材站
         - 公文写作字库
+        - 本地优先的开发者客户端
     validations:
       required: true
 

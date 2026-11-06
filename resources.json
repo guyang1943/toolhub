@@ -780,7 +780,7 @@
         {
           "name": "Bruno",
           "url": "https://www.usebruno.com/",
-          "source": "GitHub · usebruno/bruno",
+          "source": "github.com/usebruno/bruno",
           "license": "MIT",
           "tags": [
             "API 调试",
@@ -791,7 +791,7 @@
         {
           "name": "Hoppscotch",
           "url": "https://hoppscotch.io/",
-          "source": "GitHub · hoppscotch/hoppscotch",
+          "source": "github.com/hoppscotch/hoppscotch",
           "license": "MIT",
           "tags": [
             "API 调试",
@@ -801,7 +801,7 @@
         {
           "name": "drawDB",
           "url": "https://www.drawdb.app/",
-          "source": "GitHub · drawdb-io/drawdb",
+          "source": "github.com/drawdb-io/drawdb",
           "license": "AGPL-3.0",
           "tags": [
             "数据库设计",
@@ -812,7 +812,7 @@
         {
           "name": "DbGate",
           "url": "https://dbgate.org/",
-          "source": "GitHub · dbgate/dbgate",
+          "source": "github.com/dbgate/dbgate",
           "license": "GPL-3.0",
           "tags": [
             "数据库客户端",
@@ -822,7 +822,7 @@
         {
           "name": "DBeaver",
           "url": "https://dbeaver.io/",
-          "source": "GitHub · dbeaver/dbeaver",
+          "source": "github.com/dbeaver/dbeaver",
           "license": "Apache-2.0",
           "tags": [
             "数据库客户端",
@@ -833,7 +833,7 @@
         {
           "name": "Yaak",
           "url": "https://yaak.app/",
-          "source": "GitHub · mountain-loop/yaak",
+          "source": "github.com/mountain-loop/yaak",
           "license": "MIT",
           "tags": [
             "API 调试",

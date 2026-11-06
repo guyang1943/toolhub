@@ -21,7 +21,8 @@
         "learning",
         "open-source",
         "templates",
-        "gov-doc-fonts"
+        "gov-doc-fonts",
+        "dev-clients"
       ],
       "x-form": {
         "kind": "select",

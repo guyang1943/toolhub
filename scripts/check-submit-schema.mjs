@@ -7,9 +7,9 @@
 //
 //   ① schema 是合法 JSON Schema（能被共享校验器吃下去）
 //   ② collection 的枚举与 resources.json 的 collections[].slug 双向一致
-//   ③ 存量 50 条逐条通过 $defs.item —— 证明规范不是凭空写的
+//   ③ 存量每条都通过 $defs.item —— 证明规范不是凭空写的
 //   ④ 前端表单的 ORDER 覆盖了每一个必填项 —— 少一个，用户就永远过不了校验
-//   ⑤ Issue 模板与规范同字段 —— 少一个，走模板的人就得填两次
+//   ⑤ Issue 模板与规范同字段、同合集 —— 少一个，走模板的人就得填两次或选不到合集
 //
 // 用法：node scripts/check-submit-schema.mjs
 import { readFileSync, existsSync } from 'node:fs';
@@ -122,6 +122,12 @@ if (existsSync(resTpl)) {
   // 必填项的 label 必须能在模板里找到同名字段，否则「表单填完去模板里还要再填一遍」
   const need = ['资源名称', '网址', '授权方式', '为什么值得收藏', '挂到哪个合集'];
   for (const n of need) if (!y.includes(n)) errors.push(`resource.yml 缺字段「${n}」，与 schemas/resource.json 不同步`);
+  // v3.29：合集下拉是手抄的中文标题，schema 加合集时最容易漏的就是它——
+  // 漏了不报错，只是走模板投稿的人选不到这个合集（v3.29 的 dev-clients 就这么漏了一版）。
+  // 所以逐个比对标题，不只比字段名。
+  for (const c of resources.collections) {
+    if (c.title && !y.includes(c.title)) errors.push(`resource.yml 的合集下拉里没有「${c.title}」（${c.slug}），走模板投稿的人选不到`);
+  }
 }
 
 /* 输出 */
