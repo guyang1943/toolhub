@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AA 分摊","description":"聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清","url":"https://toolhub.bot.cd/tools/expense-aa/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么不是每个人都转给垫付的人？","acceptedAnswer":{"@type":"Answer","text":"那是 N-1 笔（一个人垫付时确实如此）。但多人各垫一部分时，互相转会产生环形转账：A 转 B、B 转 C、C 转 A，三笔钱绕一圈回到原点。工具用「最大债主配最大债户」的方式两两抵消，N 个人最多 N-1 笔，多数情况比逐人转账少一半以上。"}},{"@type":"Question","name":"除不尽的几分钱谁承担？","acceptedAnswer":{"@type":"Answer","text":"按「垫付最多的人先摊」的顺序分配，结果区会写明谁承担了零头。这个顺序是固定的，不是随机的——同一份输入永远得到同一个结果，方便复核对账。选「精确到元」时，零头可能到几毛，所以更要说清归属。"}},{"@type":"Question","name":"为什么不能填三位小数？","acceptedAnswer":{"@type":"Answer","text":"人民币最小单位是分。填 12.345 会被拦下，而不是悄悄四舍五入——悄悄进位的话，十个人一分摊就可能凭空多出几毛钱，账永远对不平。金额允许为 0（只吃没垫），但不接受负数：这里只填垫付金额。"}},{"@type":"Question","name":"人均和我自己算的不一样？","acceptedAnswer":{"@type":"Answer","text":"先看是不是漏了「只吃没垫钱」的人。人均 = 总垫付 ÷ 参与人数，少写一个人，人均就高一份。另外结果区的人均是四舍五入到分的展示值，实际分摊用的是整数分加余数分配，两者可能差一分。"}},{"@type":"Question","name":"有人少摊一份（比如没喝酒）怎么办？","acceptedAnswer":{"@type":"Answer","text":"这个工具只做均摊。差异化分摊要先确定权重，再各自算应摊额，属于另一类算法；硬塞进这个表单会让人误以为填的是「折扣」。这种情况建议先用两个工具分别算：酒水单算一桌人，菜品单算另一桌人，再把两份结果相加。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用AA 分摊","description":"聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"AA 分摊"}],"step":[{"@type":"HowToStep","position":1,"name":"每行写一个人：「人名 金额」，金额是他为这顿饭垫付了多少钱","text":"每行写一个人：「人名 金额」，金额是他为这顿饭垫付了多少钱","url":"https://toolhub.bot.cd/tools/expense-aa/#step1"},{"@type":"HowToStep","position":2,"name":"只吃没垫钱的人也写一行，金额写 0，否则会被当成不参与、人均被算高","text":"只吃没垫钱的人也写一行，金额写 0，否则会被当成不参与、人均被算高","url":"https://toolhub.bot.cd/tools/expense-aa/#step2"},{"@type":"HowToStep","position":3,"name":"同一个人垫了多笔就写多行，会自动相加","text":"同一个人垫了多笔就写多行，会自动相加","url":"https://toolhub.bot.cd/tools/expense-aa/#step3"},{"@type":"HowToStep","position":4,"name":"选「每人应摊精确到」：分最准，元适合当面收现金","text":"选「每人应摊精确到」：分最准，元适合当面收现金","url":"https://toolhub.bot.cd/tools/expense-aa/#step4"},{"@type":"HowToStep","position":5,"name":"点「算清」，照着「转账方案」里的几行念给群里","text":"点「算清」，照着「转账方案」里的几行念给群里","url":"https://toolhub.bot.cd/tools/expense-aa/#step5"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

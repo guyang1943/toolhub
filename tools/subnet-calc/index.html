@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"子网计算器","description":"IP 加掩码算出网段、广播地址与可用主机数","url":"https://toolhub.bot.cd/tools/subnet-calc/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"/31 为什么有 2 个可用地址？","acceptedAnswer":{"@type":"Answer","text":"按 RFC 3021，/31 用于点对点链路：链路上只有两端，不需要网络地址与广播地址，两个地址都能分配给接口。老教材里的「2^n−2」在这种情况下不适用。"}},{"@type":"Question","name":"掩码 255.255.254.0 对应多少位？","acceptedAnswer":{"@type":"Answer","text":"/23。判断方法是数连续的 1：前 23 位是 1。本工具接受点分写法并自动换算，若写的是 255.0.255.0 这种不连续的掩码，会直接报错——那种掩码在 IPv4 里不存在。"}},{"@type":"Question","name":"支持 IPv6 吗？","acceptedAnswer":{"@type":"Answer","text":"不支持，也不打算混在一起。IPv6 是 128 位，「可用主机数」在 /64 下是个 19 位数，和 IPv4 的直觉完全不同；把两者放进同一张结果表只会让人误读。"}},{"@type":"Question","name":"掩码能写成 /24 吗？","acceptedAnswer":{"@type":"Answer","text":"可以，斜杠会被去掉再解析。24、/24、255.255.255.0 三种写法都认，结果里会把两种表示都列出来。"}},{"@type":"Question","name":"可用主机数是固定值吗？","acceptedAnswer":{"@type":"Answer","text":"只与掩码位数有关：2^(32−掩码位) − 2，减掉的是网络地址与广播地址。掩码不变，任何地址算出来都是同一个数。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用子网计算器","description":"IP 加掩码算出网段、广播地址与可用主机数","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"子网计算器"}],"step":[{"@type":"HowToStep","position":1,"name":"填 IPv4 地址，例如 192.168.1.10","text":"填 IPv4 地址，例如 192.168.1.10","url":"https://toolhub.bot.cd/tools/subnet-calc/#step1"},{"@type":"HowToStep","position":2,"name":"填掩码：写 24 或 255.255.255.0 都可以","text":"填掩码：写 24 或 255.255.255.0 都可以","url":"https://toolhub.bot.cd/tools/subnet-calc/#step2"},{"@type":"HowToStep","position":3,"name":"看结果里的网络地址、广播地址、可用范围与可用主机数","text":"看结果里的网络地址、广播地址、可用范围与可用主机数","url":"https://toolhub.bot.cd/tools/subnet-calc/#step3"},{"@type":"HowToStep","position":4,"name":"配机器时只用可用范围内的地址；顺手看一眼「是否网络地址/广播地址」那两行","text":"配机器时只用可用范围内的地址；顺手看一眼「是否网络地址/广播地址」那两行","url":"https://toolhub.bot.cd/tools/subnet-calc/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

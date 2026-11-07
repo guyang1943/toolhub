@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"进制转换","description":"2/8/10/16/36 进制批量互转，大数不丢精度","url":"https://toolhub.bot.cd/tools/radix-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么不用 parseInt？","acceptedAnswer":{"@type":"Answer","text":"parseInt 返回 Number，超过 2^53−1 就丢精度，且不报错。这个工具全程用 BigInt 做乘加，输出也由 BigInt 生成字符串，中间不经过浮点数。"}},{"@type":"Question","name":"支持带小数点的数吗？","acceptedAnswer":{"@type":"Answer","text":"不支持。小数在不同进制下的表示是另一套问题（0.1 在二进制里是无限循环），本工具只做整数。遇到小数行会提示「不是 N 进制的数字」。"}},{"@type":"Question","name":"36 进制为什么用大写输出？","acceptedAnswer":{"@type":"Answer","text":"36 进制需要 26 个字母，惯例上大小写不敏感，统一大写更容易核对。粘进代码时注意目标语言或库是否区分大小写。"}},{"@type":"Question","name":"最多能转多大的数？","acceptedAnswer":{"@type":"Answer","text":"只受内存限制。BigInt 没有 64 位上限，几万位的十进制数也能转，通常几十毫秒内出结果。"}},{"@type":"Question","name":"结果能直接粘回代码吗？","acceptedAnswer":{"@type":"Answer","text":"可以，但注意前缀：本工具输出的 16 进制不带 0x，粘进 JS 时要自己补，或者先当字符串存起来再用 parseInt。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用进制转换","description":"2/8/10/16/36 进制批量互转，大数不丢精度","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"进制转换"}],"step":[{"@type":"HowToStep","position":1,"name":"把要转换的数字粘进输入框，每行一个","text":"把要转换的数字粘进输入框，每行一个","url":"https://toolhub.bot.cd/tools/radix-convert/#step1"},{"@type":"HowToStep","position":2,"name":"选原进制与目标进制（2 / 8 / 10 / 16 / 36）","text":"选原进制与目标进制（2 / 8 / 10 / 16 / 36）","url":"https://toolhub.bot.cd/tools/radix-convert/#step2"},{"@type":"HowToStep","position":3,"name":"点「转换」：每行给出结果，16 进制可带 0x 前缀，负数写 -ff 或 -…","text":"点「转换」：每行给出结果，16 进制可带 0x 前缀，负数写 -ff 或 -255","url":"https://toolhub.bot.cd/tools/radix-convert/#step3"},{"@type":"HowToStep","position":4,"name":"写错的行会留在表里并标出原因，改完那几行再转一次即可","text":"写错的行会留在表里并标出原因，改完那几行再转一次即可","url":"https://toolhub.bot.cd/tools/radix-convert/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

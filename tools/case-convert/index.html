@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"命名风格转换","description":"camelCase / snake_case / kebab-case 等命名互转","url":"https://toolhub.bot.cd/tools/case-convert/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"驼峰命名是怎么被切分成单词的？","acceptedAnswer":{"@type":"Answer","text":"按小写/数字后接大写字母、以及连续大写后接小写字母的边界切分。例如 httpResponseCode → http/response/code，APIKey → API/Key。"}},{"@type":"Question","name":"含数字的名称转换可靠吗？","acceptedAnswer":{"@type":"Answer","text":"多数情况没问题，但像 v2Api 这类可能有歧义的名称建议人工确认一遍再批量替换。"}},{"@type":"Question","name":"缩写词（HTTP、ID）怎么处理？","acceptedAnswer":{"@type":"Answer","text":"工具会保留连续大写的片段，camelCase 转换时通常输出 httpId 而不是 hTtPId。但这本质上有歧义——HTTPResponse 到底切成 HTTP + Response 还是 HTTPR + esponse，没有算法能保证猜对。含缩写时建议人工确认一遍。"}},{"@type":"Question","name":"支持哪些命名风格？","acceptedAnswer":{"@type":"Answer","text":"camelCase、PascalCase、snake_case、kebab-case、CONSTANT_CASE、dot.case 这些常见风格都支持。不同语言的社区习惯不同：Python 用 snake、Go 用 Pascal、文件名多用 kebab，转换时按目标语言挑。"}},{"@type":"Question","name":"能批量转换吗？","acceptedAnswer":{"@type":"Answer","text":"可以，一行一个标识符贴进去，逐行输出。建数据库字段映射、批量改 API 参数名时最省事。注意每行独立处理，所以一行里混多个单词不会互相影响切分。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用命名风格转换","description":"camelCase / snake_case / kebab-case 等命名互转","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"命名风格转换"}],"step":[{"@type":"HowToStep","position":1,"name":"粘贴待转换的名称，一行一个（也支持空格、连字符混合的输入）","text":"粘贴待转换的名称，一行一个（也支持空格、连字符混合的输入）","url":"https://toolhub.bot.cd/tools/case-convert/#step1"},{"@type":"HowToStep","position":2,"name":"选择目标风格：camelCase / PascalCase / snake_…","text":"选择目标风格：camelCase / PascalCase / snake_case / kebab-case 等","url":"https://toolhub.bot.cd/tools/case-convert/#step2"},{"@type":"HowToStep","position":3,"name":"查看分词结果，确认缩写词（API、URL）的切分符合预期","text":"查看分词结果，确认缩写词（API、URL）的切分符合预期","url":"https://toolhub.bot.cd/tools/case-convert/#step3"},{"@type":"HowToStep","position":4,"name":"批量复制结果，替换到代码、数据库或配置文件中","text":"批量复制结果，替换到代码、数据库或配置文件中","url":"https://toolhub.bot.cd/tools/case-convert/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

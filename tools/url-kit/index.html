@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"URL 解析构造","description":"拆解 URL 各部分，整理 query 参数并重新拼装","url":"https://toolhub.bot.cd/tools/url-kit/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"为什么重建后的地址和我粘进去的不完全一样？","acceptedAnswer":{"@type":"Answer","text":"参数会按标准重新编码（例如中文变成 %E4%B8%AD），参数的顺序也按你给的顺序。协议、主机、路径与片段原样保留。功能上等价，但字符串可能不同——分享前建议用重建后的这一版。"}},{"@type":"Question","name":"同名参数怎么处理？","acceptedAnswer":{"@type":"Answer","text":"保留成两行，各自可以改。重建时按行的顺序输出，服务端读第一个还是最后一个取决于它的实现，参数表里会标出「同名参数」提醒你确认。"}},{"@type":"Question","name":"片段（# 后面）会被编码吗？","acceptedAnswer":{"@type":"Answer","text":"不会。片段不参与服务端请求，编码规则也不同，本工具原样带过去。"}},{"@type":"Question","name":"支持非 http 协议的地址吗？","acceptedAnswer":{"@type":"Answer","text":"除 http/https 外还认 ftp 与 file。其它协议（如 ws:// 或自定义 scheme）会提示不支持，因为它们的参数规则与网页地址不同。"}},{"@type":"Question","name":"端口为什么显示「未显式写出」？","acceptedAnswer":{"@type":"Answer","text":"URL 里没写端口时浏览器返回空字符串。80/443 这类默认端口通常省略，本工具如实显示「未显式写出」，而不是替你补一个数字。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用URL 解析构造","description":"拆解 URL 各部分，整理 query 参数并重新拼装","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"URL 解析构造"}],"step":[{"@type":"HowToStep","position":1,"name":"把完整地址粘进第一个框（没写协议也能认，会按 https 补全并注明）","text":"把完整地址粘进第一个框（没写协议也能认，会按 https 补全并注明）","url":"https://toolhub.bot.cd/tools/url-kit/#step1"},{"@type":"HowToStep","position":2,"name":"看解析结果：协议、主机、端口、路径、查询串、片段各是什么","text":"看解析结果：协议、主机、端口、路径、查询串、片段各是什么","url":"https://toolhub.bot.cd/tools/url-kit/#step2"},{"@type":"HowToStep","position":3,"name":"参数区一行一个「键=值」：改值、删行、加行，就是增删改参数","text":"参数区一行一个「键=值」：改值、删行、加行，就是增删改参数","url":"https://toolhub.bot.cd/tools/url-kit/#step3"},{"@type":"HowToStep","position":4,"name":"点「解析并重建」，复制下方重新拼装好的地址","text":"点「解析并重建」，复制下方重新拼装好的地址","url":"https://toolhub.bot.cd/tools/url-kit/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

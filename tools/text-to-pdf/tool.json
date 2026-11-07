@@ -11,6 +11,7 @@
     "导出",
     "文本"
   ],
+  "since": "v3.29",
   "aliases": [
     "wenbenzhuan",
     "wbz",

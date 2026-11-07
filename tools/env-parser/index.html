@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":".env 解析","description":"解析 .env，标重复键与格式错误，转 JSON 或 export","url":"https://toolhub.bot.cd/tools/env-parser/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"重复的键以哪个为准？","acceptedAnswer":{"@type":"Answer","text":"以靠后的为准，这与 dotenv 的行为一致。但同时会把两处行号都列出来，因为静默覆盖是最坑人的一种「正确」——你以为是第一个值生效，实际是最后一个。"}},{"@type":"Question","name":"为什么 ${HOME} 没有被替换？","acceptedAnswer":{"@type":"Answer","text":"本工具不做变量展开。展开需要知道 export 顺序、当前环境与 shell 规则，做一半只会给出与运行时不一致的结果。需要展开请在实际运行环境里验证。"}},{"@type":"Question","name":"值里的 # 什么时候算注释？","acceptedAnswer":{"@type":"Answer","text":"只有 # 前面有空白时才当注释。A=foo#bar 的 # 属于值（常见于密码与 URL 片段），A=foo #bar 才是注释。这也是 dotenv 的判断方式。"}},{"@type":"Question","name":"支持真正的多行值吗？","acceptedAnswer":{"@type":"Answer","text":"双引号里可以用 \\n 表示换行，但不支持引号内直接跨行。常见 dotenv 实现对跨行值的处理也不一致，容易产生解析歧义，所以这里不猜。"}},{"@type":"Question","name":"输出的 JSON 能直接给 docker 用吗？","acceptedAnswer":{"@type":"Answer","text":"docker 的 env_file 要的是 KEY=VALUE 而不是 JSON。要喂给容器，选「shell export」再去掉每行的 export，或者直接用原文件。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用.env 解析","description":"解析 .env，标重复键与格式错误，转 JSON 或 export","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":".env 解析"}],"step":[{"@type":"HowToStep","position":1,"name":"把 .env 内容整段粘进输入框","text":"把 .env 内容整段粘进输入框","url":"https://toolhub.bot.cd/tools/env-parser/#step1"},{"@type":"HowToStep","position":2,"name":"选输出格式：JSON（给配置中心用）或 shell export（给终端用）","text":"选输出格式：JSON（给配置中心用）或 shell export（给终端用）","url":"https://toolhub.bot.cd/tools/env-parser/#step2"},{"@type":"HowToStep","position":3,"name":"先看问题清单：重复键、缺等号、键名不合法、引号没闭合，都会指到行号","text":"先看问题清单：重复键、缺等号、键名不合法、引号没闭合，都会指到行号","url":"https://toolhub.bot.cd/tools/env-parser/#step3"},{"@type":"HowToStep","position":4,"name":"复制下方结果；提醒一句，它只是文本，不会替你写进任何文件","text":"复制下方结果；提醒一句，它只是文本，不会替你写进任何文件","url":"https://toolhub.bot.cd/tools/env-parser/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

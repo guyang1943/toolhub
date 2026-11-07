@@ -11,84 +11,84 @@
       <link>https://toolhub.bot.cd/tools/pinyin-convert/</link>
       <guid>https://toolhub.bot.cd/tools/pinyin-convert/</guid>
       <description>汉字转全拼或首字母，注明多音字与声调口径</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>ASCII 艺术字</title>
       <link>https://toolhub.bot.cd/tools/ascii-art/</link>
       <guid>https://toolhub.bot.cd/tools/ascii-art/</guid>
       <description>英文转 ASCII 艺术字，三种字体、长文本自动折行</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>JSON ⇄ YAML</title>
       <link>https://toolhub.bot.cd/tools/json-yaml/</link>
       <guid>https://toolhub.bot.cd/tools/json-yaml/</guid>
       <description>JSON 与 YAML 互转，锚点与多文档给人话提示</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>测试假数据</title>
       <link>https://toolhub.bot.cd/tools/mock-data/</link>
       <guid>https://toolhub.bot.cd/tools/mock-data/</guid>
       <description>造姓名、手机号、邮箱、地址与带校验位的身份证号</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>UA 解析</title>
       <link>https://toolhub.bot.cd/tools/ua-parse/</link>
       <guid>https://toolhub.bot.cd/tools/ua-parse/</guid>
       <description>把 User-Agent 拆成浏览器、内核、系统与设备</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>文本转 PDF</title>
       <link>https://toolhub.bot.cd/tools/text-to-pdf/</link>
       <guid>https://toolhub.bot.cd/tools/text-to-pdf/</guid>
       <description>纯文本排成 PDF，内置字体不嵌字，字节全在本机生成</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>AA 分摊</title>
       <link>https://toolhub.bot.cd/tools/expense-aa/</link>
       <guid>https://toolhub.bot.cd/tools/expense-aa/</guid>
       <description>聚餐 AA 算出最少转账笔数，谁转谁多少钱一次说清</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>JSON 语义对比</title>
       <link>https://toolhub.bot.cd/tools/json-diff/</link>
       <guid>https://toolhub.bot.cd/tools/json-diff/</guid>
       <description>按路径比两个 JSON 的增删改，不是比文本行</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>BMI 计算器</title>
       <link>https://toolhub.bot.cd/tools/bmi-calc/</link>
       <guid>https://toolhub.bot.cd/tools/bmi-calc/</guid>
       <description>身高体重算 BMI，按中国标准判区间</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>日期计算器</title>
       <link>https://toolhub.bot.cd/tools/date-calc/</link>
       <guid>https://toolhub.bot.cd/tools/date-calc/</guid>
       <description>算日期间隔天数，或加减天数与工作日</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>条形码生成器</title>
       <link>https://toolhub.bot.cd/tools/barcode-gen/</link>
       <guid>https://toolhub.bot.cd/tools/barcode-gen/</guid>
       <description>生成 Code128 与 EAN-13 条形码并下载 PNG</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
     <item>
       <title>音视频信息</title>
       <link>https://toolhub.bot.cd/tools/media-info/</link>
       <guid>https://toolhub.bot.cd/tools/media-info/</guid>
       <description>本地读取音视频时长分辨率与体积，不上传</description>
-      <pubDate>Fri, 06 Nov 2026 00:00:00 GMT</pubDate>
+      <pubDate>Sat, 07 Nov 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>
 </rss>

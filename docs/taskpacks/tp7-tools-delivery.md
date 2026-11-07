@@ -1,8 +1,8 @@
 # TP7 五个新工具交付说明（`feat/tp7-tools`）
 
-> 2026-11-06 下午。worktree `../toolhub-tp7`，预览端口 8899。
-> 基线 `origin/main@171ef06`（v3.29 已上线），本分支与基线齐平、无落后。
-> **走分支 + PR，Guyang 点合并后才上线；本批不编版本号、不写 `since`。**
+> 2026-11-06 下午首版；**2026-11-07 追加「八、合并记录」**，以第八节的数字为准。
+> worktree `../toolhub-tp7`，预览端口 8899。首版基线 `origin/main@171ef06`（v3.29 已上线）。
+> **走分支 + PR；本批不编版本号、不写 `since`。**
 > 候选清单出处：`docs/taskpacks/TP7-tool-candidates.md` 第 1–3 节。
 
 ---
@@ -137,7 +137,7 @@ Guyang 已定这一批**抬 `total`、不再拆数据**；`document` / `styles` 
 
 ---
 
-## 六、合并顺序与冲突（点 PR 前请先看这一节）
+## 六、当时的合并顺序建议（2026-11-06 写，已由第八节取代）
 
 本分支基于 `171ef06`，而另外两条并行分支**都还没合 main**，且都改了生成产物：
 
@@ -172,3 +172,56 @@ Guyang 已定这一批**抬 `total`、不再拆数据**；`document` / `styles` 
 - 探活清单已补 5 页 + 4 库，但**线上还没探过**（本批未上线）；发版后照例
   `npm run online -- --wait 120`。
 - 资料库「版本记录」与「质量基线」两份文档照例**在发版后**同步，本批是分支交付、不算发版。
+
+---
+
+## 八、合并记录（2026-11-07）
+
+首版交付后主线又走了 6 个提交，PR #13 一度被 GitHub 判为
+`mergeable: false / mergeable_state: dirty / rebaseable: false`，点 Merge 会被拦下：
+
+| 时间 | 事件 |
+|---|---|
+| 11-06 19:24 | PR #12 合入 main（`3e973a5`）：教程第四批 12 → 15 篇 |
+| 11-06 20:14 | PR #13 开出（TP7，`b9b6112`） |
+| 11-07 14:31 | PR #14 合入 main（`2d74084`）：v3.29.1 补 since、页脚合集数改由数据推导、加两道 verify 闸门；期间 `d2ce674` 已在分支内合过一次 main 并重建 |
+| 11-07 14:59 | `d41dcf7`：GitHub Actions 篇 YAML 补围栏 + verify 反向闸门 |
+| 11-07 15:34 | 本次：`feat/tp7-tools` 合入 `origin/main@d41dcf7` |
+
+**冲突**：三方预演有 208 个「两边都改」（绝大多数是 v3.29.1 重建全站页脚撞上 TP7 的整站产物），
+其中 11 处真冲突；实际 `git merge` 落到 10 个未解决文件。处理如下：
+
+- 9 个生成产物（`api/tools.json`、`feed.xml`、`guides/` 四个 `index.html`、
+  `offline/index.html`、`sw.js`、`tools/tools.json`）取 main 侧后**整体重建覆盖**，没有手工合 HTML。
+- 唯一需要语义合并的源文件是 `scripts/browser-test.mjs`：BATCH2 表单断言两条线各自修过
+  `goto()` 不等懒渲染表单这同一个根因，按约定统一到主线的 `waitToolForm()`（等 input 数 > 0，
+  8s）；TP7 自己的 `ua-parse` 表单断言也换过去，不留两份实现。
+- `scripts/verify.mjs` / `scripts/verify-online.mjs` 自动合并成功并逐一复核：
+  拼音包漂移、YAML 无围栏反向、页脚合集数三道闸门都在；探活 PATHS 两边
+  （3 篇教程 + 5 个工具页 + 4 个库）都在。
+- `scripts/build-pages.mjs` 取 main 的「页脚由 `resources.collections.length` 推导」版本，
+  所以重建后 200 多页页脚都是「全部 8 个合集」，不再写死 6。
+
+数据源取两边之和：`registry.order` 70 个工具、`content/guides.json` 15 篇教程、
+`resources.json` 8 个合集；`sync-tools.mjs` 重建 `tools.json` / `aliases.json`，
+v3.29 三个工具的 `since="v3.29"` 保留，TP7 五个仍不写（发版统一补）。
+`perf-budget.total` 仍是 **97,280 B（95.0 KB）**，其余五个数未动。
+
+**重建结果**：207 个静态页 / 208 条 sitemap / 离线包 **353 个地址约 5.6 MB**；
+首页 `70 个在本机跑 · 140 个已收录`；5 个新工具页与 4 个 vendor 都在预缓存里。
+
+**合并后八套全绿**（`PORT=8899`，避开并行线占用的 8788，`NO_PROXY=127.0.0.1,localhost`）：
+
+| 套件 | 结果 |
+|---|---|
+| 前置三闸门 | 外链 70 条 · 投稿规范 8 合集 / 64 条 · 存储键 12 个 |
+| verify | **75 项**（73 + 拼音包 + 页脚合集数，正好是首版第六节预计的数） |
+| spa / func | 80/80 · 321/321 |
+| perf | 94.2 KB / 9 请求（预算 95.0 KB，余量 0.8 KB） |
+| flow | 114 |
+| smoke | ✅ |
+| browser | **360/360**（661.2s；首版 348 + main 教程第四批 12 条断言） |
+| audit | 288 次页面检查，0 问题 |
+
+首版第五节记的三次假红与对应闸门仍然有效；本次合并没有新增假红。
+`since`、changelog 条目、线上探活、资料库版本记录与质量基线，仍留到发版那一步。

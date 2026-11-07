@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Token 估算","description":"估算提示词的 Token 消耗，调用 AI 前先看成本","url":"https://toolhub.bot.cd/tools/token-counter/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"这个数字能用来对账吗？","acceptedAnswer":{"@type":"Answer","text":"不能。它是近似值，计费以官方 tokenizer 为准。用途是判断量级——「这条提示词是 800 token 还是 8000 token」它答得准，「这次调用扣了 1234 还是 1250」它答不了。"}},{"@type":"Question","name":"为什么中文的 token 比英文多那么多？","acceptedAnswer":{"@type":"Answer","text":"主流词表以英文语料为主，常见英文单词往往是一个 token，而一个汉字常被切成多个字节级 token。经验值是中文约 1.5 字/token、英文约 4 字符/token，所以同样「一段话」，中文占的 token 更多。"}},{"@type":"Question","name":"代码估算为什么偏低？","acceptedAnswer":{"@type":"Answer","text":"代码里符号密度高（括号、点、缩进），而符号的切分比单词更碎。本工具给符号按 2 字符/token 折算，实际往往更碎，所以代码类内容建议在此基础上再留 20% 余量。"}},{"@type":"Question","name":"图片、PDF 里的文字算进去吗？","acceptedAnswer":{"@type":"Answer","text":"不算。本工具只统计你粘进来的文本；图片会按模型的多模态计费规则单独算 token，那是另一套口径。"}},{"@type":"Question","name":"为什么空内容会直接报错？","acceptedAnswer":{"@type":"Answer","text":"空内容返回 0 会让人误以为「这条提示词免费」，而实际上还有消息结构本身的开销。直接报错比给一个看起来精确的 0 更诚实。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用Token 估算","description":"估算提示词的 Token 消耗，调用 AI 前先看成本","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"Token 估算"}],"step":[{"@type":"HowToStep","position":1,"name":"把提示词或文档粘进输入框","text":"把提示词或文档粘进输入框","url":"https://toolhub.bot.cd/tools/token-counter/#step1"},{"@type":"HowToStep","position":2,"name":"选口径：GPT-4o、Claude 或通用估算","text":"选口径：GPT-4o、Claude 或通用估算","url":"https://toolhub.bot.cd/tools/token-counter/#step2"},{"@type":"HowToStep","position":3,"name":"读主结果与下方三行对比：三者差得越多，越要按大的那个准备","text":"读主结果与下方三行对比：三者差得越多，越要按大的那个准备","url":"https://toolhub.bot.cd/tools/token-counter/#step3"},{"@type":"HowToStep","position":4,"name":"看字符构成明细：中文占比高时，压缩中文比删英文更有效","text":"看字符构成明细：中文占比高时，压缩中文比删英文更有效","url":"https://toolhub.bot.cd/tools/token-counter/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

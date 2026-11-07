@@ -1300,6 +1300,15 @@ check('折腾指南（v3.15）', () => {
     if (x.steps.some((s) => /^\s*```/m.test(s.body))) {
       assert(visible.includes('<pre><code>'), `${x.slug} 有围栏代码块，但页面上没有 <pre><code>`);
     }
+    // 反过来的坑：缩进块（YAML、命令行、目录树）忘了加围栏。正文只有「围栏」一种块级语法，
+    // 没围栏的缩进行会被 HTML 折叠成一段连排文字——教程里那句「把下面这份内容完整粘贴」
+    // 就成了让人复制一段没有缩进的跑马灯。guides 第四批的 GitHub Actions 篇漏了 27 行 YAML，
+    // 因为当时没有任何闸门看这个方向，全绿上线。这里按「4 空格缩进 + 没有围栏」认。
+    const unfenced = x.steps
+      .map((s, i) => [i + 1, s.body || ''])
+      .filter(([, b]) => /^\s{4,}\S/m.test(b) && !b.includes('```'))
+      .map(([i]) => i);
+    assert(!unfenced.length, `${x.slug} 第 ${unfenced.join('/')} 步有缩进代码块但没加围栏（会被折叠成一段）`);
     if (x.risk === 'high') assert(html.includes('guide-risk'), `${x.slug} 风险为 high 但没有风险提示块`);
     // riskNote 只给 high 用。构建只在 high 时渲染这个字段，mid/low 写了就是没人看得见的死数据
     // （cloudflare-free 这么躺了两个版本）。低/中风险的风险提示要写进 intro / prereqs / 步骤正文，
@@ -1437,6 +1446,28 @@ check('README 头部数字与数据一致（v3.22.1）', () => {
     );
   }
   return `${totalN} 收录 / ${localN} 本地，三处一致`;
+});
+
+// ---------- v3.29.1：页脚合集数由数据推导 ----------
+// 页脚那句「全部 N 个合集 →」一直写死在 index.html（构建把它当模板读），第 8 个合集进来后
+// 全站 200 个页面的页脚都停在 6。这类数字最难受的地方是：它出现在每一页，却没有任何人核对，
+// 而「全部 6 个合集」下面正好列着 8 个。现在构建按 resources.collections.length 归一，
+// 这里反过来验产物——只验首页不够，模板一歪，歪的是 200 页。
+check('页脚合集数与资源数据一致（v3.29.1）', () => {
+  const n = res.collections.length;
+  const probe = ['index.html', 'about/index.html', 'categories/index.html', 'resources/index.html', 'tools/index.html'];
+  const bad = [];
+  for (const p of probe) {
+    const f = join(root, p);
+    if (!existsSync(f)) continue;
+    const h = readFileSync(f, 'utf8');
+    const zh = h.match(/全部 (\d+) 个合集/);
+    const en = h.match(/All (\d+) collections/);
+    if (!zh || Number(zh[1]) !== n) bad.push(`${p} 写「全部 ${zh ? zh[1] : '?'} 个合集」`);
+    if (en && Number(en[1]) !== n) bad.push(`${p} 写「All ${en[1]} collections」`);
+  }
+  assert(!bad.length, `合集数写成死数（数据是 ${n} 个）：${bad.slice(0, 4).join('；')}`);
+  return `${n} 个合集，${probe.length} 个页面一致（中英双语）`;
 });
 
 // ---------- v3.24：llms.txt 不能漂 ----------

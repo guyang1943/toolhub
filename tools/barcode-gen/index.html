@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"条形码生成器","description":"生成 Code128 与 EAN-13 条形码并下载 PNG","url":"https://toolhub.bot.cd/tools/barcode-gen/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"扫不出来怎么办？","acceptedAnswer":{"@type":"Answer","text":"先看三件事：图片有没有被缩小到细条糊掉、两侧的空白（静区）有没有被裁掉、打印的对比度够不够。条码打印最忌讳「为了排版硬缩」。"}},{"@type":"Question","name":"EAN-13 的校验位是怎么算的？","acceptedAnswer":{"@type":"Answer","text":"前 12 位从左起，奇数位乘 1、偶数位乘 3，求和后取「凑到 10 的补数」。填 12 位时工具自动补上；填 13 位时如果算错，会直接告诉你正确的最后一位是几。"}},{"@type":"Question","name":"能生成中文条码吗？","acceptedAnswer":{"@type":"Answer","text":"不能。Code128 只覆盖 ASCII 字符集，中文要么用二维码，要么先分配一个数字编号再印条码——商品标签本来也是这么做的。"}},{"@type":"Question","name":"打印出来模糊是分辨率问题吗？","acceptedAnswer":{"@type":"Answer","text":"多半是缩放问题。条码由细条组成，按 50% 缩小打印时细条会被合并。保持原尺寸或放大，导出 PNG 不要转 JPEG（有损压缩会在边缘产生噪点）。"}},{"@type":"Question","name":"为什么要带一个 66 KB 的库？","acceptedAnswer":{"@type":"Answer","text":"编码表是标准化的死数据，抄错一位就扫不出来。JsBarcode 是 MIT 许可、被广泛验证的实现，体积相当于一张小图，只在打开这个工具生成条码时才加载。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用条形码生成器","description":"生成 Code128 与 EAN-13 条形码并下载 PNG","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"条形码生成器"}],"step":[{"@type":"HowToStep","position":1,"name":"选格式：Code128（字母数字符号）或 EAN-13（数字）","text":"选格式：Code128（字母数字符号）或 EAN-13（数字）","url":"https://toolhub.bot.cd/tools/barcode-gen/#step1"},{"@type":"HowToStep","position":2,"name":"填内容；EAN-13 填 12 位会自动补校验位","text":"填内容；EAN-13 填 12 位会自动补校验位","url":"https://toolhub.bot.cd/tools/barcode-gen/#step2"},{"@type":"HowToStep","position":3,"name":"点「生成条码」","text":"点「生成条码」","url":"https://toolhub.bot.cd/tools/barcode-gen/#step3"},{"@type":"HowToStep","position":4,"name":"下载 PNG，打印时至少放大 2 倍","text":"下载 PNG，打印时至少放大 2 倍","url":"https://toolhub.bot.cd/tools/barcode-gen/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 

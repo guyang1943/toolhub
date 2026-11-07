@@ -197,6 +197,23 @@ async function waitForCount(selector, want, timeout = 8000) {
   return n;
 }
 
+// 工具表单是懒渲染的：先取 manifest 再画字段，实测 bmi-calc 要 ~1 秒（别的页 ~200ms）。
+// 原来的「导航后立刻数一次」在机器忙的时候会数到 0，于是报「这一页渲染不出表单」——
+// v3.29.1 复验时连撞两次假红，两次还不是同一页（先 unit-convert 后 bmi-calc），
+// 而单开页面查都正常。改成轮询：表单真出不来仍然判红，只是最多等 8 秒。
+async function waitToolForm(timeout = 8000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    const n = await evaluate(`(() => {
+      const f = document.getElementById('tool-form');
+      return f ? f.querySelectorAll('input,textarea,select').length : 0;
+    })()`).catch(() => 0);
+    if (n > 0) return n;
+    await sleep(150);
+  }
+  return 0;
+}
+
 async function fill(map) {
   await evaluate(`(() => {
     const vals = ${JSON.stringify(map)};
@@ -531,6 +548,30 @@ async function feedFile(selector, dataUrl, name, type) {
     (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
       GUIDE_MAP.get('cloudflare-tunnel-home').steps.length,
   );
+
+  // muse-guides-batch-4 第四批三篇（Actions / AI 提示词 / AI 批量处理）。
+  // 三篇都是 risk=low、没有 riskNote：既要从总览按 href 真点一次（直达测不出「总览少一行」），
+  // 也要确认低风险篇不长出 .guide-risk 块，步骤数与数据源一致。
+  for (const [slug, name] of [
+    ['github-actions-deploy', 'Actions 篇'],
+    ['ai-prompts-resume', 'AI 提示词篇'],
+    ['ai-batch-media', 'AI 批量处理篇'],
+  ]) {
+    await goto('/guides/');
+    await waitText('#page-body', '教程', 8000);
+    const picked = await evaluate(
+      `(() => { const a = document.querySelector('#page-body a.fl-row[href="/guides/${slug}/"]'); if (!a) return false; a.click(); return true; })()`,
+    );
+    check(`总览里有${name}的入口`, picked === true);
+    await waitText('#page-body', '翻车了怎么办', 8000);
+    check(`${name}能从总览点进详情`, (await evaluate(`location.pathname`)) === `/guides/${slug}/`, slug);
+    check(
+      `${name}步骤数与数据一致`,
+      (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
+        GUIDE_MAP.get(slug).steps.length,
+    );
+    check(`${name}为 low 风险，不渲染风险提示块`, await evaluate(`!document.querySelector('.guide-risk')`));
+  }
   await goto('/');
 
   // ---- 1.56 评测列表（v3.13 改为行式列表）----
@@ -2337,11 +2378,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     const noForm = [];
     for (const id of BATCH1) {
       await goto(`/tools/${id}/`);
-      const fields = await evaluate(`(() => {
-        const f = document.getElementById('tool-form');
-        if (!f) return 0;
-        return f.querySelectorAll('input,textarea,select').length;
-      })()`);
+      const fields = await waitToolForm();
       if (!fields) noForm.push(id);
     }
     check('12 个新工具页都能渲染出表单', noForm.length === 0, noForm.length ? noForm.join(',') : '12/12');
@@ -2384,15 +2421,9 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     for (const id of BATCH2) {
       await goto(`/tools/${id}/`);
       // 工具表单是懒渲染的：goto() 只等 #main-content 有 20 个元素，并不等表单画完。
-      // 以前这里 goto 完直接查 #tool-form，机器忙的时候会撞上竞态，报出「某两个页面没表单」
-      // 的假红（v3.29 并发跑、TP7 单跑都遇到过）。用轮询等，不要用固定 sleep：
-      // 真渲染不出来时 waitEl 会等满 15s 后照样判红，不会掩盖回归。
-      const ready = await waitEl('#tool-form', 15000);
-      const ok = ready && await evaluate(`(() => {
-        const f = document.getElementById('tool-form');
-        const btn = document.getElementById('run-btn');
-        return !!f && !!btn && f.querySelectorAll('input,textarea,select').length > 0;
-      })()`);
+      // TP7 与 v3.29.1 两条线各自修过同一根因，合并后统一到主线的 waitToolForm()
+      //（等 input 数 > 0），别留两份实现。真渲染不出来时会等满超时后照样判红。
+      const ok = (await waitToolForm()) && (await evaluate(`!!document.getElementById('run-btn')`));
       if (!ok) missing.push(id);
     }
     check('12 个第二批工具页都能渲染出表单与运行按钮', missing.length === 0, missing.length ? missing.join(',') : '12/12');
@@ -2558,7 +2589,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
 
   // 1) UA 解析：贴一段含 Chrome 的 UA，再留空解析本机 UA
   await goto('/tools/ua-parse/');
-  check('TP7 ua-parse 表单渲染', await waitEl('#tool-form', 15000), '');
+  check('TP7 ua-parse 表单渲染', (await waitToolForm()) > 0, '');
   await fill({ 'f-ua': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' });
   await clickRun();
   const uaChrome = await waitText('#tool-result', 'Chrome 120.0.0.0', 15000);

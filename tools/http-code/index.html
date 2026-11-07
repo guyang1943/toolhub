@@ -81,6 +81,7 @@
 
 
 
+
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"HTTP 状态码速查","description":"输入状态码看含义、常见场景与排查方向","url":"https://toolhub.bot.cd/tools/http-code/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"MIT"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"502 和 504 到底差在哪？","acceptedAnswer":{"@type":"Answer","text":"502 是网关从上游收到了无效响应（进程崩了、端口没起、返回了非法内容）；504 是网关等上游响应等到超时。前者是「上游给了坏东西」，后者是「上游太慢或卡死」，排查顺序完全不同。"}},{"@type":"Question","name":"401 和 403 怎么快速区分？","acceptedAnswer":{"@type":"Answer","text":"401 是「你是谁不清楚」——没带凭证或凭证过期；403 是「知道你是谁，但不许」。看到 401 先查 Token，看到 403 先查权限与黑名单。"}},{"@type":"Question","name":"为什么我的接口返回了自定义码？","acceptedAnswer":{"@type":"Answer","text":"很多团队会在业务层定义 4 位或 5 位错误码，放在响应体里，HTTP 状态码仍然用 200。这类码不在本手册范围内，要看对应接口的文档。"}},{"@type":"Question","name":"状态码和业务错误码是什么关系？","acceptedAnswer":{"@type":"Answer","text":"两层。HTTP 状态码说协议层发生了什么，业务错误码放在响应体里说具体原因。很多接口一律返回 200、把失败写进 body，这时只看状态码会误判。"}},{"@type":"Question","name":"遇到 429 该等多久？","acceptedAnswer":{"@type":"Answer","text":"看响应头 Retry-After：可能是秒数，也可能是时间点。没有这个头时按指数退避重试（1s、2s、4s…），别原地死循环，那会让限流持续更久。"}}]}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用HTTP 状态码速查","description":"输入状态码看含义、常见场景与排查方向","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"HTTP 状态码速查"}],"step":[{"@type":"HowToStep","position":1,"name":"手里有码就输三位数字，例如 404；手里只有现象就输关键词，例如「超时」「上传」","text":"手里有码就输三位数字，例如 404；手里只有现象就输关键词，例如「超时」「上传」","url":"https://toolhub.bot.cd/tools/http-code/#step1"},{"@type":"HowToStep","position":2,"name":"看返回的条目：含义、常见场景、排查方向","text":"看返回的条目：含义、常见场景、排查方向","url":"https://toolhub.bot.cd/tools/http-code/#step2"},{"@type":"HowToStep","position":3,"name":"一次命中多个时，注意区分方向相反的码——408 是客户端发得慢，504 是上…","text":"一次命中多个时，注意区分方向相反的码——408 是客户端发得慢，504 是上游回得慢","url":"https://toolhub.bot.cd/tools/http-code/#step3"},{"@type":"HowToStep","position":4,"name":"输入 4 或 50 这样的前缀，可以一次列出整组状态码","text":"输入 4 或 50 这样的前缀，可以一次列出整组状态码","url":"https://toolhub.bot.cd/tools/http-code/#step4"}]}</script>
@@ -133,7 +134,7 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 6 个合集 →" data-en="All 6 collections →">全部 6 个合集 →</a></div>
+        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
