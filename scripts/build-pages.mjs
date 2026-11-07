@@ -11,6 +11,7 @@ import { buildToolsJson } from './sync-tools.mjs';
 import { buildSw } from './gen-sw.mjs';
 import { genLlmsTxt } from './gen-llms-txt.mjs';
 import { loadResources } from './lib/resources-data.mjs';
+import { slimDirectory } from './lib/directory-boot.mjs';
 import { matchPage } from './lib/pages-registry.mjs';
 // v3.22：隐私页那张键名表现在由清单渲染，不再是手写的 <li> 列表。
 // 构建期（这里是静态正文，爬虫与禁用 JS 时看到的）与 pages.js（站内跳转后重渲染）调的是
@@ -32,6 +33,11 @@ const BASE = (process.argv[2] || 'https://toolhub.guyang1966.workers.dev').repla
 {
   const { payload } = buildToolsJson();
   writeFileSync(join(root, 'tools', 'tools.json'), JSON.stringify(payload, null, 2), 'utf8');
+  // v3.32：目录数据也派生一份「启动副本」。证据字段（evidence / linkStatus）只有构建期与
+  // 校验脚本读，浏览器一行都不读，却一直跟着目录躺在首屏六个启动 JSON 里。
+  // 源文件不动（证据的读写方散在五个脚本里），改成构建期从源派生一份给浏览器看。
+  const dirSrc = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8'));
+  writeFileSync(join(root, 'tools', 'directory-boot.json'), JSON.stringify(slimDirectory(dirSrc), null, 2), 'utf8');
   const schema = JSON.parse(readFileSync(join(root, 'tools', 'schema.json'), 'utf8'));
   const reg = JSON.parse(readFileSync(join(root, 'tools', 'registry.json'), 'utf8'));
   const { errors, ids } = lintAll(root, schema, reg.categories || []);
@@ -134,7 +140,11 @@ const rawTpl = readFileSync(join(root, 'index.html'), 'utf8');
 // 剥掉之后剩下的正好是空容器（<div id="chips"></div> 这种），下面首页注入逻辑要的就是这个形态。
 // 连同行首缩进与换行一起剥：只剥注释标记的话，每次构建都会在 </head> 前多留一个空行，
 // 连跑两次 index.html 就差三字节，diff 永远不干净。
-const stripped = rawTpl.replace(/[ \t]*<!--hs:[\w-]+-->[\s\S]*?<!--\/hs:[\w-]+-->[ \t]*\n?/g, '');
+// v3.32：换行部分必须写成 \r?\n?。本机检出（core.autocrlf=true）的模板是 CRLF，
+// 原来的 [ \t]*\n? 匹配不到 \r，每个区块都留下一个只含 \r 的「假空行」——
+// 于是每次构建 207 个产物各多一两行空白，发版时得手工 checkout 还原（这笔账记了十几个版本）。
+// 线上与 CI 是 LF，所以这个洞只在 Windows 上漏，本地绿、CI 绿、只有提交前的 diff 脏。
+const stripped = rawTpl.replace(/[ \t]*<!--hs:[\w-]+-->[\s\S]*?<!--\/hs:[\w-]+-->[ \t]*\r?\n?/g, '');
 const tpl = stripped
   .replace(/\d+(?= 个精选开源工具)/g, TOTAL_TOOLS)
   .replace(/\d+(?= 个开源工具)/g, TOTAL_TOOLS)

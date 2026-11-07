@@ -105,7 +105,9 @@ export function buildSw({ quiet = false } = {}) {
     // v3.31：端口声明同理。它只在助手推荐流程时取，断网时若取不到，
     // 「建议流程」会静默消失，而那正是离线最需要它的时刻。
     '/tools/io.json',
-    '/tools/directory.json',
+    // v3.32：浏览器取的是「启动副本」（源文件里的证据字段只有构建期用）。
+    // 预缓存要跟着换成这一份——否则断网后目录工具在首页整片消失，而源文件那 12 KB 白装。
+    '/tools/directory-boot.json',
     '/resources.json',
     // v3.24：资源条目正文，合集页要用。它不在首屏（首页用不到正文），
     // 但离线装上之后合集页得能打开，所以仍进预缓存包。
@@ -281,7 +283,7 @@ self.addEventListener('fetch', (e) => {
   }
 
   // 逻辑与数据：网络优先，确保部署后立即生效（离线时回退缓存）
-  const isDynamic = /\\/(assets\\/app\\.js|analytics\\.json|i18n(-detail)?\\.json|resources\\.json|articles\\.json|tools\\/(tools|directory)\\.json)$/.test(url.pathname);
+  const isDynamic = /\\/(assets\\/app\\.js|analytics\\.json|i18n(-detail)?\\.json|resources\\.json|articles\\.json|tools\\/(tools|directory(-boot)?)\\.json)$/.test(url.pathname);
   if (isDynamic) {
     e.respondWith(
       fetch(req)

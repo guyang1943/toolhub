@@ -15,6 +15,7 @@ import * as storeKeys from '../assets/lib/store-keys.js';
 import { staticPaths, matchPage, pagePatterns } from './lib/pages-registry.mjs';
 import { PRIVACY_KINDS, validateToolMeta } from './lib/tool-meta.mjs';
 import { loadResources } from './lib/resources-data.mjs';
+import { BOOT_DROP, buildOnlyFieldsLeft, slimDirectory } from './lib/directory-boot.mjs';
 import { validateIo, PORTS } from '../assets/lib/tool-io.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -203,6 +204,36 @@ check('资源正文不在首屏', () => {
   const missing = res.__missingNotes || [];
   assert(!missing.length, `缺正文: ${missing.slice(0, 5).join(', ')}`);
   return `${total} 条正文在 resources-notes.json 按需加载`;
+});
+
+// v3.32：目录数据的证据字段必须留在源文件。evidence / linkStatus 只有构建期写页面时用得到，
+// 浏览器从不读；它们要是跟着一起回到首屏，页面照样正常，只有体积悄悄涨 1 KB——
+// 和「资源正文被写回首屏」是同一类退化，同样只有断言看得见。
+check('目录证据不在首屏', () => {
+  const budget = read('perf-budget.json');
+  assert(
+    !budget.bootData.includes('tools/directory.json'),
+    '首屏启动数据又列了源文件 tools/directory.json——证据字段会跟着回到首屏'
+  );
+  assert(budget.bootData.includes('tools/directory-boot.json'), '启动数据缺 tools/directory-boot.json');
+
+  const boot = read('tools/directory-boot.json');
+  const left = buildOnlyFieldsLeft(boot);
+  assert(!left.length, `启动副本里还有构建期字段（${BOOT_DROP.join(' / ')}）：${left.slice(0, 4).join(', ')}`);
+
+  // 副本必须是源的严格派生：源改了却没重建，这里直接红。这种不同步在页面上完全看不出来
+  // ——详情页的「证据」行由源文件渲染，而卡片列表读的是副本，两边各自都是对的。
+  const src = read('tools/directory.json');
+  const want = JSON.stringify(slimDirectory(src).tools);
+  assert(JSON.stringify(boot.tools) === want, 'tools/directory-boot.json 与源不同步，重跑 npm run build');
+
+  const client = readFileSync(join(root, 'assets', 'app.js'), 'utf8') + readFileSync(join(root, 'assets', 'my.js'), 'utf8');
+  assert(!client.includes("fetch('/tools/directory.json')"), 'app.js / my.js 又去取源文件了（首屏重新背上约 1 KB）');
+
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('"/tools/directory-boot.json"'), '离线清单里没有启动副本——断网后目录工具会整片消失');
+  assert(!sw.includes('"/tools/directory.json"'), '离线清单还在装源文件（多装 1 KB，且没有任何页面取它）');
+  return `${boot.tools.length} 条目录首屏只带启动副本，证据字段留在源文件`;
 });
 
 check('资源库静态页', () => {

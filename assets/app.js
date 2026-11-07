@@ -240,7 +240,8 @@ async function loadRegistry() {
   const local = await (await fetch('/tools/tools.json')).json();
   let dir = { tools: [] };
   try {
-    dir = await (await fetch('/tools/directory.json')).json();
+    // v3.32：取启动副本（证据字段只有构建期读，见 scripts/lib/directory-boot.mjs）。
+    dir = await (await fetch('/tools/directory-boot.json')).json();
   } catch (e) {
     /* 目录可选，缺失不阻塞 */
   }
