@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.29 · 预缓存 328 个地址 · 约 5.2 MB
+// 版本：toolhub-v3.29 · 预缓存 334 个地址 · 约 5.3 MB
 const VERSION = "toolhub-v3.29";
 const CORE = [
   "/",
@@ -323,12 +323,18 @@ const FULL = [
   "/categories/text.json",
   "/categories/web/",
   "/categories/web.json",
+  "/guides/ai-batch-media/",
+  "/guides/ai-batch-media.json",
+  "/guides/ai-prompts-resume/",
+  "/guides/ai-prompts-resume.json",
   "/guides/cloudflare-free/",
   "/guides/cloudflare-free.json",
   "/guides/cloudflare-tunnel-home/",
   "/guides/cloudflare-tunnel-home.json",
   "/guides/custom-domain/",
   "/guides/custom-domain.json",
+  "/guides/github-actions-deploy/",
+  "/guides/github-actions-deploy.json",
   "/guides/github-first-lesson/",
   "/guides/github-first-lesson.json",
   "/guides/github-pages-first-site/",
