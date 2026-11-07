@@ -1300,6 +1300,15 @@ check('折腾指南（v3.15）', () => {
     if (x.steps.some((s) => /^\s*```/m.test(s.body))) {
       assert(visible.includes('<pre><code>'), `${x.slug} 有围栏代码块，但页面上没有 <pre><code>`);
     }
+    // 反过来的坑：缩进块（YAML、命令行、目录树）忘了加围栏。正文只有「围栏」一种块级语法，
+    // 没围栏的缩进行会被 HTML 折叠成一段连排文字——教程里那句「把下面这份内容完整粘贴」
+    // 就成了让人复制一段没有缩进的跑马灯。guides 第四批的 GitHub Actions 篇漏了 27 行 YAML，
+    // 因为当时没有任何闸门看这个方向，全绿上线。这里按「4 空格缩进 + 没有围栏」认。
+    const unfenced = x.steps
+      .map((s, i) => [i + 1, s.body || ''])
+      .filter(([, b]) => /^\s{4,}\S/m.test(b) && !b.includes('```'))
+      .map(([i]) => i);
+    assert(!unfenced.length, `${x.slug} 第 ${unfenced.join('/')} 步有缩进代码块但没加围栏（会被折叠成一段）`);
     if (x.risk === 'high') assert(html.includes('guide-risk'), `${x.slug} 风险为 high 但没有风险提示块`);
     // riskNote 只给 high 用。构建只在 high 时渲染这个字段，mid/low 写了就是没人看得见的死数据
     // （cloudflare-free 这么躺了两个版本）。低/中风险的风险提示要写进 intro / prereqs / 步骤正文，
