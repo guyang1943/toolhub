@@ -13,3 +13,6 @@ Desktop.ini
 .idea/
 *.swp
 .tmp-*
+
+# 本地临时脚本与日志
+_out/

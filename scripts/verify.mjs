@@ -1461,10 +1461,13 @@ check('页脚合集数与资源数据一致（v3.29.1）', () => {
     const f = join(root, p);
     if (!existsSync(f)) continue;
     const h = readFileSync(f, 'utf8');
-    const zh = h.match(/全部 (\d+) 个合集/);
-    const en = h.match(/All (\d+) collections/);
-    if (!zh || Number(zh[1]) !== n) bad.push(`${p} 写「全部 ${zh ? zh[1] : '?'} 个合集」`);
-    if (en && Number(en[1]) !== n) bad.push(`${p} 写「All ${en[1]} collections」`);
+    // v3.30：不只页脚那句「全部 N 个合集」。首页资源卡还写着一句「N 个合集：图标、字体、配色…」，
+    // 它同样由构建归一，同样没人会去核对——只匹配「全部 N」的话，这里写歪了照样全绿。
+    const zh = [...h.matchAll(/(\d+) 个合集/g)].map((m) => Number(m[1]));
+    const en = [...h.matchAll(/(\d+) collections/g)].map((m) => Number(m[1]));
+    if (!zh.length) bad.push(`${p} 找不到「N 个合集」`);
+    for (const v of zh) if (v !== n) bad.push(`${p} 写「${v} 个合集」`);
+    for (const v of en) if (v !== n) bad.push(`${p} 写「${v} collections」`);
   }
   assert(!bad.length, `合集数写成死数（数据是 ${n} 个）：${bad.slice(0, 4).join('；')}`);
   return `${n} 个合集，${probe.length} 个页面一致（中英双语）`;

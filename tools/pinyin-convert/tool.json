@@ -7,5 +7,6 @@
   "license": "MIT",
   "runtime": "browser",
   "tags": ["拼音", "首字母", "汉字", "注音"],
+  "since": "v3.30",
   "aliases": ["pinyin", "拼音", "hanzizhuanpinyin", "首字母", "zhuyin", "汉字拼音"]
 }
