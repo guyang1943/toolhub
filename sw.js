@@ -18,7 +18,7 @@ const CORE = [
   "/tools/tools.json",
   "/tools/aliases.json",
   "/tools/io.json",
-  "/tools/directory.json",
+  "/tools/directory-boot.json",
   "/resources.json",
   "/resources-notes.json",
   "/analytics.json"
@@ -40,7 +40,7 @@ const FULL = [
   "/tools/tools.json",
   "/tools/aliases.json",
   "/tools/io.json",
-  "/tools/directory.json",
+  "/tools/directory-boot.json",
   "/resources.json",
   "/resources-notes.json",
   "/analytics.json",
@@ -452,7 +452,7 @@ self.addEventListener('fetch', (e) => {
   }
 
   // 逻辑与数据：网络优先，确保部署后立即生效（离线时回退缓存）
-  const isDynamic = /\/(assets\/app\.js|analytics\.json|i18n(-detail)?\.json|resources\.json|articles\.json|tools\/(tools|directory)\.json)$/.test(url.pathname);
+  const isDynamic = /\/(assets\/app\.js|analytics\.json|i18n(-detail)?\.json|resources\.json|articles\.json|tools\/(tools|directory(-boot)?)\.json)$/.test(url.pathname);
   if (isDynamic) {
     e.respondWith(
       fetch(req)
