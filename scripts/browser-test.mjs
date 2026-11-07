@@ -572,6 +572,24 @@ async function feedFile(selector, dataUrl, name, type) {
     );
     check(`${name}为 low 风险，不渲染风险提示块`, await evaluate(`!document.querySelector('.guide-risk')`));
   }
+
+  // 第五批：用 WorkBuddy 资料库搭工作台。新增的只有数据，模板与前面各批共用，
+  // 唯一可能坏的就是「总览少一行 / 链接写错 / 步骤没渲染 / mid 风险长出风险块」。
+  // 所以照旧从总览按 href 真点一次，不 goto 直达；两段一句话示例靠 verify 的围栏闸门盯。
+  await goto('/guides/');
+  await waitText('#page-body', '教程', 8000);
+  const pickedWb = await evaluate(
+    `(() => { const a = document.querySelector('#page-body a.fl-row[href="/guides/workbuddy-workbench/"]'); if (!a) return false; a.click(); return true; })()`,
+  );
+  check('总览里有工作台篇的入口', pickedWb === true);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  check('工作台篇能从总览点进详情', (await evaluate(`location.pathname`)) === '/guides/workbuddy-workbench/');
+  check(
+    '工作台篇步骤数与数据一致',
+    (await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`)) ===
+      GUIDE_MAP.get('workbuddy-workbench').steps.length,
+  );
+  check('工作台篇为 mid 风险，不渲染风险提示块', await evaluate(`!document.querySelector('.guide-risk')`));
   await goto('/');
 
   // ---- 1.56 评测列表（v3.13 改为行式列表）----

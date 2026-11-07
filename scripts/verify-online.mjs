@@ -54,6 +54,9 @@ const PATHS = [
   // muse-guides-batch-4 第四批三篇：Actions 工作流 / AI 提示词 / AI 批量处理，都是 risk=low。
   // 三篇全探，不只抽样：这一批的正文里有整段 YAML 和提示词模板，渲染坏了是「少一段」而不是 404。
   '/guides/github-actions-deploy/', '/guides/ai-prompts-resume/', '/guides/ai-batch-media/',
+  // 第五批：用 WorkBuddy 资料库搭工作台。正文有两段「一句话示例」围栏，且是首篇
+  // 讲云端资料库 + 公开发布权限的 mid 风险篇，探一篇就能同时盯住渲染与权限提示。
+  '/guides/workbuddy-workbench/',
   // 教程页与 SPA 共用的正文渲染模块——它一坏，五篇的代码示例同时出问题。
   '/assets/lib/guide-text.js',
   // TP7：5 个新工具页逐个探（页面 200 不代表工具能用），外加它们按需注入的四个 vendor 文件。
