@@ -12,6 +12,7 @@
     "图片",
     "gps"
   ],
+  "io": { "in": ["image"], "out": ["image"] },
   "author": "ToolHub 贡献流程示范",
   "since": "v2.8",
   "aliases": [

@@ -162,6 +162,26 @@
           "items": { "type": "string", "minLength": 1, "maxLength": 12 }
         },
         "hot": { "type": "boolean" },
+        "io": {
+          "description": "端口声明：这个工具吃什么、产出什么。工作流的相邻步骤校验与助手的流程推荐都以它为依据；端口词表见 assets/lib/tool-io.js",
+          "type": "object",
+          "required": ["in", "out"],
+          "additionalProperties": false,
+          "properties": {
+            "in": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "items": { "enum": ["image", "pdf", "text", "json", "csv", "file"] }
+            },
+            "out": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "items": { "enum": ["image", "pdf", "text", "json", "csv", "file"] }
+            }
+          }
+        },
         "aliases": {
           "description": "搜索别名（拼音/英文），由 scripts/gen-search-aliases.mjs 生成，不必手写",
           "type": "array",

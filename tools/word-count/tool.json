@@ -11,6 +11,7 @@
     "统计",
     "写作"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "zishutongji",

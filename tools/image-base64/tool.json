@@ -11,6 +11,7 @@
     "图片",
     "datauri"
   ],
+  "io": { "in": ["image"], "out": ["text"] },
   "aliases": [
     "tupianzhuan",
     "tpz",

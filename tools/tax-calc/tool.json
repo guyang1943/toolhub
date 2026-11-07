@@ -11,6 +11,7 @@
     "工资",
     "累计预扣"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "geshuijisuanqi",

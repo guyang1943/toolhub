@@ -251,6 +251,47 @@ console.log('· 结果条文案');
   check('续跑的 resumedFrom=0 不当作续跑', /1 步跑完/.test(fromZero), fromZero);
 }
 
+/* ---------- 助手：一句话 → 一条流程（v3.31） ---------- */
+console.log('\n🧭 助手流程推荐');
+{
+  const { recommend } = await import('../assets/lib/intent.js');
+  const flows = JSON.parse(readFileSync(join(root, 'workflows/workflows.json'), 'utf8')).flows;
+  const io = JSON.parse(readFileSync(join(root, 'tools/io.json'), 'utf8'));
+  const toolList = JSON.parse(readFileSync(join(root, 'tools/tools.json'), 'utf8')).tools;
+  const byId = new Map(toolList.map((t) => [t.id, t]));
+  const nameOf = (id) => {
+    const t = byId.get(id);
+    return t && t.runtime !== 'link' ? t.name : null;
+  };
+  const rec = (q, extra) => recommend(q, { flows, io, nameOf, t: (zh) => zh, ...extra });
+
+  const r1 = rec('把照片转成 pdf');
+  check('命中流程后半段 → 推整条流程', r1 && r1.kind === 'flow' && r1.name === '照片成 PDF', r1 ? r1.name : 'null');
+  check('流程链接带 ?flow=', r1 && r1.url === '/workflows/?flow=photo-to-pdf', r1 ? r1.url : 'null');
+
+  // 反例：json-format 是「编码串还原 JSON」的第 2 步，但用户只想格式化一段 JSON
+  const r2 = rec('json 格式化');
+  check('流程名不相关 → 仍推工具', r2 && r2.kind === 'tool' && r2.name === 'JSON 格式化', r2 ? r2.kind + '/' + r2.name : 'null');
+
+  const r3 = rec('生成二维码');
+  check('命中流程首步 → 推工具（不多给步骤）', r3 && r3.kind === 'tool', r3 ? r3.kind : 'null');
+
+  const r4 = rec('今天天气怎么样');
+  check('无命中 → null', r4 === null);
+
+  const r5 = rec('把照片转成 pdf', { nameOf: () => null });
+  check('外链/不存在工具 → 不推荐', r5 === null);
+
+  // 对照组：同一个流程名、同一句话，唯一变量是前一步工具能不能把产物交给后一步。
+  // 端口接不上就不推、接得上才推——这证明 io 真的参与了判断，不是摆设。
+  const mk = (id, steps) => [{ id, name: '照片成 PDF', cost: '约 1 秒', steps }];
+  const r6 = rec('把照片转成 pdf', { flows: mk('bad', [{ tool: 'base64-url' }, { tool: 'img-to-pdf' }]) });
+  check('端口接不上 → 不推流程', r6 && r6.kind === 'tool', r6 ? r6.kind : 'null');
+
+  const r7 = rec('把照片转成 pdf', { flows: mk('good', [{ tool: 'image-resize' }, { tool: 'img-to-pdf' }]) });
+  check('端口接得上 → 推流程（对照组）', r7 && r7.kind === 'flow' && r7.name === '照片成 PDF', r7 ? r7.kind + '/' + r7.name : 'null');
+}
+
 /* ---------- 输出 ---------- */
 console.log(`\n${fails.length ? '❌ 失败 ' + fails.length + ' 项' : '✅ 全部通过'}（${pass + fails.length} 项）\n`);
 if (fails.length) {

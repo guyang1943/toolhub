@@ -15,6 +15,7 @@ import * as storeKeys from '../assets/lib/store-keys.js';
 import { staticPaths, matchPage, pagePatterns } from './lib/pages-registry.mjs';
 import { PRIVACY_KINDS, validateToolMeta } from './lib/tool-meta.mjs';
 import { loadResources } from './lib/resources-data.mjs';
+import { validateIo, PORTS } from '../assets/lib/tool-io.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -760,7 +761,7 @@ check('工具清单合规（v2.8 C1）', () => {
 });
 
 check('注册表与工具分片同步（v2.8 C2）', () => {
-  const { payload, aliases, unknown } = buildToolsJson();
+  const { payload, aliases, io, unknown } = buildToolsJson();
   const cur = readFileSync(join(root, 'tools', 'tools.json'), 'utf8').trim();
   // 忽略行尾：Windows 上 core.autocrlf=true 的机器 clone 出来就是 CRLF，
   // 逐字节比会误报成「分片不一致」，把新接手的人引到完全错误的方向（v3.5.1）
@@ -769,8 +770,31 @@ check('注册表与工具分片同步（v2.8 C2）', () => {
   // 但忘了同步，搜索会静默退回「只能按名称搜」——页面上完全看不出来。
   const aliasCur = readFileSync(join(root, 'tools', 'aliases.json'), 'utf8').trim();
   assert(sameJsonText(aliasCur, JSON.stringify(aliases)), 'tools/aliases.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
+  // v3.31：端口同理。它不在首屏，所以「页面上看着不对」永远不会发生——
+  // 忘了同步的后果是流程闸门与助手拿到旧端口，安静地推荐一条接不上的链。
+  assert(existsSync(join(root, 'tools', 'io.json')), '缺 tools/io.json，请跑 node scripts/sync-tools.mjs');
+  const ioCur = readFileSync(join(root, 'tools', 'io.json'), 'utf8').trim();
+  assert(sameJsonText(ioCur, JSON.stringify(io)), 'tools/io.json 与 tool.json 分片不一致，请跑 node scripts/sync-tools.mjs');
   assert(!unknown.length, `未登记在 registry.order：${unknown.join(', ')}`);
-  return `${payload.tools.length} 个工具 / 排序已登记`;
+  return `${payload.tools.length} 个工具 / 排序已登记 / ${Object.keys(io).length} 组端口`;
+});
+
+check('工具端口声明（v3.31）', () => {
+  const errs = [];
+  const ids = readdirSync(join(root, 'tools')).filter((d) => existsSync(join(root, 'tools', d, 'tool.json')));
+  for (const id of ids) {
+    const meta = read(`tools/${id}/tool.json`);
+    // 本地工具必须声明；外链目录工具没有 run.js，也就没有端口，不要求
+    const local = meta.runtime !== 'link' && existsSync(join(root, 'tools', id, 'run.js'));
+    if (!local) continue;
+    if (!meta.io) {
+      errs.push(`${id} 没有 io 声明（端口是流程闸门与助手的唯一依据，不能缺）`);
+      continue;
+    }
+    errs.push(...validateIo(meta.io, id));
+  }
+  assert(!errs.length, `端口声明有问题：${errs.slice(0, 5).join('；')}`);
+  return `${ids.length} 个工具端口合法（词表 ${PORTS.length} 类：${PORTS.join(' / ')}）`;
 });
 
 check('接入闭环（v2.8 C3）', () => {

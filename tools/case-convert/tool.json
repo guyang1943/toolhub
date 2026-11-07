@@ -11,6 +11,7 @@
     "camel",
     "snake"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "mingmingfenggezhuanhuan",
     "mmfgzh",

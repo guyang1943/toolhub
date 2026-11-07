@@ -11,6 +11,7 @@
     "排序",
     "清洗"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "wenbenquzhongpaixu",
     "wbqzpx",

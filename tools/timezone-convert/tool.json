@@ -12,6 +12,7 @@
     "时差",
     "夏令时"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "shiquzhuanhuan",

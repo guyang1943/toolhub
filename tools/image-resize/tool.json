@@ -11,6 +11,7 @@
     "缩放",
     "尺寸"
   ],
+  "io": { "in": ["image"], "out": ["image"] },
   "aliases": [
     "tupiansuofang",
     "tpsf",

@@ -1898,11 +1898,9 @@ document.addEventListener('keydown', (e) => {
 // 命令面板早就会做意图识别（E4），但首页大框只在按回车时用一次——用户既不知道要回车，
 // 也不知道打完一句话能直接进工具。这里改成边打边认，规则表仍按需加载，不进首屏。
 let heroIntentBox = null;
-let heroIntentHit = null;
 let heroIntentTimer = 0;
 
 function hideHeroIntent() {
-  heroIntentHit = null;
   if (heroIntentBox) heroIntentBox.hidden = true;
 }
 
@@ -1922,24 +1920,23 @@ async function showHeroIntent(q) {
   const box = ensureHeroIntentBox();
   if (!box) return;
   const mod = await ensureIntent();
+  const ctx = await mod.loadContext();
   // 等待期间用户可能已经改了输入或换了页面，回来先确认还是同一句话
   const live = document.getElementById('hero-search');
   if (!mod || !live || live.value.trim() !== q) return;
-  const hit = mod.parseIntent(q);
-  const tool = hit && REGISTRY && REGISTRY.tools.find((x) => x.id === hit.id);
-  if (!tool || !isLocalTool(tool)) return hideHeroIntent();
-  heroIntentHit = hit;
-  const params = Object.entries(hit.params || {})
-    .map(([k, v]) => `${k}=${v}`)
-    .join(' · ');
-  box.innerHTML = `<span class="hi-tag">${t('💡 也许你要', 'intentMaybe')}</span>
-    <b>${esc(toolMeta(tool).name)}</b>
-    ${params ? `<span class="hi-params">${esc(params)}</span>` : ''}
-    <span class="hi-go">${t('打开并预填 →', 'intentGo')}</span>`;
-  box.hidden = false;
-  box.onclick = () => {
-    if (heroIntentHit) navigate(INTENT_MOD.intentUrl(heroIntentHit));
+  // 命中工具是某条流程的后半段时推整条流程（理由见 intent.js 的 recommend）
+  const nameOf = (id) => {
+    const x = REGISTRY && REGISTRY.tools.find((r) => r.id === id);
+    return x && isLocalTool(x) ? toolMeta(x).name : null;
   };
+  const sug = mod.recommend(q, { ...ctx, nameOf, t });
+  if (!sug) return hideHeroIntent();
+  box.innerHTML = `<span class="hi-tag">${esc(sug.tag)}</span>
+    <b>${esc(sug.name)}</b>
+    ${sug.desc ? `<span class="hi-params">${esc(sug.desc)}</span>` : ''}
+    <span class="hi-go">${esc(sug.go)}</span>`;
+  box.hidden = false;
+  box.onclick = () => navigate(sug.url);
 }
 
 // 只有「像句子」的输入才值得拉规则表：太短（≤3 字）或纯英文/拼音的，交给普通搜索

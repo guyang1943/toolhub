@@ -11,6 +11,7 @@
     "sha256",
     "校验"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "haxijisuan",
     "hxjs",

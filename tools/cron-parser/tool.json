@@ -11,6 +11,7 @@
     "定时任务",
     "运维"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "jiexi",

@@ -11,6 +11,7 @@
     "python",
     "数据"
   ],
+  "io": { "in": ["csv"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "shuzhitongji",

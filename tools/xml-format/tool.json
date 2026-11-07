@@ -10,6 +10,7 @@
     "XML",
     "格式化"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "since": "v3.26",
   "aliases": [
     "geshihua",

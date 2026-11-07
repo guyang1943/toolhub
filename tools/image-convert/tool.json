@@ -11,6 +11,7 @@
     "webp",
     "格式转换"
   ],
+  "io": { "in": ["image"], "out": ["image"] },
   "hot": true,
   "aliases": [
     "tupiangeshizhuanhuan",

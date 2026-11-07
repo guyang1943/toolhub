@@ -12,6 +12,7 @@
     "校验",
     "luhn"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "shenfenzheng",

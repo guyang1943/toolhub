@@ -11,6 +11,7 @@
     "无障碍",
     "wcag"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "yanseduibidujiancha",
     "ysdbdjc",

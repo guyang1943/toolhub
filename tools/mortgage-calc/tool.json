@@ -12,6 +12,7 @@
     "等额本息",
     "等额本金"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "fangdaijisuanqi",

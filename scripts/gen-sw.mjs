@@ -102,6 +102,9 @@ export function buildSw({ quiet = false } = {}) {
     '/tools/tools.json',
     // v3.30：别名按需加载，但离线时必须取得到——不然断网后拼音搜索静默失效
     '/tools/aliases.json',
+    // v3.31：端口声明同理。它只在助手推荐流程时取，断网时若取不到，
+    // 「建议流程」会静默消失，而那正是离线最需要它的时刻。
+    '/tools/io.json',
     '/tools/directory.json',
     '/resources.json',
     // v3.24：资源条目正文，合集页要用。它不在首屏（首页用不到正文），

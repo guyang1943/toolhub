@@ -656,6 +656,26 @@ async function feedFile(selector, dataUrl, name, type) {
     landPath + ' quality=' + landQuality
   );
 
+  // v3.31：命中工具是某条流程的后半段时，直达条改推整条流程。
+  // 「把照片转成 PDF」漏了先限边长——转出来还是手机原图尺寸的 PDF，发不出去。
+  await goto('/');
+  await typeHero('把照片转成 pdf');
+  const flowShown = await waitEl('#hero-intent:not([hidden])', 8000);
+  const flowText = await evaluate(`(document.getElementById('hero-intent') || {}).textContent || ''`);
+  check(
+    '指向流程后半段时推整条流程',
+    flowShown && flowText.includes('照片成 PDF') && flowText.includes('建议走这条流程'),
+    flowText.replace(/\s+/g, ' ').trim().slice(0, 40)
+  );
+  await evaluate(`document.getElementById('hero-intent').click()`);
+  const flowPicked = await waitEl('[data-flow="photo-to-pdf"][aria-selected="true"]', 8000);
+  const flowUrl = await evaluate('location.pathname + location.search');
+  check(
+    '流程建议直达该流程',
+    flowPicked && flowUrl === '/workflows/?flow=photo-to-pdf',
+    flowUrl
+  );
+
   await goto('/');
   await typeHero('图片压宿');
   const typoHint = await waitText('#grid', '是不是要找', 8000);

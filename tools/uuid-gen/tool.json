@@ -11,6 +11,7 @@
     "ulid",
     "id"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "shengcheng",
     "sc",

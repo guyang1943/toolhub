@@ -12,6 +12,7 @@
     "选列",
     "过滤"
   ],
+  "io": { "in": ["csv"], "out": ["csv"] },
   "since": "v3.7",
   "aliases": [
     "xuanlieyuzhongpai",

@@ -11,6 +11,7 @@
     "pandas",
     "数据分析"
   ],
+  "io": { "in": ["csv"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "shujutijian",

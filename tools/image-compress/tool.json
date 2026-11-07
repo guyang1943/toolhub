@@ -11,6 +11,7 @@
     "压缩",
     "canvas"
   ],
+  "io": { "in": ["image"], "out": ["image"] },
   "hot": true,
   "aliases": [
     "tupianyasuo",

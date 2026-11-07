@@ -38,6 +38,8 @@
       "fixAsk": "did you mean",
       "intentMaybe": "💡 Probably this",
       "intentGo": "Open with values filled →",
+      "intentFlow": "🔗 Better as a workflow",
+      "intentFlowGo": "Open workflow →",
       "emptyFav": "No favorites yet — tap ☆ on a card to add",
       "emptyUsed": "No usage yet — run any tool and it will appear here",
       "viewAll": "Show all tools",

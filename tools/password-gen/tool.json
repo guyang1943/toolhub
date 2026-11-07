@@ -10,6 +10,7 @@
     "密码",
     "随机"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "qiemimashengcheng",

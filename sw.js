@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.30 · 预缓存 355 个地址 · 约 5.7 MB
-const VERSION = "toolhub-v3.30";
+// 版本：toolhub-v3.31 · 预缓存 357 个地址 · 约 5.7 MB
+const VERSION = "toolhub-v3.31";
 const CORE = [
   "/",
   "/offline/",
@@ -17,6 +17,7 @@ const CORE = [
   "/i18n-detail.json",
   "/tools/tools.json",
   "/tools/aliases.json",
+  "/tools/io.json",
   "/tools/directory.json",
   "/resources.json",
   "/resources-notes.json",
@@ -38,6 +39,7 @@ const FULL = [
   "/i18n-detail.json",
   "/tools/tools.json",
   "/tools/aliases.json",
+  "/tools/io.json",
   "/tools/directory.json",
   "/resources.json",
   "/resources-notes.json",
@@ -219,6 +221,7 @@ const FULL = [
   "/assets/lib/pages.js",
   "/assets/lib/secure-share.js",
   "/assets/lib/store-keys.js",
+  "/assets/lib/tool-io.js",
   "/assets/lib/workflow-core.js",
   "/assets/lib/zip.js",
   "/assets/my.js",

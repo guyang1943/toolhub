@@ -10,6 +10,7 @@
     "二维码",
     "qr"
   ],
+  "io": { "in": ["text"], "out": ["image"] },
   "hot": true,
   "aliases": [
     "erweimashengcheng",

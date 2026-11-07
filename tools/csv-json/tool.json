@@ -11,6 +11,7 @@
     "json",
     "表格"
   ],
+  "io": { "in": ["csv", "json"], "out": ["json", "csv"] },
   "aliases": [
     "csv to json",
     "csv",

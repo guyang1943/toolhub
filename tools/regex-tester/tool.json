@@ -11,6 +11,7 @@
     "regex",
     "调试"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "zhengzeceshiqi",

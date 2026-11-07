@@ -11,6 +11,7 @@
     "AES",
     "隐私"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "since": "v3.26",
   "aliases": [
     "wenbenjiajiemi",

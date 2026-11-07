@@ -11,6 +11,7 @@
     "子网",
     "运维"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "since": "v3.26",
   "aliases": [
     "ziwangjisuanqi",

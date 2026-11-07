@@ -13,8 +13,10 @@
 //   · 每个输入是否都有确定的值（args / bind / 默认值 / 唯一同类口自动接）
 //   · bind 的引用写法是否合法、首步有没有引用「上一步」
 //   · 流程入口接受的类型，第一步吃不吃得下
+//   · 相邻两步的端口类型对不对得上（v3.31 起：依据工具自己声明的 io）
 // 不能静态判定的（不要假装能）：
-//   · 上一步实际产出的是文件还是文本 —— 只有跑起来才知道
+//   · 工具实际产出与它声明的 io 是否一致 —— 声明是人写的，只有跑起来才知道有没有写错
+//   · 上一步产出的具体内容合不合法（解码失败的 base64 也是 text）
 //
 // 用法：node scripts/check-workflows.mjs [--quiet]
 import { readFileSync, existsSync } from 'node:fs';
@@ -22,6 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readManifest } from './lib/tool-manifest.mjs';
 import { validateArgs, planStep, parseRef, acceptMismatch, exampleDefaultPorts, REF_FORMS } from '../assets/lib/workflow-core.js';
+import { canFeed } from '../assets/lib/tool-io.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const quiet = process.argv.includes('--quiet');
@@ -41,6 +44,13 @@ try {
 const localTools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools;
 const localIds = new Set(localTools.map((t) => t.id));
 const dirIds = new Set(JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools.map((t) => t.id));
+// 端口声明是派生产物（sync-tools 从各工具 tool.json 生成），没同步过就先报一句，
+// 免得下面的端口校验拿空表一路通过——那比报错更糟。
+const IO = existsSync(join(root, 'tools', 'io.json'))
+  ? JSON.parse(readFileSync(join(root, 'tools', 'io.json'), 'utf8'))
+  : {};
+if (!Object.keys(IO).length) err('tools/io.json 缺失或为空——请先跑 node scripts/sync-tools.mjs');
+const ioOf = (id) => IO[id] || null;
 
 const flows = Array.isArray(data.flows) ? data.flows : [];
 if (!flows.length) err(`${rel} 里没有 flows——工作流页面会是一片空白`);
@@ -133,6 +143,23 @@ for (const [i, f] of flows.entries()) {
       for (const v of plan.values) {
         const r = parseRef(v.ref);
         if (r && r.stage === 1) err(`${where} 是第一步，却绑定了「上一步」的 ${v.ref}——第一步没有上一步`);
+      }
+    }
+
+    // 相邻两步的端口接不接得上（v3.31）。依据是工具自己声明的 io，不是 inputs 的 accept：
+    // accept 说的是「文件对话框收什么」，说不了「上一步产出的那个东西能不能进来」。
+    // 在这之前，把 PDF 喂给图片压缩这类错误只能等跑起来才发现，而它不一定报错。
+    if (j > 0) {
+      const prev = f.steps[j - 1];
+      const pIo = ioOf(prev.tool);
+      const cIo = ioOf(step.tool);
+      if (!pIo || !cIo) {
+        err(`${where}：${!pIo ? prev.tool : step.tool} 没有端口声明（io），补上再跑 sync-tools`);
+      } else if (!canFeed(pIo.out, cIo.in)) {
+        err(
+          `${where}：接不上——上一步 ${prev.tool} 产出 ${pIo.out.join('/')}，` +
+            `这一步 ${step.tool} 只吃 ${cIo.in.join('/')}`,
+        );
       }
     }
 

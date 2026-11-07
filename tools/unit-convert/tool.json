@@ -11,6 +11,7 @@
     "换算",
     "度量衡"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "danweihuansuan",

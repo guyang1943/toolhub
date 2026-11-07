@@ -11,6 +11,7 @@
     "url",
     "编码"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "bianjiema",
     "bjm",

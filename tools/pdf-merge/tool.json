@@ -11,6 +11,7 @@
     "合并",
     "拆分"
   ],
+  "io": { "in": ["pdf"], "out": ["pdf"] },
   "hot": true,
   "aliases": [
     "hebingchaifen",

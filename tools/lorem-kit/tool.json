@@ -10,6 +10,7 @@
     "占位",
     "Mock"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "since": "v3.26",
   "aliases": [
     "zhanweiwenbenshengcheng",

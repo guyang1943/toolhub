@@ -10,6 +10,7 @@
     "diff",
     "对比"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "wenbenduibi",

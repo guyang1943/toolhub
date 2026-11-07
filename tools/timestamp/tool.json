@@ -11,6 +11,7 @@
     "unix",
     "时区"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "shijianchuozhuanhuan",
     "sjczh",

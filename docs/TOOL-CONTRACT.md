@@ -43,6 +43,7 @@ tools/<id>/
   "license": "MIT",
   "runtime": "browser",
   "tags": ["exif", "隐私", "图片"],
+  "io": { "in": ["image"], "out": ["image"] },
   "author": "你的 GitHub 用户名",
   "since": "v2.8"
 }
@@ -51,6 +52,11 @@ tools/<id>/
 - `id` 必须等于目录名，且符合 `^[a-z][a-z0-9-]{1,31}$`。改 id 等于换 URL，不要随意改。
 - `category` 只接受 `tools/registry.json` 里列出的九个分类。
 - `runtime`：`browser`（纯前端）/ `pyodide`（需要先加载 Python WASM，首次联网）/ `link`（外链，只用于 `directory.json`）。
+- `io` **必填**：这个工具吃什么、产出什么。词表只有六类——`image` / `pdf` / `text` / `json` / `csv` / `file`（`file` 表示「任意文件，含未知格式」，不能与其他类型写在同一边）。
+  - 它决定三件事：流程里相邻两步接不接得上（构建期红线）、助手会不会推荐这条流程、将来跨工具推荐能不能成立。
+  - 按**数据是什么**写，不按控件写。`json-format` 的输入是个 textarea，但里面装的是 JSON，所以写 `json` 而不是 `text`。
+  - 双向工具两侧都写，例如 `csv-json` 是 `{"in":["csv","json"],"out":["json","csv"]}`。
+  - 拿不准时问自己一句：上一步产出这个、这一步吃这个，会让用户拿到一个坏结果吗？会，就别写那个类型。
 - `author` / `homepage` / `since` 可选。写了 `author`，工具页会显示「社区贡献：xxx」，方便溯源。
 - `aliases` 不要手写，跑 `node scripts/gen-search-aliases.mjs` 自动生成。
 

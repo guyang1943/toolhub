@@ -13,6 +13,7 @@
     "校验",
     "文件"
   ],
+  "io": { "in": ["file"], "out": ["text"] },
   "since": "v3.7",
   "aliases": [
     "wenjianhaxixiaoyan",

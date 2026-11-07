@@ -11,6 +11,7 @@
     "沙箱",
     "wasm"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "hot": true,
   "aliases": [
     "yunxingqi",

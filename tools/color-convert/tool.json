@@ -12,6 +12,7 @@
     "rgb",
     "css"
   ],
+  "io": { "in": ["text"], "out": ["text"] },
   "aliases": [
     "yansegeshizhuanhuan",
     "ysgszh",
