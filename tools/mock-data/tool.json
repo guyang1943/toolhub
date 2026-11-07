@@ -7,5 +7,6 @@
   "license": "MIT",
   "runtime": "browser",
   "tags": ["假数据", "mock", "身份证", "手机号"],
+  "since": "v3.30",
   "aliases": ["mock", "faker", "假数据", "测试数据", "shenfenzheng", "手机号生成", "zidingyishuju"]
 }

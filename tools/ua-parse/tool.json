@@ -7,5 +7,6 @@
   "license": "MIT",
   "runtime": "browser",
   "tags": ["UA", "浏览器", "内核", "设备识别"],
+  "since": "v3.30",
   "aliases": ["ua", "user agent", "useragent", "ua jiexi", "浏览器识别", "设备识别", "yonghudaili"]
 }

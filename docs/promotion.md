@@ -26,7 +26,7 @@
 **标题**（HN 要求 `Show HN:` 开头，别加感叹号、别写 "best"）：
 
 ```
-Show HN: ToolHub – 99 open-source tools that run in your browser, not on a server
+Show HN: ToolHub – 140 open-source tools that run in your browser, not on a server
 ```
 
 **正文**（第一人称、讲实现、不吹）：
@@ -36,7 +36,7 @@ I kept needing one-off tools — compress an image, merge two PDFs, format some 
 and every site that offered them wanted me to upload the file or make an account.
 Most of these operations don't need a server at all.
 
-So I built ToolHub: 135 tools, 65 of which run entirely client-side. Nothing is uploaded.
+So I built ToolHub: 140 tools, 70 of which run entirely client-side. Nothing is uploaded.
 Image work goes through Canvas, hashing through WebCrypto, PDF work through pdf-lib,
 and a couple of Python/data tools run on Pyodide compiled to WebAssembly.
 
@@ -50,11 +50,11 @@ A few things I care about:
 - It works offline. There's a service worker + an installable PWA, so you can load it
   once and keep using it with the network off.
 - The site is a static build. No backend, no database, nothing to breach.
-- 185 Q&A entries across the tool pages, written per tool — I tried to cover the failure
+- 351 Q&A entries across the tool pages, written per tool — I tried to cover the failure
   modes (why PNG compression barely helps, why your 13-digit timestamp is off by a
   factor of 1000) instead of generic filler.
 
-Stack: no framework, no build step for the app itself, ~84 KB of gzipped assets on first
+Stack: no framework, no build step for the app itself, ~94 KB of gzipped assets on first
 paint. Tests are a mix of node-driven DOM rendering, real-browser CDP runs, and a
 performance budget that fails the build if first paint grows.
 
@@ -77,7 +77,7 @@ Happy to answer anything about the local-execution approach or the perf work.
 **标题**：
 
 ```
-A set of 99 open-source tools that run entirely in your browser — no uploads, no sign-up
+A set of 140 open-source tools that run entirely in your browser — no uploads, no sign-up
 ```
 
 **正文**：
@@ -86,7 +86,7 @@ A set of 99 open-source tools that run entirely in your browser — no uploads, 
 Most online converters upload your file to a server, process it, and hand it back. For a
 lot of tasks that's unnecessary — the browser can do the work itself.
 
-This site has 65 tools that work that way: image compression, format conversion, PDF
+This site has 70 tools that work that way: image compression, format conversion, PDF
 merging, hashing, QR codes, JSON formatting, regex testing. The file never leaves your
 machine. You can verify it by turning off your wifi and using the tool anyway.
 
@@ -100,7 +100,7 @@ https://toolhub.bot.cd
 ```
 
 **注意**：这个版块讨厌「我的新创业项目」腔调，所以正文里一次都没提"我做了一个产品"，
-只讲「这件事本来不需要服务器」。另外它要求**不能是纯广告页**，我们 12 篇教程 + 8 篇横评
+只讲「这件事本来不需要服务器」。另外它要求**不能是纯广告页**，我们 15 篇教程 + 8 篇横评
 这一点反而是加分项，可以提一句。
 
 ---
@@ -124,7 +124,7 @@ Most "free online PDF tools" upload your file. Here's how to tell which ones don
    - 打开 DevTools 的 Network，操作一次，没有请求携带文件内容 → 本地执行
    - 页面能装成 PWA 离线用 → 基本可以确定是本地执行
 3. 原理：Canvas / WebCrypto / WebAssembly 让浏览器能干以前必须服务端干的活。
-4. 我们做了什么：65 个工具走这条路，站上没有任何第三方请求（无字体 CDN、无统计脚本）。
+4. 我们做了什么：70 个工具走这条路，站上没有任何第三方请求（无字体 CDN、无统计脚本）。
 5. 最后一行放链接。
 
 **这个帖子即使不带链接也有价值**——判断方法本身就是干货。带上链接反而要克制。

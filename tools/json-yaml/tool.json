@@ -7,5 +7,6 @@
   "license": "MIT",
   "runtime": "browser",
   "tags": ["JSON", "YAML", "配置", "转换"],
+  "since": "v3.30",
   "aliases": ["yaml", "yml", "json to yaml", "yaml to json", "配置转换", "yaml zhuan json"]
 }
