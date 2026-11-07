@@ -11,6 +11,7 @@
     "记账",
     "分摊"
   ],
+  "since": "v3.29",
   "aliases": [
     "fentan",
     "ft",

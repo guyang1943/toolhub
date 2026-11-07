@@ -197,6 +197,23 @@ async function waitForCount(selector, want, timeout = 8000) {
   return n;
 }
 
+// 工具表单是懒渲染的：先取 manifest 再画字段，实测 bmi-calc 要 ~1 秒（别的页 ~200ms）。
+// 原来的「导航后立刻数一次」在机器忙的时候会数到 0，于是报「这一页渲染不出表单」——
+// v3.29.1 复验时连撞两次假红，两次还不是同一页（先 unit-convert 后 bmi-calc），
+// 而单开页面查都正常。改成轮询：表单真出不来仍然判红，只是最多等 8 秒。
+async function waitToolForm(timeout = 8000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    const n = await evaluate(`(() => {
+      const f = document.getElementById('tool-form');
+      return f ? f.querySelectorAll('input,textarea,select').length : 0;
+    })()`).catch(() => 0);
+    if (n > 0) return n;
+    await sleep(150);
+  }
+  return 0;
+}
+
 async function fill(map) {
   await evaluate(`(() => {
     const vals = ${JSON.stringify(map)};
@@ -2361,11 +2378,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     const noForm = [];
     for (const id of BATCH1) {
       await goto(`/tools/${id}/`);
-      const fields = await evaluate(`(() => {
-        const f = document.getElementById('tool-form');
-        if (!f) return 0;
-        return f.querySelectorAll('input,textarea,select').length;
-      })()`);
+      const fields = await waitToolForm();
       if (!fields) noForm.push(id);
     }
     check('12 个新工具页都能渲染出表单', noForm.length === 0, noForm.length ? noForm.join(',') : '12/12');
@@ -2407,11 +2420,7 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
     const missing = [];
     for (const id of BATCH2) {
       await goto(`/tools/${id}/`);
-      const ok = await evaluate(`(() => {
-        const f = document.getElementById('tool-form');
-        const btn = document.getElementById('run-btn');
-        return !!f && !!btn && f.querySelectorAll('input,textarea,select').length > 0;
-      })()`);
+      const ok = (await waitToolForm()) && (await evaluate(`!!document.getElementById('run-btn')`));
       if (!ok) missing.push(id);
     }
     check('12 个第二批工具页都能渲染出表单与运行按钮', missing.length === 0, missing.length ? missing.join(',') : '12/12');

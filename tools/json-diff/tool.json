@@ -11,6 +11,7 @@
     "对比",
     "diff"
   ],
+  "since": "v3.29",
   "aliases": [
     "yuyiduibi",
     "yydb",
