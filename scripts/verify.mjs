@@ -17,6 +17,7 @@ import { PRIVACY_KINDS, validateToolMeta } from './lib/tool-meta.mjs';
 import { loadResources } from './lib/resources-data.mjs';
 import { BOOT_DROP, buildOnlyFieldsLeft, slimDirectory } from './lib/directory-boot.mjs';
 import { validateIo, PORTS } from '../assets/lib/tool-io.js';
+import { COVERAGE_FLOOR } from './lib/evidence.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -568,7 +569,9 @@ check('工作流页接入（v3.23）', () => {
   const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
   assert(/path: '\/workflows\/'/.test(reg), '/workflows/ 没进页面注册表（离线包与体检都会漏掉它）');
   // 首屏不许为它付字节：引擎只能是动态 import（静态 import 会让首页多解析 10 KB）
-  const app = readFileSync(join(root, 'assets/app.js'), 'utf8');
+  // v3.32：页面型路由（含页面级模块挂载表）搬到 assets/open-page.js，源码断言读合并后的两份
+  const app =
+    readFileSync(join(root, 'assets', 'app.js'), 'utf8') + '\n' + readFileSync(join(root, 'assets', 'open-page.js'), 'utf8');
   assert(!/^import[^\n]*workflow/m.test(app), 'app.js 静态 import 了工作流引擎——首屏会为它付解析成本');
   // 挂载侧在 v3.23 收成了一张表（容器 id → 模块 → 导出），所以「动态加载」不再长成
   // import('/assets/workflow.js') 这一行。断言对事不对形：地址在表里，且模块确实经由
@@ -689,6 +692,28 @@ check('无障碍基础（skip link / 地标 / aria）', () => {
   return 'skip link + landmark + aria + focus-visible';
 });
 
+check('页面型路由按需加载（v3.32）', () => {
+  // 这八个页面首页一次都进不去（about / submit / feedback / privacy / batch / offline / my / workflows），
+  // 它们的渲染代码搬到了 assets/open-page.js。**这里防的是它被谁「顺手」搬回来**：
+  // 首屏脚本每多 1 KB，所有访客都要付；而页面的使用频率是「偶尔」。
+  const shell = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  const modPath = join(root, 'assets', 'open-page.js');
+  assert(existsSync(modPath), '缺 assets/open-page.js：页面型路由无处可去');
+  const mod = readFileSync(modPath, 'utf8');
+  assert(/export async function openPage\(/.test(mod), 'open-page.js 没有导出 openPage');
+  // 依赖必须显式传入：模块里一旦出现「以为 app.js 的变量还在」的写法，只有当用户真的点进
+  // 某个页面才会 ReferenceError —— 首页与工具页测试全绿，最难发现。抽几个关键名钉住。
+  for (const dep of ['loadRegistry', 'makePages', 'stateHTML', 'ensureCss']) {
+    assert(new RegExp('\\b' + dep + '\\b').test(mod), 'open-page.js 没用到 ' + dep + '，依赖注入怕是漏了');
+  }
+  assert(/import\('\/assets\/open-page\.js'\)/.test(shell), '首屏没有按需加载 open-page.js 的入口（这些页面会打不开）');
+  assert(!/makePages\(reg/.test(shell), '页面渲染实体又写回了 app.js——首屏会重新背上约 1.3 KB');
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('/assets/open-page.js'), '按需模块没进离线包：断网打开这八个页面会白屏');
+  const tpl = readFileSync(join(root, 'index.html'), 'utf8');
+  assert(!/src="[^"]*open-page\.js/.test(tpl), '首屏 <script> 里不该出现 open-page.js');
+  return '8 个页面型路由走按需模块，首屏只留薄壳';
+});
 check('结果出口契约（text / files）', () => {
   const localDirs = readdirSync(join(root, 'tools')).filter((d) => existsSync(join(root, 'tools', d, 'run.js')));
   const src = (d) => readFileSync(join(root, 'tools', d, 'run.js'), 'utf8');
@@ -1011,7 +1036,9 @@ check('隐私说明与统计口径（D3）', () => {  const page = join(root, 'p
   assert(/analytics-optout|统计/.test(body), '隐私页没有提到统计与关闭方式');
   const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
   assert(/\/privacy\/<\/loc>/.test(sm), 'sitemap 缺 /privacy/');
-  const app = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  // v3.32：页面型路由（含页面级模块挂载表）搬到 assets/open-page.js，源码断言读合并后的两份
+  const app =
+    readFileSync(join(root, 'assets', 'app.js'), 'utf8') + '\n' + readFileSync(join(root, 'assets', 'open-page.js'), 'utf8');
   // v3.22：统计开关改走 store，常量 ANALYTICS_OPT_OUT 已删除。断言改成分别判读与写两个故障形态——
   // 只判一个字符串在不在，会让「能读不能写」这种半残实现照样通过。
   assert(/store\.set\('no-analytics'/.test(app), 'app.js 缺「在本机关闭统计」的写入路径（按钮点了不生效）');
@@ -1024,6 +1051,10 @@ check('隐私说明与统计口径（D3）', () => {  const page = join(root, 'p
 // 等于让「0 字节上传服务器」这句话重新失去依据——所以只许加，不许减。
 const BOUNDARY_VERIFIED_BASELINE = ['excalidraw', 'filepizza', 'localsend', 'pairdrop'];
 
+// v3.32：边界「已核」条数下限。未核（imported / inferred）可以躺着不动，但不能变多；
+// 新增一条外链就必须真核一条，否则这条红。数字只许往上调。
+const BOUNDARY_MANUAL_FLOOR = 25;
+
 check('外链证据：结构完整、旧字段已清除（v3.21）', () => {
   const stale = dir.tools.filter((t) => 'checkedAt' in t);
   assert(!stale.length, `仍有 ${stale.length} 条在用旧的 checkedAt：${stale.slice(0, 3).map((t) => t.id).join('、')}`);
@@ -1035,7 +1066,19 @@ check('外链证据：结构完整、旧字段已清除（v3.21）', () => {
   const manual = dir.tools.filter((t) => t.evidence.boundary.method === 'manual').map((t) => t.id);
   const dropped = BOUNDARY_VERIFIED_BASELINE.filter((id) => !manual.includes(id));
   assert(!dropped.length, `这些条目曾人工核实过，现在退回了未核实：${dropped.join('、')}`);
-  return `${dir.tools.length} 条证据结构合法 · 边界已核 ${manual.length} 条 · 无检查探活冒充核实`;
+  // v3.32：把「未核」从定时炸弹改成持续约束。旧写法是给 imported 定 90/180 天到期报错——
+  // 54 条同一天到期，那不是「该复检了」，是「从来没人核过」。这两种事必须分开处理：
+  // 已核的按 365/730 天复检，未核的只提醒、另由下面两条盯住总量。
+  assert(
+    manual.length >= BOUNDARY_MANUAL_FLOOR,
+    `边界已核 ${manual.length} 条，低于下限 ${BOUNDARY_MANUAL_FLOOR} 条：未核条目只许减少，不许增加`,
+  );
+  const ratio = manual.length / dir.tools.length;
+  assert(
+    ratio >= COVERAGE_FLOOR,
+    `边界已核 ${manual.length}/${dir.tools.length}（${(ratio * 100).toFixed(0)}%），低于下限 ${(COVERAGE_FLOOR * 100).toFixed(0)}%：新增外链要顺手核一条`,
+  );
+  return `${dir.tools.length} 条证据结构合法 · 边界已核 ${manual.length}/${dir.tools.length}（${(ratio * 100).toFixed(0)}%）· 无检查探活冒充核实`;
 });
 
 check('外链证据：页面与数据一致（v3.21）', () => {

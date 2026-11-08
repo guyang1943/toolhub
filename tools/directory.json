@@ -238,9 +238,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 GoogleChromeLabs/squoosh README：does not send your image to a server. All image compression processes locally.",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -306,9 +306,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 naptha/tesseract.js README：works in the browser（wasm 推理），服务端 Node 用法是可选路径，网页版不走服务端。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -341,9 +341,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 alam00000/bentopdf README：privacy-first, client-side PDF toolkit；All processing happens in your browser，files are never uploaded to a server.",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -372,9 +372,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 Stirling-Tools/Stirling-PDF README：可作桌面应用、在浏览器内运行，或自建服务器部署——边界随部署方式变，故标「看用法」。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -448,7 +448,8 @@
       "source": "github.com/joemccann/dillinger",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "upload",
+      "privacyNote": "文档存在云端：可接入 Dropbox / GitHub / OneDrive，编辑器本身不额外上传，但「保存」就是写进云存储。官方 README 自称 cloud-native，并列了 Native cloud storage 与 seamless sync。",
       "evidence": {
         "link": {
           "at": "2026-11-04",
@@ -456,9 +457,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 joemccann/dillinger README：cloud-native Markdown editor、Native cloud storage 与 seamless sync——文档存在云端，原标「本机处理」有误，改为「会上传」。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -484,9 +485,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 cryptpad/cryptpad README：数据在浏览器内加密（encrypt your data in your browser）后再存，服务端持有的是密文。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -791,9 +792,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 freeCodeCamp/devdocs README：The web app is all client-side JavaScript；everything happens in the browser.",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -910,9 +911,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 markmap/markmap README：try it in the browser with nothing to install；导出也在浏览器内完成。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -943,9 +944,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 plantuml/plantuml README：可编译成 client-side 在浏览器内运行（TeaVM），但官网在线服务是服务端渲染，故标「会上传」。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -971,9 +972,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 lewish/asciiflow README：ASCIIFlow is a client-side only web based application.",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1246,9 +1247,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 PrivateBin/PrivateBin README：Data is encrypted and decrypted in the browser，服务端只存密文。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1551,9 +1552,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 rawgraphs/rawgraphs-app README：the data injected into RAWGraphs is processed only by the web browser: no server-side operations or storages.",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1893,9 +1894,9 @@
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-08",
+          "by": "核对 ffmpegwasm/ffmpeg.wasm README：enables video & audio record, convert and stream right inside browsers.",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",

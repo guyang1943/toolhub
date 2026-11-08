@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.31 · 预缓存 357 个地址 · 约 5.7 MB
-const VERSION = "toolhub-v3.31";
+// 版本：toolhub-v3.32 · 预缓存 358 个地址 · 约 5.7 MB
+const VERSION = "toolhub-v3.32";
 const CORE = [
   "/",
   "/offline/",
@@ -226,6 +226,7 @@ const FULL = [
   "/assets/lib/zip.js",
   "/assets/my.js",
   "/assets/offline.js",
+  "/assets/open-page.js",
   "/assets/submit-page.js",
   "/assets/submit-resource.js",
   "/assets/tool-page.js",

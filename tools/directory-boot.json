@@ -266,7 +266,8 @@
       "source": "github.com/joemccann/dillinger",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "upload",
+      "privacyNote": "文档存在云端：可接入 Dropbox / GitHub / OneDrive，编辑器本身不额外上传，但「保存」就是写进云存储。官方 README 自称 cloud-native，并列了 Native cloud storage 与 seamless sync。",
       "tags": [
         "markdown"
       ]

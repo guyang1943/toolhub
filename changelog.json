@@ -1,6 +1,19 @@
 {
   "entries": [
     {
+      "date": "2026-11-08",
+      "version": "v3.32",
+      "items": [
+        "首屏再瘦 1.2 KB：目录的「证据」字段拆出启动数据。70 条外链各带两条证据（链接什么时候探的、数据边界凭什么这么标），但浏览器一条都读不到——它们是构建期写详情页与校验脚本用的。做法不是按需 fetch，而是在构建期派生出 tools/directory-boot.json 给浏览器取：源文件结构一动不动（证据的写入口散在五个脚本里，动结构等于同时改五处写入口），副本少两个字段。首屏 96,414 → 95,297 B，启动数据 43,647 → 42,424 B，余量 866 → 1,983 B，total 上限一分没抬。",
+        "脚本余量从 57 字节回到 1.4 KB：页面型路由（about / submit / feedback / privacy / batch / offline / my / workflows）的渲染代码搬到 assets/open-page.js，首屏只留一个薄壳。理由很直接——这八个页面首页一次都进不去，却让每个访客为「可能去看隐私说明」付解析成本。依赖全部显式传入而不是让模块去读全局：拆出去之后少一个变量就是「点开隐私页白屏」，而首页与工具页的测试全绿，那种漏最难发现。app.js 31,687 → 30,345 B。verify 新增一条闸门盯住它，并用故障注入验过（把页面实体写回首屏会红，按需模块漏出离线包会红）。",
+        "边界证据从 12 条核到 25 条（17% → 36%），并且改掉一条错标。这一批是拿着每个项目的官方 README 逐条对：Squoosh「does not send your image to a server」、BentoPDF「All processing happens in your browser」、ASCIIFlow「client-side only」、RAWGraphs「processed only by the web browser: no server-side operations」……十二个条目从「上游继承」改成「人工核验」，每条都记着原句摘录，下次复检的人能看出当时凭什么这么标。纠错的那条是 Dillinger：原来标「本机处理」，README 自己写着 cloud-native 与 Native cloud storage——文档存在云端，改成「会上传」并补了说明。核实就是这样：多数确认，偶尔推翻。",
+        "证据闸门的语义改了：未核不再是「到期爆炸」，而是「不许变多」。原来 imported 档定 90/180 天且到期直接报错，算下来 2027-05-02 那天 54 条会同时变红——那不是「该复检了」，是「从来没人核过」，两件事必须分开处理。现在已核的仍按 365/730 天复检，未核的只提醒；真正拦住的是两条硬闸：已核条数不得低于 25，覆盖率不得低于 35%。新增一条外链就得真核一条，否则立刻掉线下。",
+        "探活清单 42 → 51 路。补上六篇从来没被线上探过的教程（tv-box-server / cloudflare-free / github-first-lesson / ollama-local-ai / phone-automation / miniprogram-cloud，至此 16 篇全探），补上 tools/io.json 与 assets/lib/tool-io.js（v3.31 加的按需文件一直漏在清单外，漏传的表现是「打了字没反应」，只有控制台一行 404），再补上这批新增的启动副本。",
+        "构建的空白噪音终于根治。build-pages 剥模板注释区块的正则用 \\n? 收尾，而这台机器的检出是 CRLF，匹配不到 \\r，每块都留下一个只含 \\r 的「假空行」——于是每次构建 207 个产物各多一两行空白，发版时得手工 git checkout 还原，是整条发布链里最容易误带噪音的一步。改成 \\r?\\n? 之后重建产物对齐生成器，此后构建完 git status 零 diff，那一步手工操作可以取消了。",
+        "当前家底：本地工具 70 · 外链收录 140（70 条带边界证据、其中 25 条已核）· 教程 16 篇 127 步 · 工作流 6 条 · 资源 8 合集 64 条 · 测评 8 篇。验收：verify 78 项 · spa 80 · func 321 · flow 122 · browser 366 · audit 288 次页面检查 · 首屏 93.1 KB / 9 请求（预算 95.0）。"
+      ]
+    },
+    {
       "date": "2026-11-07",
       "version": "v3.31",
       "items": [

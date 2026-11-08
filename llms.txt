@@ -88,7 +88,7 @@
 - [Stirling-PDF](https://toolhub.bot.cd/tools/stirlingpdf/): 功能最全的开源 PDF 工具箱（官方演示站）（数据边界：看用法）
 - [PDF.js Viewer](https://toolhub.bot.cd/tools/pdfjs/): Mozilla 官方 PDF 阅读器在线演示（数据边界：本机处理）
 - [StackEdit](https://toolhub.bot.cd/tools/stackedit/): 浏览器内 Markdown 编辑器，支持云同步（数据边界：看用法）
-- [Dillinger](https://toolhub.bot.cd/tools/dillinger/): 简洁的在线 Markdown 编辑器（数据边界：本机处理）
+- [Dillinger](https://toolhub.bot.cd/tools/dillinger/): 简洁的在线 Markdown 编辑器（数据边界：会上传）
 - [CryptPad](https://toolhub.bot.cd/tools/cryptpad/): 端到端加密的在线文档/表格/看板，无需注册即可协作（数据边界：会上传）
 - [AFFiNE](https://toolhub.bot.cd/tools/affine/): 开源 Notion 替代品：文档+白板+表格一体（数据边界：会上传）
 - [CyberChef](https://toolhub.bot.cd/tools/cyberchef/): GCHQ 出品的数据解码/加密/转换瑞士军刀（数据边界：本机处理）

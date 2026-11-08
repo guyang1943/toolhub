@@ -46,9 +46,17 @@ export const TTL = {
     manual: { warn: 365, fail: 730 },
   },
   boundary: {
+    // manual 是真看过页面得出的结论，过期就该复检：365 天提醒、730 天失败。
     manual: { warn: 365, fail: 730 },
-    inferred: { warn: 120, fail: 240 },
-    imported: { warn: 90, fail: 180 },
+    // inferred / imported 没有「过期」这回事——它们从来没有被核过。
+    //
+    // v3.32 改：原来给 imported 定 90/180 天并且到期直接 error，算下来 2027-05-02
+    // 那天 54 条会同时变红。那种红第一天有人看，第二天就有人把 at 改掉——闸门于是
+    // 从「逼着复检」退化成「教人填日期」，正是这份文件开头那段话警告的事。
+    // 所以这两档只提醒、不拦构建；真正拦住的是 verify 里那条「已核条数只许增加」：
+    // 未核的可以躺着不动，但不能变多，改一条代码就要真核一条。
+    inferred: { warn: 120, fail: Infinity },
+    imported: { warn: 90, fail: Infinity },
   },
 };
 
@@ -171,5 +179,7 @@ export function evidenceLine(stats) {
   );
 }
 
-/** 覆盖率低于基线就让 CI 红灯的阈值。只许往上调，不许往下调。 */
-export const COVERAGE_FLOOR = 0;
+/** 覆盖率低于基线就让 CI 红灯的阈值。只许往上调，不许往下调。
+ *  v3.32：0 → 0.35。此前是 0 等于没有闸门；现在边界已核 25/70（36%），
+ *  把下限钉在 0.35，新增外链条目时必须顺手核一条，否则覆盖率立刻掉线下。 */
+export const COVERAGE_FLOOR = 0.35;
