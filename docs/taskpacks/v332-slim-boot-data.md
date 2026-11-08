@@ -1,8 +1,15 @@
 # v3.32 · 目录证据字段拆出首屏（feat/slim-boot-data）
 
 > 交付人：Craft（分支 + 验收）｜合并人：Guyang｜开 PR：Muse
-> 分支：`feat/slim-boot-data`（从 `main` = `fd303a9` 切出）
+> 分支：`feat/slim-boot-data`（从 `main` = `fd303a9` 切出，后合并 `1e2ee5c` 保持 clean）
 > 状态：**八套全绿，等开 PR**。本批不含 changelog 条目、不含 `since`——那是发版任务的活。
+
+**2026-11-08 08:25 追记（合并 main 后复跑）**：分支切出后 main 前进了 `feat/guides-realrun`
+（PR #16，教程实跑复验，合并提交 `1e2ee5c`），已 `--no-ff` 合入本分支（`6187eeb`）。
+冲突 5 个全是构建产物（四篇教程静态页 + `/offline/`），按定式暂存 main 侧后整体 `build:prod`
+重建覆盖，数据源全取两边之和；`api/tools.json` / `feed.xml` / `sitemap.xml` 的日期前移是构建日
+行为，已还原不带入。合并后八套重跑全绿：verify 77 · spa 80 · func 321 · perf 93.1 KB/9 ·
+flow 122 · smoke ✅ · browser 366 · audit 288。
 
 ## 一、为什么要拆
 
