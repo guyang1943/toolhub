@@ -439,7 +439,8 @@ export async function mountMy(el, reg) {
   ];
   if (wanted.some((id) => !NAMES.has(id))) {
     try {
-      const dir = await (await fetch('/tools/directory.json')).json();
+      // v3.32：同 app.js，取启动副本（只少 evidence / linkStatus，名字一个不少）。
+      const dir = await (await fetch('/tools/directory-boot.json')).json();
       for (const d of dir.tools || []) if (!NAMES.has(d.id)) NAMES.set(d.id, d.name);
     } catch {
       /* 取不到就用 id 显示，不影响任何操作 */

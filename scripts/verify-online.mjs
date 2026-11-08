@@ -64,6 +64,17 @@ const PATHS = [
   '/tools/ua-parse/', '/tools/mock-data/', '/tools/json-yaml/', '/tools/ascii-art/', '/tools/pinyin-convert/',
   '/assets/vendor/js-yaml.min.js', '/assets/vendor/figlet.min.js', '/assets/vendor/figlet-fonts.js',
   '/assets/vendor/pinyin.min.js',
+  // v3.32：教程到 16 篇这个规模，抽样就没道理了——之前每批只抽 2–3 篇，剩下 6 篇
+  // 从上线起从没被线上探过。单篇坏掉的表现是「少一段正文」或「示例原样吐出来」，
+  // 总览页 200 完全看不出来，只有真打开那一页才知道。至此 16 篇全探。
+  '/guides/tv-box-server/', '/guides/cloudflare-free/', '/guides/github-first-lesson/',
+  '/guides/ollama-local-ai/', '/guides/phone-automation/', '/guides/miniprogram-cloud/',
+  // v3.31 加的端口声明与它的加载器一直没进这份清单：它们只在助手推荐流程时才取，
+  // 漏传的表现是「打了字没反应」，控制台才有一行 404——正是这份清单要盯的那类沉默故障。
+  '/tools/io.json', '/assets/lib/tool-io.js',
+  // v3.32：浏览器改取目录的「启动副本」。漏传这一份，线上首页的目录卡片会整片消失
+  // （源文件还在，但没有任何页面去取它了）。
+  '/tools/directory-boot.json',
 ];
 
 async function get(path, tries = 3) {
