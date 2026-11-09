@@ -1428,6 +1428,50 @@ check('折腾指南（v3.15）', () => {
   return `${g.length} 篇 / ${g.reduce((n, x) => n + x.steps.length, 0)} 步`;
 });
 
+// ---------- v3.33：首页教程栏与入口卡的数字口径 ----------
+// 这一版把「教程」从入口卡上的一个数字，变成首页右侧一栏真实可点的篇目。
+// 三件容易悄悄坏掉的事各钉一条：picks 里写了不存在的 slug（首页会静默少一条）、
+// 静态注入与数据不同步（改完 guides.json 忘了重建）、入口卡又退回「步骤数当主数字」
+// （这是这次改版的核心口径：篇数是「有多少条路」，步数是「每篇多长」，两个都得有，但主次不能反）。
+check('首页教程栏与数据一致（v3.33）', () => {
+  const gf = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8'));
+  const guides = gf.guides || [];
+  const bySlug = new Map(guides.map((g) => [g.slug, g]));
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+
+  // 用静态化的区块标记取，不用 div 配对：行内还有 .f-body 两层 div，配对会在第一行就收尾
+  const block = home.match(/<!--hs:home-guides-->([\s\S]*?)<!--\/hs:home-guides-->/);
+  assert(block && block[1].trim(), '首页没有 #home-guides 教程栏（或它是空的）');
+  const rows = [...block[1].matchAll(/class="fl-row" href="\/guides\/([\w-]+)\/"/g)].map((m) => m[1]);
+  assert(rows.length >= 4, `首页教程栏只有 ${rows.length} 条，至少要 4 条`);
+
+  const picks = gf.picks || [];
+  const badPicks = picks.filter((s) => !bySlug.has(s));
+  assert(!badPicks.length, `guides.json 的 picks 里有不存在的 slug：${badPicks.join('、')}（首页会静默少一条）`);
+  assert(picks.length, 'guides.json 缺 picks——首页教程栏的顺序是编辑定的，不该由数组顺序决定');
+  assert(
+    rows.every((s) => bySlug.has(s)),
+    `首页教程栏出现了 guides.json 里没有的篇目：${rows.filter((s) => !bySlug.has(s)).join('、')}`
+  );
+  // 顺序必须与 picks 一致：改了 picks 不重建，首页就会显示上一版的推荐
+  const want = picks.slice(0, rows.length);
+  assert(rows.join(',') === want.join(','), `首页教程栏顺序 ${rows.slice(0, 3).join(',')}… 与 picks ${want.slice(0, 3).join(',')}… 不一致`);
+  for (const s of rows) assert(existsSync(join(root, 'guides', s, 'index.html')), `首页教程栏指向的 ${s} 没有生成页面`);
+
+  // 入口卡：主数字是篇数，步数在说明里
+  const steps = guides.reduce((n, g) => n + (g.steps || []).length, 0);
+  assert(
+    home.includes(`data-guides="${guides.length}" data-steps="${steps}"`),
+    `入口卡教程数据应为 ${guides.length} 篇 / ${steps} 步（data-guides / data-steps）`
+  );
+  assert(
+    home.includes(`<span class="rc-num">${guides.length}</span><span data-zh="篇教程"`),
+    `入口卡教程主数字应显示「${guides.length} 篇教程」，不能退回步数`
+  );
+  assert(new RegExp(`>${steps} 个步骤 · 前置条件`).test(home), `入口卡说明里应有「${steps} 个步骤」`);
+  return `${rows.length} 篇推荐 / 入口卡 ${guides.length} 篇 · ${steps} 步`;
+});
+
 checkAsync('意图解析规则（E4）', async () => {
   const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
   const cases = [

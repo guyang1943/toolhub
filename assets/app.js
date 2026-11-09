@@ -601,7 +601,10 @@ function renderFeatured(tools) {
     return;
   }
   sec.style.display = '';
-  const titleEl = sec.querySelector('.section-title');
+  // v3.33：这一区变成左右两栏（工具 | 教程），工具栏是 .fc--tools。
+  // 标题必须按栏定位——原来选的是区里第一个 .section-title，现在恰好还是它，
+  // 但「恰好」不是理由：改成右栏在前、或再加一栏，就会把工具栏的标题写进教程栏。
+  const titleEl = sec.querySelector('.fc--tools .section-title');
   if (titleEl) titleEl.innerHTML = `⚡ <span>${t('高频推荐', 'featured')}</span><em>${t('大家都在用 · 优先试试这些', 'featuredSub')}</em>`;
   $('#featured-grid').innerHTML = ids
     .map((id, i) => {
@@ -792,9 +795,12 @@ function renderRouteCards(reg, res, evals) {
   if (!box) return;
   // v3.16：导航收敛成「工具 / 资源 / 教程 / 测评」四栏，这一排卡跟着同序，
   //        对比台让位给教程 —— 对比不再是一个独立入口，而是测评页第一屏的那个入口。
-  // 教程的步数是构建期写进 DOM 的（首页不为了一个数字多取一份 JSON），这里读回来沿用。
-  const gSteps = box.querySelector('.rc--guide .rc-num')?.textContent?.trim() || '0';
-  const gCount = box.querySelector('.rc--guide')?.dataset.guides || '0';
+  // 教程的篇数与步数是构建期写进 DOM 的（首页不为了两个数字多取一份 JSON），这里读回来沿用。
+  // v3.33：卡面主数字从「步数」改成「篇数」——步数说的是篇幅，篇数才是「有多少条路可走」；
+  // 步数没有丢，挪到下面那行说明里。所以两个数都得读回来，只读一个就会渲染成 0。
+  const gBox = box.querySelector('.rc--guide');
+  const gCount = gBox?.dataset.guides || '0';
+  const gSteps = gBox?.dataset.steps || '0';
   box.innerHTML = `
     <a class="route-card rc--tools" href="/tools/" data-spa>
       <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
@@ -808,10 +814,10 @@ function renderRouteCards(reg, res, evals) {
       <span class="rc-desc" data-zh="${(res.collections || []).length} 个合集：图标、字体、配色、学习路线" data-en="${(res.collections || []).length} collections: icons, fonts, palettes, learning paths">${(res.collections || []).length} 个合集：图标、字体、配色、学习路线</span>
       <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
-    <a class="route-card rc--guide" href="/guides/" data-spa data-guides="${gCount}">
+    <a class="route-card rc--guide" href="/guides/" data-spa data-guides="${gCount}" data-steps="${gSteps}">
       <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
-      <b><span class="rc-num">${gSteps}</span><span data-zh="个步骤" data-en="steps">个步骤</span></b>
-      <span class="rc-desc" data-zh="${gCount} 篇动手教程 · 前置条件、风险标注、回退路径" data-en="${gCount} hands-on guide, with prerequisites, risk labels and a way back">${gCount} 篇动手教程 · 前置条件、风险标注、回退路径</span>
+      <b><span class="rc-num">${gCount}</span><span data-zh="篇教程" data-en="guides">篇教程</span></b>
+      <span class="rc-desc" data-zh="${gSteps} 个步骤 · 前置条件、风险标注、回退路径" data-en="${gSteps} steps · prerequisites, risk labels and a way back">${gSteps} 个步骤 · 前置条件、风险标注、回退路径</span>
       <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/" data-spa>
@@ -1468,6 +1474,11 @@ async function renderHome() {
   await renderResPreview();
   renderTasks();
   renderFeatured(reg.tools);
+  // 教程栏是构建期写死的（与左栏工具列表同一份静态化产物），app.js 不重画它，
+  // 但链接的 SPA 拦截必须补绑一次：这里是直接写 onclick，没有事件委托，
+  // 不绑就变成整页刷新——点一条教程回首页，滚动位置与筛选状态全丢。
+  // 范围取整个推荐区而不是 #home-guides：右栏标题上的「全部 16 篇教程 →」也在外面那层。
+  bindSpaLinks('#featured-section');
   renderRecent(reg.tools);
   renderChips(reg.categories);
   renderFilterbar();

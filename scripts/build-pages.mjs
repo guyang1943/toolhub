@@ -103,7 +103,8 @@ const CAT_QUERY = CAT_URL;
 }
 // v3.15：第三层内容「教程」。工具页回答「点开就能用」，教程页回答「要装、要刷、要配」。
 // 两者的门槛完全不同，混在一起会让「标本地=文件不出你的电脑、打开即用」这个承诺失真。
-const GUIDES = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8')).guides;
+const GUIDE_FILE = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8'));
+const GUIDES = GUIDE_FILE.guides;
 {
   const ids = new Set(tools.map((t) => t.id));
   // 指南里引用的站内工具必须真实存在：拼错一个 id 就是一条 404 死链，
@@ -128,6 +129,12 @@ const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
 // 两列五行仍然是一屏之内能扫完的量，再多就和下方网格抢同一份注意力了。
 // 这个数字必须与 assets/app.js 的 FEATURED_MAX 一致。
 const FEATURED_MAX = 10;
+// 首页「教程推荐」栏的条数（v3.33）。左栏 10 条工具行、右栏 8 条教程行——
+// 教程行多一行说明文字、单条更高，8 条正好让两栏收尾的底边基本齐平。
+// picks 里失效的 slug 会被跳过，条数不够就自然变短，不补位不重复。
+const HOME_GUIDE_MAX = 8;
+// 难度只有三档，英译放在这里而不是塞进 guides.json：它是展示层的翻译，不是内容本身。
+const GUIDE_DIFF_EN = { 入门: 'Beginner', 中等: 'Intermediate', 进阶: 'Advanced' };
 
 // v3.5：工具页专用样式拆到独立文件，首页不为它付字节。
 // 工具页在构建期就把这张表引进 <head>（整页加载无闪烁）；从首页点卡片进工具的
@@ -1454,10 +1461,10 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
       <span class="rc-desc" data-zh="${resources.collections.length} 个合集：图标、字体、配色、学习路线" data-en="${resources.collections.length} collections: icons, fonts, palettes, learning paths">${resources.collections.length} 个合集：图标、字体、配色、学习路线</span>
       <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
-    <a class="route-card rc--guide" href="/guides/" data-guides="${GUIDES.length}">
+    <a class="route-card rc--guide" href="/guides/" data-guides="${GUIDES.length}" data-steps="${guideSteps}">
       <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
-      <b><span class="rc-num">${guideSteps}</span><span data-zh="个步骤" data-en="steps">个步骤</span></b>
-      <span class="rc-desc" data-zh="${GUIDES.length} 篇动手教程 · 前置条件、风险标注、回退路径" data-en="${GUIDES.length} hands-on guide, with prerequisites, risk labels and a way back">${GUIDES.length} 篇动手教程 · 前置条件、风险标注、回退路径</span>
+      <b><span class="rc-num">${GUIDES.length}</span><span data-zh="篇教程" data-en="guides">篇教程</span></b>
+      <span class="rc-desc" data-zh="${guideSteps} 个步骤 · 前置条件、风险标注、回退路径" data-en="${guideSteps} steps · prerequisites, risk labels and a way back">${guideSteps} 个步骤 · 前置条件、风险标注、回退路径</span>
       <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
@@ -1485,6 +1492,21 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
         <span class="f-meta">${isLocal ? '🔒 本地' : '🌐 在线'}${priv} · ${tool.category}</span>
       </div>`;
     })
+    .join('');
+
+  // 首页「教程推荐」栏（v3.33）：与左栏的高频工具并排，两栏各是一个「先看什么」的入口。
+  // 顺序由 content/guides.json 的 picks 定，失效的 slug 直接跳过——教程改名/下线时
+  // 首页宁可少一条，也不能留一条 404 或者指向别的篇目。
+  const guideBySlug = new Map(GUIDES.map((g) => [g.slug, g]));
+  const picks = (GUIDE_FILE.picks || []).map((s) => guideBySlug.get(s)).filter(Boolean).slice(0, HOME_GUIDE_MAX);
+  const homeGuides = picks
+    .map(
+      (g) => `<a class="fl-row" href="/guides/${g.slug}/" data-spa>
+        <span class="rank">${g.icon || '📖'}</span>
+        <div class="f-body"><div class="f-name">${esc(g.title)}</div><div class="f-desc">${esc(g.tagline)}</div></div>
+        <span class="f-meta" data-zh="${g.difficulty} · ${g.minutes} 分钟" data-en="${GUIDE_DIFF_EN[g.difficulty] || g.difficulty} · ${g.minutes} min">${g.difficulty} · ${g.minutes} 分钟</span>
+      </a>`
+    )
     .join('');
 
   const resPreview = resources.collections
@@ -1532,9 +1554,13 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   };
   put('route-cards', 'route-cards', 'div', routeCards);
   put('featured-list', 'featured-grid', 'div', featuredHTML);
+  put('guide-list', 'home-guides', 'div', homeGuides);
   put('res-preview-grid', 'res-preview-grid', 'div', resPreview);
   put('chips', 'chips', 'div', chips);
   put('filterbar', 'filterbar', 'div', filterbar);
+  // 教程栏标题右侧的「全部 N 篇教程 →」也在归一化里：这个数由数据推导，
+  // 手写死一个，加教程那天它就开始说假话，而它藏在标题右端，没人会去核。
+  html = html.replace(/全部 \d+ 篇教程 →/g, `全部 ${GUIDES.length} 篇教程 →`);
 
   if (featuredIds.length) html = html.replace(/(<div class="featured-section" id="featured-section" style=")[^"]*(")/, '$1$2');
   html = html.replace(/(<div class="res-preview" id="res-preview" style=")[^"]*(")/, '$1$2');

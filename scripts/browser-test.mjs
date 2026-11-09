@@ -466,6 +466,17 @@ async function feedFile(selector, dataUrl, name, type) {
   await goto('/');
   const guideNavHref = await evaluate(`(document.querySelector('#main-nav a[data-nav="guides"]') || {getAttribute: () => ''}).getAttribute('href') || ''`);
   check('导航有教程入口', guideNavHref === '/guides/', guideNavHref);
+  // v3.33：首页右侧教程栏是构建期写死的静态块，app.js 只补绑一次 SPA 点击。
+  // 不绑也能看：链接照样在、点了也能进——只是浏览器整页刷新，回首页时滚动位置和筛选状态全丢。
+  // 所以这里既验「点得进去」，也验「没有整页刷新」（window 上的标记能活下来才算 SPA 跳转）。
+  const homeGuideRows = await waitForCount('#home-guides a.fl-row', 4, 8000);
+  check('首页有教程推荐栏', homeGuideRows >= 4, homeGuideRows + ' 条');
+  await evaluate(`window.__noReload = 1; document.querySelector('#home-guides a.fl-row').click()`);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  const homeGuidePath = await evaluate(`location.pathname`);
+  check('首页教程栏第一条能点进详情', /^\/guides\/[\w-]+\/$/.test(homeGuidePath), homeGuidePath);
+  check('首页教程栏是 SPA 跳转（不是整页刷新）', (await evaluate(`window.__noReload === 1`)) === true);
+  await goto('/');
   await evaluate(`document.querySelector('#main-nav a[data-nav="guides"]').click()`);
   await waitText('#page-body', '教程', 8000);
   const guideIdxPath = await evaluate(`location.pathname`);
@@ -1911,6 +1922,22 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('375px 导航一行放得下', navFit <= 1, '溢出 ' + navFit + 'px');
   const overflow375 = await evaluate(`document.documentElement.scrollWidth - window.innerWidth`);
   check('375px 无横向溢出', overflow375 <= 1, 'overflow ' + overflow375 + 'px');
+  // v3.33 手机端整页重排：三处列数是这次改版的核心，只看截图验收不住——
+  // 断点少写一个，页面照样能开，只是又退回「工具卡一列要滑 3400px」的老样子。
+  const colsOf = (sel) =>
+    evaluate(`(() => { const el = document.querySelector(${JSON.stringify(sel)}); if (!el) return -1;
+      return getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length; })()`);
+  const gridCols = await colsOf('#grid');
+  check('手机端工具网格两列', gridCols === 2, gridCols + ' 列');
+  const routeCols = await colsOf('#route-cards');
+  check('手机端入口卡 2×2', routeCols === 2, routeCols + ' 列');
+  const featCols = await colsOf('#featured-section');
+  check('手机端推荐区堆成单列', featCols === 1, featCols + ' 列');
+  // 教程栏在手机上只留 6 条（先看几篇，不是目录页）；桌面 8 条由构建期决定
+  const shownGuides = await evaluate(
+    `[...document.querySelectorAll('#home-guides a.fl-row')].filter((e) => e.offsetParent).length`,
+  );
+  check('手机端教程栏收起为 6 条', shownGuides === 6, shownGuides + ' 条');
   // 步骤列带序号圆点与 40px 缩进，长段落最容易在这里把版心挤出去
   await goto('/guides/tv-box-server/');
   await waitText('#page-body', '翻车了怎么办', 8000);

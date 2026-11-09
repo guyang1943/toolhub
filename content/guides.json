@@ -1,5 +1,15 @@
 {
   "updated": "2026-11-07",
+  "picks": [
+    "toolhub-image-pipeline",
+    "github-pages-first-site",
+    "custom-domain",
+    "ollama-local-ai",
+    "pwa-install",
+    "ai-prompts-resume",
+    "cloudflare-tunnel-home",
+    "workbuddy-workbench"
+  ],
   "guides": [
     {
       "slug": "tv-box-server",
