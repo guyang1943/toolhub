@@ -1469,7 +1469,18 @@ check('首页教程栏与数据一致（v3.33）', () => {
     `入口卡教程主数字应显示「${guides.length} 篇教程」，不能退回步数`
   );
   assert(new RegExp(`>${steps} 个步骤 · 前置条件`).test(home), `入口卡说明里应有「${steps} 个步骤」`);
-  return `${rows.length} 篇推荐 / 入口卡 ${guides.length} 篇 · ${steps} 步`;
+
+  // 两栏条数必须相等（v3.33 收尾）：行高一样，条数一多一少就会有一栏提前收在半空。
+  // 这个数只在 build-pages.mjs 的 FEATURED_MAX / HOME_GUIDE_MAX 里，改了没重建也会在这里露出来。
+  const featBlock = home.match(/<!--hs:featured-grid-->([\s\S]*?)<!--\/hs:featured-grid-->/);
+  assert(featBlock, '首页没有 #featured-grid 高频推荐栏（或它是空的）');
+  const featRows = (featBlock[1].match(/class="fl-row"/g) || []).length;
+  assert(featRows >= 6, `首页高频推荐只有 ${featRows} 条，至少 6 条`);
+  assert(
+    featRows === rows.length,
+    `两栏条数不一致：高频推荐 ${featRows} 条 / 教程推荐 ${rows.length} 条（两栏行高相同，条数不等会有一栏提前收尾）`
+  );
+  return `${rows.length} 条推荐（两栏同数） / 入口卡 ${guides.length} 篇 · ${steps} 步`;
 });
 
 checkAsync('意图解析规则（E4）', async () => {

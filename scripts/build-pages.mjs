@@ -125,12 +125,12 @@ const DIR_COPY = existsSync(dirCopyPath) ? JSON.parse(readFileSync(dirCopyPath, 
 // 计数归一：模板里的工具数/资源数一律由数据推导，避免每加一个工具就要手改多处 meta
 const TOTAL_TOOLS = tools.length + dirTools.length;
 const TOTAL_RES = resources.collections.reduce((n, c) => n + c.items.length, 0);
-// v3.9：8 → 10。上限不是「越多越好」的旋钮，而是「多少条还算精选」的判断：
-// 两列五行仍然是一屏之内能扫完的量，再多就和下方网格抢同一份注意力了。
+// 上限不是「越多越好」的旋钮，而是「多少条还算精选」的判断：再多就和下方网格
+// 抢同一份注意力了。v3.33 跟着右栏教程一起定在 8：两栏行式列表的行高完全一样
+// （图标 + 标题 + 一句说明 + 右端元信息），条数相等才收在同一条底边上。
 // 这个数字必须与 assets/app.js 的 FEATURED_MAX 一致。
-const FEATURED_MAX = 10;
-// 首页「教程推荐」栏的条数（v3.33）。左栏 10 条工具行、右栏 8 条教程行——
-// 教程行多一行说明文字、单条更高，8 条正好让两栏收尾的底边基本齐平。
+const FEATURED_MAX = 8;
+// 首页「教程推荐」栏的条数（v3.33）：与左栏同数。两栏行结构相同，8 对 8 底边齐。
 // picks 里失效的 slug 会被跳过，条数不够就自然变短，不补位不重复。
 const HOME_GUIDE_MAX = 8;
 // 难度只有三档，英译放在这里而不是塞进 guides.json：它是展示层的翻译，不是内容本身。

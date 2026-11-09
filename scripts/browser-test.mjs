@@ -1933,11 +1933,11 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('手机端入口卡 2×2', routeCols === 2, routeCols + ' 列');
   const featCols = await colsOf('#featured-section');
   check('手机端推荐区堆成单列', featCols === 1, featCols + ' 列');
-  // 教程栏在手机上只留 6 条（先看几篇，不是目录页）；桌面 8 条由构建期决定
+  // 两栏同条数（v3.33 收尾）：桌面 8 对 8，窄屏照原样铺完不砍——砍两条会让右栏看着像没加载完
   const shownGuides = await evaluate(
     `[...document.querySelectorAll('#home-guides a.fl-row')].filter((e) => e.offsetParent).length`,
   );
-  check('手机端教程栏收起为 6 条', shownGuides === 6, shownGuides + ' 条');
+  check('手机端教程栏与左栏同条数', shownGuides === 8, shownGuides + ' 条');
   // 步骤列带序号圆点与 40px 缩进，长段落最容易在这里把版心挤出去
   await goto('/guides/tv-box-server/');
   await waitText('#page-body', '翻车了怎么办', 8000);

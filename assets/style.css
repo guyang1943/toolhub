@@ -113,17 +113,17 @@ body[data-view='home'] #search-open { display: inline-flex; }
    v3.4：原来是 13 张卡片，和下方工具网格长得太像，读者会以为是同一份列表。
    改成行式列表：无卡片边框、行分隔、单行描述，一眼就能看出「这是精选摘要，下面才是全集」 */
 .featured-list { display: grid; grid-template-columns: 1fr; }
-/* 窄屏堆叠后工具行回到两列：10 行单列在手机上拉得太长。 */
+/* 窄屏堆叠后工具行回到两列：8 行单列在手机上拉得太长。 */
 @media (max-width: 900px) {
   .featured-section { grid-template-columns: 1fr; gap: 16px 0; }
   .featured-list { grid-template-columns: repeat(2, 1fr); gap: 0 22px; }
 }
 @media (max-width: 620px) { .featured-list { grid-template-columns: 1fr; } }
-/* 手机：难度/时长挪到第二行，标题拿回整行；第 7 条后收起（手机上不是目录页）。 */
+/* 手机：难度/时长挪到第二行，标题拿回整行。条数不在这里砍——两栏同 8 条是构建期定的，
+   窄屏也照原样铺完，砍两条会让「教程推荐」看起来像是没加载完。 */
 @media (max-width: 620px) {
   .fc--guides .fl-row { grid-template-columns: 24px minmax(0, 1fr); row-gap: 2px; }
   .fc--guides .fl-row .f-meta { grid-column: 2; margin-top: 1px; }
-  .fc--guides .fl-row:nth-child(n + 7) { display: none; }
 }
 .fl-row {
   display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 0 10px;

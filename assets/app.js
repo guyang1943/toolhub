@@ -20,7 +20,7 @@ activeCategory = QS0.get('cat') || '全部';
 // v3.4 分页：每页 24 个（宽屏 5 列 × 5 行，窄屏 4 列 × 6 行都不留孤行）。
 // 94 个工具一次性铺开是 20 多行、页面 7000px，页脚的信任说明与「更多」全被埋了。
 const PAGE_SIZE = 24;
-const FEATURED_MAX = 10;
+const FEATURED_MAX = 8; // 与 build-pages.mjs 同值：右栏教程也是 8 条，两栏底边才齐
 let curPage = Math.max(1, parseInt(QS0.get('page') || '1', 10) || 1);
 // 需要运行时下载大依赖的工具（首次访问联网后即可离线）
 const NEEDS_FIRST_FETCH = new Set(['pdf-merge', 'img-to-pdf', 'qr-decode', 'python-run', 'py-stats', 'pandas-csv']);
