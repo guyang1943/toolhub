@@ -15,9 +15,9 @@
       "privacyNote": "不协作时全部在本机完成、自动存浏览器；一旦开实时协作或分享只读链接，画布会加密后上传。官方 README 把「Local-first support」和「Real-time collaboration / End-to-end encryption」并列。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -51,9 +51,9 @@
       "privacyNote": "自己画在本机；多人实时协作与云端存档要走它的同步服务，那时画布在对方服务器上。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -85,9 +85,9 @@
       "privacyNote": "默认在浏览器里处理；用 Google Drive / OneDrive 云盘保存、或开实时协作时，图才会传到对应服务。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -116,9 +116,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -144,9 +144,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -172,9 +172,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -200,9 +200,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -233,9 +233,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -273,9 +273,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -301,9 +301,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -336,9 +336,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -367,9 +367,9 @@
       "privacyNote": "官方现在主推云平台；要「文件不出机器」得自己 Docker 部署",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -394,9 +394,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -423,9 +423,9 @@
       "privacyNote": "默认存在浏览器本地；连 Google Drive / GitHub 同步才会把文档传出去",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -452,9 +452,9 @@
       "privacyNote": "文档存在云端：可接入 Dropbox / GitHub / OneDrive，编辑器本身不额外上传，但「保存」就是写进云存储。官方 README 自称 cloud-native，并列了 Native cloud storage 与 seamless sync。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -480,9 +480,9 @@
       "privacyNote": "端到端加密后上传，服务器只存密文、读不到内容",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -517,9 +517,9 @@
       "privacyNote": "官方云实例的文档存在服务器上；想留在本机要自己部署 AFFiNE",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -547,9 +547,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -578,9 +578,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -612,9 +612,9 @@
       "privacyNote": "官网没有说明转换在哪一侧完成，暂按「未核实」处理",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -644,9 +644,9 @@
       "privacyNote": "粘贴的 JSON 会存到对方服务器并生成可分享链接",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -673,9 +673,9 @@
       "privacyNote": "请求发到它的服务器，回来的是假数据；别拿它传真实内容。同类的 httpbin 本来就是这样标的，这里原先写「本机处理」自相矛盾。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -702,9 +702,9 @@
       "privacyNote": "它本身就是回显服务——你发给它的请求内容会经它返回，别放真实数据",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -731,9 +731,9 @@
       "privacyNote": "用途就是把请求发到它的服务器上查看，天然会上传",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -759,9 +759,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -787,9 +787,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -817,9 +817,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -845,9 +845,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -876,9 +876,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -939,9 +939,9 @@
       "privacyNote": "官方服务器渲染图，源码会发过去；隐私要求高就本地跑 jar",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -967,9 +967,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -996,9 +996,9 @@
       "privacyNote": "命令在服务器上解析，会把命令行发过去",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1025,9 +1025,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1053,9 +1053,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1081,9 +1081,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1108,9 +1108,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1138,9 +1138,9 @@
       "privacyNote": "文件在浏览器之间直连发到对方设备，不经过 PairDrop 服务器；两台设备不在同一网络时，文件会经它的 TURN 服务器中继（WebRTC 加密）。官方 FAQ：「The server is not involved in the file transfer.」",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -1174,9 +1174,9 @@
       "privacyNote": "只在局域网内直传，不连互联网也不用第三方服务器，两台设备得在同一个 Wi-Fi 下。官方 README：「without needing an internet connection」，且「doesn’t require an internet connection or third-party servers」。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -1209,9 +1209,9 @@
       "privacyNote": "浏览器之间点对点直传，对方不在线就传不成；服务器只负责牵线，不存文件。首页原话：「Peer-to-peer file transfers in your browser.」",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -1242,9 +1242,9 @@
       "privacyNote": "加密后存到对方服务器；服务器读不到明文，但内容确实离开了设备",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -1274,9 +1274,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1307,9 +1307,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1336,9 +1336,9 @@
       "privacyNote": "测速必然要在你和测速服务器之间来回传数据；用官方公共服务器时，你的 IP 与测速流量都经过对方。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-04",
@@ -1364,9 +1364,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1392,9 +1392,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1422,9 +1422,9 @@
       "privacyNote": "官网找不到隐私说明；导出是否走服务端渲染未经核实",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1452,9 +1452,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1482,9 +1482,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1516,9 +1516,9 @@
       "privacyNote": "在线版把脑图存在对方账号里；想留在本机得自己部署",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1547,9 +1547,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -1575,9 +1575,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1611,9 +1611,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1638,9 +1638,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1666,9 +1666,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1694,9 +1694,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1723,9 +1723,9 @@
       "privacyNote": "学习平台，提交的练习代码会上传并可能被导师看到",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1751,9 +1751,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1785,9 +1785,9 @@
       "privacyNote": "翻译走它的服务端转发，原文会经过它的服务器",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1813,9 +1813,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1847,9 +1847,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-03",
@@ -1889,9 +1889,9 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
-          "by": "check-links.mjs",
-          "method": "probe"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-08",
@@ -1933,9 +1933,9 @@
       "promptNote": "提示词进本机的推理进程，不出机器；显式切到云端模型才会外发。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 ollama.com 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -1969,9 +1969,9 @@
       "promptNote": "提示词与文档索引都在本机，不出机器。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 nomic.ai/gpt4all 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2004,9 +2004,9 @@
       "promptNote": "提示词与文档索引都在本机，官方口径是不离开设备；切云模型才外发。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 anythingllm.com 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2039,9 +2039,9 @@
       "promptNote": "桌面版全在本机显卡上跑；用 Comfy Cloud 才会把提示词与图片传上去。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 comfy.org 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2074,9 +2074,9 @@
       "promptNote": "接本地模型就不出机器；接云接口时直接发给那家厂商，Open WebUI 只做转发。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 openwebui.com 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2109,9 +2109,9 @@
       "promptNote": "自托管 + 本地模型就不出你的服务器；填了厂商 Key 就发给那家厂商。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 dify.ai 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2144,9 +2144,9 @@
       "promptNote": "提示词留在浏览器里，由本机 GPU 推理，不出机器。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 chat.webllm.ai 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2180,9 +2180,9 @@
       "promptNote": "用云模型时代码片段发给那家厂商；接本机 Ollama / LM Studio 就不出机器。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 cline.bot 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-09",
+          "by": "ci-schedule",
+          "method": "probe-ci"
         },
         "boundary": {
           "at": "2026-11-05",
