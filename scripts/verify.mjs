@@ -8,7 +8,7 @@ import { gzipSync } from 'node:zlib';
 import { spawnSync } from 'node:child_process';
 import { lintAll } from './lib/tool-lint.mjs';
 import { buildToolsJson } from './sync-tools.mjs';
-import { sameJsonText } from './lib/eol.mjs';
+import { sameJsonText, normEol } from './lib/eol.mjs';
 import { checkStorageKeys } from './lib/storage-keys.mjs';
 // 键清单本身也要被校验，所以直接从浏览器侧那份模块读——不复制一份到 Node 侧。
 import * as storeKeys from '../assets/lib/store-keys.js';
@@ -1000,7 +1000,10 @@ check('工具页样式分片（v3.5）', () => {
 // 上限一旦贴着实际值，它就从「提醒」变成了「禁令」，谁都不敢改样式了。
 check('样式预算口径（v3.8）', () => {
   const budget = read('perf-budget.json').budgets;
-  const cssGz = gzipSync(readFileSync(join(root, 'assets/style.css')), { level: 9 }).length;
+  // 按 LF 归一后再压：与 perf-budget.mjs 同一口径。工作区被 autocrlf 转成 CRLF 时，
+  // 同一份样式表会凭空多出约 48 B gzip（921 行 × 一个 \r），余量就在 0.5 KB 这条线
+  // 上下摆动——文件内容没变，本地红线上绿，这种红会把人引到错误的方向。
+  const cssGz = gzipSync(normEol(readFileSync(join(root, 'assets/style.css'), 'utf8')), { level: 9 }).length;
   const headroom = budget.styles - cssGz;
   assert(
     headroom >= 512,
