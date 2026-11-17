@@ -7,7 +7,5 @@
   "license": "MIT",
   "runtime": "browser",
   "tags": ["ASCII", "艺术字", "figlet", "标题"],
-  "io": { "in": ["text"], "out": ["text"] },
-  "since": "v3.30",
-  "aliases": ["ascii", "figlet", "艺术字", "字符画", "zifuhua", "ascii art", "banner"]
+  "io": { "in": ["text"], "out": ["text"] }
 }

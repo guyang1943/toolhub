@@ -1,0 +1,31 @@
+/* 教程分类导航（v3.34，从 style.css 拆出）。
+   只放 /guides/ 总览用得到的规则——首页与工具页不该为一个分类条付字节。
+   加载口子两条：构建期 guides/index.html 静态引入；SPA 路径由 content-pages.js 的 ensureCss 先 await 再用
+   （与 v3.5 的 style.tool.css 同一套做法）。 */
+
+/* 16 篇平铺时读者只能从上往下扫，扫完还是不知道「哪篇是我要的」。
+   分类锚点让他直接跳到「我想干的那件事」。
+   刻意不用 JS 筛选器：锚点在静态页与 SPA 里行为完全一致，
+   而筛选器只要有第二份实现，就必有一份先坏（首页那套 chip 的教训）。 */
+.gcat-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 18px; }
+.gcat-chip {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 5px 13px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--panel);
+  font-size: 13px; color: var(--muted); transition: border-color .12s, color .12s;
+}
+.gcat-chip b { font-weight: 600; color: var(--text); }
+.gcat-chip span { font-size: 12px; color: var(--accent); }
+.gcat-chip:hover { border-color: var(--accent); color: var(--accent); }
+.gcat-desc { margin: -8px 0 14px; font-size: 13px; color: var(--muted); }
+/* 锚点落在吸顶头下面要留出高度，否则点了之后标题被压住（与 .grid 同一处理） */
+.res-group-title[id^='gcat-'] { scroll-margin-top: 96px; }
+
+@media (max-width: 560px) {
+  /* 5 个 chip 换两行会占掉 80px，而它们只是一排跳转入口：改成单行横滑。 */
+  .gcat-nav {
+    flex-wrap: nowrap; overflow-x: auto; margin: 0 -20px 16px; padding: 0 20px 4px; scrollbar-width: none;
+  }
+  .gcat-nav::-webkit-scrollbar { display: none; }
+  .gcat-chip { flex: 0 0 auto; }
+  .gcat-desc { margin: -6px 0 12px; }
+}

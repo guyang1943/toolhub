@@ -489,6 +489,34 @@ async function applyEncryptedShare(meta, manifest, doRun) {
   return true;
 }
 
+/* 相关教程（v3.34）。
+   教程页一直有「这篇里用到的站内工具」，反过来却没有——
+   读者在工具页学会压缩一张图，却不知道站里还有一篇讲「把图压到 200KB 再转格式」的完整路线。
+   索引只在真有工具页要看时才取（不打开工具页就不下载），没有匹配就整块不出现，
+   不留一个空标题。 */
+let G_INDEX = null;
+let G_PROMISE = null;
+async function fillRelatedGuides(id) {
+  const box = document.getElementById('guide-panel');
+  if (!box) return;
+  if (!G_PROMISE) {
+    G_PROMISE = fetch('/guides/index.json')
+      .then((r) => (r.ok ? r.json() : { guides: [] }))
+      .then((j) => (G_INDEX = j.guides || []))
+      .catch(() => (G_INDEX = []));
+  }
+  if (!G_INDEX) await G_PROMISE;
+  const hit = (G_INDEX || []).filter((g) => (g.tools || []).includes(id));
+  if (!hit.length) return;
+  box.innerHTML = `<div class="section-title" style="margin-top:22px">📖 <span>${t('跟着教程做', 'relatedGuides')}</span><em>${t('这几篇用到了它', 'relatedGuidesSub')}</em></div>
+    <div class="related-row">${hit
+      .map((g) => `<div class="related-chip" data-guide="${g.slug}">${g.icon} ${esc(g.title)}</div>`)
+      .join('')}</div>`;
+  box.querySelectorAll('.related-chip[data-guide]').forEach((el) => {
+    kbLink(el, () => navigate('/guides/' + el.dataset.guide + '/'));
+  });
+}
+
 export async function openTool(id) {
   const cssReady = ensureCss(TOOL_CSS); // 和下面的注册表请求并行，别串成两步等
   const reg = await loadRegistry();
@@ -567,10 +595,12 @@ export async function openTool(id) {
         SEO_BODY
           ? `<div class="panel doc-body" style="margin-top:18px">${SEO_BODY}</div>`
           : ''
-      }`;
+      }
+      <div id="guide-panel"></div>`;
     $('#tool-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {
       kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
     });
+    fillRelatedGuides(meta.id);
     const sb2 = $('#share-btn');
     if (sb2) {
       sb2.onclick = async () => {
@@ -592,7 +622,8 @@ export async function openTool(id) {
     <div class="panel" id="tool-form"></div>
     <div class="panel result" id="tool-result" style="display:none" role="region" aria-live="polite" aria-label="运行结果"></div>
     <div id="tool-docs"></div>
-    <div id="related-panel"></div>`;
+    <div id="related-panel"></div>
+    <div id="guide-panel"></div>`;
 
   let mod;
   try {
@@ -901,5 +932,6 @@ export async function openTool(id) {
   rp.querySelectorAll('.related-chip[data-id]').forEach((el) => {
     kbLink(el, () => navigate('/tools/' + el.dataset.id + '/'));
   });
+  fillRelatedGuides(meta.id);
 }
 

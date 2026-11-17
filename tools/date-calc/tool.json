@@ -10,6 +10,5 @@
     "日期",
     "计算"
   ],
-  "io": { "in": ["text"], "out": ["text"] },
-  "since": "v3.27"
+  "io": { "in": ["text"], "out": ["text"] }
 }

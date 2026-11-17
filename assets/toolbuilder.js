@@ -109,7 +109,6 @@ function toolJsonSource(m) {
     license: m.license || 'MIT',
     runtime: 'browser',
     tags: m.tags.split(/[,，\s]+/).filter(Boolean).slice(0, 6),
-    since: 'v2.8',
   };
   // 空字符串会被规范判为「不合法」（minLength 2），所以没填就不写这个键
   if (m.author && m.author.trim()) meta.author = m.author.trim();

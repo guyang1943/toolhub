@@ -65,6 +65,8 @@
       "relatedLocal": "Related tools",
       "relatedDir": "Similar online tools",
       "relatedDirSub": "official sites of open-source projects",
+    "relatedGuides": "Follow the guide",
+    "relatedGuidesSub": "these use it",
       "notFound": "Tool not found or removed",
       "loadFailed": "Failed to load tool: ",
       "enOnlyNotice": "",

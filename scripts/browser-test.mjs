@@ -484,7 +484,10 @@ async function feedFile(selector, dataUrl, name, type) {
   const GUIDE_N = JSON.parse(readFileSync(join(root, 'content/guides.json'), 'utf8')).guides.length;
   check('点导航进入教程总览', guideIdxPath === '/guides/', guideIdxPath);
   check('教程总览列全篇目', guideRows === GUIDE_N, guideRows + ' 篇');
-  await evaluate(`document.querySelector('#page-body a.fl-row').click()`);
+  // v3.34：总览改成按「想干什么」分类后，行序不再等于数据里的顺序。
+  // 按行序点会点到「当时排在第一的那篇」，断言却写死了某一篇的步数——分类一动就假红。
+  // 所以按 href 定位：仍然是「从总览真点一次」，只是不再假设它排第几。
+  await evaluate(`document.querySelector('#page-body a.fl-row[href="/guides/tv-box-server/"]').click()`);
   await waitText('#page-body', '翻车了怎么办', 8000);
   const guidePath = await evaluate(`location.pathname`);
   const stepN = await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`);
@@ -494,12 +497,45 @@ async function feedFile(selector, dataUrl, name, type) {
   check('教程页互链站内工具', (await evaluate(`document.querySelectorAll('#page-body .related-chip[href^="/tools/"]').length`)) >= 2);
   await shot('17-guide');
 
+  // v3.34：总览按「想干什么」分 5 类，每类一个锚点。三件事必须同时成立：
+  // 分类真的渲染出来、每个 chip 指向的锚点真的存在、点了之后页面不被重渲染。
+  // 第三条最容易坏——hashchange 会触发 route()，少了那句提前返回就整页重画，人正好被送回页首。
+  await goto('/guides/');
+  await waitText('#page-body', '教程', 8000);
+  const gcat = await evaluate(`(() => ({
+    chips: [...document.querySelectorAll('#page-body .gcat-chip')].map((a) => a.getAttribute('href')),
+    ids: [...document.querySelectorAll('#page-body .res-group-title[id^="gcat-"]')].map((h) => h.id),
+  }))()`);
+  check('教程总览有分类导航', gcat.chips.length >= 4, gcat.chips.length + ' 个 chip');
+  check(
+    '分类锚点与导航一一对应',
+    gcat.chips.length === gcat.ids.length && gcat.chips.every((h) => h.startsWith('#') && gcat.ids.includes(h.slice(1))),
+    JSON.stringify(gcat)
+  );
+  await evaluate(`(() => { window.__gcatMark = 1; document.querySelector('#page-body .gcat-chip').click(); return true; })()`);
+  await sleep(150);
+  const gcatState = await evaluate(`({ hash: location.hash, mark: window.__gcatMark })`);
+  check('点分类跳到锚点且不重渲染', /^#gcat-/.test(gcatState.hash) && gcatState.mark === 1, JSON.stringify(gcatState));
+
+  // 工具页 → 教程 的反向链接（v3.34）。此前只有教程 → 工具，反过来没有：
+  // 在工具页学会压一张图的人，不知道站里还有一篇讲完整路线的。
+  // 索引是懒取的，所以等文本到货；等不到就是真没渲染。
+  await goto('/tools/image-compress/');
+  await waitToolForm();
+  const guidePanelReady = await waitText('#guide-panel', '跟着教程做', 8000);
+  const guideChips = await evaluate(`document.querySelectorAll('#guide-panel .related-chip[data-guide]').length`);
+  check('工具页反查相关教程', guidePanelReady === true && guideChips >= 1, guideChips + ' 条');
+  await evaluate(`(() => { const el = document.querySelector('#guide-panel .related-chip[data-guide]'); if (el) el.click(); return !!el; })()`);
+  await waitText('#page-body', '翻车了怎么办', 8000);
+  const fromToolGuide = await evaluate(`location.pathname`);
+  check('工具页的相关教程能点进教程', /^\/guides\/[\w-]+\/$/.test(fromToolGuide), fromToolGuide);
+
   // 新篇目也要从总览真点一次：直接 goto('/guides/<slug>/') 对「总览里有没有这一行」一无所知，
   // 而第一批四篇（GitHub Pages / 绑域名 / Cloudflare / GitHub 新手课）正是只加数据、不新写模板的那种，
   // 唯一可能坏的地方就是「列出来但点不进去」和「进去了但步骤没渲染」。
   await goto('/guides/');
   await waitText('#page-body', '教程', 8000);
-  await evaluate(`document.querySelectorAll('#page-body a.fl-row')[1].click()`);
+  await evaluate(`document.querySelector('#page-body a.fl-row[href="/guides/github-pages-first-site/"]').click()`);
   await waitText('#page-body', '翻车了怎么办', 8000);
   const g2Path = await evaluate(`location.pathname`);
   const g2Steps = await evaluate(`document.querySelectorAll('#page-body .guide-steps > li').length`);
@@ -795,6 +831,20 @@ async function feedFile(selector, dataUrl, name, type) {
   await sleep(300);
   const paletteHit = await evaluate(`document.getElementById('palette-results').textContent.includes('房贷计算器')`);
   check('命令面板拼音命中', paletteHit === true);
+  // v3.34：面板此前一条教程都搜不到——导航里有「教程」，搜索里却没有，读者只能猜。
+  // 教程索引是打开面板后才按需取的，所以要等它到货再断言（不是放宽，是等异步）。
+  await evaluate(`(() => {
+    const i = document.getElementById('palette-input');
+    i.value = '域名';
+    i.dispatchEvent(new Event('input', { bubbles: true }));
+    return true;
+  })()`);
+  const guideInPalette = await waitText('#palette-results', '教程', 8000);
+  const paletteGuidePath = await evaluate(`(() => {
+    const el = [...document.querySelectorAll('#palette-results .pal-item')].find((x) => x.textContent.includes('教程'));
+    return el ? el.textContent.replace(/\\s+/g, ' ') : '';
+  })()`);
+  check('命令面板能搜到教程', guideInPalette === true, paletteGuidePath.slice(0, 40));
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await sleep(250);
 

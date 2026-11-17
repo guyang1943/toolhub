@@ -12,7 +12,6 @@
     "diff"
   ],
   "io": { "in": ["json"], "out": ["text"] },
-  "since": "v3.29",
   "aliases": [
     "yuyiduibi",
     "yydb",

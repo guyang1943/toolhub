@@ -1,5 +1,5 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.33 · 预缓存 358 个地址 · 约 5.8 MB
+// 版本：toolhub-v3.33 · 预缓存 360 个地址 · 约 5.8 MB
 const VERSION = "toolhub-v3.33";
 const CORE = [
   "/",
@@ -215,6 +215,7 @@ const FULL = [
   "/assets/drop.js",
   "/assets/lib/drop-route.js",
   "/assets/lib/events.js",
+  "/assets/lib/guide-meta.js",
   "/assets/lib/guide-text.js",
   "/assets/lib/intent.js",
   "/assets/lib/json-schema.js",
@@ -234,6 +235,7 @@ const FULL = [
   "/assets/workflow.js",
   "/assets/style.batch.css",
   "/assets/style.compare.css",
+  "/assets/style.guides.css",
   "/assets/style.my.css",
   "/assets/style.offline.css",
   "/assets/style.submit.css",

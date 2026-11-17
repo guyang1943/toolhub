@@ -10,6 +10,5 @@
     "EXIF",
     "信息"
   ],
-  "io": { "in": ["image"], "out": ["text"] },
-  "since": "v3.27"
+  "io": { "in": ["image"], "out": ["text"] }
 }

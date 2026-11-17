@@ -12,7 +12,6 @@
     "文本"
   ],
   "io": { "in": ["text"], "out": ["pdf"] },
-  "since": "v3.29",
   "aliases": [
     "wenbenzhuan",
     "wbz",

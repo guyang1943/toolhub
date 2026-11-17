@@ -933,6 +933,7 @@ function openPalette() {
   PALETTE.idx = 0;
   renderPaletteResults('');
   ensureIntent().then(() => renderPaletteResults(input.value)); // 规则表就绪后补一次
+  ensureGuides().then(() => renderPaletteResults(input.value)); // 教程索引同理
   setTimeout(() => input.focus(), 30);
 }
 
@@ -942,6 +943,31 @@ function closePalette() {
   el.classList.remove('show');
   el.setAttribute('aria-hidden', 'true');
   PALETTE.open = false;
+}
+
+/* 教程条目（v3.34）：面板此前只收工具/资源/页面/评测，16 篇教程一条都搜不到——
+   导航里有「教程」，搜索里却没有，读者只能猜。
+   按需取：不打开面板就不下载；到货后补一次渲染（与规则表同一套做法）。 */
+let GUIDE_PALETTE = null;
+let GUIDE_PROMISE = null;
+function ensureGuides() {
+  if (GUIDE_PALETTE) return Promise.resolve(GUIDE_PALETTE);
+  if (!GUIDE_PROMISE) {
+    GUIDE_PROMISE = fetch('/guides/index.json')
+      .then((r) => (r.ok ? r.json() : { guides: [] }))
+      .then(
+        (j) =>
+          (GUIDE_PALETTE = (j.guides || []).map((g) => ({
+            type: '教程',
+            name: g.title,
+            desc: g.tagline,
+            keywords: g.title + ' ' + g.tagline + ' ' + (g.category || ''),
+            url: '/guides/' + g.slug + '/',
+          })))
+      )
+      .catch(() => (GUIDE_PALETTE = []));
+  }
+  return GUIDE_PROMISE;
 }
 
 function paletteScore(x, kw) {
@@ -955,7 +981,8 @@ function paletteScore(x, kw) {
 
 function renderPaletteResults(q) {
   const kw = (q || '').trim().toLowerCase();
-  const list = PALETTE.items
+  const pool = GUIDE_PALETTE ? PALETTE.items.concat(GUIDE_PALETTE) : PALETTE.items;
+  const list = pool
     .map((x) => [x, kw ? paletteScore(x, kw) : 1])
     .filter(([, s]) => s > 0)
     .sort((a, b) => b[1] - a[1])
@@ -1189,7 +1216,7 @@ async function openContent(kind, arg) {
       CONTENT_PAGES = (await import('/assets/content-pages.js')).bindContentPages({
         $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate,
         bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources,
-        loadEvaluations, SITE,
+        loadEvaluations, SITE, ensureCss,
       });
     } catch (e) {
       // 模块取不到（老版本缓存 / 网络断）时给出明确提示，不要留白屏
@@ -1651,6 +1678,9 @@ function navigate(path, replace = false) {
 }
 
 function route() {
+  // v3.34：教程分类锚点（#gcat-*）交给浏览器滚动，不重渲染。
+  // 不加这一句，点一下分类就触发 hashchange → route() → 整页重画，人正好被送回页首。
+  if (location.hash.startsWith('#gcat-')) return;
   // 旧 hash 链接自动跳转到新路径
   if (location.hash.startsWith('#/')) {
     const oldTool = location.hash.match(/^#\/tool\/([\w-]+)/);

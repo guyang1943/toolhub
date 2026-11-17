@@ -10,6 +10,5 @@
     "媒体",
     "信息"
   ],
-  "io": { "in": ["file"], "out": ["text"] },
-  "since": "v3.27"
+  "io": { "in": ["file"], "out": ["text"] }
 }

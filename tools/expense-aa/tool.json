@@ -12,7 +12,6 @@
     "分摊"
   ],
   "io": { "in": ["text"], "out": ["text"] },
-  "since": "v3.29",
   "aliases": [
     "fentan",
     "ft",

@@ -10,6 +10,5 @@
     "滤镜",
     "调色"
   ],
-  "io": { "in": ["image"], "out": ["image"] },
-  "since": "v3.27"
+  "io": { "in": ["image"], "out": ["image"] }
 }

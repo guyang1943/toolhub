@@ -18,6 +18,8 @@ import { loadResources } from './lib/resources-data.mjs';
 import { BOOT_DROP, buildOnlyFieldsLeft, slimDirectory } from './lib/directory-boot.mjs';
 import { validateIo, PORTS } from '../assets/lib/tool-io.js';
 import { COVERAGE_FLOOR } from './lib/evidence.mjs';
+// 教程分类与静态页共用同一份定义（v3.34）：分类名写错、锚点对不上，两者都会红。
+import { GUIDE_CATEGORIES, groupGuides, guideAnchor } from '../assets/lib/guide-meta.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(root, p), 'utf8'));
@@ -1428,7 +1430,42 @@ check('折腾指南（v3.15）', () => {
   }
   const listed = (idxHtml.match(/class="fl-row"/g) || []).length;
   assert(listed === g.length, `总览列了 ${listed} 篇，数据里 ${g.length} 篇`);
-  return `${g.length} 篇 / ${g.reduce((n, x) => n + x.steps.length, 0)} 步`;
+
+  // ---------- v3.34：教程分类 ----------
+  // 16 篇平铺时，读者扫完还是不知道「哪篇是我要的」。分类是这一版的全部意义，
+  // 所以它必须被钉死：白名单、锚点、篇数、索引字段、导航条数，一样都不能漂。
+  const allowed = new Set(GUIDE_CATEGORIES.map((c) => c.name));
+  for (const x of g) {
+    assert(allowed.has(x.category), `${x.slug} 的分类「${x.category}」不在白名单内（会掉进页面上不该出现的「未分类」组）`);
+  }
+  const groups = groupGuides(g);
+  assert(groups.length === GUIDE_CATEGORIES.length, `只渲染了 ${groups.length} 组，白名单有 ${GUIDE_CATEGORIES.length} 类`);
+  for (const c of groups) {
+    assert(c.items.length >= 2, `${c.name} 只有 ${c.items.length} 篇——一类的意义是「这条路有得挑」，单篇该并进相邻类`);
+    assert(idxHtml.includes(`id="${guideAnchor(c.name)}"`), `总览页缺 ${c.name} 的锚点 ${guideAnchor(c.name)}`);
+    assert(idxHtml.includes(`${c.name} · ${c.items.length} 篇`), `${c.name} 标题里的篇数与数据对不上`);
+  }
+  assert(
+    (idxHtml.match(/class="gcat-chip"/g) || []).length === groups.length,
+    '分类导航的 chip 数与分组数不一致（点进去会落到不存在的锚点）'
+  );
+  // 轻量索引要带上分类与站内工具：总览分组、工具页反查、命令面板三处都吃这一份。
+  // 少一个字段不会报错，只会安静地少一组、少一条相关教程——最难发现的那种坏。
+  const idxJson = JSON.parse(readFileSync(join(root, 'guides', 'index.json'), 'utf8')).guides;
+  assert(idxJson.length === g.length, `索引 ${idxJson.length} 条，数据 ${g.length} 条`);
+  const referenced = new Set();
+  for (const it of idxJson) {
+    assert(allowed.has(it.category), `索引里 ${it.slug} 的分类缺失或非法`);
+    assert(Array.isArray(it.tools), `索引里 ${it.slug} 缺 tools 数组（工具页反查会永远是空）`);
+    for (const id of it.tools) {
+      assert(ids.has(id), `索引里 ${it.slug} 引用了不存在的工具 ${id}`);
+      referenced.add(id);
+    }
+  }
+  // 反向链接不能是「一片空白也算过」：至少要有几篇真的能反查到工具页上
+  assert(referenced.size >= 5, `只有 ${referenced.size} 个工具被教程引用，工具页的「相关教程」会大片为空`);
+
+  return `${g.length} 篇 / ${groups.length} 类 / ${g.reduce((n, x) => n + x.steps.length, 0)} 步`;
 });
 
 // ---------- v3.33：首页教程栏与入口卡的数字口径 ----------

@@ -540,8 +540,7 @@
         ".jpeg"
       ],
       "fileMultiple": true,
-      "author": "ToolHub 贡献流程示范",
-      "since": "v2.8"
+      "author": "ToolHub 贡献流程示范"
     },
     {
       "id": "image-convert",
@@ -593,8 +592,7 @@
       ],
       "accepts": [
         "image/*"
-      ],
-      "since": "v3.7"
+      ]
     },
     {
       "id": "file-hash",
@@ -634,8 +632,7 @@
         ".xz",
         ".bz2",
         ".zst"
-      ],
-      "since": "v3.7"
+      ]
     },
     {
       "id": "csv-columns",
@@ -650,8 +647,7 @@
         "表格",
         "选列",
         "过滤"
-      ],
-      "since": "v3.7"
+      ]
     },
     {
       "id": "disk-partition",
@@ -681,8 +677,7 @@
         "加密",
         "AES",
         "隐私"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "markdown-table",
@@ -695,8 +690,7 @@
       "tags": [
         "Markdown",
         "表格"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "string-escape",
@@ -709,8 +703,7 @@
       "tags": [
         "转义",
         "编码"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "lorem-kit",
@@ -723,8 +716,7 @@
       "tags": [
         "占位",
         "Mock"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "token-counter",
@@ -738,8 +730,7 @@
         "AI",
         "Token",
         "LLM"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "url-kit",
@@ -752,8 +743,7 @@
       "tags": [
         "URL",
         "调试"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "subnet-calc",
@@ -767,8 +757,7 @@
         "IP",
         "子网",
         "运维"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "xml-format",
@@ -781,8 +770,7 @@
       "tags": [
         "XML",
         "格式化"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "http-code",
@@ -795,8 +783,7 @@
       "tags": [
         "HTTP",
         "手册"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "radix-convert",
@@ -809,8 +796,7 @@
       "tags": [
         "进制",
         "转换"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "env-parser",
@@ -823,8 +809,7 @@
       "tags": [
         "env",
         "配置"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "css-unit",
@@ -837,8 +822,7 @@
       "tags": [
         "CSS",
         "前端"
-      ],
-      "since": "v3.26"
+      ]
     },
     {
       "id": "image-watermark",
@@ -854,8 +838,7 @@
       ],
       "accepts": [
         "image/*"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "image-merge",
@@ -872,8 +855,7 @@
       "accepts": [
         "image/*"
       ],
-      "fileMultiple": true,
-      "since": "v3.27"
+      "fileMultiple": true
     },
     {
       "id": "image-filter",
@@ -889,8 +871,7 @@
       ],
       "accepts": [
         "image/*"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "image-round",
@@ -906,8 +887,7 @@
       ],
       "accepts": [
         "image/*"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "image-info",
@@ -923,8 +903,7 @@
       ],
       "accepts": [
         "image/*"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "palette-extract",
@@ -940,8 +919,7 @@
       ],
       "accepts": [
         "image/*"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "gradient-gen",
@@ -954,8 +932,7 @@
       "tags": [
         "CSS",
         "渐变"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "shadow-gen",
@@ -968,8 +945,7 @@
       "tags": [
         "CSS",
         "阴影"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "media-info",
@@ -986,8 +962,7 @@
       "accepts": [
         "video/*",
         "audio/*"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "barcode-gen",
@@ -1000,8 +975,7 @@
       "tags": [
         "条码",
         "商品"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "date-calc",
@@ -1014,8 +988,7 @@
       "tags": [
         "日期",
         "计算"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "bmi-calc",
@@ -1028,8 +1001,7 @@
       "tags": [
         "健康",
         "BMI"
-      ],
-      "since": "v3.27"
+      ]
     },
     {
       "id": "json-diff",
@@ -1043,8 +1015,7 @@
         "JSON",
         "对比",
         "diff"
-      ],
-      "since": "v3.29"
+      ]
     },
     {
       "id": "expense-aa",
@@ -1058,8 +1029,7 @@
         "AA",
         "记账",
         "分摊"
-      ],
-      "since": "v3.29"
+      ]
     },
     {
       "id": "text-to-pdf",
@@ -1073,8 +1043,7 @@
         "PDF",
         "导出",
         "文本"
-      ],
-      "since": "v3.29"
+      ]
     },
     {
       "id": "ua-parse",
@@ -1089,8 +1058,7 @@
         "浏览器",
         "内核",
         "设备识别"
-      ],
-      "since": "v3.30"
+      ]
     },
     {
       "id": "mock-data",
@@ -1105,8 +1073,7 @@
         "mock",
         "身份证",
         "手机号"
-      ],
-      "since": "v3.30"
+      ]
     },
     {
       "id": "json-yaml",
@@ -1121,8 +1088,7 @@
         "YAML",
         "配置",
         "转换"
-      ],
-      "since": "v3.30"
+      ]
     },
     {
       "id": "ascii-art",
@@ -1137,8 +1103,7 @@
         "艺术字",
         "figlet",
         "标题"
-      ],
-      "since": "v3.30"
+      ]
     },
     {
       "id": "pinyin-convert",
@@ -1153,8 +1118,7 @@
         "首字母",
         "汉字",
         "注音"
-      ],
-      "since": "v3.30"
+      ]
     }
   ]
 }

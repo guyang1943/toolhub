@@ -198,12 +198,8 @@
           "description": "贡献者的仓库或主页，用于溯源",
           "type": "string",
           "pattern": "^https://[^\\s]+$"
-        },
-        "since": {
-          "description": "首次收录版本，如 v2.8",
-          "type": "string",
-          "pattern": "^v\\d+\\.\\d+$"
         }
+
       }
     }
   },

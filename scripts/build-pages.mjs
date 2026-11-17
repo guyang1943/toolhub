@@ -20,6 +20,8 @@ import { renderKeyTable } from '../assets/lib/store-keys.js';
 // 教程正文的渲染：静态页与 SPA 共用同一段（v3.28）。围栏代码块两边都得变成 <pre><code>，
 // 否则同一段正文在「爬虫看到的」和「用户看到的」之间会悄悄长出两套样子。
 import { guideText } from '../assets/lib/guide-text.js';
+// 教程分类：分类名、顺序、锚点只在这个模块里定义一次（v3.34）。
+import { groupGuides, guideNavHTML, guideAnchor } from '../assets/lib/guide-meta.js';
 
 // 模块级 HTML 转义。注意本文件内部还有几处**函数内局部**的 `esc`（如目录页那个），
 // 它们在各自作用域里有效，模块级代码里直接用会 ReferenceError——v3.21 就踩了这一次。
@@ -1006,13 +1008,21 @@ for (const p of staticPages) {
         <span class="f-meta">${g.difficulty} · ${g.minutes} 分钟</span>
       </a>`;
 
-  // --- 总览页 ---
+  // --- 总览页（v3.34：平铺 16 条 → 按读者意图分 5 类，每类一个锚点） ---
   {
     const url = `${BASE}/guides/`;
+    const groups = groupGuides(GUIDES);
     const body =
       `<div class="res-intro">这里放的是「要先装、先配、先走一遍」才能用起来的东西：刷机、自建服务、把闲置硬件改成能干活的机器，也包括从零把一个网站发布上线。它们和工具清单不是一回事——工具是打开网页就能用，教程是给你一条走完有结果的路，所以每篇都写清楚前置条件、风险和翻车之后的回退办法。</div>` +
-      `<h2 class="res-group-title">全部教程 · ${GUIDES.length} 篇</h2>` +
-      GUIDES.map(guideRow).join('') +
+      guideNavHTML(groups) +
+      groups
+        .map(
+          (c) =>
+            `<h2 class="res-group-title" id="${guideAnchor(c.name)}">${c.name} · ${c.items.length} 篇</h2>` +
+            `<p class="gcat-desc">${c.desc}</p>` +
+            c.items.map(guideRow).join('')
+        )
+        .join('') +
       `<h2 class="res-group-title">这一类内容的三条纪律</h2>` +
       `<ul>` +
       `<li><b>先写前置条件。</b>芯片型号对不上、U 盘容量不够、没有网线——这些没写清楚，人会在第三步才发现白忙一场。</li>` +
@@ -1037,12 +1047,26 @@ for (const p of staticPages) {
       },
     });
     html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: '教程', desc: '要先装、先配、先走一遍才能用起来的东西', extra: body })}`);
+    // 分类导航的样式只服务本页：直接写进 <head>，别让它进 style.css 让首页替它付字节。
+    // SPA 路径靠 content-pages.js 的 ensureCss 现取（同一份文件，两个入口）。
+    html = html.replace('</head>', `  <link rel="stylesheet" href="/assets/style.guides.css" />\n</head>`);
     writeFileSync(join(gDir, 'index.html'), html, 'utf8');
     // 总览的轻量索引：SPA 只取标题与三个数字，不为整篇正文买单
     writeFileSync(
       join(gDir, 'index.json'),
       JSON.stringify({
-        guides: GUIDES.map((g) => ({ slug: g.slug, icon: g.icon, title: g.title, tagline: g.tagline, difficulty: g.difficulty, minutes: g.minutes })),
+        guides: GUIDES.map((g) => ({
+          slug: g.slug,
+          icon: g.icon,
+          title: g.title,
+          tagline: g.tagline,
+          difficulty: g.difficulty,
+          minutes: g.minutes,
+          // v3.34：分类给总览页分组与命令面板用；tools 让工具页能反查「用这个工具的教程」。
+          // 两者都在这份只按需取的小索引里，不占首屏。
+          category: g.category,
+          tools: g.tools || [],
+        })),
       }),
       'utf8'
     );

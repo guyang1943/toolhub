@@ -13,7 +13,6 @@
     "头像"
   ],
   "io": { "in": ["image"], "out": ["image"] },
-  "since": "v3.7",
   "aliases": [
     "tupiancaijian",
     "tpcj",

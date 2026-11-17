@@ -6,8 +6,11 @@
    v3.28：教程正文改用 assets/lib/guide-text.js。它是叶子模块（不依赖任何注入），
    静态构建那边 import 的是同一个文件——正文的渲染不该有两份实现。 */
 import { guideText } from './lib/guide-text.js';
+// v3.34：教程分类只在这个模块里定义一次，静态构建 import 的是同一个文件。
+// 分类锚点必须两边一致——从首页跳进 /guides/ 再点分类，落点错了就是「点了没反应」。
+import { groupGuides, guideNavHTML, guideAnchor } from './lib/guide-meta.js';
 
-let $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE;
+let $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE, ensureCss;
 
 // v3.25：目录工具按真实运行位置标，不再一律「在线」——Ollama 要装客户端、Dify 要自己部署，
 // 全标成在线就等于说「打开网页就能用」。app.js 的 RUNS 是权威口径（带 i18n），
@@ -16,7 +19,7 @@ const RUNS_SHORT = { web: '🌐 在线', desktop: '💻 客户端', selfhost: '�
 const runsShort = (x) => `${RUNS_SHORT[x.runsOn] || RUNS_SHORT.web}${x.keyRequired ? ' · 🔑 Key' : ''}`;
 
 export function bindContentPages(deps) {
-  ({ $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE } = deps);
+  ({ $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE, ensureCss } = deps);
   return {
     tools: openTools,
     guides: openGuides,
@@ -228,24 +231,34 @@ async function loadGuide(slug) {
 const GUIDE_RISK = { low: ['低', 'ok'], mid: ['中', 'warn'], high: ['高', 'danger'] };
 
 async function openGuides() {
-  await loadI18n();
+  // 分类导航的样式只在总览页用，首页不为它付字节；先等样式到位再画，避免裸结构闪一下
+  await Promise.all([loadI18n(), ensureCss('/assets/style.guides.css')]);
   const idx = await loadGuideIndex();
   setView('page');
   document.title = `教程 · ${SITE}`;
   renderNavActive('/guides');
-  const rows = idx
+  const groups = groupGuides(idx);
+  const rows = groups
     .map(
-      (g) => `<a class="fl-row" data-spa href="/guides/${g.slug}/">
+      (c) =>
+        `<h2 class="res-group-title" id="${guideAnchor(c.name)}">${c.name} · ${c.items.length} 篇</h2>` +
+        `<p class="gcat-desc">${c.desc}</p>` +
+        c.items
+          .map(
+            (g) => `<a class="fl-row" data-spa href="/guides/${g.slug}/">
         <span class="rank">${g.icon}</span>
         <div class="f-body"><div class="f-name">${esc(g.title)}</div><div class="f-desc">${esc(g.tagline)}</div></div>
         <span class="f-meta">${esc(g.difficulty)} · ${g.minutes} 分钟</span>
       </a>`
+          )
+          .join('')
     )
     .join('');
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
       <h1>📖 教程</h1>
       <p class="lead">要先装、先配、先走一遍才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，教程是一条要走完的路。</p>
+      ${guideNavHTML(groups)}
       ${rows}
       <h2 class="res-group-title">这一类内容的三条纪律</h2>
       <ul>
