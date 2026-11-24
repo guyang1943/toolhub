@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>学习路线与免费课程 · 资源库 · ToolHub</title>
   <meta name="description" content="从入门到进阶的免费学习资源，含路线图、公开课与中文教程" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#f4f1eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
        这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
@@ -88,7 +88,7 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
       <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
@@ -96,49 +96,51 @@
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
-      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
     </div>
   </header>
 
   <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>学习路线与免费课程</h1><p>从入门到进阶的免费学习资源，含路线图、公开课与中文教程</p><h2>合集导语</h2><p>碎片化地看教程，最大的问题是不知道「下一步该学什么」。这里收的资源分两类：一类给方向（路线图、周刊、名校公开课），一类给练习（交互式课程、编程题库）。建议的用法是——先用路线图确定学习顺序，再用交互式课程把基础打牢，最后用真实项目练手。注意：这些站点的免费范围各不相同，有的是全部免费，有的是免费旁听不发证书，报名付费前先看清楚。</p><h2>怎么选</h2><ul><li>不知道学什么顺序：先看 roadmap.sh 的对应方向路线图</li><li>想边学边写代码：freeCodeCamp 或 Exercism（有反馈）</li><li>查具体 API 用法：MDN（Web）与菜鸟教程（中文速查）</li><li>想系统补计算机基础：CS50 或中国大学 MOOC</li></ul><h2>全部来源</h2><h3>roadmap.sh</h3><p>前端、后端、DevOps、AI 等方向的技能路线图，节点极细，能清楚看到「学完这个再学什么」，避免东一榔头西一棒子。</p><p>授权：开源（自定义协议，免费使用） · 来源：github.com/kamranahmedse/developer-roadmap · <a href="https://roadmap.sh" target="_blank" rel="noopener">访问 ↗</a></p><h3>freeCodeCamp</h3><p>完全免费的交互式编程课程，边写代码边过关，从 HTML 到机器学习都有；不收费也不发付费证书，纯粹靠捐赠运营。</p><p>授权：免费（内容 CC-BY-SA，非营利） · 来源：freeCodeCamp.org · <a href="https://www.freecodecamp.org" target="_blank" rel="noopener">访问 ↗</a></p><h3>MDN Web Docs</h3><p>Web 技术的权威文档，HTML/CSS/JavaScript 的每个 API 都有示例和浏览器兼容表；查「这个属性到底怎么用」时比搜索引擎可靠。</p><p>授权：免费（内容 CC-BY-SA 2.5） · 来源：Mozilla · <a href="https://developer.mozilla.org/zh-CN/" target="_blank" rel="noopener">访问 ↗</a></p><h3>廖雪峰的官方网站</h3><p>中文技术教程的经典，Python、Java、Git、JavaScript 都有完整体系，讲解从原理出发、例子能直接跑，适合系统入门。</p><p>授权：免费阅读（版权归作者，禁止转载） · 来源：廖雪峰 · <a href="https://liaoxuefeng.com" target="_blank" rel="noopener">访问 ↗</a></p><h3>CS50</h3><p>哈佛的计算机科学导论课，讲 C、Python、SQL 与算法，作业质量极高；免费旁听全部课程与讲义，是补基础最好的公开课之一。</p><p>授权：免费旁听（课程内容版权归 Harvard） · 来源：Harvard University · <a href="https://cs50.harvard.edu/x/" target="_blank" rel="noopener">访问 ↗</a></p><h3>Exercism</h3><p>70+ 语言的练习题库，做完可以提交给真人导师点评——这是它和普通刷题站最大的差别，能拿到具体的改进建议。</p><p>授权：开源 MIT · 来源：github.com/exercism/exercism · <a href="https://exercism.org" target="_blank" rel="noopener">访问 ↗</a></p><h3>中国大学 MOOC</h3><p>国内高校的正式课程，计算机、数学、设计都有；免费可以看视频和讲义，想要证书或批改作业才需要付费。</p><p>授权：免费旁听（部分课程收费发证） · 来源：网易有道 & 高教社 · <a href="https://www.icourse163.org" target="_blank" rel="noopener">访问 ↗</a></p><h3>菜鸟教程</h3><p>中文速查式教程，语法、示例、在线运行三件套齐全；不适合当系统教材，但查「某个语法怎么写」非常快。</p><p>授权：免费阅读（版权归站方） · 来源：runoob.com · <a href="https://www.runoob.com" target="_blank" rel="noopener">访问 ↗</a></p><p>本站只做整理与外链，不镜像、不托管任何第三方素材。每条资源标注来源站点与授权方式，使用前请以原站授权条款为准。</p><p><a href="/resources/">← 返回资源库</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
+      <div class="home-intro">
       <div class="hero">
-        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
-        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <h1 data-zh="不装软件，也不上传文件" data-en="No installs, no uploads">不装软件，也不上传文件</h1>
+        <p data-zh="挑一个工具，填参数，出结果。文件留在这台电脑上。" data-en="Pick a tool, fill in the args, get the result. Your files stay on this machine.">挑一个工具，填参数，出结果。文件留在这台电脑上。</p>
         <div class="hero-search-wrap">
           <div class="hs-field">
-            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
             <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>
       </div>
 
       <div class="route-cards" id="route-cards"></div>
+      </div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="fc fc--tools">
-          <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
           <div class="featured-list" id="featured-grid"></div>
         </div>
         <div class="fc fc--guides">
-          <div class="section-title">📖 <span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
           <div class="guide-list" id="home-guides"></div>
         </div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -150,7 +152,7 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
         <div class="trust-strip">
           <div class="ts-stat">
             <b>0</b>
@@ -169,7 +171,7 @@
             <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
           </div>
         </div>
-        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
       </div>
     </section>
 
@@ -221,9 +223,9 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
-      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
     </div>
     <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>

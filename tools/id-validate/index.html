@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>身份证 / 银行卡校验 · ToolHub</title>
   <meta name="description" content="批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#f4f1eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
        这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
@@ -91,7 +91,7 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
       <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
@@ -99,49 +99,51 @@
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
-      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
     </div>
   </header>
 
   <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>身份证 / 银行卡校验</h1><p>批量校验身份证校验码与银行卡 Luhn，解析归属地生日性别</p><h2>关于身份证 / 银行卡校验</h2><p>身份证与银行卡号的校验是数据清洗里的固定动作：收集表里总有几个号码校验码不对、用户填的卡号总在提交时失败。本工具按国家标准批量校验——身份证走 GB 11643 的加权求和取模，银行卡走 Luhn 算法，并顺带解析归属地（省级）、出生日期、性别、年龄与卡组织。号码在本地计算，不上传也不会被记录。</p><h2>使用步骤</h2><ol><li>把要校验的号码粘贴进来，每行一个，也可以直接用逗号分隔</li><li>点「校验」，看顶部汇总：通过几个、未通过几个、识别出多少身份证与银行卡</li><li>逐行看结果列的解析详情：身份证会给出地区、生日、年龄与校验码；银行卡会给出卡组织与 Luhn 结果</li><li>校验码不通过的 18 位号码，详情里会直接写出「应为 X，实际 Y」，方便定位是抄错还是输错一位</li><li>修正数据后重新粘贴校验，直到全部通过</li></ol><h2>常见错误</h2><h3>把校验通过当成实名认证</h3><p>合规场景（开户、签约、发票）要求的是实名核验，不是格式校验。本工具只能作为提交前的第一道过滤，不能替代实名接口，也不应作为业务判断依据。</p><h3>以为界面打码就等于安全</h3><p>本工具在本地计算，号码不会上传，但浏览器历史、剪贴板、截图都可能泄露原始数据。处理大批量真实证件号时，请使用脱敏后的测试数据，或在受控环境中操作。</p><h3>把地区码当成完整籍贯</h3><p>前两位只到省级（如 44 广东），第 3–6 位才是区县代码。想知道具体区县需要完整行政区划库，本工具不提供，也不要凭省级代码反推。</p><h3>表头行混进校验列表</h3><p>从 Excel 复制时容易把「身份证号」这一行标题也粘进来，它会被判为「无法识别」。看汇总里的「无法识别」数量，通常就是表头或空行造成的。</p><h2>常见问题</h2><h3>校验通过就能证明这个身份证是真的吗？</h3><p>不能。校验码只能证明「这 18 位符合编码规则」，也就是大概率不是随手编的、没有抄错一位。号码是否真实存在、是否注销、是否与姓名匹配，只有公安实名核验接口能回答。</p><h3>15 位老身份证还能校验吗？</h3><p>15 位没有校验码，工具只能解析出生日期和性别，并提示建议升位。15 位升级到 18 位的规则是：插入世纪「19」、补校验码。</p><h3>银行卡号 Luhn 通过就一定能扣款成功吗？</h3><p>不一定。Luhn 只能拦住约九成的单字符输错，无法判断卡号是否存在、是否过期、是否支持该卡组织。正式扣款前仍需走银行或支付机构的鉴权。</p><h3>校验位是怎么算出来的？</h3><p>身份证按 GB 11643 的加权模 11 算法：前 17 位分别乘固定权重后求和，对 11 取模，用余数查表得到第 18 位（可能是 X）。银行卡走 Luhn：从右往左隔位乘 2，大于 9 就减 9，总和能被 10 整除即通过。两者都只能发现录入错误，不能证明号码真实存在。</p><h3>输入的号码会上传吗？</h3><p>不会。校验是纯数学运算，在浏览器里完成。但身份证号属于敏感个人信息，即使工具不上传，也建议不要在公共电脑、共享屏幕或录屏状态下操作——剪贴板历史和应用层记录都不在工具的控制范围内。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/categories/dev/">开发</a></p><h2>相关阅读</h2><ul><li><a href="/tools/qrcode/">二维码生成</a> —— 把文本/网址变成二维码，可下载 PNG</li><li><a href="/tools/sha256-hash/">哈希计算</a> —— SHA-256/384/512 哈希，基于 WebCrypto 安全实现</li><li><a href="/tools/uuid-gen/">UUID / ULID 生成</a> —— UUID v4、ULID、Nano ID 批量生成，可作数据库主键</li><li><a href="/tools/devdocs/">DevDocs</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/prettier/">Prettier Playground</a> —— 同类第三方工具（官方在线版）</li><li><a href="/categories/dev/">全部开发类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
+      <div class="home-intro">
       <div class="hero">
-        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
-        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <h1 data-zh="不装软件，也不上传文件" data-en="No installs, no uploads">不装软件，也不上传文件</h1>
+        <p data-zh="挑一个工具，填参数，出结果。文件留在这台电脑上。" data-en="Pick a tool, fill in the args, get the result. Your files stay on this machine.">挑一个工具，填参数，出结果。文件留在这台电脑上。</p>
         <div class="hero-search-wrap">
           <div class="hs-field">
-            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
             <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>
       </div>
 
       <div class="route-cards" id="route-cards"></div>
+      </div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="fc fc--tools">
-          <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
           <div class="featured-list" id="featured-grid"></div>
         </div>
         <div class="fc fc--guides">
-          <div class="section-title">📖 <span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
           <div class="guide-list" id="home-guides"></div>
         </div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -153,7 +155,7 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
         <div class="trust-strip">
           <div class="ts-stat">
             <b>0</b>
@@ -172,7 +174,7 @@
             <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
           </div>
         </div>
-        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
       </div>
     </section>
 
@@ -224,9 +226,9 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
-      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
     </div>
     <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>

@@ -38,7 +38,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
    留白、字重、语义都不一致。这里收敛成一个函数，工具页、页面不存在、
    模块加载失败都调用它，视觉与语义由 .state 一套 CSS 决定。 */
 function stateHTML(kind, { title = '', detail = '', icon = '', inline = false } = {}) {
-  const ic = icon || (kind === 'error' ? '⚠️' : kind === 'loading' ? '' : '📭');
+  const ic = icon || '';
   const head =
     kind === 'loading'
       ? '<span class="state-spinner" aria-hidden="true"></span>'
@@ -87,10 +87,10 @@ function toolMeta(tool) {
 function taskList() {
   if (LANG !== 'en' || !I18N || !I18N.tasks.length) {
     return [
-      { label: '🖼️ 图片处理', kw: '图片' }, { label: '📄 PDF 与文档', kw: 'pdf' },
-      { label: '🔐 编解码与加密', kw: '编码' }, { label: '🧪 调试接口', kw: 'jwt' },
-      { label: '📊 数据转换', kw: 'json' }, { label: '✍️ 写文档', kw: 'markdown' },
-      { label: '🎨 画图设计', kw: '颜色' }, { label: '🧠 跑代码', kw: 'python' },
+      { label: '图片处理', kw: '图片' }, { label: 'PDF 与文档', kw: 'pdf' },
+      { label: '编解码与加密', kw: '编码' }, { label: '调试接口', kw: 'jwt' },
+      { label: '数据转换', kw: 'json' }, { label: '写文档', kw: 'markdown' },
+      { label: '画图设计', kw: '颜色' }, { label: '跑代码', kw: 'python' },
     ];
   }
   return I18N.tasks;
@@ -105,13 +105,13 @@ async function switchLang() {
   route();
 }
 function applyStaticText() {
-  const ph = t('搜索工具…（按 / 快速聚焦）', 'searchPlaceholder');
+  const ph = t('搜索工具…', 'searchPlaceholder');
   // 窄屏放不下括号提示，截断会在半个括号处断开，直接去掉
   const cut = Math.min(...[ph.indexOf('（'), ph.indexOf('(')].filter((i) => i > 0));
   const short = Number.isFinite(cut) ? ph.slice(0, cut).trim() : ph;
   $('#search').placeholder = window.innerWidth < 600 ? short : ph;
   $('#foot-note').innerHTML = t(
-    '🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片',
+    '本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片',
     'footerNote'
   );
   applyBilingual();
@@ -132,7 +132,7 @@ function applyBilingual() {
 $('#lang-btn') && $('#lang-btn').addEventListener('click', switchLang);
 if (LANG === 'en') {
   document.documentElement.lang = 'en';
-  $('#lang-btn').textContent = '🌐 中';
+  $('#lang-btn').textContent = '中';
   document.title = 'ToolHub · Open-source tools, ready to use';
 }
 
@@ -186,9 +186,9 @@ async function initAnalytics() {
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0f1219' : '#2563eb');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#14120f' : '#f4f1eb');
   const btn = $('#theme-btn');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  if (btn) btn.textContent = theme === 'dark' ? '浅色' : '深色';
 }
 
 function initTheme() {
@@ -290,7 +290,9 @@ function ensureAliases() {
   });
 }
 
-const CAT_ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐', AI: '🤖' };
+// v3.35：分类图标退场。分类名本身就在卡片下方那行元信息里，再配一个彩色 emoji
+// 只是把同一件事说两遍，还让 24 张卡各带一种颜色。保留空表是为了 tool-page.js 的入参不破。
+const CAT_ICONS = {};
 
 // 目录工具的数据边界标注。键名须与 scripts/lib/tool-meta.mjs 的 PRIVACY_KINDS 一致。
 // v3.21 加 p2p：文件在两台设备之间直传，和「本机处理」不是一回事——东西确实出了这台机器。
@@ -336,10 +338,10 @@ function renderChips(categories) {
       .map((c) => `<button class="chip ${c.key === activeCategory ? 'active' : ''}" data-cat="${c.key}">${c.label}</button>`)
       .join('') +
     categories
-      .map((c) => `<a class="chip ${c === activeCategory ? 'active' : ''}" data-spa href="${catUrl(c)}">${CAT_ICONS[c] || ''} ${catName(c)}</a>`)
+      .map((c) => `<a class="chip ${c === activeCategory ? 'active' : ''}" data-spa href="${catUrl(c)}">${catName(c)}</a>`)
       .join('') +
     // 收尾给一个总览入口，否则 /categories/ 只有分类页之间互链才到得了
-    `<a class="chip" data-spa href="/categories/">${t('🗂️ 分类总览 →', 'catAll')}</a>`;
+    `<a class="chip" data-spa href="/categories/">${t('分类总览 →', 'catAll')}</a>`;
   $$('#chips .chip[data-cat]').forEach((el) => {
     el.onclick = () => {
       activeCategory = el.dataset.cat;
@@ -406,10 +408,8 @@ function renderFilterbar() {
 function cardHTML(tool) {
   const isLocal = tool.runtime !== 'link';
   const badge = isLocal
-    ? `<span class="badge local">${t('🔒 本地运行', 'badgeLocal')}</span>`
+    ? `<span class="badge local">${t('本地运行', 'badgeLocal')}</span>`
     : `<span class="badge link">${accessText(tool)} · ${privBadge(tool)}</span>`;
-  const icon = CAT_ICONS[tool.category] || '🧰';
-  const hot = tool.hot ? '<span class="badge hot">🔥</span>' : '';
   const isFav = favs().includes(tool.id);
   const used = usageMap()[tool.id] || 0;
   const usedTag = used ? `<span class="used-tag">${t('用过', 'used')} ${used} ${t('次', 'times')}</span>` : '';
@@ -422,9 +422,9 @@ function cardHTML(tool) {
   return `
   <div class="card" data-id="${tool.id}">
     ${star}${go}
-    <div class="card-top"><span class="cat-icon">${icon}</span><span class="card-name">${m.name} ${hot}</span></div>
+    <span class="card-name">${m.name}</span>
     <div class="desc">${m.desc}</div>
-    <div class="meta"><span class="badge">${catName(tool.category)}</span>${badge}${usedTag}</div>
+    <div class="meta"><span>${catName(tool.category)}</span>${badge}${usedTag}</div>
   </div>`;
 }
 
@@ -605,7 +605,7 @@ function renderFeatured(tools) {
   // 标题必须按栏定位——原来选的是区里第一个 .section-title，现在恰好还是它，
   // 但「恰好」不是理由：改成右栏在前、或再加一栏，就会把工具栏的标题写进教程栏。
   const titleEl = sec.querySelector('.fc--tools .section-title');
-  if (titleEl) titleEl.innerHTML = `⚡ <span>${t('高频推荐', 'featured')}</span><em>${t('大家都在用 · 优先试试这些', 'featuredSub')}</em>`;
+  if (titleEl) titleEl.innerHTML = `<span>${t('高频推荐', 'featured')}</span><em>${t('大家都在用 · 优先试试这些', 'featuredSub')}</em>`;
   $('#featured-grid').innerHTML = ids
     .map((id, i) => {
       const tool = tools.find((x) => x.id === id);
@@ -613,7 +613,7 @@ function renderFeatured(tools) {
       return `<div class="fl-row" data-id="${tool.id}" data-link="${tool.runtime !== 'link' ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${m.name}</div><div class="f-desc">${m.desc}</div></div>
-        <span class="f-meta">${tool.runtime !== 'link' ? t('🔒 本地运行', 'badgeLocal') : `${accessText(tool)} · ${privBadge(tool)}`} · ${catName(tool.category)}</span>
+        <span class="f-meta">${tool.runtime !== 'link' ? t('本地', 'badgeLocalShort') : `${accessText(tool)} · ${privBadge(tool)}`} · ${catName(tool.category)}</span>
       </div>`;
     })
     .join('');
@@ -803,25 +803,25 @@ function renderRouteCards(reg, res, evals) {
   const gSteps = gBox?.dataset.steps || '0';
   box.innerHTML = `
     <a class="route-card rc--tools" href="/tools/" data-spa>
-      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
+      <span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
       <b><span class="rc-num">${reg.counts.local + reg.counts.dir}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
       <span class="rc-desc" data-zh="${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类" data-en="${reg.counts.local} run fully in-browser · ${reg.categories.length} categories">${reg.counts.local} 个纯本地执行 · ${reg.categories.length} 个分类</span>
       <em data-zh="浏览工具 →" data-en="Browse tools →">浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
-      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
+      <span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
       <b><span class="rc-num">${(res.collections || []).reduce((a, c) => a + c.items.length, 0)}</span><span data-zh="条资源" data-en="links">条资源</span></b>
       <span class="rc-desc" data-zh="${(res.collections || []).length} 个合集：图标、字体、配色、学习路线" data-en="${(res.collections || []).length} collections: icons, fonts, palettes, learning paths">${(res.collections || []).length} 个合集：图标、字体、配色、学习路线</span>
       <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
     <a class="route-card rc--guide" href="/guides/" data-spa data-guides="${gCount}" data-steps="${gSteps}">
-      <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
+      <span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
       <b><span class="rc-num">${gCount}</span><span data-zh="篇教程" data-en="guides">篇教程</span></b>
       <span class="rc-desc" data-zh="${gSteps} 个步骤 · 前置条件、风险标注、回退路径" data-en="${gSteps} steps · prerequisites, risk labels and a way back">${gSteps} 个步骤 · 前置条件、风险标注、回退路径</span>
       <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/" data-spa>
-      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
+      <span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
       <b><span class="rc-num">${(evals?.evaluations || []).length}</span><span data-zh="篇测评" data-en="reviews">篇测评</span></b>
       <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
       <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
@@ -1559,7 +1559,6 @@ async function renderResPreview() {
     .map((c) => {
       const loc = LANG === 'en' && resEn[c.slug] ? resEn[c.slug] : c;
       return `<a class="res-preview-card" href="/resources/${c.slug}/">
-        <span class="rp-icon">${c.icon || '📚'}</span>
         <span class="rp-title">${loc.title}</span>
         <span class="rp-desc">${loc.desc}</span>
         <span class="rp-count">${c.items.length} ${t('个来源 →', 'sourcesUnit')}</span>
@@ -1573,18 +1572,14 @@ function renderHeroStats(reg) {
   // Hero 标题与副标题（双语）。v3.9：标题从两行长句压成一行短语，
   // 数字不再单独占一行统计条，而是并进入口卡（见 renderRouteCards）。
   const h1 = document.querySelector('.hero h1');
-  if (h1 && LANG === 'en') {
-    h1.innerHTML = `Safe, fast, <span class="grad">${t('open-source tools & resources', 'heroTitle2')}</span>`;
-  } else if (h1) {
-    h1.innerHTML = `安全、快捷、<span class="grad">开源工具及资源</span>`;
-  }
+  if (h1) h1.textContent = t('不装软件，也不上传文件', 'heroTitle1');
   const hp = document.querySelector('.hero p');
-  if (hp) hp.textContent = t('无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。', 'heroDesc');
+  if (hp) hp.textContent = t('挑一个工具，填参数，出结果。文件留在这台电脑上。', 'heroDesc');
 
   const btn = $('#random-btn');
   if (btn) {
     btn.title = t('随机发现一个工具', 'random');
-    btn.textContent = t('🎲 随便看看', 'random');
+    btn.textContent = t('随便看看', 'random');
     btn.onclick = () => {
       const pool = reg.tools.filter((x) => x.runtime !== 'link');
       const pick = pool[Math.floor(Math.random() * pool.length)];
@@ -1863,11 +1858,8 @@ bindPasteRoute(document.getElementById('palette-input'), document.querySelector(
 (function adaptPlaceholders() {
   const hero = document.getElementById('hero-search');
   if (!hero) return;
-  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
-  hero.placeholder =
-    window.innerWidth < 600
-      ? '搜索工具或资源…'
-      : `搜索工具或资源…（${isMac ? '⌘' : 'Ctrl'} K 打开命令面板）`;
+  // 快捷键提示已经做成输入框右侧的键帽，文案里不再重复一遍
+  hero.placeholder = document.documentElement.lang === 'en' ? 'Search tools or resources' : '搜索工具或资源';
 })();
 document.addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {

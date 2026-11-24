@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>子网计算器 · ToolHub</title>
   <meta name="description" content="IP 加掩码算出网段、广播地址与可用主机数" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#f4f1eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
        这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
@@ -91,7 +91,7 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
       <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
@@ -99,49 +99,51 @@
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
-      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
     </div>
   </header>
 
   <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>子网计算器</h1><p>IP 加掩码算出网段、广播地址与可用主机数</p><h2>关于子网计算器</h2><p>子网计算的公式本身很简单，真正容易错的是边界：把 /24 的广播地址当成可用地址配给机器、把 /31 的点对点链路按 2^n−2 算成 0 个可用、拿到 255.255.255.0 却不知道它等于 /24。这些错误在配错一台机器之后才会暴露，而排查方向往往先从「网络不通」开始，绕很远。</p><h2>使用步骤</h2><ol><li>填 IPv4 地址，例如 192.168.1.10</li><li>填掩码：写 24 或 255.255.255.0 都可以</li><li>看结果里的网络地址、广播地址、可用范围与可用主机数</li><li>配机器时只用可用范围内的地址；顺手看一眼「是否网络地址/广播地址」那两行</li></ol><h2>常见错误</h2><h3>把广播地址配给了机器</h3><p>主机位全 1 的地址是广播地址，不能分配给接口。结果里有一行专门判断「输入地址是否广播地址」，配之前扫一眼能省一次排障。</p><h3>以为私有地址等于不能上公网</h3><p>10/8、172.16/12、192.168/16 是私有段，但它们能不能访问公网取决于出口有没有做 NAT，与「私有」这个标签无关。结果里的地址类型只是保留段判断。</p><h2>常见问题</h2><h3>/31 为什么有 2 个可用地址？</h3><p>按 RFC 3021，/31 用于点对点链路：链路上只有两端，不需要网络地址与广播地址，两个地址都能分配给接口。老教材里的「2^n−2」在这种情况下不适用。</p><h3>掩码 255.255.254.0 对应多少位？</h3><p>/23。判断方法是数连续的 1：前 23 位是 1。本工具接受点分写法并自动换算，若写的是 255.0.255.0 这种不连续的掩码，会直接报错——那种掩码在 IPv4 里不存在。</p><h3>支持 IPv6 吗？</h3><p>不支持，也不打算混在一起。IPv6 是 128 位，「可用主机数」在 /64 下是个 19 位数，和 IPv4 的直觉完全不同；把两者放进同一张结果表只会让人误读。</p><h3>掩码能写成 /24 吗？</h3><p>可以，斜杠会被去掉再解析。24、/24、255.255.255.0 三种写法都认，结果里会把两种表示都列出来。</p><h3>可用主机数是固定值吗？</h3><p>只与掩码位数有关：2^(32−掩码位) − 2，减掉的是网络地址与广播地址。掩码不变，任何地址算出来都是同一个数。</p><p>来源：内置实现 · License: MIT · 分类：<a href="/categories/web/">网络</a></p><h2>相关阅读</h2><ul><li><a href="/tools/librespeed/">LibreSpeed</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/flexbox-froggy/">Flexbox Froggy</a> —— 同类第三方工具（官方在线版）</li><li><a href="/categories/web/">全部网络类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
+      <div class="home-intro">
       <div class="hero">
-        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
-        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <h1 data-zh="不装软件，也不上传文件" data-en="No installs, no uploads">不装软件，也不上传文件</h1>
+        <p data-zh="挑一个工具，填参数，出结果。文件留在这台电脑上。" data-en="Pick a tool, fill in the args, get the result. Your files stay on this machine.">挑一个工具，填参数，出结果。文件留在这台电脑上。</p>
         <div class="hero-search-wrap">
           <div class="hs-field">
-            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
             <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>
       </div>
 
       <div class="route-cards" id="route-cards"></div>
+      </div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="fc fc--tools">
-          <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
           <div class="featured-list" id="featured-grid"></div>
         </div>
         <div class="fc fc--guides">
-          <div class="section-title">📖 <span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
           <div class="guide-list" id="home-guides"></div>
         </div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -153,7 +155,7 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
         <div class="trust-strip">
           <div class="ts-stat">
             <b>0</b>
@@ -172,7 +174,7 @@
             <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
           </div>
         </div>
-        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
       </div>
     </section>
 
@@ -224,9 +226,9 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
-      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
     </div>
     <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>

@@ -1,29 +1,30 @@
 {
   "en": {
     "ui": {
-      "searchPlaceholder": "Search tools… (press / to focus)",
-      "heroTitle1": "Great open-source tools from GitHub,",
+      "searchPlaceholder": "Search tools…",
+      "heroTitle1": "No installs, no uploads",
       "heroTitle2": "open-source tools & resources",
-      "heroDesc": "No install, no sign-up, no terminal — pick a tool, fill in the args, get the result.",
+      "heroDesc": "Pick a tool, fill in the args, get the result. Your files stay on this machine.",
       "statTools": "Curated tools",
       "statLocal": "Run locally",
       "statCats": "Categories",
       "statUpload": "Data uploaded",
-      "random": "🎲 Surprise me",
+      "random": "Surprise me",
       "featured": "Popular picks",
       "featuredSub": "Most used · start here",
-      "recent": "🕘 Recent",
+      "recent": "Recent",
       "all": "All",
-      "mostUsed": "🔥 Most used",
-      "favorites": "⭐ Favorites",
-      "badgeLocal": "🔒 Runs locally",
-      "badgeLink": "🌐 External site",
-      "badgeClient": "💻 Desktop app",
-      "badgeSelfhost": "🐳 Self-hosted",
-      "badgeCli": "⌨️ Command line",
-      "badgeExt": "🧩 Editor extension",
-      "badgeMobile": "📱 Mobile app",
-      "badgeKey": "🔑 API key needed",
+      "mostUsed": "Most used",
+      "favorites": "Favorites",
+      "badgeLocal": "Runs locally",
+      "badgeLocalShort": "Local",
+      "badgeLink": "External site",
+      "badgeClient": "Desktop app",
+      "badgeSelfhost": "Self-hosted",
+      "badgeCli": "⌨ Command line",
+      "badgeExt": "Editor extension",
+      "badgeMobile": "Mobile app",
+      "badgeKey": "API key needed",
       "privacyLocal": "On-device",
       "privacyP2P": "Device-to-device",
       "privacyUpload": "Uploads data",
@@ -36,16 +37,16 @@
       "emptyAll": "No tools matched. Try another keyword",
       "fixNo": "Nothing found for",
       "fixAsk": "did you mean",
-      "intentMaybe": "💡 Probably this",
+      "intentMaybe": "Probably this",
       "intentGo": "Open with values filled →",
-      "intentFlow": "🔗 Better as a workflow",
+      "intentFlow": "Better as a workflow",
       "intentFlowGo": "Open workflow →",
       "emptyFav": "No favorites yet — tap ☆ on a card to add",
       "emptyUsed": "No usage yet — run any tool and it will appear here",
       "viewAll": "Show all tools",
       "used": "used",
       "times": "times",
-      "footerNote": "🔒 Local tools process everything in your browser — nothing is uploaded · 🌐 Directory tools are third-party open-source projects; all rights belong to their authors and repositories are linked on each card",
+      "footerNote": "Local tools process everything in your browser — nothing is uploaded · Directory tools are third-party open-source projects; all rights belong to their authors and repositories are linked on each card",
       "about": "About",
       "submit": "Submit a tool",
       "themeTitle": "Toggle theme",
@@ -104,10 +105,10 @@
       "draftRestored": "Restored your last inputs",
       "draftClear": "Clear",
       "resultActions": "Result actions",
-      "copyResult": "📋 Copy result",
-      "download": "⬇ Download",
-      "downloadAll": "⬇ Download all",
-      "shareResult": "🔗 Share this result",
+      "copyResult": "Copy result",
+      "download": "Download",
+      "downloadAll": "Download all",
+      "shareResult": "Share this result",
       "localNote": "Everything happens in your browser — files never leave your device",
       "copied": "✓ Copied",
       "linkCopied": "✓ Link copied",
@@ -124,7 +125,7 @@
       "handoffNote": "Loaded the previous step's result",
       "handoffHint": "check the options, then hit Run",
       "filesUnit": "files",
-      "catAll": "🗂️ All categories →",
+      "catAll": "All categories →",
       "sourcesUnit": "sources →",
       "footerCount": "tools curated"
     },
@@ -142,35 +143,35 @@
     },
     "tasks": [
       {
-        "label": "🖼️ Images",
+        "label": "Images",
         "kw": "image"
       },
       {
-        "label": "📄 PDF & docs",
+        "label": "PDF & docs",
         "kw": "pdf"
       },
       {
-        "label": "🔐 Encode / hash",
+        "label": "Encode / hash",
         "kw": "encode"
       },
       {
-        "label": "🧪 Debug APIs",
+        "label": "Debug APIs",
         "kw": "jwt"
       },
       {
-        "label": "📊 Convert data",
+        "label": "Convert data",
         "kw": "json"
       },
       {
-        "label": "✍️ Write docs",
+        "label": "Write docs",
         "kw": "markdown"
       },
       {
-        "label": "🎨 Design",
+        "label": "Design",
         "kw": "color"
       },
       {
-        "label": "🧠 Run code",
+        "label": "Run code",
         "kw": "python"
       }
     ],

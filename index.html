@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ToolHub · 本地执行的开源在线工具</title>
   <meta name="description" content="ToolHub 收录 140 个精选开源工具：能在本地跑的都在你的浏览器里跑，文件不上传服务器；无需安装、无需注册。涵盖图片压缩、PDF 处理、文本转换与开发辅助。" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#f4f1eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
        这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
@@ -86,7 +86,7 @@
 <body data-view="home">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
       <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
@@ -94,129 +94,131 @@
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
-      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
     </div>
   </header>
 
   <main class="container" id="main-content" tabindex="-1">
     <!-- 首页 -->
     <section id="view-home">
+      <div class="home-intro">
       <div class="hero">
-        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
-        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <h1 data-zh="不装软件，也不上传文件" data-en="No installs, no uploads">不装软件，也不上传文件</h1>
+        <p data-zh="挑一个工具，填参数，出结果。文件留在这台电脑上。" data-en="Pick a tool, fill in the args, get the result. Your files stay on this machine.">挑一个工具，填参数，出结果。文件留在这台电脑上。</p>
         <div class="hero-search-wrap">
           <div class="hs-field">
-            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
             <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>
       </div>
 
       <div class="route-cards" id="route-cards"><!--hs:route-cards-->
     <a class="route-card rc--tools" href="/tools/">
-      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
+      <span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
       <b><span class="rc-num">140</span><span data-zh="个工具" data-en="tools">个工具</span></b>
       <span class="rc-desc" data-zh="70 个纯本地执行 · 10 个分类" data-en="70 run fully in-browser · 10 categories">70 个纯本地执行 · 10 个分类</span>
       <em data-zh="浏览工具 →" data-en="Browse tools →">浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
-      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
+      <span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
       <b><span class="rc-num">64</span><span data-zh="条资源" data-en="links">条资源</span></b>
       <span class="rc-desc" data-zh="8 个合集：图标、字体、配色、学习路线" data-en="8 collections: icons, fonts, palettes, learning paths">8 个合集：图标、字体、配色、学习路线</span>
       <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
     <a class="route-card rc--guide" href="/guides/" data-guides="16" data-steps="127">
-      <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
+      <span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
       <b><span class="rc-num">16</span><span data-zh="篇教程" data-en="guides">篇教程</span></b>
       <span class="rc-desc" data-zh="127 个步骤 · 前置条件、风险标注、回退路径" data-en="127 steps · prerequisites, risk labels and a way back">127 个步骤 · 前置条件、风险标注、回退路径</span>
       <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
-      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
+      <span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
       <b><span class="rc-num">8</span><span data-zh="篇测评" data-en="reviews">篇测评</span></b>
       <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
       <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
     </a><!--/hs:route-cards--></div>
+      </div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="fc fc--tools">
-          <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
           <div class="featured-list" id="featured-grid"><!--hs:featured-grid--><div class="fl-row" data-id="image-compress" data-link="">
         <span class="rank">01</span>
         <div class="f-body"><div class="f-name">图片压缩</div><div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div></div>
-        <span class="f-meta">🔒 本地 · 图片</span>
+        <span class="f-meta">本地 · 图片</span>
       </div><div class="fl-row" data-id="pdf-merge" data-link="">
         <span class="rank">02</span>
         <div class="f-body"><div class="f-name">PDF 合并拆分</div><div class="f-desc">多个 PDF 本地合并、按页码提取、按页数拆分，文件不上传</div></div>
-        <span class="f-meta">🔒 本地 · 文档</span>
+        <span class="f-meta">本地 · 文档</span>
       </div><div class="fl-row" data-id="qrcode" data-link="">
         <span class="rank">03</span>
         <div class="f-body"><div class="f-name">二维码生成</div><div class="f-desc">把文本/网址变成二维码，可下载 PNG</div></div>
-        <span class="f-meta">🔒 本地 · 开发</span>
+        <span class="f-meta">本地 · 开发</span>
       </div><div class="fl-row" data-id="image-convert" data-link="">
         <span class="rank">04</span>
         <div class="f-body"><div class="f-name">图片格式转换</div><div class="f-desc">PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</div></div>
-        <span class="f-meta">🔒 本地 · 图片</span>
+        <span class="f-meta">本地 · 图片</span>
       </div><div class="fl-row" data-id="tesseract" data-link="https://tesseract.projectnaptha.com">
         <span class="rank">05</span>
         <div class="f-body"><div class="f-name">Tesseract.js OCR</div><div class="f-desc">浏览器本地图片文字识别（OCR）官方演示</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理 · 图片</span>
+        <span class="f-meta">在线 · 本机处理 · 图片</span>
       </div><div class="fl-row" data-id="ffmpeg-wasm" data-link="https://ffmpegwasm.netlify.app">
         <span class="rank">06</span>
         <div class="f-body"><div class="f-name">ffmpeg.wasm</div><div class="f-desc">浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理 · 音视频</span>
+        <span class="f-meta">在线 · 本机处理 · 音视频</span>
       </div><div class="fl-row" data-id="it-tools" data-link="https://it-tools.tech">
         <span class="rank">07</span>
         <div class="f-body"><div class="f-name">IT-Tools</div><div class="f-desc">几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理 · 开发</span>
+        <span class="f-meta">在线 · 本机处理 · 开发</span>
       </div><div class="fl-row" data-id="excalidraw" data-link="https://excalidraw.com">
         <span class="rank">08</span>
         <div class="f-body"><div class="f-name">Excalidraw</div><div class="f-desc">手绘风格白板画图，协作绘图神器</div></div>
-        <span class="f-meta">🌐 在线 · 看用法 · 设计</span>
+        <span class="f-meta">在线 · 看用法 · 设计</span>
       </div><!--/hs:featured-grid--></div>
         </div>
         <div class="fc fc--guides">
-          <div class="section-title">📖 <span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
           <div class="guide-list" id="home-guides"><!--hs:home-guides--><a class="fl-row" href="/guides/toolhub-image-pipeline/" data-spa>
-        <span class="rank">🖼️</span>
+        <span class="rank">01</span>
         <div class="f-body"><div class="f-name">把一张图压到 200KB，再转成要的格式</div><div class="f-desc">用本站的工作流和图片工具，全程在本机跑完，不装软件、不上传。</div></div>
         <span class="f-meta" data-zh="入门 · 15 分钟" data-en="Beginner · 15 min">入门 · 15 分钟</span>
       </a><a class="fl-row" href="/guides/github-pages-first-site/" data-spa>
-        <span class="rank">🌐</span>
+        <span class="rank">02</span>
         <div class="f-body"><div class="f-name">零基础发布第一个网站（GitHub Pages 篇）</div><div class="f-desc">注册 GitHub、建仓库、传一个 HTML 文件，45 分钟让网站在网上能打开，全程免费、不碰命令行。</div></div>
         <span class="f-meta" data-zh="入门 · 45 分钟" data-en="Beginner · 45 min">入门 · 45 分钟</span>
       </a><a class="fl-row" href="/guides/custom-domain/" data-spa>
-        <span class="rank">🔗</span>
+        <span class="rank">03</span>
         <div class="f-body"><div class="f-name">给网站绑一个自己的域名</div><div class="f-desc">免费域名、改 DNS 解析、打开 HTTPS，告别 github.io 的长地址。</div></div>
         <span class="f-meta" data-zh="入门 · 30 分钟" data-en="Beginner · 30 min">入门 · 30 分钟</span>
       </a><a class="fl-row" href="/guides/ollama-local-ai/" data-spa>
-        <span class="rank">🖥️</span>
+        <span class="rank">04</span>
         <div class="f-body"><div class="f-name">在自己电脑上跑一个离线 AI 对话（Ollama 篇）</div><div class="f-desc">免费开源模型本地跑，聊天记录不出设备；旧电脑也能跑小模型。</div></div>
         <span class="f-meta" data-zh="中等 · 60 分钟" data-en="Intermediate · 60 min">中等 · 60 分钟</span>
       </a><a class="fl-row" href="/guides/pwa-install/" data-spa>
-        <span class="rank">📱</span>
+        <span class="rank">05</span>
         <div class="f-body"><div class="f-name">把网站变成手机 App（PWA 篇）</div><div class="f-desc">加三样东西，网站就能安装到手机桌面、离线打开、像原生 App 一样全屏。</div></div>
         <span class="f-meta" data-zh="中等 · 45 分钟" data-en="Intermediate · 45 min">中等 · 45 分钟</span>
       </a><a class="fl-row" href="/guides/ai-prompts-resume/" data-spa>
-        <span class="rank">✍️</span>
+        <span class="rank">06</span>
         <div class="f-body"><div class="f-name">零基础用 AI 写简历、周报和方案</div><div class="f-desc">提示词模板直接抄，改三处就能用；附 Token 成本估算。</div></div>
         <span class="f-meta" data-zh="入门 · 30 分钟" data-en="Beginner · 30 min">入门 · 30 分钟</span>
       </a><a class="fl-row" href="/guides/cloudflare-tunnel-home/" data-spa>
-        <span class="rank">🏠</span>
+        <span class="rank">07</span>
         <div class="f-body"><div class="f-name">把家里的服务安全地放到公网（Cloudflare Tunnel）</div><div class="f-desc">不开路由器端口、不要公网 IP，只放一个服务出去，并且先加一道登录。</div></div>
         <span class="f-meta" data-zh="中等 · 50 分钟" data-en="Intermediate · 50 min">中等 · 50 分钟</span>
       </a><a class="fl-row" href="/guides/workbuddy-workbench/" data-spa>
-        <span class="rank">🗂️</span>
+        <span class="rank">08</span>
         <div class="f-body"><div class="f-name">用 WorkBuddy 搭一个带后台的工作台</div><div class="f-desc">一句话建数据表、生成看板页面、发布成链接；资料、页面与 Agent 在同一处接力，不写一行代码。</div></div>
         <span class="f-meta" data-zh="入门 · 30 分钟" data-en="Beginner · 30 min">入门 · 30 分钟</span>
       </a><!--/hs:home-guides--></div>
@@ -224,19 +226,16 @@
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"><!--hs:res-preview-grid--><a class="res-preview-card" href="/resources/icons/">
-        <span class="rp-icon">🎨</span>
         <span class="rp-title">免费图标库</span>
         <span class="rp-desc">做界面最常用的图标来源，全部免费可用、授权清晰</span>
         <span class="rp-count">10 个来源 →</span>
       </a><a class="res-preview-card" href="/resources/fonts/">
-        <span class="rp-icon">🔤</span>
         <span class="rp-title">免费商用字体</span>
         <span class="rp-desc">中文与西文免费商用字体，附授权类型说明</span>
         <span class="rp-count">8 个来源 →</span>
       </a><a class="res-preview-card" href="/resources/colors/">
-        <span class="rp-icon">🎨</span>
         <span class="rp-title">配色方案与调色板</span>
         <span class="rp-desc">成套配色系统、数据可视化色板与配色灵感</span>
         <span class="rp-count">8 个来源 →</span>
@@ -244,14 +243,14 @@
       </div>
 
       <div class="task-row" id="task-row"></div>
-      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><a class="chip" href="/categories/text/">📝 文本</a><a class="chip" href="/categories/image/">🖼️ 图片</a><a class="chip" href="/categories/docs/">📄 文档</a><a class="chip" href="/categories/data/">📊 数据</a><a class="chip" href="/categories/dev/">⚙️ 开发</a><a class="chip" href="/categories/design/">🎨 设计</a><a class="chip" href="/categories/media/">🎵 音视频</a><a class="chip" href="/categories/productivity/">⚡ 效率</a><a class="chip" href="/categories/web/">🌐 网络</a><a class="chip" href="/categories/ai/">🤖 AI</a><a class="chip" href="/categories/">🗂️ 分类总览 →</a><!--/hs:chips--></div>
-      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">🔒 仅本机执行</button><button type="button" class="chip " data-rt="offline">📴 断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">🔥 最常用</button><button type="button" class="chip " data-sort="new">🆕 最近收录</button><span class="fb-count" id="fb-count">共 140 个</span><!--/hs:filterbar--></div>
+      <div class="chips" id="chips"><!--hs:chips--><button class="chip active" data-cat="全部">全部</button><a class="chip" href="/categories/text/">文本</a><a class="chip" href="/categories/image/">图片</a><a class="chip" href="/categories/docs/">文档</a><a class="chip" href="/categories/data/">数据</a><a class="chip" href="/categories/dev/">开发</a><a class="chip" href="/categories/design/">设计</a><a class="chip" href="/categories/media/">音视频</a><a class="chip" href="/categories/productivity/">效率</a><a class="chip" href="/categories/web/">网络</a><a class="chip" href="/categories/ai/">AI</a><a class="chip" href="/categories/">分类总览 →</a><!--/hs:chips--></div>
+      <div class="filterbar" id="filterbar"><!--hs:filterbar--><span class="fb-label">运行方式</span><button type="button" class="chip active" data-rt="all">全部</button><button type="button" class="chip " data-rt="local">仅本机执行</button><button type="button" class="chip " data-rt="offline">断网也能用</button><span class="fb-sep"></span><span class="fb-label">排序</span><button type="button" class="chip active" data-sort="default">默认</button><button type="button" class="chip " data-sort="used">最常用</button><button type="button" class="chip " data-sort="new">最近收录</button><span class="fb-count" id="fb-count">共 140 个</span><!--/hs:filterbar--></div>
       <div class="recent-row" id="recent-row" style="display:none"></div>
       <div class="grid" id="grid"></div>
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
         <div class="trust-strip">
           <div class="ts-stat">
             <b>0</b>
@@ -270,7 +269,7 @@
             <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
           </div>
         </div>
-        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
       </div>
     </section>
 
@@ -322,9 +321,9 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
-      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
     </div>
     <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>

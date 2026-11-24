@@ -395,8 +395,8 @@ async function feedFile(selector, dataUrl, name, type) {
   const aiRows = await evaluate(`document.querySelectorAll('#page-body a.fl-row').length`);
   check('AI 分类页列出 8 条', aiRows === 8, aiRows + ' 行');
   const aiText = await evaluate(`document.querySelector('#page-body').textContent`);
-  check('AI 列表区分客户端与自部署', aiText.includes('💻 客户端') && aiText.includes('🐳 自部署'), '');
-  check('AI 列表标出需 Key 的条目', aiText.includes('🔑 Key'));
+  check('AI 列表区分客户端与自部署', aiText.includes('客户端') && aiText.includes('自部署'), '');
+  check('AI 列表标出需 Key 的条目', aiText.includes('需 Key'));
   await goto('/tools/ollama/');
   await waitText('#page-body', '你的提示词会去哪里', 8000);
   // 详情页有两条渲染路径：整页加载走静态 HTML，点卡片进来走 SPA。两边都要有这句话，
@@ -815,7 +815,7 @@ async function feedFile(selector, dataUrl, name, type) {
   await goto('/tools/localsend/');
   const lsBody = await evaluate(`(document.body.innerText || '')`);
   check('目录详情页有「数据边界」区块', /数据边界/.test(lsBody));
-  check('桌面应用标「需安装客户端」而不是在线直达', /需安装客户端/.test(lsBody) && !/怎么用上：🌐 在线直达/.test(lsBody));
+  check('桌面应用标「需安装客户端」而不是在线直达', /需安装客户端/.test(lsBody) && !/怎么用上：在线直达/.test(lsBody));
   await goto('/');
 
   // ---- 2. 键盘操作（真实键盘事件）----
@@ -1976,7 +1976,13 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   check('移动端无横向溢出', overflow <= 1, 'overflow ' + overflow + 'px');
   const ph = await evaluate(`document.getElementById('search').placeholder`);
   const heroPh = await evaluate(`document.getElementById('hero-search').placeholder`);
-  check('窄屏占位文案已缩短', ph === '搜索工具…' && heroPh === '搜索工具或资源…', `${ph} | ${heroPh}`);
+  // v3.35 起占位符不再写「（Ctrl K 打开命令面板）」——快捷键已做成键帽。
+  // 断言改成「不出现快捷键提示且够短」，比钉死某一句更容易跟着文案走。
+  check(
+    '窄屏占位文案已缩短',
+    !/[Kk]|命令面板|Ctrl/.test(ph + heroPh) && ph.length <= 8 && heroPh.length <= 10,
+    `${ph} | ${heroPh}`
+  );
   await shot('04-mobile');
   // v3.15：导航从 5 项变 6 项。这一行在 375px 最紧——它是横向布局里唯一会随内容变长的东西，
   // 后面加任何入口都要先过这一关，否则会用「多了一个字」把整站顶出横向滚动条。
@@ -2054,7 +2060,14 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
 
   await goto('/');
   const darkBg = await evaluate(`getComputedStyle(document.body).backgroundColor`);
-  check('深色主题完整生效', lum > 0 && /^rgb\(1[0-9],/.test(String(darkBg)), String(darkBg));
+  // 判「是不是深色」不该看首位数字是几，而该看三个通道都够暗——换成暖中性后
+  // 起点从 rgb(16,…) 变成 rgb(20,…)，按字符匹配会误判。
+  const darkCh = (String(darkBg).match(/\d+/g) || []).slice(0, 3).map(Number);
+  check(
+    '深色主题完整生效',
+    darkCh.length === 3 && darkCh.every((n) => n <= 48),
+    String(darkBg)
+  );
   await shot('05-dark');
   await evaluate(`localStorage.setItem('toolhub:theme', 'light')`);
 

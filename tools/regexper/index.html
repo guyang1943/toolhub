@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Regexper · 官方在线版 · ToolHub</title>
   <meta name="description" content="正则表达式可视化图解，一眼看懂" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#f4f1eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
        这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
@@ -90,7 +90,7 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
       <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
@@ -98,49 +98,51 @@
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
-      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Regexper · 官方在线版</h1><p>正则表达式可视化图解，一眼看懂</p><h2>它解决什么问题</h2><p>Regexper 把正则表达式画成铁路图（railroad diagram）：字符类、量词、分组、回溯分支都用图形表示，一眼能看出「这个 `.*?` 到底管到哪」。看别人写的复杂正则时，这比逐字符解析快十倍；写正则时也能用它验证自己对括号层级的理解。</p><h2>数据边界</h2><p>怎么用上：🌐 在线直达（网页版，官网 regexper.com）</p><p>数据边界：<b>本机处理</b> —— 在浏览器内完成，内容不上传（可以有网络请求，但请求里不含你的数据）。</p><p class="evi">证据：边界已核实（2026-11-24，核对 javallone/regexper-static README：项目已迁到 GitLab（“This project has been migrated to”），站点为静态页面，正则在浏览器内解析成图。） · 链接 2026-11-24 探活正常</p><p>跳转到对方站点后，适用对方的隐私政策，ToolHub 无法控制也不负责。敏感数据请先看<a href="/privacy/">隐私说明</a>。</p><h2>三个典型使用场景</h2><ol><li>接手一份老代码，把里面 20 个字符的正则画出来看懂</li><li>教学时给学员展示 `(a|b)+` 和 `(a|b+)` 的结构差异</li><li>写完正则先画一遍，确认量词作用范围没写错</li></ol><h2>和 ToolHub 本地工具怎么配合</h2><p><b><a href="/tools/regex-tester/">正则测试器</a></b>：看懂之后要在真实文本上验证匹配结果，站内测试器能高亮每一处命中并显示分组（本地工具，文件不上传）</p><h2>同类可替代方案</h2><ul><li><a href="/tools/devdocs/">DevDocs</a> —— 一站式 API 文档聚合（100+ 语言/框架）</li><li><a href="/tools/prettier/">Prettier Playground</a> —— 官方在线代码格式化试验场</li><li><a href="/tools/mermaid/">Mermaid Live</a> —— 用文本语法画流程图/时序图，实时预览</li></ul><h2>使用时要注意什么</h2><p>只做静态解析，不执行匹配，没法验证边界情况；对 ES2018 之后的新语法（命名分组、后行断言）支持不完整。</p><h2>常见问题</h2><h3>Regexper 是免费的吗？</h3><p>Regexper 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。</p><h3>Regexper 适合什么场景？</h3><p>最常见的是这几种：接手一份老代码，把里面 20 个字符的正则画出来看懂；教学时给学员展示 `(a|b)+` 和 `(a|b+)` 的结构差异；写完正则先画一遍，确认量词作用范围没写错。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。</p><h3>它和 ToolHub 的本地工具有什么区别？</h3><p>ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；Regexper 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。</p><h3>用 Regexper 有什么限制？</h3><p>只做静态解析，不执行匹配，没法验证边界情况；对 ES2018 之后的新语法（命名分组、后行断言）支持不完整。</p><h2>相关阅读</h2><ul><ul><li><a href="/tools/qrcode/">二维码生成</a> —— 把文本/网址变成二维码，可下载 PNG（在浏览器内执行，不联网也能用）</li><li><a href="/tools/sha256-hash/">哈希计算</a> —— SHA-256/384/512 哈希，基于 WebCrypto 安全实现（在浏览器内执行，不联网也能用）</li><li><a href="/tools/uuid-gen/">UUID / ULID 生成</a> —— UUID v4、ULID、Nano ID 批量生成，可作数据库主键（在浏览器内执行，不联网也能用）</li></ul><li><a href="/categories/dev/">全部开发类工具</a> —— 按分类筛选，含本地执行与目录直达</li><li><a href="/tools/devdocs/">DevDocs</a> —— 同类别另一个选择</li></ul><p>项目来源：github.com/javallone/regexper-static · License: MIT · 分类：<a href="/categories/dev/">开发</a></p><p>官网地址：<a href="https://regexper.com" target="_blank" rel="noopener">https://regexper.com</a>（新标签页打开 regexper.com）</p><p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>Regexper · 官方在线版</h1><p>正则表达式可视化图解，一眼看懂</p><h2>它解决什么问题</h2><p>Regexper 把正则表达式画成铁路图（railroad diagram）：字符类、量词、分组、回溯分支都用图形表示，一眼能看出「这个 `.*?` 到底管到哪」。看别人写的复杂正则时，这比逐字符解析快十倍；写正则时也能用它验证自己对括号层级的理解。</p><h2>数据边界</h2><p>怎么用上：在线直达（网页版，官网 regexper.com）</p><p>数据边界：<b>本机处理</b> —— 在浏览器内完成，内容不上传（可以有网络请求，但请求里不含你的数据）。</p><p class="evi">证据：边界已核实（2026-11-24，核对 javallone/regexper-static README：项目已迁到 GitLab（“This project has been migrated to”），站点为静态页面，正则在浏览器内解析成图。） · 链接 2026-11-24 探活正常</p><p>跳转到对方站点后，适用对方的隐私政策，ToolHub 无法控制也不负责。敏感数据请先看<a href="/privacy/">隐私说明</a>。</p><h2>三个典型使用场景</h2><ol><li>接手一份老代码，把里面 20 个字符的正则画出来看懂</li><li>教学时给学员展示 `(a|b)+` 和 `(a|b+)` 的结构差异</li><li>写完正则先画一遍，确认量词作用范围没写错</li></ol><h2>和 ToolHub 本地工具怎么配合</h2><p><b><a href="/tools/regex-tester/">正则测试器</a></b>：看懂之后要在真实文本上验证匹配结果，站内测试器能高亮每一处命中并显示分组（本地工具，文件不上传）</p><h2>同类可替代方案</h2><ul><li><a href="/tools/devdocs/">DevDocs</a> —— 一站式 API 文档聚合（100+ 语言/框架）</li><li><a href="/tools/prettier/">Prettier Playground</a> —— 官方在线代码格式化试验场</li><li><a href="/tools/mermaid/">Mermaid Live</a> —— 用文本语法画流程图/时序图，实时预览</li></ul><h2>使用时要注意什么</h2><p>只做静态解析，不执行匹配，没法验证边界情况；对 ES2018 之后的新语法（命名分组、后行断言）支持不完整。</p><h2>常见问题</h2><h3>Regexper 是免费的吗？</h3><p>Regexper 是开源项目，采用 MIT 许可证，官方在线版可以免费使用，不需要为基本功能付费。ToolHub 只做收录与说明，不代管你的数据，也不提供账号或存储服务。</p><h3>Regexper 适合什么场景？</h3><p>最常见的是这几种：接手一份老代码，把里面 20 个字符的正则画出来看懂；教学时给学员展示 `(a|b)+` 和 `(a|b+)` 的结构差异；写完正则先画一遍，确认量词作用范围没写错。判断标准很简单——如果你现在正为了这件事装一个几百 MB 的桌面软件，先用它试一次。</p><h3>它和 ToolHub 的本地工具有什么区别？</h3><p>ToolHub 的本地工具把代码放在你的浏览器里执行（WebAssembly 或原生 JS），文件不经过服务器；Regexper 由项目作者维护，数据在其服务器或你的浏览器中处理，具体取决于项目实现，使用前建议先看对方的数据政策。需要「绝对不上传」时可以改用站内同类工具。</p><h3>用 Regexper 有什么限制？</h3><p>只做静态解析，不执行匹配，没法验证边界情况；对 ES2018 之后的新语法（命名分组、后行断言）支持不完整。</p><h2>相关阅读</h2><ul><ul><li><a href="/tools/qrcode/">二维码生成</a> —— 把文本/网址变成二维码，可下载 PNG（在浏览器内执行，不联网也能用）</li><li><a href="/tools/sha256-hash/">哈希计算</a> —— SHA-256/384/512 哈希，基于 WebCrypto 安全实现（在浏览器内执行，不联网也能用）</li><li><a href="/tools/uuid-gen/">UUID / ULID 生成</a> —— UUID v4、ULID、Nano ID 批量生成，可作数据库主键（在浏览器内执行，不联网也能用）</li></ul><li><a href="/categories/dev/">全部开发类工具</a> —— 按分类筛选，含本地执行与目录直达</li><li><a href="/tools/devdocs/">DevDocs</a> —— 同类别另一个选择</li></ul><p>项目来源：github.com/javallone/regexper-static · License: MIT · 分类：<a href="/categories/dev/">开发</a></p><p>官网地址：<a href="https://regexper.com" target="_blank" rel="noopener">https://regexper.com</a>（新标签页打开 regexper.com）</p><p>说明：本页是 ToolHub 对该开源项目的整理与推荐，工具由项目作者维护，版权与数据归原作者所有。官网无法访问时可能是临时故障或网络限制。</p><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
     <!-- 首页 -->
     <section id="view-home">
+      <div class="home-intro">
       <div class="hero">
-        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
-        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <h1 data-zh="不装软件，也不上传文件" data-en="No installs, no uploads">不装软件，也不上传文件</h1>
+        <p data-zh="挑一个工具，填参数，出结果。文件留在这台电脑上。" data-en="Pick a tool, fill in the args, get the result. Your files stay on this machine.">挑一个工具，填参数，出结果。文件留在这台电脑上。</p>
         <div class="hero-search-wrap">
           <div class="hs-field">
-            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
             <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>
       </div>
 
       <div class="route-cards" id="route-cards"></div>
+      </div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="fc fc--tools">
-          <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
           <div class="featured-list" id="featured-grid"></div>
         </div>
         <div class="fc fc--guides">
-          <div class="section-title">📖 <span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
           <div class="guide-list" id="home-guides"></div>
         </div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -152,7 +154,7 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
         <div class="trust-strip">
           <div class="ts-stat">
             <b>0</b>
@@ -171,7 +173,7 @@
             <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
           </div>
         </div>
-        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
       </div>
     </section>
 
@@ -223,9 +225,9 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
-      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
     </div>
     <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>

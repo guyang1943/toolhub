@@ -434,11 +434,11 @@ for (const tool of dirTools) {
     // 又混回「打开网页就能用」，等于白分。
     (() => {
       const rtLabel = { web: '网页版', desktop: '桌面应用', selfhost: '可自托管', cli: '命令行', extension: '编辑器扩展', mobile: '手机应用' }[tool.runtime] || tool.runtime;
-      const accessLabel = { web: '🌐 在线直达', extension: '🧩 编辑器扩展', desktop: '💻 需安装客户端', cli: '⌨️ 需安装命令行', mobile: '📱 需安装 App', selfhost: '🐳 需自行部署' }[tool.runtime] || '🔗 官网';
+      const accessLabel = { web: '在线直达', extension: '编辑器扩展', desktop: '需安装客户端', cli: '需安装命令行', mobile: '📱 需安装 App', selfhost: '🐳 需自行部署' }[tool.runtime] || '🔗 官网';
       // v3.25：「需 API Key」与「跑在哪」是两个维度，硬压成一个徽标就会丢掉事实
       // （Cline 是装在编辑器里的本地程序，但仍要你自备模型凭据）。所以位置一个徽标、
       // Key 一个徽标，可以同时出现。
-      const keyLabel = tool.keyRequired === true ? ' · 🔑 需 API Key' : '';
+      const keyLabel = tool.keyRequired === true ? ' · 需 API Key' : '';
       const pvLabel = PRIVACY_LABEL[tool.privacy] || '未核实';
       // local 时保留作者写的 privacyNote；没有才退到一句按 runtime 区分的话——
       // 桌面应用不可能「在浏览器内完成」，照抄那句话就是新的口径错误。
@@ -690,7 +690,7 @@ for (const p of staticPages) {
   mkdirSync(dir, { recursive: true });
   const url = `${BASE}/resources/`;
   const list = resources.collections
-    .map((c) => `<h2>${c.icon} ${c.title}</h2><p>${c.desc}</p><p><a href="/resources/${c.slug}/">查看 ${c.items.length} 个来源 →</a></p>`)
+    .map((c) => `<h2>${c.title}</h2><p>${c.desc}</p><p><a href="/resources/${c.slug}/">查看 ${c.items.length} 个来源 →</a></p>`)
     .join('');
   let html = fillMeta(tpl, {
     title: '资源库 · 免费可用的设计素材与开发资源 · ToolHub',
@@ -770,20 +770,20 @@ for (const p of staticPages) {
   const toolRow = (t, i) => `<a class="fl-row" href="/tools/${t.id}/">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${t.name}</div><div class="f-desc">${t.desc}</div></div>
-        <span class="f-meta">${t.isLocal ? '🔒 本地' : `🌐 在线 · ${PRIVACY_LABEL[t.privacy] || '未核实'}`}</span>
+        <span class="f-meta">${t.isLocal ? '本地' : `在线 · ${PRIVACY_LABEL[t.privacy] || '未核实'}`}</span>
       </a>`;
 
   const catChips = (active) =>
-    CATS.map((c) => `<a class="chip${c.name === active ? ' active' : ''}" href="${CAT_URL(c.name)}">${c.icon} ${c.name}</a>`).join('');
+    CATS.map((c) => `<a class="chip${c.name === active ? ' active' : ''}" href="${CAT_URL(c.name)}">${c.name}</a>`).join('');
 
   // --- 总览页 ---
   {
     const url = `${BASE}/categories/`;
-    const rows = CATS.map((c) => {
+    const rows = CATS.map((c, i) => {
       const xs = byCat.get(c.name);
       const nLocal = xs.filter((t) => t.isLocal).length;
       return `<a class="fl-row" href="${CAT_URL(c.name)}">
-        <span class="rank">${c.icon}</span>
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${c.title}</div><div class="f-desc">${c.tagline}</div></div>
         <span class="f-meta">${nLocal} 本地 / ${xs.length - nLocal} 在线</span>
       </a>`;
@@ -846,7 +846,7 @@ for (const p of staticPages) {
         .join('')}` +
       (relTopics.length
         ? `<h2 class="res-group-title">相关专题</h2><div class="related-row">${relTopics
-            .map((tp) => `<a class="related-chip" href="/topics/${tp.slug}/">${tp.icon} ${tp.title}</a>`)
+            .map((tp) => `<a class="related-chip" href="/topics/${tp.slug}/">${tp.title}</a>`)
             .join('')}</div>`
         : '') +
       `<h2 class="res-group-title">其他分类</h2><div class="chips">${catChips(c.name)}</div>` +
@@ -891,7 +891,7 @@ for (const p of staticPages) {
         ],
       },
     });
-    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: `${c.icon} ${c.title}`, desc: c.tagline, extra: body })}`);
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: `${c.title}`, desc: c.tagline, extra: body })}`);
     writeFileSync(join(dir, 'index.html'), html, 'utf8');
     // SPA 接管时只取这一类的文案（~2 KB），不为另外八类买单
     writeFileSync(
@@ -935,7 +935,7 @@ for (const p of staticPages) {
           return toolRow(t, seq++);
         })
         .join('');
-      return `<h2 class="res-group-title"><a href="${CAT_URL(c.name)}">${c.icon} ${c.title}</a> · ${xs.length} 个</h2>${rows}`;
+      return `<h2 class="res-group-title"><a href="${CAT_URL(c.name)}">${c.title}</a> · ${xs.length} 个</h2>${rows}`;
     })
     .join('');
   let html = fillMeta(tpl, {
@@ -1001,9 +1001,9 @@ for (const p of staticPages) {
   const byId = new Map(tools.map((t) => [t.id, t]));
   const RISK = { low: { label: '低', cls: 'ok' }, mid: { label: '中', cls: 'warn' }, high: { label: '高', cls: 'danger' } };
 
-  const guideRow = (g) =>
+  const guideRow = (g, i) =>
     `<a class="fl-row" href="/guides/${g.slug}/">
-        <span class="rank">${g.icon}</span>
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${g.title}</div><div class="f-desc">${g.tagline}</div></div>
         <span class="f-meta">${g.difficulty} · ${g.minutes} 分钟</span>
       </a>`;
@@ -1156,7 +1156,7 @@ for (const p of staticPages) {
         ],
       },
     });
-    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: `${g.icon} ${g.title}`, desc: g.tagline, extra: body })}`);
+    html = html.replace(/<main class="container"[^>]*>/, `<main class="container" id="main-content" tabindex="-1">${seoBlock({ h1: `${g.title}`, desc: g.tagline, extra: body })}`);
     writeFileSync(join(dir, 'index.html'), html, 'utf8');
     // SPA 用的单篇数据：正文按篇取，不整份下发
     writeFileSync(join(gDir, g.slug + '.json'), JSON.stringify(g), 'utf8');
@@ -1171,7 +1171,7 @@ for (const p of staticPages) {
   mkdirSync(dir, { recursive: true });
   const url = `${BASE}/topics/`;
   const list = topics.topics
-    .map((t) => `<h2>${t.icon} ${t.title}</h2><p>${t.desc}</p><p><a href="/topics/${t.slug}/">查看专题 →</a></p>`)
+    .map((t) => `<h2>${t.title}</h2><p>${t.desc}</p><p><a href="/topics/${t.slug}/">查看专题 →</a></p>`)
     .join('');
   let html = fillMeta(tpl, {
     title: '专题合集 · 按场景打包的工具组合 · ToolHub',
@@ -1220,7 +1220,7 @@ for (const p of staticPages) {
   const list = evaluations.evaluations
     .map(
       (ev) => `<a class="list-row" href="/evaluations/${ev.slug}/">
-        <span class="lr-ico">${ev.icon}</span>
+        
         <div>
           <h2 class="lr-title">${ev.title}${(ev.usage || []).length ? '<span class="badge">含使用说明</span>' : ''}</h2>
           <div class="lr-desc">${ev.summary}</div>
@@ -1474,25 +1474,25 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   const guideSteps = GUIDES.reduce((a, g) => a + g.steps.length, 0);
   const routeCards = `
     <a class="route-card rc--tools" href="/tools/">
-      <span class="rc-badge" aria-hidden="true">🧰</span><span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
+      <span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
       <b><span class="rc-num">${TOTAL_TOOLS}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
       <span class="rc-desc" data-zh="${tools.length} 个纯本地执行 · ${cats.length} 个分类" data-en="${tools.length} run fully in-browser · ${cats.length} categories">${tools.length} 个纯本地执行 · ${cats.length} 个分类</span>
       <em data-zh="浏览工具 →" data-en="Browse tools →">浏览工具 →</em>
     </a>
     <a class="route-card rc--res" href="/resources/">
-      <span class="rc-badge" aria-hidden="true">📚</span><span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
+      <span class="rc-tag" data-zh="资源库" data-en="Library">资源库</span>
       <b><span class="rc-num">${TOTAL_RES}</span><span data-zh="条资源" data-en="links">条资源</span></b>
       <span class="rc-desc" data-zh="${resources.collections.length} 个合集：图标、字体、配色、学习路线" data-en="${resources.collections.length} collections: icons, fonts, palettes, learning paths">${resources.collections.length} 个合集：图标、字体、配色、学习路线</span>
       <em data-zh="逛资源库 →" data-en="Open the library →">逛资源库 →</em>
     </a>
     <a class="route-card rc--guide" href="/guides/" data-guides="${GUIDES.length}" data-steps="${guideSteps}">
-      <span class="rc-badge" aria-hidden="true">📖</span><span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
+      <span class="rc-tag" data-zh="教程" data-en="Guides">教程</span>
       <b><span class="rc-num">${GUIDES.length}</span><span data-zh="篇教程" data-en="guides">篇教程</span></b>
       <span class="rc-desc" data-zh="${guideSteps} 个步骤 · 前置条件、风险标注、回退路径" data-en="${guideSteps} steps · prerequisites, risk labels and a way back">${guideSteps} 个步骤 · 前置条件、风险标注、回退路径</span>
       <em data-zh="看教程 →" data-en="Read the guide →">看教程 →</em>
     </a>
     <a class="route-card rc--eval" href="/evaluations/">
-      <span class="rc-badge" aria-hidden="true">🔬</span><span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
+      <span class="rc-tag" data-zh="测评室" data-en="Reviews">测评室</span>
       <b><span class="rc-num">${evaluations.evaluations.length}</span><span data-zh="篇测评" data-en="reviews">篇测评</span></b>
       <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
       <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
@@ -1513,7 +1513,7 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
       return `<div class="fl-row" data-id="${tool.id}" data-link="${isLocal ? '' : esc(tool.url)}">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${esc(tool.name)}</div><div class="f-desc">${esc(tool.desc)}</div></div>
-        <span class="f-meta">${isLocal ? '🔒 本地' : '🌐 在线'}${priv} · ${tool.category}</span>
+        <span class="f-meta">${isLocal ? '本地' : '在线'}${priv} · ${tool.category}</span>
       </div>`;
     })
     .join('');
@@ -1525,8 +1525,8 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   const picks = (GUIDE_FILE.picks || []).map((s) => guideBySlug.get(s)).filter(Boolean).slice(0, HOME_GUIDE_MAX);
   const homeGuides = picks
     .map(
-      (g) => `<a class="fl-row" href="/guides/${g.slug}/" data-spa>
-        <span class="rank">${g.icon || '📖'}</span>
+      (g, i) => `<a class="fl-row" href="/guides/${g.slug}/" data-spa>
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${esc(g.title)}</div><div class="f-desc">${esc(g.tagline)}</div></div>
         <span class="f-meta" data-zh="${g.difficulty} · ${g.minutes} 分钟" data-en="${GUIDE_DIFF_EN[g.difficulty] || g.difficulty} · ${g.minutes} min">${g.difficulty} · ${g.minutes} 分钟</span>
       </a>`
@@ -1537,7 +1537,6 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
     .slice(0, 3)
     .map(
       (c) => `<a class="res-preview-card" href="/resources/${c.slug}/">
-        <span class="rp-icon">${c.icon || '📚'}</span>
         <span class="rp-title">${esc(c.title)}</span>
         <span class="rp-desc">${esc(c.desc)}</span>
         <span class="rp-count">${c.items.length} 个来源 →</span>
@@ -1549,16 +1548,16 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   // 「全部」仍是按钮（它就是「不筛选」），分类则是有正文的独立页面。
   const chips =
     `<button class="chip active" data-cat="全部">全部</button>` +
-    CATS.map((c) => `<a class="chip" href="${CAT_URL(c.name)}">${c.icon} ${esc(c.name)}</a>`).join('') +
-    `<a class="chip" href="/categories/">🗂️ 分类总览 →</a>`;
+    CATS.map((c) => `<a class="chip" href="${CAT_URL(c.name)}">${esc(c.name)}</a>`).join('') +
+    `<a class="chip" href="/categories/">分类总览 →</a>`;
 
   const filterbar =
     `<span class="fb-label">运行方式</span>` +
-    ['全部', '🔒 仅本机执行', '📴 断网也能用']
+    ['全部', '仅本机执行', '断网也能用']
       .map((x, i) => `<button type="button" class="chip ${i === 0 ? 'active' : ''}" data-rt="${['all', 'local', 'offline'][i]}">${x}</button>`)
       .join('') +
     `<span class="fb-sep"></span><span class="fb-label">排序</span>` +
-    ['默认', '🔥 最常用', '🆕 最近收录']
+    ['默认', '最常用', '最近收录']
       .map((x, i) => `<button type="button" class="chip ${i === 0 ? 'active' : ''}" data-sort="${['default', 'used', 'new'][i]}">${x}</button>`)
       .join('') +
     `<span class="fb-count" id="fb-count">共 ${TOTAL_TOOLS} 个</span>`;

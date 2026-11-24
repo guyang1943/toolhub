@@ -242,10 +242,10 @@ function renderResultActions(out, box, id, manifest, toolLabel) {
   bar.setAttribute('role', 'group');
   bar.setAttribute('aria-label', t('结果操作', 'resultActions'));
   const parts = [];
-  if (hasText) parts.push(`<button type="button" class="btn ghost" data-act="copy">${t('📋 复制结果', 'copyResult')}</button>`);
+  if (hasText) parts.push(`<button type="button" class="btn ghost" data-act="copy">${t('复制结果', 'copyResult')}</button>`);
   if (files.length === 1) parts.push(`<a class="btn ghost" data-act="download" href="${files[0].url}" download="${esc(files[0].name)}">${t('⬇ 下载', 'download')} ${esc(files[0].name)}</a>`);
   if (files.length > 1) {
-    parts.push(`<button type="button" class="btn ghost" data-act="download-zip">${t('📦 打包下载 zip', 'downloadZip')}（${files.length}）</button>`);
+    parts.push(`<button type="button" class="btn ghost" data-act="download-zip">${t('打包下载 zip', 'downloadZip')}（${files.length}）</button>`);
     parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 逐个下载', 'downloadAll')}</button>`);
   }
   // 工具链：把这次产出直接交给下游工具，不用先下载再上传
@@ -255,9 +255,9 @@ function renderResultActions(out, box, id, manifest, toolLabel) {
   const chains = (CHAINS && typeof CHAINS === 'object' && CHAINS[id]) || [];
   for (const c of chains) parts.push(`<button type="button" class="btn ghost" data-go="${c.to}">→ ${esc(c.label)}</button>`);
   parts.push(`<button type="button" class="btn ghost" data-act="join">＋ 加入流程</button>`);
-  parts.push(`<button type="button" class="btn ghost" data-act="share">${t('🔗 分享此结果', 'shareResult')}</button>`);
+  parts.push(`<button type="button" class="btn ghost" data-act="share">${t('分享此结果', 'shareResult')}</button>`);
   // 加密分享：内容走 URL 片段，服务器与 CDN 日志里看不到明文（v3.0 E2）
-  parts.push(`<button type="button" class="btn ghost" data-act="share-enc">${t('🔒 加密分享', 'shareEnc')}</button>`);
+  parts.push(`<button type="button" class="btn ghost" data-act="share-enc">${t('加密分享', 'shareEnc')}</button>`);
   parts.push(`<span class="ra-note">${t('全程在本机完成，文件不会上传', 'localNote')}</span>`);
   bar.innerHTML = parts.join('');
 
@@ -467,7 +467,7 @@ async function applyEncryptedShare(meta, manifest, doRun) {
   if (!res.ok) {
     const note = document.createElement('div');
     note.className = 'pipe-note enc-note-bad';
-    note.textContent = '⚠️ ' + (res.error || t('解密失败', 'decFail'));
+    note.textContent = (res.error || t('解密失败', 'decFail'));
     const box = document.getElementById('tool-fields');
     if (box) box.insertBefore(note, box.firstChild);
     return false;
@@ -482,7 +482,7 @@ async function applyEncryptedShare(meta, manifest, doRun) {
   history.replaceState(null, '', location.pathname + location.search); // 清掉片段，刷新不再重复解密
   const note = document.createElement('div');
   note.className = 'pipe-note enc-note-ok';
-  note.textContent = '🔓 ' + t('已解密分享内容（内容从未经过服务器，片段不随请求发送）', 'decOk');
+  note.textContent = t('已解密分享内容（内容从未经过服务器，片段不随请求发送）', 'decOk');
   const box = document.getElementById('tool-fields');
   if (box) box.insertBefore(note, box.firstChild);
   if (applied && !manifest.inputs.some((i) => i.type === 'file')) setTimeout(() => doRun(), 80);
@@ -508,9 +508,9 @@ async function fillRelatedGuides(id) {
   if (!G_INDEX) await G_PROMISE;
   const hit = (G_INDEX || []).filter((g) => (g.tools || []).includes(id));
   if (!hit.length) return;
-  box.innerHTML = `<div class="section-title" style="margin-top:22px">📖 <span>${t('跟着教程做', 'relatedGuides')}</span><em>${t('这几篇用到了它', 'relatedGuidesSub')}</em></div>
+  box.innerHTML = `<div class="section-title" style="margin-top:22px"><span>${t('跟着教程做', 'relatedGuides')}</span><em>${t('这几篇用到了它', 'relatedGuidesSub')}</em></div>
     <div class="related-row">${hit
-      .map((g) => `<div class="related-chip" data-guide="${g.slug}">${g.icon} ${esc(g.title)}</div>`)
+      .map((g) => `<div class="related-chip" data-guide="${g.slug}">${esc(g.title)}</div>`)
       .join('')}</div>`;
   box.querySelectorAll('.related-chip[data-guide]').forEach((el) => {
     kbLink(el, () => navigate('/guides/' + el.dataset.guide + '/'));
@@ -545,7 +545,7 @@ export async function openTool(id) {
   // 目录工具：站内详情页 + 跳转官网（页面本身可用于搜索引擎收录）
   if (meta.runtime === 'link') {
     const m = toolMeta(meta);
-    const icon2 = CAT_ICONS[meta.category] || '🧰';
+    const icon2 = CAT_ICONS[meta.category] || '';
     const relLocal = REGISTRY.tools.filter((x) => x.runtime !== 'link' && x.category === meta.category).slice(0, 4);
     const relDir = REGISTRY.tools.filter((x) => x.runtime === 'link' && x.id !== meta.id && x.category === meta.category).slice(0, 4);
     $('#tool-body').innerHTML = `
@@ -583,10 +583,10 @@ export async function openTool(id) {
           ? `<div class="section-title" style="margin-top:22px">🔗 <span>${t('相关工具', 'relatedLocal')}</span></div>
              <div class="related-row">
                ${relLocal
-                 .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
+                 .map((x) => `<div class="related-chip" data-id="${x.id}">${toolMeta(x).name}</div>`)
                  .join('')}
                ${relDir
-                 .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
+                 .map((x) => `<div class="related-chip" data-id="${x.id}">${toolMeta(x).name}</div>`)
                  .join('')}
              </div>`
           : ''
@@ -637,7 +637,7 @@ export async function openTool(id) {
     return;
   }
   const manifest = mod.manifest;
-  const icon = CAT_ICONS[meta.category] || '🧰';
+  const icon = CAT_ICONS[meta.category] || '';
   const used = usageMap()[meta.id] || 0;
   const usedNote = used
     ? LANG === 'en'
@@ -916,7 +916,7 @@ export async function openTool(id) {
   if (related.length) {
     relHTML += `<div class="section-title">🔗 <span>${t('相关工具', 'relatedLocal')}</span></div>
       <div class="related-row">${related
-        .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
+        .map((x) => `<div class="related-chip" data-id="${x.id}">${toolMeta(x).name}</div>`)
         .join('')}</div>`;
   }
   if (relatedDir.length) {
@@ -924,7 +924,7 @@ export async function openTool(id) {
       <div class="related-row">${relatedDir
         .map(
           (x) =>
-            `<a class="related-chip" href="${esc(x.url)}" target="_blank" rel="noopener">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name} ↗</a>`
+            `<a class="related-chip" href="${esc(x.url)}" target="_blank" rel="noopener">${toolMeta(x).name} ↗</a>`
         )
         .join('')}</div>`;
   }

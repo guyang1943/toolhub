@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>图片工具 · 16 个开源工具 · ToolHub</title>
   <meta name="description" content="压缩、改尺寸、转格式、清理元数据：解码与重编码都在浏览器内存里完成，照片不上传。" />
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="theme-color" content="#f4f1eb" />
   <meta name="color-scheme" content="light dark" />
   <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
        这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
@@ -88,7 +88,7 @@
 <body data-view="page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <header class="site-header">
-    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">🧰 ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
     <nav class="main-nav" id="main-nav" aria-label="主导航">
       <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
       <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
@@ -96,113 +96,115 @@
       <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
       <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
     </nav>
-    <input id="search" type="text" placeholder="搜索工具…（按 / 快速聚焦）" aria-label="搜索工具" role="searchbox" />
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
     <div class="header-actions">
-      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">🔍</button>
-      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">🌐 EN</button>
-      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">🌙</button>
-      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">ℹ️</a>
-      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">➕</a>
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
     </div>
   </header>
 
-  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>🖼️ 图片工具</h1><p>压缩、改尺寸、转格式、清理元数据：解码与重编码都在浏览器内存里完成，照片不上传。</p><div class="crumb" style="margin-bottom:10px"><a href="/categories/">工具分类</a> / 图片</div><div class="res-intro">图片类工具是最适合本地执行的一类：处理效果「看一眼就知道对不对」，所以边调参数边看预览最有效率；而图片本身往往带着拍摄地点、设备型号这些不该外泄的信息。站内的本地图片工具走浏览器 canvas 与编码器管线，断网也能用。</div><h2 class="res-group-title">适合这些场景</h2><ul><li>发公众号或上传后台前，把 5MB 的截图压到 300KB 以内</li><li>把手机拍的横图缩到 1920px 长边，再统一转成 WebP</li><li>发二手、投简历、传素材前，删掉照片里的 GPS 定位与机型信息</li></ul><h2 class="res-group-title">浏览器内执行 · 11 个</h2><a class="fl-row" href="/tools/image-compress/">
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>图片工具</h1><p>压缩、改尺寸、转格式、清理元数据：解码与重编码都在浏览器内存里完成，照片不上传。</p><div class="crumb" style="margin-bottom:10px"><a href="/categories/">工具分类</a> / 图片</div><div class="res-intro">图片类工具是最适合本地执行的一类：处理效果「看一眼就知道对不对」，所以边调参数边看预览最有效率；而图片本身往往带着拍摄地点、设备型号这些不该外泄的信息。站内的本地图片工具走浏览器 canvas 与编码器管线，断网也能用。</div><h2 class="res-group-title">适合这些场景</h2><ul><li>发公众号或上传后台前，把 5MB 的截图压到 300KB 以内</li><li>把手机拍的横图缩到 1920px 长边，再统一转成 WebP</li><li>发二手、投简历、传素材前，删掉照片里的 GPS 定位与机型信息</li></ul><h2 class="res-group-title">浏览器内执行 · 11 个</h2><a class="fl-row" href="/tools/image-compress/">
         <span class="rank">01</span>
         <div class="f-body"><div class="f-name">图片压缩</div><div class="f-desc">在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-resize/">
         <span class="rank">02</span>
         <div class="f-body"><div class="f-name">图片缩放</div><div class="f-desc">按最大边长等比缩放图片，生成头像/封面尺寸</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-base64/">
         <span class="rank">03</span>
         <div class="f-body"><div class="f-name">图片转 Base64</div><div class="f-desc">图片与 Data URI / Base64 双向转换</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/exif-strip/">
         <span class="rank">04</span>
         <div class="f-body"><div class="f-name">照片元数据剥离</div><div class="f-desc">查看并删除照片里的 GPS 定位、机型与拍摄时间，无损不重编码</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-convert/">
         <span class="rank">05</span>
         <div class="f-body"><div class="f-name">图片格式转换</div><div class="f-desc">PNG / JPEG / WebP 互转，可选质量与透明填充色，本地转码</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/img-crop/">
         <span class="rank">06</span>
         <div class="f-body"><div class="f-name">图片裁剪</div><div class="f-desc">拖出选区或填空坐标裁剪图片，支持等比锁定与圆角</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-watermark/">
         <span class="rank">07</span>
         <div class="f-body"><div class="f-name">图片水印</div><div class="f-desc">给图片加文字水印，位置透明度大小可调</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-merge/">
         <span class="rank">08</span>
         <div class="f-body"><div class="f-name">图片拼接</div><div class="f-desc">多张图片横向纵向或网格拼成一张</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-filter/">
         <span class="rank">09</span>
         <div class="f-body"><div class="f-name">图片滤镜</div><div class="f-desc">预设滤镜叠加亮度对比度饱和度，本地调色</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-round/">
         <span class="rank">10</span>
         <div class="f-body"><div class="f-name">图片圆角</div><div class="f-desc">图片一键变圆角或圆形，可加描边</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><a class="fl-row" href="/tools/image-info/">
         <span class="rank">11</span>
         <div class="f-body"><div class="f-name">图片信息</div><div class="f-desc">查看图片尺寸格式体积与 EXIF 关键字段</div></div>
-        <span class="f-meta">🔒 本地</span>
+        <span class="f-meta">本地</span>
       </a><h2 class="res-group-title">第三方官方在线版 · 5 个</h2><a class="fl-row" href="/tools/squoosh/">
         <span class="rank">12</span>
         <div class="f-body"><div class="f-name">Squoosh</div><div class="f-desc">Google 出品的图片压缩，对比预览效果极佳</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理</span>
+        <span class="f-meta">在线 · 本机处理</span>
       </a><a class="fl-row" href="/tools/picsum/">
         <span class="rank">13</span>
         <div class="f-body"><div class="f-name">Picsum Photos</div><div class="f-desc">占位图服务，开发测试用假图一键生成</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理</span>
+        <span class="f-meta">在线 · 本机处理</span>
       </a><a class="fl-row" href="/tools/tesseract/">
         <span class="rank">14</span>
         <div class="f-body"><div class="f-name">Tesseract.js OCR</div><div class="f-desc">浏览器本地图片文字识别（OCR）官方演示</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理</span>
+        <span class="f-meta">在线 · 本机处理</span>
       </a><a class="fl-row" href="/tools/svgomg/">
         <span class="rank">15</span>
         <div class="f-body"><div class="f-name">SVGOMG</div><div class="f-desc">SVG 优化压缩 GUI（SVGO 的可视化界面）</div></div>
-        <span class="f-meta">🌐 在线 · 本机处理</span>
+        <span class="f-meta">在线 · 本机处理</span>
       </a><a class="fl-row" href="/tools/placehold/">
         <span class="rank">16</span>
         <div class="f-body"><div class="f-name">Placehold</div><div class="f-desc">一行 URL 生成占位图，开发测试利器</div></div>
-        <span class="f-meta">🌐 在线 · 会上传</span>
-      </a><h2 class="res-group-title">怎么挑</h2><ul><li>只压体积不动尺寸：用「图片压缩」，它保留原分辨率，盯着质量滑杆和预估体积调即可。</li><li>要固定长边（头像 400、封面 1200）：用「图片缩放」按最大边长等比缩放，不会把脸拉长。</li><li>要换格式：PNG 转 JPEG 会丢透明，转之前先填一个填充色，否则透明区会变成黑色。</li><li>要压到极限：Squoosh 的左右对比视图更细，但它是第三方站点，且需要联网加载。</li></ul><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>压缩会掉画质吗？</b></div><div class="res-item-note">JPEG 与 WebP 是有损压缩，质量 0.8 以上肉眼通常看不出差别；PNG 是无损格式，质量参数对它无效，想压小只能减色或降分辨率。</div></div><div class="res-item"><div class="res-item-head"><b>为什么转成 WebP 后有些软件打不开？</b></div><div class="res-item-note">老版本 Office、部分安卓相册与微信版本不支持 WebP。要发给别人看，转 JPEG 更稳妥；WebP 适合放在自己的网页里。</div></div><div class="res-item"><div class="res-item-head"><b>处理一张 5000 万像素的图会不会崩？</b></div><div class="res-item-note">解码后的大图会占几百 MB 内存，手机浏览器可能直接回收标签页。遇到这种情况先缩尺寸再压缩，或者换到桌面浏览器处理。</div></div><h2 class="res-group-title">相关专题</h2><div class="related-row"><a class="related-chip" href="/topics/image-workflow/">🖼️ 图片处理全流程</a></div><h2 class="res-group-title">其他分类</h2><div class="chips"><a class="chip" href="/categories/text/">📝 文本</a><a class="chip active" href="/categories/image/">🖼️ 图片</a><a class="chip" href="/categories/docs/">📄 文档</a><a class="chip" href="/categories/data/">📊 数据</a><a class="chip" href="/categories/dev/">⚙️ 开发</a><a class="chip" href="/categories/design/">🎨 设计</a><a class="chip" href="/categories/media/">🎵 音视频</a><a class="chip" href="/categories/productivity/">⚡ 效率</a><a class="chip" href="/categories/web/">🌐 网络</a><a class="chip" href="/categories/ai/">🤖 AI</a></div><div class="crumb" style="margin-top:24px"><a href="/categories/">← 全部分类</a> · <a href="/">返回首页</a></div></div>
+        <span class="f-meta">在线 · 会上传</span>
+      </a><h2 class="res-group-title">怎么挑</h2><ul><li>只压体积不动尺寸：用「图片压缩」，它保留原分辨率，盯着质量滑杆和预估体积调即可。</li><li>要固定长边（头像 400、封面 1200）：用「图片缩放」按最大边长等比缩放，不会把脸拉长。</li><li>要换格式：PNG 转 JPEG 会丢透明，转之前先填一个填充色，否则透明区会变成黑色。</li><li>要压到极限：Squoosh 的左右对比视图更细，但它是第三方站点，且需要联网加载。</li></ul><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>压缩会掉画质吗？</b></div><div class="res-item-note">JPEG 与 WebP 是有损压缩，质量 0.8 以上肉眼通常看不出差别；PNG 是无损格式，质量参数对它无效，想压小只能减色或降分辨率。</div></div><div class="res-item"><div class="res-item-head"><b>为什么转成 WebP 后有些软件打不开？</b></div><div class="res-item-note">老版本 Office、部分安卓相册与微信版本不支持 WebP。要发给别人看，转 JPEG 更稳妥；WebP 适合放在自己的网页里。</div></div><div class="res-item"><div class="res-item-head"><b>处理一张 5000 万像素的图会不会崩？</b></div><div class="res-item-note">解码后的大图会占几百 MB 内存，手机浏览器可能直接回收标签页。遇到这种情况先缩尺寸再压缩，或者换到桌面浏览器处理。</div></div><h2 class="res-group-title">相关专题</h2><div class="related-row"><a class="related-chip" href="/topics/image-workflow/">图片处理全流程</a></div><h2 class="res-group-title">其他分类</h2><div class="chips"><a class="chip" href="/categories/text/">文本</a><a class="chip active" href="/categories/image/">图片</a><a class="chip" href="/categories/docs/">文档</a><a class="chip" href="/categories/data/">数据</a><a class="chip" href="/categories/dev/">开发</a><a class="chip" href="/categories/design/">设计</a><a class="chip" href="/categories/media/">音视频</a><a class="chip" href="/categories/productivity/">效率</a><a class="chip" href="/categories/web/">网络</a><a class="chip" href="/categories/ai/">AI</a></div><div class="crumb" style="margin-top:24px"><a href="/categories/">← 全部分类</a> · <a href="/">返回首页</a></div></div>
     <!-- 首页 -->
     <section id="view-home">
+      <div class="home-intro">
       <div class="hero">
-        <div class="hero-kicker">✦ OPEN SOURCE TOOLS ✦</div>
-        <h1>安全、快捷、<span class="grad">开源工具及资源</span></h1>
-        <p>无需安装、无需注册、无需命令行 —— 挑一个工具，填参数，出结果。</p>
+        <h1 data-zh="不装软件，也不上传文件" data-en="No installs, no uploads">不装软件，也不上传文件</h1>
+        <p data-zh="挑一个工具，填参数，出结果。文件留在这台电脑上。" data-en="Pick a tool, fill in the args, get the result. Your files stay on this machine.">挑一个工具，填参数，出结果。文件留在这台电脑上。</p>
         <div class="hero-search-wrap">
           <div class="hs-field">
-            <input id="hero-search" type="text" placeholder="搜索工具或资源…（Ctrl/⌘ K 打开命令面板）" aria-label="搜索工具或资源" />
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
             <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
-            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="🎲 随便看看" data-en="🎲 Surprise me">🎲 随便看看</button>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>
       </div>
 
       <div class="route-cards" id="route-cards"></div>
+      </div>
 
       <div class="featured-section" id="featured-section" style="">
         <div class="fc fc--tools">
-          <div class="section-title">⚡ <span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
           <div class="featured-list" id="featured-grid"></div>
         </div>
         <div class="fc fc--guides">
-          <div class="section-title">📖 <span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 16 篇教程 →" data-en="All 16 guides →">全部 16 篇教程 →</a></div>
           <div class="guide-list" id="home-guides"></div>
         </div>
       </div>
 
       <div class="res-preview" id="res-preview" style="">
-        <div class="section-title">📚 <span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
         <div class="res-preview-grid" id="res-preview-grid"></div>
       </div>
 
@@ -214,7 +216,7 @@
       <div class="pager" id="pager"></div>
 
       <div class="trust-section">
-        <div class="section-title">🔒 <span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
         <div class="trust-strip">
           <div class="ts-stat">
             <b>0</b>
@@ -233,7 +235,7 @@
             <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
           </div>
         </div>
-        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “🔒 local”; tools marked “🌐 external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「🔒 本地」的工具；标「🌐 在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
       </div>
     </section>
 
@@ -285,9 +287,9 @@
   <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
 
   <footer>
-    <div>🧰 ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
     <div class="foot-note" id="foot-note">
-      🔒 本地工具的数据仅在您的浏览器中处理，不会上传 · 🌐 目录工具均为第三方开源项目，版权与内容归各项目所有，来源仓库见工具卡片
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
     </div>
     <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
   </footer>

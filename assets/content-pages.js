@@ -15,8 +15,8 @@ let $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, nav
 // v3.25：目录工具按真实运行位置标，不再一律「在线」——Ollama 要装客户端、Dify 要自己部署，
 // 全标成在线就等于说「打开网页就能用」。app.js 的 RUNS 是权威口径（带 i18n），
 // 这里只是列表里的短标签，两者不一致时以 app.js 为准。
-const RUNS_SHORT = { web: '🌐 在线', desktop: '💻 客户端', selfhost: '🐳 自部署', cli: '⌨️ 命令行', extension: '🧩 扩展', mobile: '📱 App' };
-const runsShort = (x) => `${RUNS_SHORT[x.runsOn] || RUNS_SHORT.web}${x.keyRequired ? ' · 🔑 Key' : ''}`;
+const RUNS_SHORT = { web: '在线', desktop: '客户端', selfhost: '自部署', cli: '命令行', extension: '扩展', mobile: 'App' };
+const runsShort = (x) => `${RUNS_SHORT[x.runsOn] || RUNS_SHORT.web}${x.keyRequired ? ' · 需 Key' : ''}`;
 
 export function bindContentPages(deps) {
   ({ $, esc, t, catName, toolMeta, CAT_ICONS, isLocalTool, stateHTML, kbLink, navigate, bindSpaLinks, setView, renderNavActive, loadI18n, loadRegistry, loadResources, loadEvaluations, SITE, ensureCss } = deps);
@@ -71,11 +71,11 @@ async function openCategories() {
   document.title = `工具分类 · ${SITE}`;
   renderNavActive('');
   const rows = idx
-    .map((c) => {
+    .map((c, i) => {
       const xs = reg.tools.filter((t) => t.category === c.name);
       const nLocal = xs.filter(isLocalTool).length;
       return `<a class="fl-row" data-spa href="/categories/${c.slug}/">
-        <span class="rank">${c.icon}</span>
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${esc(c.title)}</div><div class="f-desc">${esc(c.tagline)}</div></div>
         <span class="f-meta">${nLocal} 本地 / ${xs.length - nLocal} 在线</span>
       </a>`;
@@ -105,7 +105,7 @@ async function openCategory(slug) {
   const row = (t, i) => `<a class="fl-row" data-spa href="/tools/${t.id}/">
       <span class="rank">${String(i + 1).padStart(2, '0')}</span>
       <div class="f-body"><div class="f-name">${esc(toolMeta(t).name)}</div><div class="f-desc">${esc(toolMeta(t).desc)}</div></div>
-      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : runsShort(t)}</span>
+      <span class="f-meta">${isLocalTool(t) ? '本地' : runsShort(t)}</span>
     </a>`;
   const topicsData = await loadTopics();
   const ids = new Set(xs.map((t) => t.id));
@@ -117,7 +117,7 @@ async function openCategory(slug) {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
       <div class="crumb" style="margin-bottom:10px"><a data-spa href="/categories/">工具分类</a> / ${copy.name}</div>
-      <h1>${copy.icon} ${copy.title}</h1>
+      <h1>${copy.title}</h1>
       <p class="lead">${esc(copy.tagline)}</p>
       <div class="res-intro">${copy.intro}</div>
 
@@ -146,14 +146,14 @@ async function openCategory(slug) {
       ${
         relTopics.length
           ? `<h2 class="res-group-title">相关专题</h2><div class="related-row">${relTopics
-              .map((tp) => `<a class="related-chip" data-spa href="/topics/${tp.slug}/">${tp.icon} ${tp.title}</a>`)
+              .map((tp) => `<a class="related-chip" data-spa href="/topics/${tp.slug}/">${tp.title}</a>`)
               .join('')}</div>`
           : ''
       }
 
       <h2 class="res-group-title">其他分类</h2>
       <div class="chips">${idx
-        .map((c) => `<a class="chip${c.slug === slug ? ' active' : ''}" data-spa href="/categories/${c.slug}/">${c.icon} ${c.name}</a>`)
+        .map((c) => `<a class="chip${c.slug === slug ? ' active' : ''}" data-spa href="/categories/${c.slug}/">${c.name}</a>`)
         .join('')}</div>
       <div class="crumb" style="margin-top:24px"><a data-spa href="/categories/">← 全部分类</a> · <a data-spa href="/">返回首页</a></div>
     </div>`;
@@ -176,7 +176,7 @@ async function openTools() {
   const row = (t) => `<a class="fl-row" data-spa href="/tools/${t.id}/">
       <span class="rank">${String(++n).padStart(2, '0')}</span>
       <div class="f-body"><div class="f-name">${esc(toolMeta(t).name)}</div><div class="f-desc">${esc(toolMeta(t).desc)}</div></div>
-      <span class="f-meta">${isLocalTool(t) ? '🔒 本地' : runsShort(t)}</span>
+      <span class="f-meta">${isLocalTool(t) ? '本地' : runsShort(t)}</span>
     </a>`;
   setView('page');
   document.title = `全部工具 · ${SITE}`;
@@ -187,13 +187,13 @@ async function openTools() {
       <h1>全部工具</h1>
       <p class="lead">${reg.tools.length} 个工具，按用途分成 ${groups.length} 类。标「本地」的在浏览器里执行，文件不出你的电脑。</p>
       <div class="chips">${idx
-        .map((c) => `<a class="chip" data-spa href="/categories/${c.slug}/">${c.icon} ${c.name}</a>`)
-        .join('')}<a class="chip" data-spa href="/categories/">🗂️ 分类总览 →</a></div>
+        .map((c) => `<a class="chip" data-spa href="/categories/${c.slug}/">${c.name}</a>`)
+        .join('')}<a class="chip" data-spa href="/categories/">分类总览 →</a></div>
       ${groups
         .map(
           ({ c, xs }) =>
             `<h2 class="res-group-title">${
-              c.slug ? `<a data-spa href="/categories/${c.slug}/">${c.icon} ${c.title}</a>` : `${c.icon} ${c.title}`
+              c.slug ? `<a data-spa href="/categories/${c.slug}/">${c.title}</a>` : `${c.title}`
             } · ${xs.length} 个</h2>${xs.map(row).join('')}`
         )
         .join('')}
@@ -245,8 +245,8 @@ async function openGuides() {
         `<p class="gcat-desc">${c.desc}</p>` +
         c.items
           .map(
-            (g) => `<a class="fl-row" data-spa href="/guides/${g.slug}/">
-        <span class="rank">${g.icon}</span>
+            (g, i) => `<a class="fl-row" data-spa href="/guides/${g.slug}/">
+        <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${esc(g.title)}</div><div class="f-desc">${esc(g.tagline)}</div></div>
         <span class="f-meta">${esc(g.difficulty)} · ${g.minutes} 分钟</span>
       </a>`
@@ -256,7 +256,7 @@ async function openGuides() {
     .join('');
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <h1>📖 教程</h1>
+      <h1>教程</h1>
       <p class="lead">要先装、先配、先走一遍才能用起来的东西。和工具清单分开，是因为门槛完全不同：工具是打开网页就能用，教程是一条要走完的路。</p>
       ${guideNavHTML(groups)}
       ${rows}
@@ -291,7 +291,7 @@ async function openGuide(slug) {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
       <div class="crumb" style="margin-bottom:10px"><a data-spa href="/guides/">教程</a> / ${esc(g.title)}</div>
-      <h1>${g.icon} ${esc(g.title)}</h1>
+      <h1>${esc(g.title)}</h1>
       <div class="guide-meta">
         <span>难度 <b>${esc(g.difficulty)}</b></span>
         <span>约 <b>${g.minutes}</b> 分钟</span>
@@ -355,13 +355,13 @@ async function openTopics() {
   renderNavActive('');
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:1000px">
-      <h1>🧩 专题合集</h1>
+      <h1>专题合集</h1>
       <p class="lead">按「要完成的事」打包好的工具组合，不用自己从 ${reg.tools.length} 个工具里挑。每个专题都包含使用顺序、关联资源与常见问题。</p>
       <div class="topic-grid">
         ${data.topics
           .map(
             (t) => `<a class="topic-card" href="/topics/${t.slug}/">
-              <span class="tp-icon">${t.icon}</span>
+              
               <b>${t.title}</b>
               <span>${t.desc}</span>
               <em>${t.tools.length} 个工具${t.resources?.length ? ' · ' + t.resources.length + ' 个资源合集' : ''} →</em>
@@ -390,7 +390,7 @@ async function openTopic(slug) {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:1000px">
       <div class="crumb" style="margin-bottom:10px"><a href="/topics/">← 全部专题</a></div>
-      <h1>${tp.icon} ${tp.title}</h1>
+      <h1>${tp.title}</h1>
       <p class="lead">${tp.desc}</p>
       <div class="res-intro">${tp.intro}</div>
 
@@ -410,7 +410,7 @@ async function openTopic(slug) {
       ${
         cols.length
           ? `<h2 class="res-group-title">配套资源</h2><div class="related-row">${cols
-              .map((c) => `<a class="related-chip" href="/resources/${c.slug}/">${c.icon || '📚'} ${c.title}</a>`)
+              .map((c) => `<a class="related-chip" href="/resources/${c.slug}/">${c.title}</a>`)
               .join('')}</div>`
           : ''
       }
@@ -457,13 +457,13 @@ async function openEvaluations() {
     </a>`;
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <h1>🔬 工具测评</h1>
+      <h1>工具测评</h1>
       <p class="lead">横向实测加单款深挖：不吹不黑，把隐私边界、速度体验和功能取舍讲清楚，该给使用说明的地方就给到能照着做的程度。每篇都标注测试方式与日期，结论会随工具版本变化。</p>
       ${cmpCta}
       ${data.evaluations
         .map(
           (ev) => `<a class="list-row" data-spa href="/evaluations/${ev.slug}/">
-            <span class="lr-ico">${ev.icon}</span>
+            
             <div>
               <h2 class="lr-title">${ev.title}${ev.hasUsage ? '<span class="badge">含使用说明</span>' : ''}</h2>
               <div class="lr-desc">${ev.summary}</div>
@@ -497,7 +497,7 @@ async function openEvaluation(slug) {
   };
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:880px">
-      <h1>${ev.icon} ${ev.title}</h1>
+      <h1>${ev.title}</h1>
       <p class="lead">${ev.summary}</p>
       <div class="res-intro" style="font-size:13px;color:var(--muted)">实测日期：${ev.date} · 对比 ${ev.items.length} 款工具</div>
       <div class="eval-verdict"><b>结论</b><p>${ev.verdict}</p></div>
@@ -605,7 +605,6 @@ async function loadResNotes() {
 
 function resCard(c) {
   return `<a class="res-card" href="/resources/${c.slug}/">
-    <div class="res-card-icon">${c.icon || '📚'}</div>
     <div class="res-card-body">
       <b>${c.title}</b>
       <span>${c.desc}</span>
@@ -673,7 +672,7 @@ async function openResourceCollection(slug) {
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:1000px">
       <div class="crumb" style="margin-bottom:10px"><a href="/resources/">← 资源库</a></div>
-      <h1>${c.icon || '📚'} ${c.title}</h1>
+      <h1>${c.title}</h1>
       <p class="lead">${c.desc}</p>
       <div class="res-intro">${c.intro}</div>
 
