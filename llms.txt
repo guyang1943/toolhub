@@ -93,7 +93,7 @@
 - [AFFiNE](https://toolhub.bot.cd/tools/affine/): 开源 Notion 替代品：文档+白板+表格一体（数据边界：会上传）
 - [CyberChef](https://toolhub.bot.cd/tools/cyberchef/): GCHQ 出品的数据解码/加密/转换瑞士军刀（数据边界：本机处理）
 - [Transform](https://toolhub.bot.cd/tools/transform/): JSON/YAML/TOML/TS 等几十种格式互转（数据边界：本机处理）
-- [quicktype](https://toolhub.bot.cd/tools/quicktype/): JSON 一键生成 TypeScript/Java/Go 等类型定义（数据边界：未核实）
+- [quicktype](https://toolhub.bot.cd/tools/quicktype/): JSON 一键生成 TypeScript/Java/Go 等类型定义（数据边界：本机处理）
 - [JSON Hero](https://toolhub.bot.cd/tools/jsonhero/): 高颜值 JSON 浏览器，结构一目了然（数据边界：会上传）
 - [JSONPlaceholder](https://toolhub.bot.cd/tools/jsonplaceholder/): 免费假 REST API，前端开发调试必备（数据边界：会上传）
 - [httpbin](https://toolhub.bot.cd/tools/httpbin/): HTTP 请求测试服务，调试接口的好帮手（数据边界：会上传）
@@ -107,7 +107,7 @@
 - [PlantUML Server](https://toolhub.bot.cd/tools/plantuml/): 文本生成 UML 类图/时序图官方服务（数据边界：会上传）
 - [AsciiFlow](https://toolhub.bot.cd/tools/asciiflow/): ASCII 架构图绘制，README 注释神器（数据边界：本机处理）
 - [ExplainShell](https://toolhub.bot.cd/tools/explainshell/): 逐段解释 Linux 命令每个参数的含义（数据边界：会上传）
-- [roadmap.sh](https://toolhub.bot.cd/tools/roadmap/): 开发者成长路线图（前端/后端/AI 等）（数据边界：本机处理）
+- [roadmap.sh](https://toolhub.bot.cd/tools/roadmap/): 开发者成长路线图（前端/后端/AI 等）（数据边界：看用法）
 - [Icônes](https://toolhub.bot.cd/tools/icones/): 浏览/搜索 20 万+ 开源图标，一键复制组件（数据边界：本机处理）
 - [Lucide Icons](https://toolhub.bot.cd/tools/lucide/): Feather Icons 社区延续版，干净现代图标库（数据边界：本机处理）
 - [AudioMass](https://toolhub.bot.cd/tools/audiomass/): 浏览器音频剪辑/特效，免安装的声波编辑器（数据边界：本机处理）
@@ -116,24 +116,24 @@
 - [FilePizza](https://toolhub.bot.cd/tools/filepizza/): 浏览器 P2P 临时传文件，链接即焚（数据边界：点对点）
 - [PrivateBin](https://toolhub.bot.cd/tools/privatebin/): 阅后即焚的加密粘贴板（数据边界：会上传）
 - [Bitwarden 密码生成器](https://toolhub.bot.cd/tools/bitwarden-gen/): 知名开源密码管理商的免费在线生成器（数据边界：本机处理）
-- [Monkeytype](https://toolhub.bot.cd/tools/monkeytype/): 最优雅的打字速度测试与练习（数据边界：本机处理）
+- [Monkeytype](https://toolhub.bot.cd/tools/monkeytype/): 最优雅的打字速度测试与练习（数据边界：看用法）
 - [LibreSpeed](https://toolhub.bot.cd/tools/librespeed/): 开源无追踪网速测试（数据边界：会上传）
 - [Flexbox Froggy](https://toolhub.bot.cd/tools/flexbox-froggy/): 玩游戏学会 Flex 布局（经典教学）（数据边界：本机处理）
 - [Layoutit Grid](https://toolhub.bot.cd/tools/layoutit/): 可视化拖拽生成 CSS Grid 布局代码（数据边界：本机处理）
-- [Carbon](https://toolhub.bot.cd/tools/carbon/): 把代码变成漂亮的分享图片，配主题/配色（数据边界：未核实）
+- [Carbon](https://toolhub.bot.cd/tools/carbon/): 把代码变成漂亮的分享图片，配主题/配色（数据边界：看用法）
 - [JSON Crack](https://toolhub.bot.cd/tools/jsoncrack/): JSON 转成可视化节点图谱，结构一眼看穿（数据边界：本机处理）
 - [Regex Vis](https://toolhub.bot.cd/tools/regex-vis/): 正则表达式可视化图解（高亮每个片段）（数据边界：本机处理）
 - [WiseMapping](https://toolhub.bot.cd/tools/wisemapping/): 在线思维导图，支持快捷键与分享（数据边界：会上传）
 - [RAWGraphs](https://toolhub.bot.cd/tools/rawgraphs/): 拖拽生成数据可视化图表（开源数据工具）（数据边界：本机处理）
 - [SVGOMG](https://toolhub.bot.cd/tools/svgomg/): SVG 优化压缩 GUI（SVGO 的可视化界面）（数据边界：本机处理）
-- [Placehold](https://toolhub.bot.cd/tools/placehold/): 一行 URL 生成占位图，开发测试利器（数据边界：本机处理）
+- [Placehold](https://toolhub.bot.cd/tools/placehold/): 一行 URL 生成占位图，开发测试利器（数据边界：会上传）
 - [DiceBear](https://toolhub.bot.cd/tools/dicebear/): 自动生成可爱头像，无需注册（数据边界：本机处理）
 - [Simple Icons](https://toolhub.bot.cd/tools/simpleicons/): 3000+ 品牌 SVG 图标库（含国内主流 App）（数据边界：本机处理）
 - [QuickRef](https://toolhub.bot.cd/tools/quickref/): 各语言/命令速查表，开发时随手翻（数据边界：本机处理）
 - [Exercism](https://toolhub.bot.cd/tools/exercism/): 70+ 语言免费编程练习与导师点评（数据边界：会上传）
 - [ColorBrewer](https://toolhub.bot.cd/tools/colorbrewer/): 数据可视化安全配色方案（地图/图表）（数据边界：本机处理）
 - [SimplyTranslate](https://toolhub.bot.cd/tools/simplytranslate/): 开源无追踪翻译引擎聚合（隐私友好）（数据边界：会上传）
-- [Vert](https://toolhub.bot.cd/tools/vert/): 文件格式转换器（支持批量，跨平台开源）（数据边界：本机处理）
+- [Vert](https://toolhub.bot.cd/tools/vert/): 文件格式转换器（支持批量，跨平台开源）（数据边界：看用法）
 - [IT-Tools](https://toolhub.bot.cd/tools/it-tools/): 几十个开发者小工具的集合页：哈希、时间戳、UUID、正则、编解码（数据边界：本机处理）
 - [ffmpeg.wasm](https://toolhub.bot.cd/tools/ffmpeg-wasm/): 浏览器里跑 FFmpeg：视频压缩、转码、抽音轨、转 GIF（数据边界：本机处理）
 - [Ollama](https://toolhub.bot.cd/tools/ollama/): 一条命令在本机跑开源大模型（数据边界：本机处理）

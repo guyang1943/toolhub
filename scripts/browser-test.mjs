@@ -775,9 +775,23 @@ async function feedFile(selector, dataUrl, name, type) {
   const pdBody = await evaluate(`(document.body.innerText || '')`);
   check('详情页写出证据来源（已核实 + 依据）', /证据：边界已核实/.test(pdBody) && /官方 FAQ/.test(pdBody));
   check('详情页写清点对点中继', /TURN/.test(pdBody));
-  await goto('/tools/quicktype/');
-  const qtBody = await evaluate(`(document.body.innerText || '')`);
-  check('未核实的条目如实说「尚未核实」', /尚未核实/.test(qtBody) && !/边界已核实/.test(qtBody));
+  // v3.34.1：70 条边界全核完了，原来那个「未核样本」已经不存在。断言语义跟着改成两支：
+  // 有未核条目就验它如实说「尚未核实」；一条都没有，就验「原来的未核样本升级后写的是
+  // 已核实 + 依据」。这条守的是「页面不撒谎」，两个方向都得守——数据变好不是让断言消失的理由。
+  const pendingTool = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools.find(
+    (t) => t.evidence.boundary.method !== 'manual'
+  );
+  await goto(`/tools/${pendingTool ? pendingTool.id : 'quicktype'}/`);
+  const evBody = await evaluate(`(document.body.innerText || '')`);
+  if (pendingTool) {
+    check('未核实的条目如实说「尚未核实」', /尚未核实/.test(evBody) && !/边界已核实/.test(evBody), pendingTool.id);
+  } else {
+    check(
+      '已核实的条目写清依据（原未核样本已升级）',
+      /边界已核实/.test(evBody) && /README/.test(evBody),
+      '当前无未核样本'
+    );
+  }
   await goto('/');
 
   // 纯乱码（连错别字建议都没有）也必须给出口，否则用户只能看到一句「没找到」

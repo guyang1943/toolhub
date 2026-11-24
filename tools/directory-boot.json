@@ -251,7 +251,7 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "optional",
-      "privacyNote": "默认存在浏览器本地；连 Google Drive / GitHub 同步才会把文档传出去",
+      "privacyNote": "不接云盘时文档只在本机浏览器里；接入 Google Drive / Dropbox 同步后，正文存到对应云盘（站点部署配置里就是这两家的 OAuth 参数）。",
       "tags": [
         "markdown",
         "编辑器"
@@ -306,7 +306,7 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "官方云实例的文档存在服务器上；想留在本机要自己部署 AFFiNE",
+      "privacyNote": "Web 版要登录，工作区存在它的云端；本地优先只是客户端能力，网页端默认走云同步。",
       "tags": [
         "笔记",
         "知识库"
@@ -361,8 +361,7 @@
       "source": "github.com/glideapps/quicktype",
       "license": "Apache-2.0",
       "runtime": "web",
-      "privacy": "unknown",
-      "privacyNote": "官网没有说明转换在哪一侧完成，暂按「未核实」处理",
+      "privacy": "local",
       "tags": [
         "json",
         "类型",
@@ -381,7 +380,7 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "粘贴的 JSON 会存到对方服务器并生成可分享链接",
+      "privacyNote": "粘贴的 JSON 存在它的云端服务里，凭链接查看；不是本地渲染。",
       "tags": [
         "json",
         "可视化"
@@ -413,7 +412,7 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "它本身就是回显服务——你发给它的请求内容会经它返回，别放真实数据",
+      "privacyNote": "它的全部功能就是把你发出的请求（方法 / 头 / body / 查询参数）原样回显，内容必然到它的服务器。",
       "tags": [
         "http",
         "调试"
@@ -429,7 +428,7 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "用途就是把请求发到它的服务器上查看，天然会上传",
+      "privacyNote": "发到这个地址的 webhook 内容会落在这项服务的服务器上（默认短期保留），再由页面展示。",
       "tags": [
         "webhook",
         "调试"
@@ -522,7 +521,7 @@
       "name": "Markmap",
       "desc": "把 Markdown 变成互动思维导图",
       "category": "开发",
-      "url": "https://markmap.js.org/repl",
+      "url": "https://markmap.js.org/editor",
       "source": "github.com/markmap/markmap",
       "license": "MIT",
       "runtime": "web",
@@ -577,7 +576,7 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "命令在服务器上解析，会把命令行发过去",
+      "privacyNote": "粘贴的命令提交到它的服务器解析并查 manpage，服务端有 sqlite 存处理结果。",
       "tags": [
         "linux",
         "命令行"
@@ -593,11 +592,12 @@
       "source": "github.com/kamranahmedse/developer-roadmap",
       "license": "自定义",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "optional",
       "tags": [
         "学习",
         "路线图"
-      ]
+      ],
+      "privacyNote": "路线图本身是静态内容；站内“Learn with AI”提问会发到它的服务器，登录后学习进度也存云端。"
     },
     {
       "id": "icones",
@@ -758,11 +758,12 @@
       "source": "github.com/monkeytypegame/monkeytype",
       "license": "GPL-3.0",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "optional",
       "tags": [
         "打字",
         "练习"
-      ]
+      ],
+      "privacyNote": "不登录时成绩只存浏览器；登录后成绩上传到它的账号系统（README 的“account system to save your typing speed history”）。"
     },
     {
       "id": "librespeed",
@@ -820,8 +821,8 @@
       "source": "github.com/carbon-app/carbon",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "unknown",
-      "privacyNote": "官网找不到隐私说明；导出是否走服务端渲染未经核实",
+      "privacy": "optional",
+      "privacyNote": "默认在浏览器内渲染并导出图片；登录账号后可把代码片段存到它的云端（“Save snippets”）。",
       "tags": [
         "代码截图",
         "分享"
@@ -876,7 +877,7 @@
       "license": "自定义",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "在线版把脑图存在对方账号里；想留在本机得自己部署",
+      "privacyNote": "网页版注册后导图存在它的服务器；只有桌面版才是“strictly private on your local machine”。",
       "tags": [
         "思维导图"
       ],
@@ -932,10 +933,11 @@
       "source": "github.com/kevin-smets/placehold.co",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "upload",
       "tags": [
         "占位图"
-      ]
+      ],
+      "privacyNote": "图片由它的服务器按 URL 参数生成并返回，text 参数（要印在图上的字）会到服务器；不适合放敏感内容。"
     },
     {
       "id": "dicebear",
@@ -992,7 +994,7 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "学习平台，提交的练习代码会上传并可能被导师看到",
+      "privacyNote": "练习与导师互评都在平台上进行，代码提交到它的服务器跑测试；不是本地工具。",
       "tags": [
         "学习",
         "编程"
@@ -1028,7 +1030,7 @@
       "license": "AGPL-3.0",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "翻译走它的服务端转发，原文会经过它的服务器",
+      "privacyNote": "网页端调用 Google / iCIBA / Reverso 三个在线引擎翻译，原文必然发往第三方服务器。",
       "tags": [
         "翻译",
         "隐私"
@@ -1043,7 +1045,7 @@
       "source": "github.com/npezza93/vert",
       "license": "Apache-2.0",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "optional",
       "tags": [
         "格式转换",
         "文件"
@@ -1053,7 +1055,8 @@
         "换格式",
         "另存为",
         "转成"
-      ]
+      ],
+      "privacyNote": "图片 / 音频 / 文档在本机转换；视频一项官网标注“Local & server supported”，选服务器转换时文件会上传。"
     },
     {
       "id": "it-tools",

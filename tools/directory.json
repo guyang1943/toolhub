@@ -15,7 +15,7 @@
       "privacyNote": "不协作时全部在本机完成、自动存浏览器；一旦开实时协作或分享只读链接，画布会加密后上传。官方 README 把「Local-first support」和「Real-time collaboration / End-to-end encryption」并列。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -51,14 +51,14 @@
       "privacyNote": "自己画在本机；多人实时协作与云端存档要走它的同步服务，那时画布在对方服务器上。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-04",
-          "by": "按同类白板工具的协作机制推断，未核当前版本页面",
-          "method": "inferred"
+          "at": "2026-11-24",
+          "by": "核对 tldraw/tldraw README：Multiplayer 是「self-hosted real-time collaboration powered by @tldraw/sync」，tldraw.com 的协作走它的同步服务；单机画布在浏览器内，故标「看用法」。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -85,14 +85,14 @@
       "privacyNote": "默认在浏览器里处理；用 Google Drive / OneDrive 云盘保存、或开实时协作时，图才会传到对应服务。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-04",
-          "by": "按 draw.io 的存储机制推断，未核当前版本页面",
-          "method": "inferred"
+          "at": "2026-11-24",
+          "by": "核对 jgraph/drawio README：该版本「does not support real-time collaborative editing」，协作不是默认路径；用 Google Drive / OneDrive 云盘保存时图才会写到对应服务，故标「看用法」。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -116,14 +116,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 1j01/jspaint README：默认画作留在本机会话里，README 明写“Sessions are not private, and you may lose your work at any time”，且跨设备共享只是“Firebase Realtime Database”的可选自建路径，不是站点默认行为。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -144,14 +144,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 SVG-Edit/svgedit README：官方在线版是“Thanks to Netlify, you can access the following builds from your favorite browser”的静态构建，编辑在浏览器内完成。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -172,14 +172,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 mrdoob/three.js README：three.js 是“easy-to-use, lightweight, cross-browser, general-purpose 3D library”，编辑器页面在浏览器内跑 WebGL，无服务端处理。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -200,14 +200,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 evilmartians/oklch-picker README：定位是“Color picker and converter for OKLCH and LCH color space”，静态前端页面，没有任何提交数据的控件。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -233,7 +233,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -273,14 +273,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 DMarby/picsum-photos README：“Lorem Picsum is a service providing easy to use, stylish placeholders”——只按 URL 参数下发图片（Fastly 分发），用户没有可提交的内容。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -301,7 +301,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -336,7 +336,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -367,7 +367,7 @@
       "privacyNote": "官方现在主推云平台；要「文件不出机器」得自己 Docker 部署",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -394,14 +394,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 mozilla/pdf.js README：“PDF.js is a Portable Document Format (PDF) viewer that is built with HTML5”，PDF 在浏览器内解析与渲染。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -420,17 +420,17 @@
       "license": "Apache-2.0",
       "runtime": "web",
       "privacy": "optional",
-      "privacyNote": "默认存在浏览器本地；连 Google Drive / GitHub 同步才会把文档传出去",
+      "privacyNote": "不接云盘时文档只在本机浏览器里；接入 Google Drive / Dropbox 同步后，正文存到对应云盘（站点部署配置里就是这两家的 OAuth 参数）。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 benweet/stackedit README：部署配置项是 dropboxAppKey 与 googleClientId——可选接 Google Drive / Dropbox 同步，因此边界随用法变，标“看用法”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -452,7 +452,7 @@
       "privacyNote": "文档存在云端：可接入 Dropbox / GitHub / OneDrive，编辑器本身不额外上传，但「保存」就是写进云存储。官方 README 自称 cloud-native，并列了 Native cloud storage 与 seamless sync。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -480,7 +480,7 @@
       "privacyNote": "端到端加密后上传，服务器只存密文、读不到内容",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -514,17 +514,17 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "官方云实例的文档存在服务器上；想留在本机要自己部署 AFFiNE",
+      "privacyNote": "Web 版要登录，工作区存在它的云端；本地优先只是客户端能力，网页端默认走云同步。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 toeverything/AFFiNE README：AFFiNE “supports real-time sync and collaborations on web and cross-platform clients”，Web 版需账号且工作区在其云端，故标“会上传”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -547,14 +547,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 gchq/CyberChef README：“CyberChef is entirely client-side”——全部运算在浏览器内，输入不进服务器。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -578,14 +578,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 ritz078/transform README：“A polyglot web converter”，构建为 Next.js 静态页面部署在 Vercel，转换在浏览器内完成。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -608,18 +608,17 @@
       "source": "github.com/glideapps/quicktype",
       "license": "Apache-2.0",
       "runtime": "web",
-      "privacy": "unknown",
-      "privacyNote": "官网没有说明转换在哪一侧完成，暂按「未核实」处理",
+      "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 glideapps/quicktype README：“The web app also works offline and doesn't send your sample data over the Internet, so paste away!”——原标“未核实”，据此改成本机处理。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -641,17 +640,17 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "粘贴的 JSON 会存到对方服务器并生成可分享链接",
+      "privacyNote": "粘贴的 JSON 存在它的云端服务里，凭链接查看；不是本地渲染。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 jsonhero-io/jsonhero-web README：“Send your JSON to JSON Hero in a variety of ways”——JSON 要存到它的服务端才能浏览分享。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -673,14 +672,14 @@
       "privacyNote": "请求发到它的服务器，回来的是假数据；别拿它传真实内容。同类的 httpbin 本来就是这样标的，这里原先写「本机处理」自相矛盾。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-04",
-          "by": "按同站 httpbin 的一致性与 REST 假接口机制推断",
-          "method": "inferred"
+          "at": "2026-11-24",
+          "by": "核对 typicode/jsonplaceholder README：「I decided to code a little Express server」——它是一个 Express 服务端，请求发到服务器后返回假数据。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -699,17 +698,17 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "它本身就是回显服务——你发给它的请求内容会经它返回，别放真实数据",
+      "privacyNote": "它的全部功能就是把你发出的请求（方法 / 头 / body / 查询参数）原样回显，内容必然到它的服务器。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 httpbin.org 的服务定位：/get、/post、/anything 等端点的设计就是把收到的请求原样返回，没有任何本地处理环节。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -728,17 +727,17 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "用途就是把请求发到它的服务器上查看，天然会上传",
+      "privacyNote": "发到这个地址的 webhook 内容会落在这项服务的服务器上（默认短期保留），再由页面展示。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 fredsted/webhook.site README：“Receive Webhooks without needing an internet-facing Web server”——请求内容落在它的服务器上。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -759,14 +758,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 duckdb/duckdb README：“DuckDB runs in-process inside your application, so there is no separate server to manage”；shell.duckdb.org 用 wasm 在浏览器内执行 SQL。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -787,7 +786,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -817,14 +816,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 prettier/prettier README：“Prettier is an opinionated code formatter”；playground 把格式化整个放在浏览器里跑。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -845,14 +844,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 javallone/regexper-static README：项目已迁到 GitLab（“This project has been migrated to”），站点为静态页面，正则在浏览器内解析成图。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -876,14 +875,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 mermaid-js/mermaid-live-editor README：“When a PR is created targeting master, it will be built and deployed by Netlify”——静态前端，图在浏览器内渲染。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -899,14 +898,14 @@
       "name": "Markmap",
       "desc": "把 Markdown 变成互动思维导图",
       "category": "开发",
-      "url": "https://markmap.js.org/repl",
+      "url": "https://markmap.js.org/editor",
       "source": "github.com/markmap/markmap",
       "license": "MIT",
       "runtime": "web",
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -939,7 +938,7 @@
       "privacyNote": "官方服务器渲染图，源码会发过去；隐私要求高就本地跑 jar",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -967,7 +966,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -993,17 +992,17 @@
       "license": "GPL-3.0",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "命令在服务器上解析，会把命令行发过去",
+      "privacyNote": "粘贴的命令提交到它的服务器解析并查 manpage，服务端有 sqlite 存处理结果。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 idank/explainshell README：服务端有“a storage backend that saves processed manpages to sqlite”，命令是在服务器上解析的。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1022,24 +1021,25 @@
       "source": "github.com/kamranahmedse/developer-roadmap",
       "license": "自定义",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "optional",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 roadmap.sh 首页：主体是静态路线图；顶部提供 Learn with AI 入口，登录后保存进度——核心内容本地、附加功能上传，故标“看用法”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
       "tags": [
         "学习",
         "路线图"
-      ]
+      ],
+      "privacyNote": "路线图本身是静态内容；站内“Learn with AI”提问会发到它的服务器，登录后学习进度也存云端。"
     },
     {
       "id": "icones",
@@ -1053,14 +1053,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 antfu/icones README：搜索“all are done locally, no web queries!”——图标检索与预览全在浏览器内。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1081,14 +1081,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 lucide-icons/lucide README：站点是图标库的文档与检索页，静态托管；页面无上传控件，图标以源码 / SVG 形式复制。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1108,14 +1108,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 pkalogiros/audiomass README：用本地静态服务器打开页面（“python audiomass-server.py”），音频编辑走浏览器 Web Audio，不上传。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1138,7 +1138,7 @@
       "privacyNote": "文件在浏览器之间直连发到对方设备，不经过 PairDrop 服务器；两台设备不在同一网络时，文件会经它的 TURN 服务器中继（WebRTC 加密）。官方 FAQ：「The server is not involved in the file transfer.」",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -1174,7 +1174,7 @@
       "privacyNote": "只在局域网内直传，不连互联网也不用第三方服务器，两台设备得在同一个 Wi-Fi 下。官方 README：「without needing an internet connection」，且「doesn’t require an internet connection or third-party servers」。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -1209,7 +1209,7 @@
       "privacyNote": "浏览器之间点对点直传，对方不在线就传不成；服务器只负责牵线，不存文件。首页原话：「Peer-to-peer file transfers in your browser.」",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -1242,7 +1242,7 @@
       "privacyNote": "加密后存到对方服务器；服务器读不到明文，但内容确实离开了设备",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -1274,14 +1274,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 bitwarden/clients README：仓库是浏览器扩展 / 桌面 / CLI / Web 客户端源码（build-browser / build-desktop / build-cli 三条构建线）；密码生成器页面在浏览器内生成，没有提交接口。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1304,24 +1304,25 @@
       "source": "github.com/monkeytypegame/monkeytype",
       "license": "GPL-3.0",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "optional",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 monkeytypegame/monkeytype README：“an account system to save your typing speed history”——可选账号，故标“看用法”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
       "tags": [
         "打字",
         "练习"
-      ]
+      ],
+      "privacyNote": "不登录时成绩只存浏览器；登录后成绩上传到它的账号系统（README 的“account system to save your typing speed history”）。"
     },
     {
       "id": "librespeed",
@@ -1336,14 +1337,14 @@
       "privacyNote": "测速必然要在你和测速服务器之间来回传数据；用官方公共服务器时，你的 IP 与测速流量都经过对方。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-04",
-          "by": "按测速工具的数据流推断，未核当前版本页面",
-          "method": "inferred"
+          "at": "2026-11-24",
+          "by": "核对 librespeed/speedtest README：服务端要求「A reasonably fast web server with Apache 2」，测速结果可存数据库（可选）——测速流量必然在客户端与服务器之间往返。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1364,14 +1365,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 thomaspark/flexboxfroggy README：纯静态教学关卡，进度存在浏览器本地存储，无账号与上传路径。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1392,14 +1393,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 Leniolabs/layoutit-grid README：Vite 前端项目（“Next generation frontend tooling”），网格代码在浏览器内生成。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1418,18 +1419,18 @@
       "source": "github.com/carbon-app/carbon",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "unknown",
-      "privacyNote": "官网找不到隐私说明；导出是否走服务端渲染未经核实",
+      "privacy": "optional",
+      "privacyNote": "默认在浏览器内渲染并导出图片；登录账号后可把代码片段存到它的云端（“Save snippets”）。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 carbon-app/carbon README：“Create an account to save snippets”——默认本地渲染，保存需账号，故标“看用法”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1452,14 +1453,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 AykutSarac/jsoncrack.com README：“The open-source JSON Editor”，前端应用在浏览器内把 JSON 渲染成图。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1482,14 +1483,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 Bowen7/regex-vis README：“Regex visualizer & editor”，正则的解析、可视化与测试都在浏览器内完成。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1513,17 +1514,17 @@
       "license": "自定义",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "在线版把脑图存在对方账号里；想留在本机得自己部署",
+      "privacyNote": "网页版注册后导图存在它的服务器；只有桌面版才是“strictly private on your local machine”。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 wisemapping.com 首页：“Download our desktop application to work offline and keep your mind maps strictly private on your local machine”——即网页版把导图存在服务器上。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1547,7 +1548,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -1575,14 +1576,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 jakearchibald/svgomg README：它是 SVGO 的 GUI，站点托管在 GitHub Pages（只能放静态文件），优化在浏览器内执行。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1608,23 +1609,24 @@
       "source": "github.com/kevin-smets/placehold.co",
       "license": "MIT",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "upload",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 placehold.co 官方文档：图片在服务端按尺寸 / 颜色 / 文字参数生成并返回（“Supported formats are SVG, PNG, JPEG, GIF, WebP and AVIF”），故标“会上传”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
       "tags": [
         "占位图"
-      ]
+      ],
+      "privacyNote": "图片由它的服务器按 URL 参数生成并返回，text 参数（要印在图上的字）会到服务器；不适合放敏感内容。"
     },
     {
       "id": "dicebear",
@@ -1638,14 +1640,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 dicebear/dicebear README：头像是按 seed 在浏览器内生成的 SVG；README 里的 api.dicebear.com 是另一种可选的服务端调用方式。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1666,14 +1668,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 simple-icons/simple-icons README：“All icons are imported from a single file”——图标是仓库内静态数据，站点只做检索与复制。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1694,14 +1696,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 quickref.me 站点：纯静态速查表合集，没有账号体系，也没有可输入内容的控件。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1720,17 +1722,17 @@
       "license": "MIT",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "学习平台，提交的练习代码会上传并可能被导师看到",
+      "privacyNote": "练习与导师互评都在平台上进行，代码提交到它的服务器跑测试；不是本地工具。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 exercism.org 站点：需要注册（“Sign up for free”）后在线做练习并提交代码，内容必然到它的服务器。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1751,14 +1753,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 axismaps/colorbrewer README：“Web tool for guidance in choosing choropleth map color schemes”——静态配色工具，无输入上传。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1782,17 +1784,17 @@
       "license": "AGPL-3.0",
       "runtime": "web",
       "privacy": "upload",
-      "privacyNote": "翻译走它的服务端转发，原文会经过它的服务器",
+      "privacyNote": "网页端调用 Google / iCIBA / Reverso 三个在线引擎翻译，原文必然发往第三方服务器。",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 simplytranslate.org：页面顶部就是 Google Translate / iCIBA / Reverso 三个在线引擎入口，翻译请求发给第三方，仓库未提供本地模型。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1810,17 +1812,17 @@
       "source": "github.com/npezza93/vert",
       "license": "Apache-2.0",
       "runtime": "web",
-      "privacy": "local",
+      "privacy": "optional",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 vert.sh 首页：“All file processing is done on your device”，但视频区标注“Local & server supported”——两种路径都存在，故标“看用法”。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1833,7 +1835,8 @@
         "换格式",
         "另存为",
         "转成"
-      ]
+      ],
+      "privacyNote": "图片 / 音频 / 文档在本机转换；视频一项官网标注“Local & server supported”，选服务器转换时文件会上传。"
     },
     {
       "id": "it-tools",
@@ -1847,14 +1850,14 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
         "boundary": {
-          "at": "2026-11-03",
-          "by": "v3.17 批量补录（未逐条打开页面）",
-          "method": "imported"
+          "at": "2026-11-24",
+          "by": "核对 CorentinTh/it-tools README：“Useful tools for developer and people working in IT”——纯前端应用，可自建静态托管，工具全在浏览器内跑。",
+          "method": "manual"
         }
       },
       "linkStatus": "ok",
@@ -1889,7 +1892,7 @@
       "privacy": "local",
       "evidence": {
         "link": {
-          "at": "2026-11-04",
+          "at": "2026-11-24",
           "by": "check-links.mjs",
           "method": "probe"
         },
@@ -1933,9 +1936,9 @@
       "promptNote": "提示词进本机的推理进程，不出机器；显式切到云端模型才会外发。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 ollama.com 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -1953,7 +1956,8 @@
         "大模型运行",
         "ollama"
       ],
-      "blurb": "装完在终端敲一行 ollama run 就能对话，不用注册、不用 Key、断网也能用；代价是模型文件几个 GB，7B 级别大约要 8GB 内存才跑得舒服。"
+      "blurb": "装完在终端敲一行 ollama run 就能对话，不用注册、不用 Key、断网也能用；代价是模型文件几个 GB，7B 级别大约要 8GB 内存才跑得舒服。",
+      "linkStatus": "ok"
     },
     {
       "id": "gpt4all",
@@ -1969,9 +1973,9 @@
       "promptNote": "提示词与文档索引都在本机，不出机器。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 nomic.ai/gpt4all 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -1988,7 +1992,8 @@
         "本地聊天机器人",
         "LocalDocs"
       ],
-      "blurb": "装完就能用，不用配命令行：模型从内置列表下载，把文档目录挂进 LocalDocs 就能针对自己的资料提问，索引也留在本机。MIT 开源，在意许可证的人比用闭源客户端更放心。"
+      "blurb": "装完就能用，不用配命令行：模型从内置列表下载，把文档目录挂进 LocalDocs 就能针对自己的资料提问，索引也留在本机。MIT 开源，在意许可证的人比用闭源客户端更放心。",
+      "linkStatus": "ok"
     },
     {
       "id": "anythingllm",
@@ -2004,9 +2009,9 @@
       "promptNote": "提示词与文档索引都在本机，官方口径是不离开设备；切云模型才外发。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 anythingllm.com 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2023,7 +2028,8 @@
         "文档问答",
         "本地知识库"
       ],
-      "blurb": "把 PDF、Word 丢进工作区就能针对它们提问，检索与生成都在本机完成；一个安装包，Windows / macOS / Linux 都有，还能接管会议录音的转写与摘要。"
+      "blurb": "把 PDF、Word 丢进工作区就能针对它们提问，检索与生成都在本机完成；一个安装包，Windows / macOS / Linux 都有，还能接管会议录音的转写与摘要。",
+      "linkStatus": "ok"
     },
     {
       "id": "comfyui",
@@ -2039,9 +2045,9 @@
       "promptNote": "桌面版全在本机显卡上跑；用 Comfy Cloud 才会把提示词与图片传上去。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 comfy.org 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2058,7 +2064,8 @@
         "文生图",
         "节点式出图"
       ],
-      "blurb": "比「一个输入框出图」麻烦，但每一步都可调、可复用：搭好一条工作流就能反复出图，代价是要有独立显卡，第一次配模型得折腾一阵。"
+      "blurb": "比「一个输入框出图」麻烦，但每一步都可调、可复用：搭好一条工作流就能反复出图，代价是要有独立显卡，第一次配模型得折腾一阵。",
+      "linkStatus": "ok"
     },
     {
       "id": "open-webui",
@@ -2074,9 +2081,9 @@
       "promptNote": "接本地模型就不出机器；接云接口时直接发给那家厂商，Open WebUI 只做转发。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 openwebui.com 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2093,7 +2100,8 @@
         "openwebui",
         "自建对话界面"
       ],
-      "blurb": "想要 ChatGPT 那种界面、又想自己掌控数据，就用它：Docker 一条命令起来，接上本机 Ollama 就是完全离线的对话站，团队用还能开账号、分权限。"
+      "blurb": "想要 ChatGPT 那种界面、又想自己掌控数据，就用它：Docker 一条命令起来，接上本机 Ollama 就是完全离线的对话站，团队用还能开账号、分权限。",
+      "linkStatus": "ok"
     },
     {
       "id": "dify",
@@ -2109,9 +2117,9 @@
       "promptNote": "自托管 + 本地模型就不出你的服务器；填了厂商 Key 就发给那家厂商。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 dify.ai 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2128,7 +2136,8 @@
         "智能体平台",
         "工作流编排"
       ],
-      "blurb": "把「调模型」变成拖节点：知识库检索、条件分支、工具调用都能连起来，做完能直接发布成网页或 API；装起来比 Open WebUI 重，适合真要搭应用的人。"
+      "blurb": "把「调模型」变成拖节点：知识库检索、条件分支、工具调用都能连起来，做完能直接发布成网页或 API；装起来比 Open WebUI 重，适合真要搭应用的人。",
+      "linkStatus": "ok"
     },
     {
       "id": "webllm",
@@ -2144,9 +2153,9 @@
       "promptNote": "提示词留在浏览器里，由本机 GPU 推理，不出机器。",
       "evidence": {
         "link": {
-          "at": "2026-11-05",
-          "by": "打开 chat.webllm.ai 核对（2026-11-05）",
-          "method": "manual"
+          "at": "2026-11-24",
+          "by": "check-links.mjs",
+          "method": "probe"
         },
         "boundary": {
           "at": "2026-11-05",
@@ -2163,7 +2172,8 @@
         "浏览器跑模型",
         "网页端大模型"
       ],
-      "blurb": "想试本地大模型又不想装任何东西，就在浏览器里跑：模型下载一次，之后断网也能聊；代价是首次加载慢，且需要较新的 Chrome 或 Edge。"
+      "blurb": "想试本地大模型又不想装任何东西，就在浏览器里跑：模型下载一次，之后断网也能聊；代价是首次加载慢，且需要较新的 Chrome 或 Edge。",
+      "linkStatus": "ok"
     },
     {
       "id": "cline",

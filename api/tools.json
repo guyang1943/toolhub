@@ -1,7 +1,7 @@
 {
   "site": "ToolHub",
   "version": 1,
-  "updated": "2026-11-18",
+  "updated": "2026-11-24",
   "total": 140,
   "tools": [
     {
@@ -1458,7 +1458,7 @@
       "desc": "把 Markdown 变成互动思维导图",
       "category": "开发",
       "runtime": "link",
-      "url": "https://markmap.js.org/repl",
+      "url": "https://markmap.js.org/editor",
       "source": "github.com/markmap/markmap",
       "license": "MIT",
       "tags": [

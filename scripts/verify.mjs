@@ -1058,7 +1058,10 @@ const BOUNDARY_VERIFIED_BASELINE = ['excalidraw', 'filepizza', 'localsend', 'pai
 
 // v3.32：边界「已核」条数下限。未核（imported / inferred）可以躺着不动，但不能变多；
 // 新增一条外链就必须真核一条，否则这条红。数字只许往上调。
-const BOUNDARY_MANUAL_FLOOR = 25;
+// v3.34.1：25 → 70。这一版把 41 条 imported 与 4 条 inferred 逐条核成 manual（读 README / 官方页面，
+// 引文由脚本比对原文），覆盖率 36% → 100%。下限跟着抬到 70，含义从「别把核过的退回」
+// 变成「这 70 条的事实基线」：以后谁把某条改回 imported，条数立刻掉下来。
+const BOUNDARY_MANUAL_FLOOR = 70;
 
 check('外链证据：结构完整、旧字段已清除（v3.21）', () => {
   const stale = dir.tools.filter((t) => 'checkedAt' in t);

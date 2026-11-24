@@ -1,6 +1,19 @@
 {
   "entries": [
     {
+      "date": "2026-11-24",
+      "version": "v3.34.1",
+      "items": [
+        "边界证据从 25/70 核到 70/70。v3.21 建这套字段时，62 条外链的 privacy 基本是照着上游清单填的，没人打开页面看过；v3.32 核了 12 条，之后一直停在 36%。这一版把剩下的 41 条 imported 与 4 条 inferred 全部逐条核完——读 README、必要时读官网首页，把能证明标注的那句英文原文写进证据行，再让脚本逐条比对原文里确实存在这段字。为什么非要脚本比对：凭印象写引文太容易了，「README 里好像说过 client-side」和「README 里写着 CyberChef is entirely client-side」是两回事，前者会在一两年后变成一条没人能追溯的假证据。",
+        "核的过程里改掉了 2 条错标、4 条偏严或偏松的标注。**placehold 从「本机处理」改成「会上传」**：占位图的 PNG/SVG 是它的服务器按 URL 参数生成的，你在 text 参数里写的字会到服务器——「本机处理」在这里是错的。**quicktype 从「未核实」改成「本机处理」**：官方 README 明写 The web app also works offline and doesn't send your sample data over the Internet，原标注是保守过头。另外 roadmap.sh / monkeytype / vert / carbon 从「本机处理」改成「看用法」——它们都有账号或可选服务器路径（roadmap 的 Learn with AI、monkeytype 的成绩同步、vert 的视频转换、carbon 的账号保存），默认不上传不等于不会上传。",
+        "4 条「按机制推断」也核了，其中一条被事实推翻。tldraw 的多人协作走 @tldraw/sync 自托管同步（README 原句），所以「看用法」成立；draw.io 的 README 明确说这个版本 does not support real-time collaborative editing，协作不是默认路径；jsonplaceholder 的 README 自述 I decided to code a little Express server——它是服务端，请求必然到服务器；librespeed 要求 A reasonably fast web server with Apache 2，测速流量必然往返。推断对了三条，但推断之所以不算核过，就是因为没有一次打开页面确认。",
+        "修掉一条已经失效的入口：markmap 的官网 REPL（markmap.js.org/repl）已经 404，官方 README 里的新地址是 /editor。这条是这轮探活顺手抓出来的——链接探活闸门只会在 45 天后才报红，但用户点进去当场就是死链。顺带刷新了 68 条外链的探活日期；bitwarden 与 cline 本机网络不通（timeout），按规矩不计失效、不改证据。",
+        "闸门跟着实测往上抬：已核条数下限 25 → 70，覆盖率下限 0.35 → 0.98。语义变了——以前是「未核的别变多」，现在是「这 70 条就是事实基线，谁改回 imported 就红」。覆盖率刻意没设成 1.0：确实核不了的条目要有地方写，但两条未核（约 97.2%）就会掉线下。",
+        "账：首屏 95.2 → 95.7 KB（97,497 → 97,970 B）。涨的 0.5 KB 全在启动数据里——12 条「看用法」与 15 条「会上传」的 privacyNote 都重写得具体了（「会上传到谁、什么时候传」）。这类文字不是装饰：徽标只说「会上传」，用户真正要知道的是「传的是什么、传到哪」。上限一分没抬，余量 334 B。",
+        "当前家底：本地工具 70 · 外链收录 140（70 条边界全部人工核验）· 教程 16 篇 127 步 / 5 类 · 工作流 6 条 · 资源 8 合集 64 条 · 测评 8 篇。验收：verify 79 项 · spa 80 · func 321 · flow 122 · 冒烟全过 · 真浏览器 377 · 体检 288 次页面检查；首屏 95.7 KB / 9 请求（预算 96.0），静态页 208、sitemap 209、离线包 360 地址 5.8 MB。这一版没有新工具、没有新页面，改的是「我们凭什么这么说」——70 条外链现在每一条都能追到一句原文。"
+      ]
+    },
+    {
       "date": "2026-11-18",
       "version": "v3.34",
       "items": [
