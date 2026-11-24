@@ -98,7 +98,7 @@ function taskList() {
 async function switchLang() {
   LANG = LANG === 'en' ? 'zh' : 'en';
   store.set('lang', LANG);
-  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-CN';  $('#lang-btn').textContent = LANG === 'en' ? '🌐 中' : '🌐 EN';
+  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-CN';  $('#lang-btn').textContent = LANG === 'en' ? '中文' : 'EN';
   document.title = LANG === 'en' ? 'ToolHub · Open-source tools, ready to use' : SITE;
   await loadI18n();
   applyStaticText();
@@ -302,18 +302,18 @@ const privBadge = (x) => { const p = PV[x.privacy] || PV.unknown; return t(p[0],
 // 目录工具的位置徽标（v3.25）。文字与形状区分，不靠颜色——色觉障碍用户靠的也是这几个字。
 // 键名与 scripts/lib/tool-meta.mjs 的 RUNTIME_KINDS 一致，多出来的档位会落到 web。
 const RUNS = {
-  web: ['🌐 在线直达', 'badgeLink'],
-  desktop: ['💻 需安装客户端', 'badgeClient'],
-  selfhost: ['🐳 需自行部署', 'badgeSelfhost'],
-  cli: ['⌨️ 需安装命令行', 'badgeCli'],
-  extension: ['🧩 编辑器扩展', 'badgeExt'],
-  mobile: ['📱 需安装 App', 'badgeMobile'],
+  web: ['在线直达', 'badgeLink'],
+  desktop: ['需安装客户端', 'badgeClient'],
+  selfhost: ['需自行部署', 'badgeSelfhost'],
+  cli: ['需安装命令行', 'badgeCli'],
+  extension: ['编辑器扩展', 'badgeExt'],
+  mobile: ['需安装 App', 'badgeMobile'],
 };
 // 「需 API Key」是第二个维度：Cline 装在编辑器里，但仍要你自备模型凭据。
 // 压成一个徽标就会丢掉「程序在本地」这个事实。
 const accessText = (x) => {
   const r = RUNS[x.runsOn] || RUNS.web;
-  return t(r[0], r[1]) + (x.keyRequired ? ' · ' + t('🔑 需 API Key', 'badgeKey') : '');
+  return t(r[0], r[1]) + (x.keyRequired ? ' · ' + t('需 API Key', 'badgeKey') : '');
 };
 
 /* ---------- 首页 ---------- */
@@ -330,8 +330,8 @@ function renderChips(categories) {
   // 再做成筛选按钮，用户永远不知道那张清单可以被单独分享或被搜到。
   const filters = [
     { key: '全部', label: t('全部', 'all') },
-    ...(hasUsage ? [{ key: '🔥 最常用', label: t('🔥 最常用', 'mostUsed') }] : []),
-    ...(hasFav ? [{ key: '⭐ 收藏', label: t('⭐ 收藏', 'favorites') }] : []),
+    ...(hasUsage ? [{ key: '🔥 最常用', label: t('最常用', 'mostUsed') }] : []),
+    ...(hasFav ? [{ key: '⭐ 收藏', label: t('收藏', 'favorites') }] : []),
   ];
   $('#chips').innerHTML =
     filters
@@ -373,13 +373,13 @@ function renderFilterbar() {
   if (!bar) return;
   const rts = [
     { key: 'all', label: t('全部', 'filterAll') },
-    { key: 'local', label: t('🔒 仅本机执行', 'filterLocal') },
-    { key: 'offline', label: t('📴 断网也能用', 'filterOffline') },
+    { key: 'local', label: t('仅本机执行', 'filterLocal') },
+    { key: 'offline', label: t('断网也能用', 'filterOffline') },
   ];
   const sorts = [
     { key: 'default', label: t('默认', 'sortDefault') },
-    { key: 'used', label: t('🔥 最常用', 'sortUsed') },
-    { key: 'new', label: t('🆕 最近收录', 'sortUpdated') },
+    { key: 'used', label: t('最常用', 'sortUsed') },
+    { key: 'new', label: t('最近收录', 'sortUpdated') },
   ];
   bar.innerHTML =
     `<span class="fb-label">${t('运行方式', 'filterRuntime')}</span>` +
@@ -704,7 +704,6 @@ function renderGrid(tools, keyword) {
     const recs = kwMiss ? REGISTRY.tools.filter((x) => x.hot).slice(0, 6) : [];
     gridEl.innerHTML = `
       <div class="empty">
-        <div style="font-size:32px;margin-bottom:8px">🔍</div>
         ${emptyMsg}
         ${fix ? `<div style="margin-top:12px;font-size:13px">${t('没有找到', 'fixNo')}「${esc(kw)}」，${t('是不是要找', 'fixAsk')}：<button class="btn ghost" id="fix-kw" data-kw="${esc(fix)}">${esc(fix)}</button></div>` : ''}
         ${recs.length ? `<div class="rec-title">${t('试试这些热门工具：', 'tryThese')}</div><div class="rec-row">${recs.map((r) => `<a class="btn ghost" href="/tools/${r.id}/">${esc(r.name)}</a>`).join('')}</div>` : ''}
@@ -880,7 +879,7 @@ const OVERLAY_HTML = {
   kbd: `<div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
     <div class="kbd-box">
       <div class="kbd-head">
-        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
         <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
       </div>
       <table class="kbd-table"><tbody>
@@ -1008,7 +1007,7 @@ function renderPaletteResults(q) {
           .map(([k, v]) => `${k}=${v}`)
           .join(' · ');
         intentItem = {
-          type: '💡 也许你要',
+          type: '也许你要',
           name: toolMeta(reg).name,
           desc: (p ? p + ' · ' : '') + '识别自「' + hit.matched.slice(0, 18) + '」',
           url: INTENT_MOD.intentUrl(hit),
@@ -1279,7 +1278,7 @@ function toggleCompare(id) {
   const btn = document.getElementById('cmp-btn');
   if (btn) {
     const on = list.includes(id);
-    btn.textContent = on ? '✓ 已加入对比' : '⇄ 加入对比';
+    btn.textContent = on ? '已加入对比' : '加入对比';
     btn.classList.toggle('on', on);
   }
 }
@@ -1354,7 +1353,7 @@ async function openCompare(queryIds) {
   const table = `
     <table class="cmp-table cmp-page-table">
       <thead><tr><th></th>${picked
-        .map((x) => `<th><div class="cmp-head">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div></th>`)
+        .map((x) => `<th><div class="cmp-head">${CAT_ICONS[x.category] || ''} ${toolMeta(x).name}</div></th>`)
         .join('')}</tr></thead>
       <tbody>
         ${row(t('运行方式', 'cmpRuntime'), (x) =>
@@ -1442,12 +1441,12 @@ function renderRecent(tools) {
     return;
   }
   row.style.display = '';
-  row.innerHTML = `<span class="recent-label">${t('🕘 最近使用', 'recent')}</span>` +
+  row.innerHTML = `<span class="recent-label">${t('最近使用', 'recent')}</span>` +
     ids
       .slice(0, 6)
       .map((id) => {
         const t = tools.find((x) => x.id === id);
-        return `<div class="related-chip" data-id="${t.id}">${CAT_ICONS[t.category] || '🧰'} ${t.name}</div>`;
+        return `<div class="related-chip" data-id="${t.id}">${CAT_ICONS[t.category] || ''} ${t.name}</div>`;
       })
       .join('');
   row.querySelectorAll('.related-chip').forEach((el) => {
@@ -1834,7 +1833,7 @@ function bindPasteRoute(input, host) {
       input.insertAdjacentElement('afterend', box);
     }
     box.style.display = '';
-    box.innerHTML = `<span>🔎 检测到${esc(hit.kind)}</span><button type="button" class="ph-go">${esc(
+    box.innerHTML = `<span>检测到${esc(hit.kind)}</span><button type="button" class="ph-go">${esc(
       hit.label
     )}</button><button type="button" class="ph-x" aria-label="关闭">×</button>`;
     const go = box.querySelector('.ph-go');

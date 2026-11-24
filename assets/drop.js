@@ -37,8 +37,7 @@ function ensureOverlay() {
   overlay.setAttribute('aria-hidden', 'true');
   overlay.innerHTML = `
     <div class="drop-zone">
-      <div class="dz-icon">📥</div>
-      <div class="dz-title">松手，帮你找工具</div>
+            <div class="dz-title">松手，帮你找工具</div>
       <div class="dz-sub">文件不会离开你的电脑，只是交给本地工具处理</div>
     </div>`;
   document.body.appendChild(overlay);

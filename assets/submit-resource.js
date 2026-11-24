@@ -112,7 +112,7 @@ export async function mountResourceSubmit(box, ctx = {}) {
   el.className = 'su';
   el.innerHTML = `
     <div class="su-head">
-      <h2>📚 推荐一条资源</h2>
+      <h2>推荐一条资源</h2>
       <p>图标库、字体、配色、学习路线、模板站——资源库现在有 <b>${total}</b> 条，
       你这一步会先拿它查重。填完在浏览器里校验，再把内容带进提交流程，全程不经过任何服务器。</p>
     </div>
@@ -287,7 +287,7 @@ export async function mountResourceSubmit(box, ctx = {}) {
     }
 
     if (errs.length) {
-      out.innerHTML = `<div class="msg-warn">⚠ 还有 ${errs.length} 处要改：</div>
+      out.innerHTML = `<div class="msg-warn">还有 ${errs.length} 处要改：</div>
         <ul class="builder-errs">${errs.map((e) => `<li>${esc(e.path || '(整体)')} — ${esc(e.message)}</li>`).join('')}</ul>`;
       return;
     }
@@ -302,7 +302,7 @@ export async function mountResourceSubmit(box, ctx = {}) {
     const dup = seen.get(normUrl(payload.item.url));
 
     out.innerHTML = `
-      <div class="msg-ok">✓ 校验通过，内容已生成。</div>
+      <div class="msg-ok">校验通过，内容已生成。</div>
       ${dup ? `<p class="su-dup">这条网址已经收过（${esc(dup.name)}），提交后会合并到原有条目，不会重复占位。</p>` : ''}
       <p class="su-tip">下一步选一个：有 GitHub 账号就走第一个，内容会直接预填进新 issue；没有就复制正文发邮件。</p>
       <div class="row">

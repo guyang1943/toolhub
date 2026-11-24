@@ -1124,7 +1124,7 @@ check('数据边界枚举与前端一致（v3.21）', () => {
 check('AI 分类的运行位置与提示词去向（v3.25）', () => {
   // 这一栏的立栏理由是「每条都能回答跑在哪、提示词去哪」。数据层已由 lib/tool-meta.mjs 验过，
   // 这里验的是**渲染出来的页面**——字段写对了但没渲染出去，用户看到的还是空白。
-  // 最要紧的一条是否定式断言：非 web 的条目绝不能出现「怎么用上：🌐 在线直达」。
+  // 最要紧的一条是否定式断言：非 web 的条目绝不能出现「怎么用上：在线直达」。
   // 那正是这一版要修的口径错误（Ollama 要装客户端、Dify 要自己部署）。
   const ai = dir.tools.filter((t) => t.category === 'AI');
   assert(ai.length >= 6, `AI 分类只有 ${ai.length} 条`);
@@ -1145,7 +1145,7 @@ check('AI 分类的运行位置与提示词去向（v3.25）', () => {
     }
     const h = readFileSync(p, 'utf8');
     if (!h.includes(ACCESS[t.runtime])) bad.push(`${t.id}(没写「${ACCESS[t.runtime]}」)`);
-    if (t.runtime !== 'web' && h.includes('怎么用上：🌐')) bad.push(`${t.id}(被写成在线直达)`);
+    if (t.runtime !== 'web' && h.includes('怎么用上：在线直达')) bad.push(`${t.id}(被写成在线直达)`);
     if (!h.includes('你的提示词会去哪里')) bad.push(`${t.id}(缺提示词去向)`);
     if (t.keyRequired && !h.includes('需 API Key')) bad.push(`${t.id}(缺 Key 徽标)`);
   }

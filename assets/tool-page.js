@@ -243,10 +243,10 @@ function renderResultActions(out, box, id, manifest, toolLabel) {
   bar.setAttribute('aria-label', t('结果操作', 'resultActions'));
   const parts = [];
   if (hasText) parts.push(`<button type="button" class="btn ghost" data-act="copy">${t('复制结果', 'copyResult')}</button>`);
-  if (files.length === 1) parts.push(`<a class="btn ghost" data-act="download" href="${files[0].url}" download="${esc(files[0].name)}">${t('⬇ 下载', 'download')} ${esc(files[0].name)}</a>`);
+  if (files.length === 1) parts.push(`<a class="btn ghost" data-act="download" href="${files[0].url}" download="${esc(files[0].name)}">${t('下载', 'download')} ${esc(files[0].name)}</a>`);
   if (files.length > 1) {
     parts.push(`<button type="button" class="btn ghost" data-act="download-zip">${t('打包下载 zip', 'downloadZip')}（${files.length}）</button>`);
-    parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('⬇ 逐个下载', 'downloadAll')}</button>`);
+    parts.push(`<button type="button" class="btn ghost" data-act="download-all">${t('逐个下载', 'downloadAll')}</button>`);
   }
   // 工具链：把这次产出直接交给下游工具，不用先下载再上传
   // v3.24 起它只是半个答案：单跳只能一次只走一步，而「压完还要转格式再合成 PDF」
@@ -262,11 +262,11 @@ function renderResultActions(out, box, id, manifest, toolLabel) {
   bar.innerHTML = parts.join('');
 
   const copyBtn = bar.querySelector('[data-act="copy"]');
-  if (copyBtn) copyBtn.onclick = () => copyWithFeedback(out.text, copyBtn, t('✓ 已复制', 'copied'));
+  if (copyBtn) copyBtn.onclick = () => copyWithFeedback(out.text, copyBtn, t('已复制', 'copied'));
   const allBtn = bar.querySelector('[data-act="download-all"]');
   if (allBtn) allBtn.onclick = () => files.forEach((f, i) => setTimeout(() => triggerDownload(f.url, f.name), i * 350));
   const shareBtn = bar.querySelector('[data-act="share"]');
-  if (shareBtn) shareBtn.onclick = () => copyWithFeedback(shareUrlOf(id, manifest), shareBtn, t('✓ 链接已复制', 'linkCopied'));
+  if (shareBtn) shareBtn.onclick = () => copyWithFeedback(shareUrlOf(id, manifest), shareBtn, t('链接已复制', 'linkCopied'));
 
   const zipBtn = bar.querySelector('[data-act="download-zip"]');
   if (zipBtn)
@@ -291,7 +291,7 @@ function renderResultActions(out, box, id, manifest, toolLabel) {
         const zip = await zipBlob(entries);
         triggerDownload(URL.createObjectURL(zip), `${id}-${entries.length}files.zip`);
         setTimeout(() => URL.revokeObjectURL(zip), 4000);
-        zipBtn.textContent = t('✓ 已打包', 'zipDone');
+        zipBtn.textContent = t('已打包', 'zipDone');
       } catch (e) {
         zipBtn.textContent = t('打包失败', 'zipFail');
         console.warn('打包失败：', e);
@@ -312,7 +312,7 @@ function renderResultActions(out, box, id, manifest, toolLabel) {
         const { createShare } = await import('/assets/lib/secure-share.js');
         const frag = await createShare({ id, values: collectValues(manifest), ts: Date.now() }, pass);
         const url = location.origin + '/tools/' + id + '/' + '#' + frag;
-        await copyWithFeedback(url, encBtn, t('✓ 加密链接已复制', 'encCopied'));
+        await copyWithFeedback(url, encBtn, t('加密链接已复制', 'encCopied'));
       } catch (e) {
         encBtn.textContent = t('加密失败', 'encFail');
         console.warn('加密分享失败：', e);
@@ -551,9 +551,9 @@ export async function openTool(id) {
     $('#tool-body').innerHTML = `
       <div class="panel">
         <div class="tool-head">
-          <h1><span class="h-icon">${icon2}</span>${m.name}<button class="share-btn" id="share-btn" title="复制链接">🔗</button></h1>
+          <h1><span class="h-icon">${icon2}</span>${m.name}<button class="share-btn" id="share-btn" title="复制链接">复制链接</button></h1>
           <p class="desc">${m.desc}</p>
-          <p class="src">✦ ${t('来源', 'sourceLabel')}：${esc(meta.source)} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}</p>
+          <p class="src">${t('来源', 'sourceLabel')}：${esc(meta.source)} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}</p>
           ${/* v3.25：从首页点进来的人看不到静态页那张「数据边界」，等于所有边界说明只喂给了搜索引擎。
                  这里补上同一套口径：跑在哪（+要不要 Key）、传不传、提示词具体去哪。 */ ''}
           <p class="src" data-boundary>${accessText(meta)} · ${t('数据边界', 'dataBoundary')}：<b>${privBadge(meta)}</b>${meta.privacyNote ? ' —— ' + esc(meta.privacyNote) : ''}</p>
@@ -569,18 +569,18 @@ export async function openTool(id) {
           <a class="btn" href="${esc(meta.url)}" target="_blank" rel="noopener">打开官网 ↗</a>
         </div>
         <div class="panel usage" style="margin-top:16px">
-          📘 <b>说明</b>　本页是 ToolHub 对该开源项目的整理与推荐，工具本体由项目作者维护，版权与数据均归原作者所有。
+          <b>说明</b>　本页是 ToolHub 对该开源项目的整理与推荐，工具本体由项目作者维护，版权与数据均归原作者所有。
           如果官网无法访问，可能是临时故障或网络限制，可稍后重试或在项目仓库反馈。
         </div>
         ${
           meta.blurb
-            ? `<div class="panel tips" style="margin-top:12px">✍️ <b>编辑推荐</b>　${meta.blurb}</div>`
+            ? `<div class="panel tips" style="margin-top:12px"><b>编辑推荐</b>　${meta.blurb}</div>`
             : ''
         }
       </div>
       ${
         relLocal.length || relDir.length
-          ? `<div class="section-title" style="margin-top:22px">🔗 <span>${t('相关工具', 'relatedLocal')}</span></div>
+          ? `<div class="section-title" style="margin-top:22px"><span>${t('相关工具', 'relatedLocal')}</span></div>
              <div class="related-row">
                ${relLocal
                  .map((x) => `<div class="related-chip" data-id="${x.id}">${toolMeta(x).name}</div>`)
@@ -606,11 +606,11 @@ export async function openTool(id) {
       sb2.onclick = async () => {
         try {
           await navigator.clipboard.writeText(location.href);
-          sb2.textContent = '✅';
-          setTimeout(() => (sb2.textContent = '🔗'), 1600);
+          sb2.textContent = '已复制';
+          setTimeout(() => (sb2.textContent = '复制链接'), 1600);
         } catch {
-          sb2.textContent = '❌';
-          setTimeout(() => (sb2.textContent = '🔗'), 1600);
+          sb2.textContent = '失败';
+          setTimeout(() => (sb2.textContent = '复制链接'), 1600);
         }
       };
     }
@@ -653,10 +653,10 @@ export async function openTool(id) {
   const runLabel = (d && d.runLabel) || manifest.runLabel || t('运行', 'runDefault');
 
   let blocks = '';
-  if (usageText) blocks += `<div class="panel usage">📘 <b>${t('使用说明', 'detailUsage')}</b>　${usageText}</div>`;
+  if (usageText) blocks += `<div class="panel usage"><b>${t('使用说明', 'detailUsage')}</b>　${usageText}</div>`;
   if (scenarioList && scenarioList.length) {
     blocks += `<details class="panel scenarios" open>
-      <summary>📖 ${t('使用场景', 'detailScenarios')}（${scenarioList.length}）</summary>
+      <summary>${t('使用场景', 'detailScenarios')}（${scenarioList.length}）</summary>
       <div class="scenario-list">${scenarioList
         .map(
           (s, i) => `<div class="scenario-item">
@@ -669,26 +669,26 @@ export async function openTool(id) {
     </details>`;
   }
   if (tipList && tipList.length)
-    blocks += `<div class="panel tips">💡 <b>${t('小贴士', 'detailTips')}</b><ul>${tipList.map((x) => `<li>${x}</li>`).join('')}</ul></div>`;
+    blocks += `<div class="panel tips"><b>${t('小贴士', 'detailTips')}</b><ul>${tipList.map((x) => `<li>${x}</li>`).join('')}</ul></div>`;
 
   // 长尾教程（步骤 + 常见错误，中文模式展示；英文详情见 i18n-detail）
   // v3.10：只取本工具那一篇（平均 1.2 KB），不再拉整份 articles.json
   const article = await loadArticle(meta.id);
   if (article && LANG !== 'en') {
     if (article.steps && article.steps.length)
-      blocks += `<div class="panel tutorial"><b>📝 使用步骤</b><ol class="tut-steps">${article.steps.map((s) => `<li>${s}</li>`).join('')}</ol></div>`;
+      blocks += `<div class="panel tutorial"><b>使用步骤</b><ol class="tut-steps">${article.steps.map((s) => `<li>${s}</li>`).join('')}</ol></div>`;
     if (article.pitfalls && article.pitfalls.length)
-      blocks += `<div class="panel tutorial"><b>⚠️ 常见错误</b><div class="pitfall-list">${article.pitfalls
+      blocks += `<div class="panel tutorial"><b>常见错误</b><div class="pitfall-list">${article.pitfalls
         .map((p) => `<div class="pitfall-item"><b>${p.title}</b><span>${p.body}</span></div>`)
         .join('')}</div></div>`;
   }
 
   $('#tool-form').innerHTML =
     `<div class="tool-head">
-      <h1><span class="h-icon">${icon}</span>${toolMeta(meta).name}<button class="share-btn" id="share-btn" title="复制带当前输入的链接">🔗</button><button class="share-btn" id="cmp-btn" title="加入对比">⇄ 加入对比</button><button class="share-btn" id="eg-btn" title="填入示例数据">⌨ 示例</button><button class="share-btn" id="embed-btn" title="复制嵌入代码">&lt;/&gt; 嵌入</button></h1>
+      <h1><span class="h-icon">${icon}</span>${toolMeta(meta).name}<button class="share-btn" id="share-btn" title="复制带当前输入的链接">复制链接</button><button class="share-btn" id="cmp-btn" title="加入对比">⇄ 加入对比</button><button class="share-btn" id="eg-btn" title="填入示例数据">⌨ 示例</button><button class="share-btn" id="embed-btn" title="复制嵌入代码">&lt;/&gt; 嵌入</button></h1>
       <p class="desc">${toolMeta(meta).desc}</p>
-      <p class="src">✦ ${t('来源', 'sourceLabel')}：${meta.source} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}${usedNote}</p>
-      ${LANG === 'en' && !d ? '<p class="src" style="color:#c2570a">⚠️ Detailed instructions are currently available in Chinese only.</p>' : ''}
+      <p class="src">${t('来源', 'sourceLabel')}：${meta.source} · License: ${meta.license} · ${t('分类', 'categoryLabel')}：${catName(meta.category)}${usedNote}</p>
+      ${LANG === 'en' && !d ? '<p class="src" style="color:#c2570a">Note: detailed instructions are currently available in Chinese only.</p>' : ''}
     </div>
     <div class="panel" id="tool-fields">${manifest.inputs.map((inp) => `<div class="field"><label>${labelOf(inp)}</label>${fieldHTML(inp)}</div>`).join('')}
       <div class="row"><button class="btn" id="run-btn">${runLabel}</button></div></div>`;
@@ -859,8 +859,8 @@ export async function openTool(id) {
         const v = (manifest.example && manifest.example[inp.name] !== undefined) ? manifest.example[inp.name] : inp.default;
         if (v !== undefined && v !== null && v !== '') el.value = v;
       }
-      eg.textContent = '✓ 已填入';
-      setTimeout(() => (eg.textContent = '⌨ 示例'), 1500);
+      eg.textContent = '已填入';
+      setTimeout(() => (eg.textContent = '示例'), 1500);
     };
   }
 
@@ -871,7 +871,7 @@ export async function openTool(id) {
       const code = `<iframe src="${location.origin}/tools/${meta.id}/?embed=1" width="100%" height="680" style="border:1px solid #e3e6ea;border-radius:12px" title="${meta.name} · ToolHub" loading="lazy"></iframe>`;
       try {
         await navigator.clipboard.writeText(code);
-        eb.textContent = '✓ 已复制';
+        eb.textContent = '已复制';
         setTimeout(() => (eb.textContent = '</> 嵌入'), 1600);
       } catch {
         eb.textContent = '复制失败';
@@ -884,7 +884,7 @@ export async function openTool(id) {
   const cb = $('#cmp-btn');
   if (cb) {
     const on = cmpList().includes(meta.id);
-    cb.textContent = on ? '✓ 已加入对比' : '⇄ 加入对比';
+    cb.textContent = on ? '已加入对比' : '加入对比';
     cb.classList.toggle('on', on);
     cb.dataset.cmpId = meta.id;
     cb.onclick = () => toggleCompare(meta.id);
@@ -896,11 +896,11 @@ export async function openTool(id) {
     sb.onclick = async () => {
       try {
         await navigator.clipboard.writeText(shareUrlOf(meta.id, manifest));
-        sb.textContent = '✅';
-        setTimeout(() => (sb.textContent = '🔗'), 1600);
+        sb.textContent = '已复制';
+        setTimeout(() => (sb.textContent = '复制链接'), 1600);
       } catch {
-        sb.textContent = '❌';
-        setTimeout(() => (sb.textContent = '🔗'), 1600);
+        sb.textContent = '失败';
+        setTimeout(() => (sb.textContent = '复制链接'), 1600);
       }
     };
   }
@@ -914,13 +914,13 @@ export async function openTool(id) {
   const rp = $('#related-panel');
   let relHTML = '';
   if (related.length) {
-    relHTML += `<div class="section-title">🔗 <span>${t('相关工具', 'relatedLocal')}</span></div>
+    relHTML += `<div class="section-title"><span>${t('相关工具', 'relatedLocal')}</span></div>
       <div class="related-row">${related
         .map((x) => `<div class="related-chip" data-id="${x.id}">${toolMeta(x).name}</div>`)
         .join('')}</div>`;
   }
   if (relatedDir.length) {
-    relHTML += `<div class="section-title">🌐 <span>${t('同类在线工具', 'relatedDir')}</span><em>${t('第三方开源项目官网', 'relatedDirSub')}</em></div>
+    relHTML += `<div class="section-title"><span>${t('同类在线工具', 'relatedDir')}</span><em>${t('第三方开源项目官网', 'relatedDirSub')}</em></div>
       <div class="related-row">${relatedDir
         .map(
           (x) =>

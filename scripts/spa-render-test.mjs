@@ -525,7 +525,7 @@ check(
 );
 // 投稿页以前标题是「推荐一个工具」，只覆盖工具一类。改了覆盖范围却留着旧标题，
 // 读者点进来会以为走错了地方。
-check('投稿页标题不再是「推荐一个工具」', !subHtml.includes('推荐一个工具') && subHtml.includes('➕ 投稿'));
+check('投稿页标题不再是「推荐一个工具」', !subHtml.includes('推荐一个工具') && subHtml.includes('<h1>投稿</h1>'));
 // 三个 Issue 模板链接必须真的指向仓库，且不是占位符
 const tplLinks = [...subHtml.matchAll(/github\.com\/[\w-]+\/[\w-]+\/issues\/new\?template=(\w+)\.yml/g)].map((m) => m[1]);
 check('投稿页链到教程与测评模板', tplLinks.includes('guide') && tplLinks.includes('review'), tplLinks.join(' / '));

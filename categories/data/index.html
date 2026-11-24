@@ -141,43 +141,43 @@
       </a><h2 class="res-group-title">第三方官方在线版 · 10 个</h2><a class="fl-row" href="/tools/cyberchef/">
         <span class="rank">09</span>
         <div class="f-body"><div class="f-name">CyberChef</div><div class="f-desc">GCHQ 出品的数据解码/加密/转换瑞士军刀</div></div>
-        <span class="f-meta">在线 · 本机处理</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/transform/">
         <span class="rank">10</span>
         <div class="f-body"><div class="f-name">Transform</div><div class="f-desc">JSON/YAML/TOML/TS 等几十种格式互转</div></div>
-        <span class="f-meta">在线 · 本机处理</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/quicktype/">
         <span class="rank">11</span>
         <div class="f-body"><div class="f-name">quicktype</div><div class="f-desc">JSON 一键生成 TypeScript/Java/Go 等类型定义</div></div>
-        <span class="f-meta">在线 · 本机处理</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/jsonhero/">
         <span class="rank">12</span>
         <div class="f-body"><div class="f-name">JSON Hero</div><div class="f-desc">高颜值 JSON 浏览器，结构一目了然</div></div>
-        <span class="f-meta">在线 · 会上传</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/jsonplaceholder/">
         <span class="rank">13</span>
         <div class="f-body"><div class="f-name">JSONPlaceholder</div><div class="f-desc">免费假 REST API，前端开发调试必备</div></div>
-        <span class="f-meta">在线 · 会上传</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/httpbin/">
         <span class="rank">14</span>
         <div class="f-body"><div class="f-name">httpbin</div><div class="f-desc">HTTP 请求测试服务，调试接口的好帮手</div></div>
-        <span class="f-meta">在线 · 会上传</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/webhook/">
         <span class="rank">15</span>
         <div class="f-body"><div class="f-name">Webhook.site</div><div class="f-desc">即时生成临时 URL 捕获查看 Webhook 请求</div></div>
-        <span class="f-meta">在线 · 会上传</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/duckdb/">
         <span class="rank">16</span>
         <div class="f-body"><div class="f-name">DuckDB Shell</div><div class="f-desc">浏览器里直接跑 DuckDB SQL 分析</div></div>
-        <span class="f-meta">在线 · 本机处理</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/jsoncrack/">
         <span class="rank">17</span>
         <div class="f-body"><div class="f-name">JSON Crack</div><div class="f-desc">JSON 转成可视化节点图谱，结构一眼看穿</div></div>
-        <span class="f-meta">在线 · 本机处理</span>
+        <span class="f-meta">在线</span>
       </a><a class="fl-row" href="/tools/rawgraphs/">
         <span class="rank">18</span>
         <div class="f-body"><div class="f-name">RAWGraphs</div><div class="f-desc">拖拽生成数据可视化图表（开源数据工具）</div></div>
-        <span class="f-meta">在线 · 本机处理</span>
+        <span class="f-meta">在线</span>
       </a><h2 class="res-group-title">怎么挑</h2><ul><li>大文件先体检再动手：「CSV 数据体检」会给出行列数、每列类型与缺失比例，比打开看前一百行可靠得多。</li><li>引号和换行是 CSV 最容易错的地方：站内转换按 RFC 4180 处理引号转义，导入别的工具后错行，通常是对方没处理。</li><li>Python 工具首次要下载运行时：十几 MB，之后会缓存，断网也能继续用；第一次打开稍慢是正常的。</li><li>要写 SQL 而不想写 pandas：DuckDB 能在浏览器里直接查 CSV，聚合大表比 pandas 更快。</li></ul><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>转成 JSON 后中文变成 \uXXXX 是怎么回事？</b></div><div class="res-item-note">那是 ASCII 转义显示，数据本身没坏。取消「ASCII 转义」选项就会输出原字符，文件体积也更小。</div></div><div class="res-item"><div class="res-item-head"><b>CSV 里的日期和数字会丢精度吗？</b></div><div class="res-item-note">转换过程按字符串搬运，不会改数值。但如果你的工具把它当浮点数读，超过 15 位的长整数（如订单号）会被截断——把那一列按文本处理。</div></div><div class="res-item"><div class="res-item-head"><b>能处理多大的 CSV？</b></div><div class="res-item-note">受浏览器内存限制。几十 MB 通常没问题，上百 MB 建议先用「CSV 选列与重排」砍掉不需要的列，再进 pandas 分析。</div></div><h2 class="res-group-title">相关专题</h2><div class="related-row"><a class="related-chip" href="/topics/data-cleanup/">数据清洗与转换</a></div><h2 class="res-group-title">其他分类</h2><div class="chips"><a class="chip" href="/categories/text/">文本</a><a class="chip" href="/categories/image/">图片</a><a class="chip" href="/categories/docs/">文档</a><a class="chip active" href="/categories/data/">数据</a><a class="chip" href="/categories/dev/">开发</a><a class="chip" href="/categories/design/">设计</a><a class="chip" href="/categories/media/">音视频</a><a class="chip" href="/categories/productivity/">效率</a><a class="chip" href="/categories/web/">网络</a><a class="chip" href="/categories/ai/">AI</a></div><div class="crumb" style="margin-top:24px"><a href="/categories/">← 全部分类</a> · <a href="/">返回首页</a></div></div>
     <!-- 首页 -->
     <section id="view-home">
@@ -271,7 +271,7 @@
   <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
     <div class="kbd-box">
       <div class="kbd-head">
-        <b data-zh="⌨ 键盘快捷键" data-en="⌨ Keyboard shortcuts">⌨ 键盘快捷键</b>
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
         <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
       </div>
       <table class="kbd-table">

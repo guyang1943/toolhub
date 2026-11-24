@@ -16,8 +16,7 @@ export function mountBatch(root) {
   root.innerHTML = `
     <div class="batch-drop" id="b-drop" tabindex="0" role="button"
          aria-label="选择或拖入多张图片">
-      <div class="bd-icon">🖼️</div>
-      <b>拖入多张图片，或点击选择</b>
+            <b>拖入多张图片，或点击选择</b>
       <span>JPG / PNG / WebP / AVIF / GIF · 单张 ≤ 30MB · 全部在本机处理</span>
       <input type="file" id="b-input" accept="image/*" multiple hidden />
     </div>
@@ -184,11 +183,11 @@ export function mountBatch(root) {
     const saved = before - after;
     const pct = before ? Math.round((saved / before) * 100) : 0;
     result.innerHTML = `
-      <div class="msg-ok">✅ 处理完成 ${ok} 张 · ${fmt(before)} → ${fmt(after)}${
+      <div class="msg-ok">处理完成 ${ok} 张 · ${fmt(before)} → ${fmt(after)}${
         saved > 0 ? `（省 ${pct}%，${fmt(saved)}）` : '（结果比原图大，试试调低质量或换 JPEG）'
       }</div>
       <div class="row">
-        <button class="btn" id="b-zip">📦 打包下载（${outputs.length} 个）</button>
+        <button class="btn" id="b-zip">打包下载（${outputs.length} 个）</button>
         <button class="btn ghost" id="b-one">逐个下载</button>
       </div>`;
     result.querySelector('#b-zip').onclick = async () => {
@@ -206,14 +205,14 @@ export function mountBatch(root) {
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 5000);
-        btn.textContent = '✓ 已下载';
+        btn.textContent = '已下载';
       } catch (e) {
         btn.textContent = '打包失败';
         console.warn(e);
       }
       setTimeout(() => {
         btn.disabled = false;
-        btn.textContent = `📦 打包下载（${outputs.length} 个）`;
+        btn.textContent = `打包下载（${outputs.length} 个）`;
       }, 1800);
     };
     result.querySelector('#b-one').onclick = () => {

@@ -314,7 +314,7 @@ export function recommend(query, opts = {}) {
     return {
       kind: 'flow',
       url: '/workflows/?flow=' + encodeURIComponent(best.flow.id),
-      tag: t('🔗 建议走这条流程', 'intentFlow'),
+      tag: t('建议走这条流程', 'intentFlow'),
       name: best.flow.name,
       desc: `${best.steps.length} 步${best.flow.cost ? ' · ' + best.flow.cost : ''}`,
       go: t('打开流程 →', 'intentFlowGo'),
@@ -324,7 +324,7 @@ export function recommend(query, opts = {}) {
   return {
     kind: 'tool',
     url: intentUrl(hit),
-    tag: t('💡 也许你要', 'intentMaybe'),
+    tag: t('也许你要', 'intentMaybe'),
     name,
     desc: params,
     go: t('打开并预填 →', 'intentGo'),

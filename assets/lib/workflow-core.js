@@ -284,7 +284,7 @@ export function acceptMismatch(flowAccept, toolAccept) {
 export function runBanner(name, stepCount, ms, resumedFrom = null) {
   const time = `${((Number(ms) || 0) / 1000).toFixed(1)} 秒`;
   if (resumedFrom) {
-    return `✓ ${name}：从第 ${resumedFrom + 1} 步跑到最后，用时 ${time}（前 ${resumedFrom} 步沿用上次的产物，没有重跑）`;
+    return `${name}：从第 ${resumedFrom + 1} 步跑到最后，用时 ${time}（前 ${resumedFrom} 步沿用上次的产物，没有重跑）`;
   }
-  return `✓ ${name}：${stepCount} 步跑完，用时 ${time}`;
+  return `${name}：${stepCount} 步跑完，用时 ${time}`;
 }

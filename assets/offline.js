@@ -55,14 +55,14 @@ export async function mountOffline(root) {
   root.innerHTML = `
     <div class="off-grid">
       <div class="off-card">
-        <b>${supported ? (reg ? '✅ 已在离线模式就绪' : '⏳ Service Worker 注册中') : '❌ 此浏览器不支持'}</b>
+        <b>${supported ? (reg ? '已在离线模式就绪' : 'Service Worker 注册中') : '此浏览器不支持'}</b>
         <p>${reg ? '断网后仍可打开已缓存页面与本地工具。' : '首次访问后会自动注册，稍等片刻刷新本页。'}</p>
         <div class="off-stat" id="off-stat">${
           stats.count ? `已缓存 ${stats.count} 个文件 · 约 ${kb(stats.bytes)}` : '尚未下载完整离线包'
         }</div>
       </div>
       <div class="off-card">
-        <b>📦 完整离线包</b>
+        <b>完整离线包</b>
         <p>${sizeText}。含全部本地工具页与执行脚本（Python 运行时按需下载，不计入）。</p>
         <div class="off-bar"><div class="off-fill" id="off-fill"></div></div>
         <div class="off-stat" id="off-progress"></div>
@@ -72,7 +72,7 @@ export async function mountOffline(root) {
         </div>
       </div>
       <div class="off-card">
-        <b>🖥️ 安装成应用</b>
+        <b>安装成应用</b>
         <p>${prompt ? '可以安装到桌面 / 主屏幕，像本地应用一样打开。' : '用 Chrome / Edge 打开时会出现安装入口；iOS 请用「分享 → 添加到主屏幕」。'}</p>
         <div class="row">
           <button class="btn ghost" id="off-install" ${prompt ? '' : 'disabled'}>${prompt ? '安装到桌面' : '当前浏览器未提供安装'}</button>
@@ -101,7 +101,7 @@ export async function mountOffline(root) {
       fill.style.width = '100%';
       prog.textContent = d.failed.length
         ? `完成 ${d.done} / ${d.total}，${d.failed.length} 个失败（可能是网络抖动，可再点一次）`
-        : `✅ 离线包已就绪：${d.total} 个文件 · ${kb(d.bytes)}`;
+        : `离线包已就绪：${d.total} 个文件 · ${kb(d.bytes)}`;
       currentVersion().then(cacheStats).then((s) => (stat.textContent = `已缓存 ${s.count} 个文件 · 约 ${kb(s.bytes)}`));
     }
   });
@@ -140,7 +140,7 @@ export async function mountOffline(root) {
     installBtn.onclick = async () => {
       prompt.prompt();
       const { outcome } = await prompt.userChoice;
-      installBtn.textContent = outcome === 'accepted' ? '✅ 已开始安装' : '已取消';
+      installBtn.textContent = outcome === 'accepted' ? '已开始安装' : '已取消';
     };
   }
 }

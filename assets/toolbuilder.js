@@ -91,7 +91,7 @@ export async function run({ ${args} }) {
   if (!${inputs[0]?.name || 'input'}) throw new Error('请先填写输入');
 
   return {
-    html: '<div class="msg-ok">✅ 处理完成</div>',
+    html: '<div class="msg-ok">处理完成</div>',
     text: '把纯文本结果放这里，便于复制',
     files: [],
   };
@@ -151,7 +151,7 @@ export async function mountToolBuilder(box) {
   el.className = 'builder';
   el.innerHTML = `
     <div class="builder-head">
-      <h2>🛠 生成一个工具包</h2>
+      <h2>生成一个工具包</h2>
       <p>填完下面的表单，直接在浏览器里生成 <code>tool.json</code> + <code>run.js</code> 骨架并打包下载。不联网、不上传，生成的校验结果与构建期一致。</p>
     </div>
     <div class="builder-grid">
@@ -291,7 +291,7 @@ export async function mountToolBuilder(box) {
     const m = collect();
     const errs = await checkAll(m);
     if (errs.length) {
-      out.innerHTML = `<div class="msg-warn">⚠ 还有 ${errs.length} 个问题需要先修：</div><ul class="builder-errs">${errs
+      out.innerHTML = `<div class="msg-warn">还有 ${errs.length} 个问题需要先修：</div><ul class="builder-errs">${errs
         .map((e) => `<li>${esc(e)}</li>`)
         .join('')}</ul>`;
       return;
@@ -301,7 +301,7 @@ export async function mountToolBuilder(box) {
       { name: `${m.id}/run.js`, text: runSource(m) },
       { name: `${m.id}/README.md`, text: README(m.id) },
     ];
-    out.innerHTML = `<div class="msg-ok">✅ 校验通过：tool.json 与 manifest 均符合 <code>tools/schema.json</code>。${
+    out.innerHTML = `<div class="msg-ok">校验通过：tool.json 与 manifest 均符合 <code>tools/schema.json</code>。${
       alsoDownload ? '已开始下载 ' + esc(m.id) + '.zip' : ''
     }</div>
       <details><summary>查看生成的 run.js</summary><pre class="builder-pre">${esc(files[1].text)}</pre></details>

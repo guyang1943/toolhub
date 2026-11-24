@@ -29,7 +29,7 @@ export async function openPage(name, deps) {
       const text = document.getElementById('fb-tpl').textContent;
       try {
         await navigator.clipboard.writeText(text);
-        copyBtn.textContent = '已复制 ✓';
+        copyBtn.textContent = '已复制';
         setTimeout(() => (copyBtn.textContent = '复制模板'), 1600);
       } catch {
         copyBtn.textContent = '复制失败，请手动选中复制';

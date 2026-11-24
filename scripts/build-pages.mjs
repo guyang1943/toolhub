@@ -434,7 +434,7 @@ for (const tool of dirTools) {
     // 又混回「打开网页就能用」，等于白分。
     (() => {
       const rtLabel = { web: '网页版', desktop: '桌面应用', selfhost: '可自托管', cli: '命令行', extension: '编辑器扩展', mobile: '手机应用' }[tool.runtime] || tool.runtime;
-      const accessLabel = { web: '在线直达', extension: '编辑器扩展', desktop: '需安装客户端', cli: '需安装命令行', mobile: '📱 需安装 App', selfhost: '🐳 需自行部署' }[tool.runtime] || '🔗 官网';
+      const accessLabel = { web: '在线直达', extension: '编辑器扩展', desktop: '需安装客户端', cli: '需安装命令行', mobile: '需安装 App', selfhost: '需自行部署' }[tool.runtime] || '官网';
       // v3.25：「需 API Key」与「跑在哪」是两个维度，硬压成一个徽标就会丢掉事实
       // （Cline 是装在编辑器里的本地程序，但仍要你自备模型凭据）。所以位置一个徽标、
       // Key 一个徽标，可以同时出现。
@@ -758,6 +758,10 @@ for (const p of staticPages) {
 // 所以给它独立 URL + 自有正文（场景、挑选建议、常见问题），并进 sitemap。
 {
   const allTools = [...tools.map((t) => ({ ...t, isLocal: t.runtime !== 'link' })), ...dirTools.map((t) => ({ ...t, isLocal: false }))];
+  // 列表里的短标签，必须与 assets/content-pages.js 的 RUNS_SHORT 一致：
+  // 静态首帧与 JS 重渲染是两份实现，写岔了就会出现「在线 · 本机处理」这种自相矛盾——
+  // 桌面工具在首帧被标成在线，正是 v3.17 纠正过、v3.25 又强调过的那种口径错误。
+  const RUNS_SHORT = { web: '在线', desktop: '客户端', selfhost: '自部署', cli: '命令行', extension: '扩展', mobile: 'App' };
   const catsDir = join(root, 'categories');
   mkdirSync(catsDir, { recursive: true });
 
@@ -770,7 +774,7 @@ for (const p of staticPages) {
   const toolRow = (t, i) => `<a class="fl-row" href="/tools/${t.id}/">
         <span class="rank">${String(i + 1).padStart(2, '0')}</span>
         <div class="f-body"><div class="f-name">${t.name}</div><div class="f-desc">${t.desc}</div></div>
-        <span class="f-meta">${t.isLocal ? '本地' : `在线 · ${PRIVACY_LABEL[t.privacy] || '未核实'}`}</span>
+        <span class="f-meta">${t.isLocal ? '本地' : `${RUNS_SHORT[t.runtime] || RUNS_SHORT.web}${t.keyRequired ? ' · 需 Key' : ''}`}</span>
       </a>`;
 
   const catChips = (active) =>
@@ -1463,7 +1467,6 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   const cats = registry.categories || [];
   const allTools = [...tools, ...dirTools];
   const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const ICONS = { 文本: '📝', 图片: '🖼️', 文档: '📄', 数据: '📊', 开发: '⚙️', 设计: '🎨', 音视频: '🎵', 效率: '⚡', 网络: '🌐' };
 
   // --- 各区块 HTML（与 app.js 输出保持同构） ---
   // v3.9：原来的「一行统计数字 + 一行入口卡」是两块说同一件事的皮（97 出现两次），

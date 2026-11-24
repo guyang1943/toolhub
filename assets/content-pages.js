@@ -171,7 +171,7 @@ async function openTools() {
   // 单独列一组，也不要静默少几个工具。
   const known = new Set(idx.map((c) => c.name));
   const rest = reg.tools.filter((t) => !known.has(t.category));
-  if (rest.length) groups.push({ c: { name: '其他', icon: '📦', title: '其他工具', slug: '' }, xs: rest });
+  if (rest.length) groups.push({ c: { name: '其他', icon: '', title: '其他工具', slug: '' }, xs: rest });
   let n = 0;
   const row = (t) => `<a class="fl-row" data-spa href="/tools/${t.id}/">
       <span class="rank">${String(++n).padStart(2, '0')}</span>
@@ -572,7 +572,7 @@ async function openChangelog() {
   renderNavActive('');
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:820px">
-      <h1>📝 更新日志</h1>
+      <h1>更新日志</h1>
       <p class="lead">这个平台在持续迭代。每一步改动都记录在这里，也提供 <a href="/feed.xml">RSS 订阅</a>。</p>
       ${data.entries
         .map(
@@ -629,9 +629,9 @@ async function openResources() {
     .join('');
   $('#page-body').innerHTML = `
     <div class="page" style="max-width:1000px">
-      <h1>📚 资源库</h1>
+      <h1>资源库</h1>
       <p class="lead">精选的免费可用资源：图标、字体、配色、学习路线。与工具的区别是——工具用来「做事」，资源用来「拿来用、下载或参考」。</p>
-      <div class="res-policy">⚖️ <b>授权说明</b>　${res.policy}</div>
+      <div class="res-policy"><b>授权说明</b>　${res.policy}</div>
       ${sections}
       <p class="cmp-tip">收录标准：免费可用 · 授权清晰（每条都标注） · 长期可访问。不收需要注册才能看内容、授权不明或带诱导广告的站点。</p>
     </div>`;
@@ -676,7 +676,7 @@ async function openResourceCollection(slug) {
       <p class="lead">${c.desc}</p>
       <div class="res-intro">${c.intro}</div>
 
-      ${rec.length ? `<h2 class="res-group-title">✦ 编辑精选</h2><div class="res-list">${rec.map(itemRow).join('')}</div>` : ''}
+      ${rec.length ? `<h2 class="res-group-title">编辑精选</h2><div class="res-list">${rec.map(itemRow).join('')}</div>` : ''}
 
       <h2 class="res-group-title">全部来源（${c.items.length}）</h2>
       <div class="res-list">${(rec.length ? others : c.items).map(itemRow).join('')}</div>
@@ -690,12 +690,12 @@ async function openResourceCollection(slug) {
       ${
         relTools.length
           ? `<h2 class="res-group-title">配套工具</h2><div class="related-row">${relTools
-              .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || '🧰'} ${toolMeta(x).name}</div>`)
+              .map((x) => `<div class="related-chip" data-id="${x.id}">${CAT_ICONS[x.category] || ''} ${toolMeta(x).name}</div>`)
               .join('')}</div>`
           : ''
       }
 
-      <div class="res-policy">⚖️ <b>授权说明</b>　${res.policy}</div>
+      <div class="res-policy"><b>授权说明</b>　${res.policy}</div>
     </div>`;
 
   $('#page-body').querySelectorAll('.related-chip[data-id]').forEach((el) => {

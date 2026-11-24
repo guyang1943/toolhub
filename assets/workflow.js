@@ -689,7 +689,7 @@ export async function mountWorkflows(box, reg) {
              </div>`
           : '<p class="wf-tip">第 1 步就失败了，没有可复用的产物。改好输入再点一次即可。</p>';
 
-      out.innerHTML = `<div class="msg-warn">✗ ${head}</div>${tail}`;
+      out.innerHTML = `<div class="msg-warn">${head}</div>${tail}`;
 
       const resumeBtn = out.querySelector('#wf-resume');
       if (resumeBtn) {
@@ -720,7 +720,7 @@ export async function mountWorkflows(box, reg) {
         copy.onclick = async () => {
           try {
             await navigator.clipboard.writeText(text);
-            copy.textContent = '已复制 ✓';
+            copy.textContent = '已复制';
             setTimeout(() => (copy.textContent = '复制文本'), 1600);
           } catch {
             copy.textContent = '复制失败，请手动选中';

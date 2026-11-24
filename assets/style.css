@@ -1,5 +1,6 @@
 /* 配色取自「工作台 + 说明书」这个场景：纸感的中性底、一条钴蓝只做动作色。
-   以前是冷灰配蓝紫渐变，任何产品都能用，也就不说明任何事。 */
+   以前是冷灰配蓝紫渐变，任何产品都能用，也就不说明任何事。
+   去装饰的工序参考 unslop（Damir Sokolovsky，CC BY 4.0）：github.com/heydamir/unslop */
 :root {
   --bg: #f4f1eb; --panel: #ffffff; --raised: #f1eee7; --border: #e3ddd2;
   --text: #1f1b16; --secondary: #574f45; --muted: #6f665a; --accent: #1d4ed8;
@@ -785,7 +786,6 @@ body.embed-mode .share-btn { display: none; }
   border: 2px dashed var(--accent); border-radius: 18px; background: var(--panel);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.16);
 }
-.dz-icon { font-size: 40px; line-height: 1; }
 .dz-title { margin: 12px 0 6px; font-size: 17px; font-weight: 700; color: var(--text); }
 .dz-sub { font-size: 13px; color: var(--muted); }
 
