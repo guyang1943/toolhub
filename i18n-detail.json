@@ -2211,6 +2211,71 @@
         "sep": "Separator between Hanzi",
         "keepOther": "Non-Hanzi (letters / digits / punctuation)"
       }
+    },
+    "ai-local": {
+      "usage": "Paste text and pick a task. The model ships with the browser (desktop Chrome 138+); the first run downloads about 2GB, after that it works offline. Your text never leaves the device.",
+      "tips": [
+        "Built-in models take a few thousand tokens at most — split long documents into sections",
+        "Pick the source language for translation: the built-in model does not auto-detect",
+        "The model is English-first; Chinese works but needs a proofread for anything formal",
+        "Use \"How big a model can this machine run\" to size up the hardware first"
+      ],
+      "scenarios": [
+        {
+          "scene": "A long English email and you only need the ask",
+          "how": "Paste → choose Summarise → run",
+          "result": "A few key points; decide whether to read the rest"
+        },
+        {
+          "scene": "You need an English version but cannot paste internal text into a web translator",
+          "how": "Paste → Translate → Chinese to English",
+          "result": "Translation generated on-device, nothing uploaded"
+        },
+        {
+          "scene": "A paragraph you wrote is too wordy",
+          "how": "Paste → choose Rewrite (shorter)",
+          "result": "Repetition trimmed, meaning kept"
+        }
+      ],
+      "runLabel": "Run",
+      "labels": {
+        "text": "Text to process",
+        "mode": "Task",
+        "from": "Source language (translation only)",
+        "lang": "Target language (translation only)"
+      }
+    },
+    "ai-hw-check": {
+      "usage": "Pick a model size, quantisation level and context length. The tool probes WebGPU, memory and CPU cores on the spot, then compares what the model needs against what this machine has. Nothing is downloaded.",
+      "tips": [
+        "Quantisation is the biggest lever: a 7B needs ~14GB at FP16 but only ~4.4GB at Q4_K_M",
+        "Longer context costs more memory — KV cache grows linearly with context length",
+        "Browsers never expose total VRAM, so this estimates from system memory; a discrete GPU usually has less",
+        "Without WebGPU you can still run on CPU (WASM), just slowly: a few tokens per second for 7B"
+      ],
+      "scenarios": [
+        {
+          "scene": "Thinking about installing Ollama but unsure the laptop can take it",
+          "how": "Pick 7B / Q4_K_M / 4K → run",
+          "result": "A needs-vs-has table with a clear verdict"
+        },
+        {
+          "scene": "Want 32B but only have 16GB of RAM",
+          "how": "Pick 32B → read the four quantisation rows",
+          "result": "See which level actually fits, and by how much it misses"
+        },
+        {
+          "scene": "Deciding how much RAM to buy",
+          "how": "Run twice with different sizes and compare the gap",
+          "result": "A concrete number instead of a vague guess"
+        }
+      ],
+      "runLabel": "Probe and estimate",
+      "labels": {
+        "size": "Model size",
+        "quant": "Quantisation",
+        "ctx": "Context length"
+      }
     }
   }
 }

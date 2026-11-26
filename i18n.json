@@ -176,6 +176,14 @@
       }
     ],
     "tools": {
+      "ai-local": {
+        "name": "Built-in AI: Summarise / Translate / Rewrite",
+        "desc": "Summarise, translate and rewrite with the model your browser already ships — no upload, nothing leaves your device"
+      },
+      "ai-hw-check": {
+        "name": "How Big a Model Can This Machine Run",
+        "desc": "Probe WebGPU, memory and CPU cores, then work out which local model sizes and quantisations actually fit"
+      },
       "json-format": {
         "name": "JSON Formatter",
         "desc": "Pretty-print or minify JSON and validate syntax"

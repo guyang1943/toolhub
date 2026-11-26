@@ -5,9 +5,77 @@
  */
 import { renderKeyTable } from './store-keys.js';
 
+/* ---------- AI 中心（v3.40） ----------
+   站内 AI 的口径只有一处：本地工具里 tags 含 'ai' 的那些。首页横带的数字、/ai/ 页的列表、
+   verify 的断言，三处都从这里算——口径一旦分叉，就会出现「横带写 2 个、页面写 3 个」
+   这种谁都不算错、但用户会截图来问的情况。 */
+/* 判据用**运行时白名单**而不是 runtime !== 'link'：目录里的 AI 工具 runtime 是
+   web / desktop / selfhost / extension，构建期它们还没被改写成 'link'（那是浏览器侧的活），
+   用「不等于 link」会把 8 条外链误算成站内工具。browser / pyodide 才是真的跑在这台机器上。 */
+export const isLocalAi = (t) =>
+  !!t && (t.runtime === 'browser' || t.runtime === 'pyodide') && Array.isArray(t.tags) && t.tags.includes('ai');
+export const countLocalAi = (tools) => (tools || []).filter(isLocalAi).length;
+
+const AI_ESC = (s) =>
+  String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/**
+ * /ai/ 的正文。只写这一份：build-pages 生成静态页时调它，SPA 跳转后也调它。
+ * 以前每个静态页都是「构建期一段字符串 + pages.js 一个函数」两份，改一处忘另一处就各说各的；
+ * 这一页从一开始就只留一份正文，两边只在外面包一层 h1 与版心。
+ */
+export function aiBody(tools) {
+  const local = (tools || []).filter(isLocalAi);
+  const dir = (tools || []).filter((t) => t.category === 'AI');
+  const items = local
+    .map((t) => `<li><a href="/tools/${t.id}/"><b>${AI_ESC(t.name)}</b></a> —— ${AI_ESC(t.desc)}</li>`)
+    .join('');
+  return `
+      <h2>能直接用的 ${local.length} 个</h2>
+      <ul>${items}</ul>
+      <p>两个工具的分工：带 AI 的那个回答「这件事现在能不能做」，硬件那个回答「这台机器适合走哪条路」。
+      它们都不下载模型——一个用浏览器自带的，一个只做检测。</p>
+
+      <h2>四条路，别混着走</h2>
+      <table class="cmp-table">
+        <tr><th></th><th>浏览器内置</th><th>装在本机</th><th>自建服务</th><th>调云端 API</th></tr>
+        <tr><td>要装什么</td><td>什么都不用装，模型随浏览器</td><td>一个客户端</td><td>一台常开的机器</td><td>什么都不用装</td></tr>
+        <tr><td>数据去哪</td><td class="yes">不出设备</td><td class="yes">不出设备</td><td class="yes">不出你的内网</td><td class="no">发给厂商</td></tr>
+        <tr><td>断网能不能用</td><td class="yes">模型下完就能</td><td class="yes">能</td><td>看内网是否可达</td><td class="no">不能</td></tr>
+        <tr><td>门槛</td><td>Chrome 138 以上、16GB 内存、22GB 磁盘</td><td>8GB 内存起步</td><td>会 Docker、有机器</td><td>要 Key、按量付费</td></tr>
+        <tr><td>适合</td><td>临时处理几百字</td><td>日常主力</td><td>团队共用一套</td><td>质量优先、能接受上传</td></tr>
+      </table>
+      <p>这张表不是「哪个最好」，是「哪个适合你现在这件事」。同一台机器上，写一封邮件用第一列就够了，
+      跑一份几十页的合同就该走第二列，而要求最高质量时第四列才是对的——代价是你得承认内容出去了。</p>
+
+      <h2>跑不动怎么办</h2>
+      <p>先别急着加内存。三个动作按顺序试：把量化降一档（Q8 到 Q4_K_M 大约省一半）、把规模降一档（13B 到 7B 也是大约一半）、
+      把上下文从 32K 降到 4K。三样都试过还不够，才轮到硬件。</p>
+      <p>要真的跑起来，看这两篇：<a href="/guides/ollama-local-ai/">在本机跑一个开源大模型</a>、
+      <a href="/guides/local-ai-coding/">用本地模型写代码</a>。</p>
+
+      <h2>目录里的 ${dir.length} 个本地模型工具</h2>
+      <p>Ollama、GPT4All、AnythingLLM、Open WebUI、ComfyUI、Dify、WebLLM、Cline——每一条都先回答两件事：
+      <b>跑在哪</b>（浏览器 / 客户端 / 要自行部署 / 编辑器扩展）和<b>提示词会去哪</b>。
+      只收能说清执行位置的项目，纯云端、必须注册的服务不进这一栏。</p>
+      <p><a href="/categories/ai/">打开「AI 与本地模型」分类 →</a></p>
+
+      <h2>这一页不做什么</h2>
+      <p>不接云端大模型，也不做需要注册的聊天窗口。本站没有后端数据库，为一个聊天框把用户输入送到别人服务器上，
+      和这个站的其他部分不是同一套逻辑。想要网页里的对话，浏览器内置 AI 已经够用；想要更强的模型，
+      第二步那条「装在本机」才是该走的路。</p>`;
+}
+
 export function makePages(reg, { analyticsOptedOut = () => false } = {}) {
   const counts = reg ? reg.counts.local + reg.counts.dir : '';
   return {
+  ai: () => `
+    <div class="page">
+      <h1>AI 中心</h1>
+      <p class="lead">这里只放能验证的东西：哪些 AI 能在你这台机器上跑、跑不动时往哪退、每条路的数据会去哪。
+      没有「随便聊聊」的输入框，也没有需要注册的账号。</p>
+      ${aiBody(reg ? reg.tools : [])}
+    </div>`,
   about: () => `
     <div class="page">
       <h1>关于 ToolHub</h1>

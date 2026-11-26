@@ -1,0 +1,25 @@
+{
+  "id": "ai-hw-check",
+  "name": "本机能跑多大模型",
+  "desc": "当场检测 WebGPU、内存与核数，算出你的机器能跑多大的本地模型（3B 到 70B、四档量化）",
+  "category": "效率",
+  "source": "内置实现 · 浏览器原生 API 检测（WebGPU / Storage）",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "ai",
+    "本地模型",
+    "显存",
+    "webgpu",
+    "硬件检测",
+    "ollama"
+  ],
+  "io": {
+    "in": [
+      "text"
+    ],
+    "out": [
+      "text"
+    ]
+  }
+}

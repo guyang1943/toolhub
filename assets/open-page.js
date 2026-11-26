@@ -18,7 +18,7 @@ export async function openPage(name, deps) {
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   setView('page');
-  const titles = { about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
+  const titles = { ai: 'AI 中心', about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
 

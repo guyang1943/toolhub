@@ -601,9 +601,8 @@ function renderFeatured(tools) {
     return;
   }
   sec.style.display = '';
-  // v3.33：这一区变成左右两栏（工具 | 教程），工具栏是 .fc--tools。
-  // 标题必须按栏定位——原来选的是区里第一个 .section-title，现在恰好还是它，
-  // 但「恰好」不是理由：改成右栏在前、或再加一栏，就会把工具栏的标题写进教程栏。
+  // 这一区是左右两栏（工具 | 教程）。标题按栏定位而不是「取第一个」——
+  // 再加一栏或调换顺序时，「恰好是第一个」就不成立了。
   const titleEl = sec.querySelector('.fc--tools .section-title');
   if (titleEl) titleEl.innerHTML = `<span>${t('高频推荐', 'featured')}</span><em>${t('大家都在用 · 优先试试这些', 'featuredSub')}</em>`;
   $('#featured-grid').innerHTML = ids
@@ -792,18 +791,16 @@ function goPage(n) {
 function renderRouteCards(reg, res, evals) {
   const box = document.getElementById('route-cards');
   if (!box) return;
-  // v3.16：导航收敛成「工具 / 资源 / 教程 / 测评」四栏，这一排卡跟着同序，
-  //        对比台让位给教程 —— 对比不再是一个独立入口，而是测评页第一屏的那个入口。
-  // 教程的篇数与步数是构建期写进 DOM 的（首页不为了两个数字多取一份 JSON），这里读回来沿用。
-  // v3.33：卡面主数字从「步数」改成「篇数」——步数说的是篇幅，篇数才是「有多少条路可走」；
-  // 步数没有丢，挪到下面那行说明里。所以两个数都得读回来，只读一个就会渲染成 0。
+  // 这一排卡与导航同序；教程的篇数与步数是构建期写进 DOM 的，这里读回沿用。
+  // v3.33 起卡面主数字用篇数（有多少条路可走），步数挪到说明行——两个都得读，只读一个会渲染成 0。
   const gBox = box.querySelector('.rc--guide');
   const gCount = gBox?.dataset.guides || '0';
   const gSteps = gBox?.dataset.steps || '0';
-  // v3.38：AI 横带的条数也读回构建期写在 DOM 上的那个数（与教程两个数同一路数），
-  // 免得首页为一个数字多取一份目录 JSON。这一行必须在 box.innerHTML 赋值之前，
-  // 顺序反了就会读到刚被清空的 DOM，渲染成 0。
-  const aiCount = box.querySelector('.rc--ai')?.dataset.ai || '0';
+  // AI 横带的两个数读回构建期写的 dataset（v3.38 起），必须在下面清空 box 之前读，否则得到 0。
+  // v3.40：横带改指 /ai/，主数字是站内 AI 数，外链条数另带在 data-ai-dir 上。
+  const aiBand = box.querySelector('.rc--ai');
+  const aiCount = aiBand?.dataset.ai || '0';
+  const aiDir = aiBand?.dataset.aiDir || '0';
   box.innerHTML = `
     <a class="route-card rc--tools" href="/tools/" data-spa>
       <span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
@@ -829,11 +826,11 @@ function renderRouteCards(reg, res, evals) {
       <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
       <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
     </a>
-    <a class="route-card rc--ai" href="/categories/ai/" data-ai="${aiCount}" data-spa>
-      <span class="rc-tag" data-zh="AI 工具" data-en="AI tools">AI 工具</span>
-      <b><span class="rc-num">${aiCount}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
-      <span class="rc-desc" data-zh="本地推理 / 自托管 / 编码助手，逐条标清跑在哪" data-en="Local inference, self-hosted or coding assistant — labelled where it runs">本地推理 / 自托管 / 编码助手，逐条标清跑在哪</span>
-      <em data-zh="看 AI 工具 →" data-en="Browse AI tools →">看 AI 工具 →</em>
+    <a class="route-card rc--ai" href="/ai/" data-ai="${aiCount}" data-ai-dir="${aiDir}" data-spa>
+      <span class="rc-tag" data-zh="AI 中心" data-en="AI centre">AI 中心</span>
+      <b><span class="rc-num">${aiCount}</span><span data-zh="个站内 AI" data-en="on-device AIs">个站内 AI</span></b>
+      <span class="rc-desc" data-zh="浏览器内跑；另有 ${aiDir} 个可自建" data-en="In-browser; ${aiDir} more to self-host">浏览器内跑；另有 ${aiDir} 个可自建</span>
+      <em data-zh="进 AI 中心 →" data-en="Open AI centre →">进 AI 中心 →</em>
     </a>`;
   // v3.14：工具箱那张卡改成真链接（/tools/）。原来它 onclick 抢掉默认行为，
   // 只把页面滚到 #grid —— 用户点完还停在首页，也分享不出去。
@@ -1510,10 +1507,9 @@ async function renderHome() {
   await renderResPreview();
   renderTasks();
   renderFeatured(reg.tools);
-  // 教程栏是构建期写死的（与左栏工具列表同一份静态化产物），app.js 不重画它，
-  // 但链接的 SPA 拦截必须补绑一次：这里是直接写 onclick，没有事件委托，
-  // 不绑就变成整页刷新——点一条教程回首页，滚动位置与筛选状态全丢。
-  // 范围取整个推荐区而不是 #home-guides：右栏标题上的「全部 16 篇教程 →」也在外面那层。
+  // 教程栏是构建期写死的，app.js 不重画，但 SPA 链接要补绑一次：这里直接写 onclick、
+  // 没有事件委托，不绑就变成整页刷新，滚动位置与筛选状态全丢。
+  // 范围取整个推荐区——右栏标题上「全部 24 篇教程 →」也在外面那层。
   bindSpaLinks('#featured-section');
   renderRecent(reg.tools);
   renderChips(reg.categories);
@@ -1723,7 +1719,7 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
-  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my|workflows)$/);
+  const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my|workflows|ai)$/);
   if (page) return openPage(page[1]);
   return renderHome();
 }

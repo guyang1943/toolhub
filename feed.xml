@@ -7,6 +7,20 @@
     <language>zh-CN</language>
     <atom:link href="https://toolhub.bot.cd/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>本机能跑多大模型</title>
+      <link>https://toolhub.bot.cd/tools/ai-hw-check/</link>
+      <guid>https://toolhub.bot.cd/tools/ai-hw-check/</guid>
+      <description>当场检测 WebGPU、内存与核数，算出你的机器能跑多大的本地模型（3B 到 70B、四档量化）</description>
+      <pubDate>Thu, 26 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>浏览器内置 AI：总结 / 翻译 / 改写</title>
+      <link>https://toolhub.bot.cd/tools/ai-local/</link>
+      <guid>https://toolhub.bot.cd/tools/ai-local/</guid>
+      <description>用浏览器自带的本地模型做摘要、翻译与改写，权重不经过本站，文本不出你的机器</description>
+      <pubDate>Thu, 26 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
       <title>汉字转拼音</title>
       <link>https://toolhub.bot.cd/tools/pinyin-convert/</link>
       <guid>https://toolhub.bot.cd/tools/pinyin-convert/</guid>
@@ -74,20 +88,6 @@
       <link>https://toolhub.bot.cd/tools/date-calc/</link>
       <guid>https://toolhub.bot.cd/tools/date-calc/</guid>
       <description>算日期间隔天数，或加减天数与工作日</description>
-      <pubDate>Thu, 26 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>条形码生成器</title>
-      <link>https://toolhub.bot.cd/tools/barcode-gen/</link>
-      <guid>https://toolhub.bot.cd/tools/barcode-gen/</guid>
-      <description>生成 Code128 与 EAN-13 条形码并下载 PNG</description>
-      <pubDate>Thu, 26 Nov 2026 00:00:00 GMT</pubDate>
-    </item>
-    <item>
-      <title>音视频信息</title>
-      <link>https://toolhub.bot.cd/tools/media-info/</link>
-      <guid>https://toolhub.bot.cd/tools/media-info/</guid>
-      <description>本地读取音视频时长分辨率与体积，不上传</description>
       <pubDate>Thu, 26 Nov 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>

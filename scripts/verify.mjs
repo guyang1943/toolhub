@@ -1594,20 +1594,37 @@ check('首页教程栏与数据一致（v3.33）', () => {
 // 做法是入口容器里的一条通栏（跨整行），不是第五张卡——两列栅格里五格必留孤儿，
 // 而且 8 条外链与 140 个工具并排会被读成同一量级。
 // 这条检查钉四件事：它在、指对地方、条数与目录一致、两份渲染（构建期 / app.js）文案没走形。
-check('首页 AI 横带（v3.38）', () => {
+checkAsync('首页 AI 横带指向 AI 中心（v3.40）', async () => {
   const home = readFileSync(join(root, 'index.html'), 'utf8');
-  const dir = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools || [];
-  const aiCount = dir.filter((t) => t.category === 'AI').length;
-  assert(aiCount > 0, '目录里一条 AI 工具都没有——横带的条数会变成 0');
+  // 站内 AI 的口径只有一处：pages.js 的 countLocalAi。这里 import 而不是抄一遍规则，
+  // 抄一份就等于埋一个「横带说 2 个、AI 中心页说 3 个」的将来。
+  const { countLocalAi } = await import(pathToFileURL(join(root, 'assets', 'lib', 'pages.js')).href);
+  const localTools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools || [];
+  const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools || [];
+  const localAi = countLocalAi(localTools);
+  const dirAi = dirTools.filter((t) => t.category === 'AI').length;
+  assert(localAi > 0, '站内一个 AI 工具都没有——横带主数字会是 0');
 
   const box = home.match(/<div class="route-cards" id="route-cards">([\s\S]*?)<\/div>/);
   assert(box, '首页找不到 #route-cards 容器');
-  const band = box[1].match(/<a class="route-card rc--ai" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+  const band = box[1].match(/<a class="route-card rc--ai" href="([^"]+)"([^>]*)>([\s\S]*?)<\/a>/);
   assert(band, '入口容器里没有 AI 横带（rc--ai）——构建期注入失败或被删了');
-  assert(band[1] === '/categories/ai/', `AI 横带应指向 /categories/ai/，实际是 ${band[1]}`);
+  assert(band[1] === '/ai/', `AI 横带应指向 /ai/（AI 中心），实际是 ${band[1]}`);
   assert(
-    new RegExp(`<span class="rc-num">${aiCount}</span>`).test(band[2]),
-    `AI 横带条数应为 ${aiCount}（目录里 AI 分类的条目数）。改完目录忘了重建，就会显示上一版的数`
+    new RegExp(`data-ai="${localAi}"`).test(band[2]),
+    `横带主数字应为 ${localAi}（tags 含 ai 的本地工具数），实际标记：${band[2].trim()}`
+  );
+  assert(
+    new RegExp(`data-ai-dir="${dirAi}"`).test(band[2]),
+    `横带外链条数应为 ${dirAi}，实际标记：${band[2].trim()}`
+  );
+  assert(
+    new RegExp(`<span class="rc-num">${localAi}</span>`).test(band[3]),
+    `横带显示的站内 AI 数应为 ${localAi}——改完工具忘了重建就会显示上一版的数`
+  );
+  assert(
+    band[3].includes(`${dirAi} 个可自建`),
+    '横带说明里应写明外链数量（它是横带与分类页之间的桥，删了就只剩一个数字）'
   );
   // 位置：必须是容器里最后一个 route-card。插在中间会把「四个入口 + 一条维度」读成五张并列卡。
   const cards = box[1].match(/class="route-card rc--[a-z]+"/g) || [];
@@ -1617,14 +1634,56 @@ check('首页 AI 横带（v3.38）', () => {
   // 两份渲染的文案必须同源。构建期一份、app.js 一份，改一处忘另一处，切语言或 SPA 回首页就会露馅。
   const appJs = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
   assert(/rc--ai/.test(appJs), 'app.js 没有渲染 AI 横带——从别的页面 SPA 回首页时它会消失');
-  for (const word of ['AI 工具', 'AI tools', '本地推理 / 自托管 / 编码助手，逐条标清跑在哪']) {
+  for (const word of ['AI 中心', '个站内 AI', '进 AI 中心 →', 'Open AI centre →']) {
     assert(home.includes(word) && appJs.includes(word), `AI 横带文案「${word}」在两份渲染里不一致`);
   }
-  const zh = (band[2].match(/data-zh=/g) || []).length;
-  const en = (band[2].match(/data-en=/g) || []).length;
+  const zh = (band[3].match(/data-zh=/g) || []).length;
+  const en = (band[3].match(/data-en=/g) || []).length;
   assert(zh === 4 && en === 4, `AI 横带应有 4 组 data-zh / data-en，实际 ${zh} / ${en}`);
 
-  return `指向 /categories/ai/，${aiCount} 条，通栏，两份文案一致`;
+  return `指向 /ai/，站内 ${localAi} 个 / 外链 ${dirAi} 个，通栏，两份文案一致`;
+});
+
+checkAsync('AI 中心页（v3.40）', async () => {
+  const pagePath = join(root, 'ai', 'index.html');
+  assert(existsSync(pagePath), '/ai/ 没有产物——注册表加了页面，但 build-pages 没生成');
+  const html = readFileSync(pagePath, 'utf8');
+  for (const s of ['AI 中心', '四条路，别混着走', '跑不动怎么办', '这一页不做什么']) {
+    assert(html.includes(s), `/ai/ 正文缺少「${s}」——内容被删或被截断`);
+  }
+  // 站内两个工具的入口必须在，而且产物真的存在（不是写了个会 404 的链接）
+  for (const id of ['ai-local', 'ai-hw-check']) {
+    assert(html.includes(`/tools/${id}/`), `/ai/ 页没有链到 ${id}`);
+    assert(existsSync(join(root, 'tools', id, 'index.html')), `${id} 的页面没生成`);
+  }
+  for (const g of ['ollama-local-ai', 'local-ai-coding']) {
+    assert(existsSync(join(root, 'guides', g, 'index.html')), `/ai/ 页链到的教程 ${g} 没有产物`);
+  }
+  assert(html.includes('/categories/ai/'), '/ai/ 页必须能走到 8 条外链的分类页');
+
+  // 正文只有一份：静态页里的每个 h2 都必须来自 pages.js 的 aiBody()。
+  // 这一条比「看起来差不多」硬——哪里偷偷写了第二份正文，这里就会多出一个对不上的标题。
+  const { aiBody } = await import(pathToFileURL(join(root, 'assets', 'lib', 'pages.js')).href);
+  const localTools = JSON.parse(readFileSync(join(root, 'tools', 'tools.json'), 'utf8')).tools || [];
+  const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools || [];
+  const body = aiBody([...localTools, ...dirTools]);
+  const heads = [...body.matchAll(/<h2>([^<]+)<\/h2>/g)].map((m) => m[1]);
+  assert(heads.length >= 5, `aiBody() 只产出 ${heads.length} 个小标题，正文被删短了`);
+  for (const h of heads) assert(html.includes(h), `静态页缺少 aiBody() 里的「${h}」——两份正文开始分叉了`);
+
+  // 五处接线：路由 / SPA 页面函数 / 标题表 / 页面注册表 / sitemap
+  const appSrc = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(/workflows\|ai\)\$/.test(appSrc), 'app.js 路由没接 /ai/——直接访问会被兜底成首页');
+  const pagesSrc = readFileSync(join(root, 'assets', 'lib', 'pages.js'), 'utf8');
+  assert(pagesSrc.includes('ai: () =>'), 'pages.js 没有 ai 页面函数');
+  const openSrc = readFileSync(join(root, 'assets', 'open-page.js'), 'utf8');
+  assert(openSrc.includes("ai: 'AI 中心'"), 'open-page.js 的标题表没有 ai');
+  const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
+  assert(reg.includes("path: '/ai/'"), '页面注册表没登记 /ai/');
+  const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
+  assert(sm.includes('/ai/'), 'sitemap 里没有 /ai/');
+
+  return `正文 ${heads.length} 段，两份同源，五处接线齐全`;
 });
 
 checkAsync('意图解析规则（E4）', async () => {

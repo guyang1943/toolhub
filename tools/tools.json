@@ -1119,6 +1119,39 @@
         "汉字",
         "注音"
       ]
+    },
+    {
+      "id": "ai-local",
+      "name": "浏览器内置 AI：总结 / 翻译 / 改写",
+      "desc": "用浏览器自带的本地模型做摘要、翻译与改写，权重不经过本站，文本不出你的机器",
+      "category": "文本",
+      "source": "内置实现 · 调用浏览器内置 AI（桌面版 Chrome 138 起）",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "ai",
+        "摘要",
+        "翻译",
+        "改写",
+        "本地模型"
+      ]
+    },
+    {
+      "id": "ai-hw-check",
+      "name": "本机能跑多大模型",
+      "desc": "当场检测 WebGPU、内存与核数，算出你的机器能跑多大的本地模型（3B 到 70B、四档量化）",
+      "category": "效率",
+      "source": "内置实现 · 浏览器原生 API 检测（WebGPU / Storage）",
+      "license": "MIT",
+      "runtime": "browser",
+      "tags": [
+        "ai",
+        "本地模型",
+        "显存",
+        "webgpu",
+        "硬件检测",
+        "ollama"
+      ]
     }
   ]
 }

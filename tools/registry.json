@@ -105,6 +105,8 @@
     "mock-data",
     "json-yaml",
     "ascii-art",
-    "pinyin-convert"
+    "pinyin-convert",
+    "ai-local",
+    "ai-hw-check"
   ]
 }

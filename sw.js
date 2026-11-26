@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.39 · 预缓存 377 个地址 · 约 6.2 MB
-const VERSION = "toolhub-v3.39";
+// 版本：toolhub-v3.40 · 预缓存 384 个地址 · 约 6.3 MB
+const VERSION = "toolhub-v3.40";
 const CORE = [
   "/",
   "/offline/",
@@ -185,6 +185,10 @@ const FULL = [
   "/tools/ascii-art/run.js",
   "/tools/pinyin-convert/",
   "/tools/pinyin-convert/run.js",
+  "/tools/ai-local/",
+  "/tools/ai-local/run.js",
+  "/tools/ai-hw-check/",
+  "/tools/ai-hw-check/run.js",
   "/assets/vendor/jsQR.js",
   "/assets/vendor/marked.min.js",
   "/assets/vendor/pdf-lib.min.js",
@@ -195,6 +199,7 @@ const FULL = [
   "/assets/vendor/figlet.min.js",
   "/assets/vendor/figlet-fonts.js",
   "/assets/vendor/pinyin.min.js",
+  "/ai/",
   "/tools/",
   "/categories/",
   "/guides/",
@@ -242,6 +247,8 @@ const FULL = [
   "/assets/style.submit.css",
   "/assets/style.tool.css",
   "/assets/style.workflows.css",
+  "/articles/ai-hw-check.json",
+  "/articles/ai-local.json",
   "/articles/ascii-art.json",
   "/articles/barcode-gen.json",
   "/articles/base64-url.json",

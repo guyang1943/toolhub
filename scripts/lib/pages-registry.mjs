@@ -24,6 +24,9 @@
 /** 路径固定的页面 */
 export const STATIC_PAGES = [
   { path: '/', title: '首页', offline: 'core', audit: true, smoke: true },
+  // v3.40：AI 中心。它进离线包是有理由的——站内 AI 的两个工具都在本机跑，
+  // 断网时「这台机器能跑多大模型」更应该量得出来。
+  { path: '/ai/', title: 'AI 中心', offline: 'full', audit: true, smoke: true },
   { path: '/tools/', title: '全部工具', offline: 'full', audit: true, smoke: true },
   { path: '/categories/', title: '全部分类', offline: 'full', audit: true, smoke: true },
   { path: '/guides/', title: '教程总览', offline: 'full', audit: true, smoke: true },

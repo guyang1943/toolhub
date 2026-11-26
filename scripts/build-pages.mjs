@@ -17,6 +17,9 @@ import { matchPage } from './lib/pages-registry.mjs';
 // 构建期（这里是静态正文，爬虫与禁用 JS 时看到的）与 pages.js（站内跳转后重渲染）调的是
 // 同一个 renderKeyTable()——两份文案共用一段代码，才谈得上「不可能各说各的」。
 import { renderKeyTable } from '../assets/lib/store-keys.js';
+// v3.40：/ai/ 的正文只写一份，静态页与 SPA（pages.js 的 ai()）调同一个 aiBody()。
+// 静态页与站内跳转看到的段落必须逐字相同，否则「爬虫读到的」和「用户看到的」会慢慢分叉。
+import { aiBody, countLocalAi } from '../assets/lib/pages.js';
 // 教程正文的渲染：静态页与 SPA 共用同一段（v3.28）。围栏代码块两边都得变成 <pre><code>，
 // 否则同一段正文在「爬虫看到的」和「用户看到的」之间会悄悄长出两套样子。
 import { guideText } from '../assets/lib/guide-text.js';
@@ -562,6 +565,13 @@ if (shortCopy.length) {
 
 // 3) 静态页
 const staticPages = [
+  {
+    path: 'ai',
+    title: 'AI 中心 · 能在你机器上跑的 AI · ToolHub',
+    desc: '两个站内 AI 工具（浏览器内置模型做摘要翻译改写、本机能跑多大模型）、四条路径对比、跑不动时怎么退。不上传、不注册。',
+    h1: 'AI 中心',
+    content: aiBody([...tools, ...dirTools]),
+  },
   {
     path: 'about',
     title: '关于 ToolHub · 开源工具平台',
@@ -1500,6 +1510,9 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   // 所以它留在容器内、用 grid-column 跨满整行：读作「四个入口 + 一条横切维度」，
   // 且与四张卡共用同一条 1px 细线，视觉上是一体的。
   const aiCount = dirTools.filter((t) => t.category === 'AI').length;
+  // v3.40：横带指向 /ai/（AI 中心），数字换成「站内 AI 有几个」——外链数量留在说明里。
+  // 两个数都从数据算，不写死：加一个站内 AI 工具，横带与 /ai/ 页会同时变。
+  const localAiCount = countLocalAi(tools);
   const routeCards = `
     <a class="route-card rc--tools" href="/tools/">
       <span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
@@ -1525,11 +1538,11 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
       <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
       <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
     </a>
-    <a class="route-card rc--ai" href="/categories/ai/" data-ai="${aiCount}">
-      <span class="rc-tag" data-zh="AI 工具" data-en="AI tools">AI 工具</span>
-      <b><span class="rc-num">${aiCount}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
-      <span class="rc-desc" data-zh="本地推理 / 自托管 / 编码助手，逐条标清跑在哪" data-en="Local inference, self-hosted or coding assistant — labelled where it runs">本地推理 / 自托管 / 编码助手，逐条标清跑在哪</span>
-      <em data-zh="看 AI 工具 →" data-en="Browse AI tools →">看 AI 工具 →</em>
+    <a class="route-card rc--ai" href="/ai/" data-ai="${localAiCount}" data-ai-dir="${aiCount}">
+      <span class="rc-tag" data-zh="AI 中心" data-en="AI centre">AI 中心</span>
+      <b><span class="rc-num">${localAiCount}</span><span data-zh="个站内 AI" data-en="on-device AIs">个站内 AI</span></b>
+      <span class="rc-desc" data-zh="浏览器内跑；另有 ${aiCount} 个可自建" data-en="In-browser; ${aiCount} more to self-host">浏览器内跑；另有 ${aiCount} 个可自建</span>
+      <em data-zh="进 AI 中心 →" data-en="Open AI centre →">进 AI 中心 →</em>
     </a>`;
 
   // v3.4：13 → 8 条，并改成行式列表（卡片形式与下方工具网格太像，会被误认成同一份列表）

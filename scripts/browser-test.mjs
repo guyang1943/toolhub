@@ -436,11 +436,11 @@ async function feedFile(selector, dataUrl, name, type) {
   // v3.23：导航多了一栏「工作流」——工作流页需要入口，而顶部导航是唯一每页都在的位置。
   check('导航五栏且顺序为 工具/工作流/资源/教程/测评', navLabels === '工具/工作流/资源/教程/测评', navLabels);
   const cardOrder = await evaluate(`[...document.querySelectorAll('#route-cards .route-card')].map((a) => a.getAttribute('href')).join(',')`);
-  // v3.38：末尾多了 AI 一条（跨整行）。它指分类页而不是新建的 AI 总览页——
-  // 分类页已有正文，再造一个只列 8 条外链的壳，是把同一个答案写两遍。
+  // v3.38 加了 AI 通栏，v3.40 起它指 /ai/（AI 中心）而不是分类页：
+  // 分类页只有 8 条外链，AI 中心才有站内工具与路径对比，入口要落在有东西的那一页。
   check(
     '入口卡顺序为 工具/资源/教程/测评/AI',
-    cardOrder === '/tools/,/resources/,/guides/,/evaluations/,/categories/ai/',
+    cardOrder === '/tools/,/resources/,/guides/,/evaluations/,/ai/',
     cardOrder
   );
   check(
@@ -2136,6 +2136,19 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
 
   const thirdParty = netUrls.filter((u) => !u.startsWith(BASE) && !u.startsWith('data:') && !u.startsWith('blob:'));
   check('默认零第三方请求（统计关闭）', thirdParty.length === 0 && !(await evaluate(`window.__TOOLHUB_ANALYTICS__`)), thirdParty.slice(0, 2).join(', '));
+
+  // v3.40：AI 中心是最容易漏接线的一页——它由 pages.js 渲染，路由或标题表漏一处，
+  // 直接访问就会被 renderHome() 兜底成首页。首页看着也正常，只有地址栏不对，
+  // 所以必须真的进来一次、等它渲染完再断言。
+  await goto('/ai/');
+  await waitText('#page-body', '四条路，别混着走', 8000);
+  const aiPageHtml = await evaluate(`document.getElementById('page-body').innerHTML`);
+  check(
+    'AI 中心页由 SPA 渲染且站内工具可点',
+    aiPageHtml.includes('/tools/ai-local/') && aiPageHtml.includes('/tools/ai-hw-check/'),
+    aiPageHtml.length + ' 字节'
+  );
+  check('AI 中心页仍能走到分类页', aiPageHtml.includes('/categories/ai/'));
 
   await goto('/privacy/');
   // v3.3：内容页模板改为按需加载（pages.js），#page-body 的渲染比静态正文晚一步。

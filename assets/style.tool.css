@@ -268,3 +268,9 @@
 }
 .chip-pick.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 .chip-hint { margin-top: 6px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* 内置 AI 的输出（v3.40）：模型给的是自然语言，不是代码。
+   用正文字体 + 保留换行，别塞进等宽 <pre> —— 那会让摘要读起来像日志。
+   两行样式而不是内联，是因为 ai-local 与将来任何调模型的工具都该长得一样。 */
+.ai-out { margin: 10px 0 0; padding: 12px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; white-space: pre-wrap; word-break: break-word; line-height: 1.75; font-size: 14px; }
+.ai-note { margin-top: 10px; font-size: 12px; color: var(--muted); line-height: 1.65; }

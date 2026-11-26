@@ -312,9 +312,10 @@ check('首页路由卡 5 张（含 AI 通栏）', cardCount === 5, `${cardCount}
 check('首页含评测卡', cardsHtml.includes('/evaluations/'));
 // v3.38：AI 从「分类里的一栏」变成首页一条通栏。它必须由 app.js 也渲染一份——
 // 别的页面里 #route-cards 是空的，从那里 SPA 回首页时没有第二份就会是个空盒子。
+// v3.40：横带改指 /ai/（AI 中心），不再是 8 条外链的分类页——分类页现在是它里面的一条。
 check(
-  'AI 通栏是最后一张卡且指向分类页',
-  /rc--ai"[\s\S]*href="\/categories\/ai\/"[\s\S]*<\/a>$/.test(cardsHtml.trim()),
+  'AI 通栏是最后一张卡且指向 AI 中心',
+  /rc--ai"[\s\S]*href="\/ai\/"[\s\S]*<\/a>$/.test(cardsHtml.trim()),
   cardsHtml.slice(-120)
 );
 // v3.14：工具箱那张卡原来 href="#tools-anchor" 加 onclick 抢默认行为，点了只是滚一下。
