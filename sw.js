@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.38 · 预缓存 361 个地址 · 约 5.8 MB
-const VERSION = "toolhub-v3.38";
+// 版本：toolhub-v3.39 · 预缓存 377 个地址 · 约 6.2 MB
+const VERSION = "toolhub-v3.39";
 const CORE = [
   "/",
   "/offline/",
@@ -357,19 +357,33 @@ const FULL = [
   "/guides/cloudflare-free.json",
   "/guides/cloudflare-tunnel-home/",
   "/guides/cloudflare-tunnel-home.json",
+  "/guides/csv-clean-merge/",
+  "/guides/csv-clean-merge.json",
   "/guides/custom-domain/",
   "/guides/custom-domain.json",
+  "/guides/dns-troubleshoot/",
+  "/guides/dns-troubleshoot.json",
+  "/guides/docker-selfhost-stack/",
+  "/guides/docker-selfhost-stack.json",
   "/guides/github-actions-deploy/",
   "/guides/github-actions-deploy.json",
   "/guides/github-first-lesson/",
   "/guides/github-first-lesson.json",
   "/guides/github-pages-first-site/",
   "/guides/github-pages-first-site.json",
+  "/guides/home-nas-photos/",
+  "/guides/home-nas-photos.json",
+  "/guides/https-cert-free/",
+  "/guides/https-cert-free.json",
   "/guides/index.json",
+  "/guides/local-ai-coding/",
+  "/guides/local-ai-coding.json",
   "/guides/miniprogram-cloud/",
   "/guides/miniprogram-cloud.json",
   "/guides/ollama-local-ai/",
   "/guides/ollama-local-ai.json",
+  "/guides/pdf-scan-searchable/",
+  "/guides/pdf-scan-searchable.json",
   "/guides/phone-automation/",
   "/guides/phone-automation.json",
   "/guides/pwa-install/",
@@ -382,6 +396,8 @@ const FULL = [
   "/guides/wechat-miniprogram-first.json",
   "/guides/workbuddy-workbench/",
   "/guides/workbuddy-workbench.json",
+  "/guides/workers-api-static/",
+  "/guides/workers-api-static.json",
   "/schemas/resource.json",
   "/tools/schema.json",
   "/workflows/workflows.json"

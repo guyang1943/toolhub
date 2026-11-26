@@ -1460,6 +1460,15 @@ check('折腾指南（v3.15）', () => {
     if (x.steps.some((s) => /^\s*```/m.test(s.body))) {
       assert(visible.includes('<pre><code>'), `${x.slug} 有围栏代码块，但页面上没有 <pre><code>`);
     }
+    // 数量也要对上，不只是「有没有」。v3.39 之前渲染器先按空行切块再判断围栏，
+    // 块内带空行的代码（教程里两条不相关命令分两组）会被切成两半，两半都漏成字面反引号——
+    // 那时「有没有 <pre><code>」是过的，因为同一篇里别的块渲染成功了。只查存在会漏掉这种。
+    const fences = x.steps.reduce(
+      (n, s) => n + Math.floor((String(s.body).match(/^```/gm) || []).length / 2),
+      0
+    );
+    const pres = (visible.match(/<pre><code>/g) || []).length;
+    assert(pres === fences, `${x.slug} 正文有 ${fences} 个代码块，页面上只渲染出 ${pres} 个`);
     // 反过来的坑：缩进块（YAML、命令行、目录树）忘了加围栏。正文只有「围栏」一种块级语法，
     // 没围栏的缩进行会被 HTML 折叠成一段连排文字——教程里那句「把下面这份内容完整粘贴」
     // 就成了让人复制一段没有缩进的跑马灯。guides 第四批的 GitHub Actions 篇漏了 27 行 YAML，

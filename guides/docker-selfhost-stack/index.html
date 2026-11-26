@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>一台小主机跑起五个自建服务 · 教程 · ToolHub</title>
+  <meta name="description" content="一份 Compose 文件管住密码库、备忘、监控、日志和稍后读：数据在自己盘上，升级一条命令。" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/docker-selfhost-stack/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/docker-selfhost-stack/" />
+  <meta property="og:title" content="一台小主机跑起五个自建服务 · 教程 · ToolHub" />
+  <meta property="og:description" content="一份 Compose 文件管住密码库、备忘、监控、日志和稍后读：数据在自己盘上，升级一条命令。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 140 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"一台小主机跑起五个自建服务","description":"一份 Compose 文件管住密码库、备忘、监控、日志和稍后读：数据在自己盘上，升级一条命令。","totalTime":"PT60M","dateModified":"2026-11-26","supply":[{"@type":"HowToSupply","name":"一台能 24 小时开着的小主机：旧笔记本、迷你主机、NAS 都行。2 核 CPU、2GB 内存起步，4GB 更稳。"},{"@type":"HowToSupply","name":"装好 Linux 并能 SSH 登录（Ubuntu Server 或 Debian 最省事）。不会装就先看站内那篇旧电视盒子改成服务器，思路一样。"},{"@type":"HowToSupply","name":"一块专门存数据的磁盘或分区，挂载点固定（比如 /srv/data）。数据卷不要放在系统盘的家目录里——重装系统时最容易连数据一起格式化。"},{"@type":"HowToSupply","name":"一个域名和它的 DNS 管理权限。要在家以外访问、想用 HTTPS，这一步绕不开；只在局域网用可以先跳过，用 IP 访问。"},{"@type":"HowToSupply","name":"能看懂 docker ps 和 docker logs 的输出。不需要会写代码，但要知道「容器起不来先看日志」。"}],"step":[{"@type":"HowToStep","position":1,"name":"先算清楚机器扛不扛得住","text":"登录后看两件事：\n\n```\nfree -h\ndf -h /srv\ndocker --version\n```\n\n内存总额低于 2GB 就别硬上五个，先跑密码库和监控两个；磁盘至少留 20GB；/srv 要是独立的挂载点。这一步不是形式——自建服务最常见的死法是第三天磁盘满了，而当时没人看。"},{"@type":"HowToStep","position":2,"name":"装 Docker 与 compose 插件","text":"用官方脚本装，不要用发行版仓库里的老版本（compose 子命令和 v2 语法在旧包里没有）：\n\n```\ncurl -fsSL https://get.docker.com | sh\nsudo usermod -aG docker $USER\n```\n\n退出重新登录，让用户组生效，然后确认两条命令都是 v2：\n\n```\ndocker --version\ndocker compose version\n```\n\n国内机器拉镜像慢的话，在 /etc/docker/daemon.json 里配一个镜像加速地址再重启 docker。加速地址经常失效，配之前先自己 curl 一下试试能不能拉到。"},{"@type":"HowToStep","position":3,"name":"定一个目录规矩：一个服务一个文件夹","text":"所有东西放在 /opt/stack 下面，每个服务一个子目录，数据也放子目录里：\n\n```\n/opt/stack/\n  compose.yaml\n  .env\n  vaultwarden/data/\n  memos/data/\n  uptime-kuma/data/\n  linkding/data/\n```\n\n为什么不把数据放到 /var/lib/docker/volumes：那是 Docker 的内部目录，备份要绕一圈，迁移要导出一遍，出事时你分不清哪个卷属于哪个服务。用相对路径挂出来，备份就是 tar 一个目录。"},{"@type":"HowToStep","position":4,"name":"把密码和域名收进 .env","text":"compose.yaml 里不写明文密码，全部走环境变量，值放 .env，权限设成 600：\n\n```\nSTACK_DOMAIN=home.example.com\nTZ=Asia/Shanghai\nVW_ADMIN_TOKEN=换成你自己生成的随机串\n```\n\n随机串用站内的密码生成器生成 32 位，别用生日和重复字符。.env 不进任何仓库，也不发到聊天工具里——它等于这套服务的总钥匙。"},{"@type":"HowToStep","position":5,"name":"第一个服务：Vaultwarden（密码库）","text":"先装这个，因为它最值得自建。compose.yaml 里加：\n\n```yaml\nservices:\n  vaultwarden:\n    image: vaultwarden/server:latest\n    restart: unless-stopped\n    environment:\n      DOMAIN: https://vw.${STACK_DOMAIN}\n      SIGNUPS_ALLOWED: \"true\"\n      ADMIN_TOKEN: ${VW_ADMIN_TOKEN}\n    volumes:\n      - ./vaultwarden/data:/data\n```\n\n起它：docker compose up -d vaultwarden，然后 docker compose logs -f vaultwarden 看有没有报错。浏览器打开 http://主机IP:80 注册一个账号，把密码存进去。注册完立刻把 SIGNUPS_ALLOWED 改回 \"false\" 再 up -d——对外开放注册的密码库，几天内就会被扫描器注册满。"},{"@type":"HowToStep","position":6,"name":"加监控：Uptime Kuma","text":"它的作用是「服务挂了有人告诉你」，而不是等你发现。加一个片段：\n\n```yaml\n  uptime-kuma:\n    image: louislam/uptime-kuma:1\n    restart: unless-stopped\n    ports:\n      - \"3001:3001\"\n    volumes:\n      - ./uptime-kuma/data:/app/data\n```\n\n起来后进 3001 端口设管理员密码，先加两条监控：本机的 Vaultwarden 地址、以及你家宽带的外网 IP（用 http 探活）。通知渠道选邮件或 Telegram，两者都不需要额外服务。监控要能被外部触发才有意义——只监控「容器进程在不在」的话，容器活着但服务卡死时它不会响。"},{"@type":"HowToStep","position":7,"name":"加备忘、稍后读和日志面板","text":"剩下三个都是同样套路，写在同一个 compose.yaml 里：\n\n```yaml\n  memos:\n    image: neosmemo/memos:stable\n    restart: unless-stopped\n    ports: [\"5230:5230\"]\n    volumes:\n      - ./memos/data:/var/opt/memos\n\n  linkding:\n    image: sissbruecker/linkding:latest\n    restart: unless-stopped\n    ports: [\"9090:9090\"]\n    volumes:\n      - ./linkding/data:/etc/linkding/data\n\n  dozzle:\n    image: amir20/dozzle:latest\n    restart: unless-stopped\n    ports: [\"9999:8080\"]\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock:ro\n```\n\ndozzle 挂的是 docker.sock，只读挂载够用，别给写权限。三个都起来后，用一条命令看全部状态：docker compose ps。"},{"@type":"HowToStep","position":8,"name":"一条命令备份，并验证能恢复","text":"备份不验证等于没有备份。写一个脚本放 /opt/stack/backup.sh：\n\n```\n#!/bin/sh\nset -e\ncd /opt/stack\ntar czf /srv/backup/stack-$(date +%F).tar.gz \\\n  --exclude='./backup' vaultwarden memos uptime-kuma linkding .env\nfind /srv/backup -name 'stack-*.tar.gz' -mtime +14 -delete\n```\n\n加执行权限，用 crontab -e 每天凌晨跑一次（cron 表达式可以用站内工具先算一遍再粘）。关键是下一步：把最近的包解到 /tmp 里，确认 vaultwarden/data 下有 db.sqlite3、memos 下有 memos_prod.db。文件在，恢复路径才成立；只看到 tar 包不算。"},{"@type":"HowToStep","position":9,"name":"升级与回滚：别用 latest 赌运气","text":"第一次装用 latest 无所谓，长期跑要改成具体版本号（比如 vaultwarden/server:1.32.7），否则某天 pull 下来一个不兼容的大版本，数据迁移一旦失败就回不去了。升级流程固定三步：\n\n```\ndocker compose pull vaultwarden\ndocker compose up -d vaultwarden\ndocker compose logs --tail=50 vaultwarden\n```\n\n回滚就是把镜像 tag 改回上一个版本再 up -d。所以升级前先备份，升级后先看日志再关终端——这两件事的顺序反了，出事时就没有退路。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"一台小主机跑起五个自建服务","item":"https://toolhub.bot.cd/guides/docker-selfhost-stack/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"没有公网 IP，也能在外面用吗？","acceptedAnswer":{"@type":"Answer","text":"能。用 Cloudflare Tunnel 或 Tailscale 这类内网穿透，不需要在路由器上开端口，也不需要公网 IP。Cloudflare Tunnel 的好处是顺手给了 HTTPS 和域名，站内有一篇专门讲；Tailscale 更简单，装完就是一张虚拟内网，缺点是每台设备都要装客户端。"}},{"@type":"Question","name":"2GB 内存的机器真的够吗？","acceptedAnswer":{"@type":"Answer","text":"五个服务全开大概 600MB–1GB，2GB 能跑但没余量，系统更新或某个服务内存泄漏时会开始用 swap，反应变慢。建议 4GB 起步。不够就先只跑 Vaultwarden 和 Uptime Kuma，这两个加起来不到 200MB。"}},{"@type":"Question","name":"为什么不用 NAS 自带的应用商店？","acceptedAnswer":{"@type":"Answer","text":"自带商店省事，但版本通常落后几个大版本，安全补丁跟得慢，而且换 NAS 品牌时数据迁移路径不透明。Compose 的好处是这套配置在哪台 Linux 上都能跑，换机器就是拷目录 + up。两者不冲突：先在 NAS 上跑 Compose，比在商店里点安装更可控。"}},{"@type":"Question","name":"docker.sock 挂给 dozzle，会不会有安全风险？","acceptedAnswer":{"@type":"Answer","text":"有。能读 docker.sock 就等于能看所有容器信息，只读挂载能阻止它启停容器，但仍然暴露了容器的环境变量。所以 dozzle 不要直接对公网开放，放在反代后面加一层认证，或者只在内网访问。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>一台小主机跑起五个自建服务</h1><p>一份 Compose 文件管住密码库、备忘、监控、日志和稍后读：数据在自己盘上，升级一条命令。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 一台小主机跑起五个自建服务</div><div class="guide-meta"><span>难度 <b>中等</b></span><span>约 <b>60</b> 分钟</span><span class="gm-risk gm-warn">风险 <b>中</b></span><span>最后核对 <b>2026-11-26</b></span></div><div class="res-intro">自建服务最容易死在「第二个服务」：第一个装得顺利，第二个开始端口冲突、第三个忘了数据卷、第四个升级时把旧数据覆盖了。真正需要学的不是某个软件的安装命令，是把它当成一套东西来管——所有服务放在一个目录下，每个服务一份 Compose 片段，数据挂在固定路径，密码走环境变量，升级和回滚是一条命令。这篇按这个结构搭五个最常用的：Vaultwarden（密码库）、Memos（碎片笔记）、Uptime Kuma（在线监控）、Dozzle（看容器日志）、Linkding 或任意一个稍后读。跑起来之后，加第六个只是在目录里多一个文件。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>数据在自己手上。密码、笔记这些内容，托管在别人服务器上就等于「取决于它还开多久」——自建服务关停、改名、开始收费的例子每年都有。</li><li>一台 4GB 内存的小主机够用。这五个服务加起来常驻内存约 600MB–1GB，剩下的留给系统和缓存。</li><li>运维成本可以压到接近零：Compose 负责启动顺序和重启策略，一份备份脚本覆盖全部数据目录，升级就是 pull + up。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>一台能 24 小时开着的小主机：旧笔记本、迷你主机、NAS 都行。2 核 CPU、2GB 内存起步，4GB 更稳。</li><li>装好 Linux 并能 SSH 登录（Ubuntu Server 或 Debian 最省事）。不会装就先看站内那篇旧电视盒子改成服务器，思路一样。</li><li>一块专门存数据的磁盘或分区，挂载点固定（比如 /srv/data）。数据卷不要放在系统盘的家目录里——重装系统时最容易连数据一起格式化。</li><li>一个域名和它的 DNS 管理权限。要在家以外访问、想用 HTTPS，这一步绕不开；只在局域网用可以先跳过，用 IP 访问。</li><li>能看懂 docker ps 和 docker logs 的输出。不需要会写代码，但要知道「容器起不来先看日志」。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>先算清楚机器扛不扛得住</b><p>登录后看两件事：</p><pre><code>free -h
+df -h /srv
+docker --version</code></pre><p>内存总额低于 2GB 就别硬上五个，先跑密码库和监控两个；磁盘至少留 20GB；/srv 要是独立的挂载点。这一步不是形式——自建服务最常见的死法是第三天磁盘满了，而当时没人看。</p></li><li><b>装 Docker 与 compose 插件</b><p>用官方脚本装，不要用发行版仓库里的老版本（compose 子命令和 v2 语法在旧包里没有）：</p><pre><code>curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER</code></pre><p>退出重新登录，让用户组生效，然后确认两条命令都是 v2：</p><pre><code>docker --version
+docker compose version</code></pre><p>国内机器拉镜像慢的话，在 /etc/docker/daemon.json 里配一个镜像加速地址再重启 docker。加速地址经常失效，配之前先自己 curl 一下试试能不能拉到。</p></li><li><b>定一个目录规矩：一个服务一个文件夹</b><p>所有东西放在 /opt/stack 下面，每个服务一个子目录，数据也放子目录里：</p><pre><code>/opt/stack/
+  compose.yaml
+  .env
+  vaultwarden/data/
+  memos/data/
+  uptime-kuma/data/
+  linkding/data/</code></pre><p>为什么不把数据放到 /var/lib/docker/volumes：那是 Docker 的内部目录，备份要绕一圈，迁移要导出一遍，出事时你分不清哪个卷属于哪个服务。用相对路径挂出来，备份就是 tar 一个目录。</p></li><li><b>把密码和域名收进 .env</b><p>compose.yaml 里不写明文密码，全部走环境变量，值放 .env，权限设成 600：</p><pre><code>STACK_DOMAIN=home.example.com
+TZ=Asia/Shanghai
+VW_ADMIN_TOKEN=换成你自己生成的随机串</code></pre><p>随机串用站内的密码生成器生成 32 位，别用生日和重复字符。.env 不进任何仓库，也不发到聊天工具里——它等于这套服务的总钥匙。</p></li><li><b>第一个服务：Vaultwarden（密码库）</b><p>先装这个，因为它最值得自建。compose.yaml 里加：</p><pre><code>services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    restart: unless-stopped
+    environment:
+      DOMAIN: https://vw.${STACK_DOMAIN}
+      SIGNUPS_ALLOWED: &quot;true&quot;
+      ADMIN_TOKEN: ${VW_ADMIN_TOKEN}
+    volumes:
+      - ./vaultwarden/data:/data</code></pre><p>起它：docker compose up -d vaultwarden，然后 docker compose logs -f vaultwarden 看有没有报错。浏览器打开 http://主机IP:80 注册一个账号，把密码存进去。注册完立刻把 SIGNUPS_ALLOWED 改回 &quot;false&quot; 再 up -d——对外开放注册的密码库，几天内就会被扫描器注册满。</p></li><li><b>加监控：Uptime Kuma</b><p>它的作用是「服务挂了有人告诉你」，而不是等你发现。加一个片段：</p><pre><code>  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    ports:
+      - &quot;3001:3001&quot;
+    volumes:
+      - ./uptime-kuma/data:/app/data</code></pre><p>起来后进 3001 端口设管理员密码，先加两条监控：本机的 Vaultwarden 地址、以及你家宽带的外网 IP（用 http 探活）。通知渠道选邮件或 Telegram，两者都不需要额外服务。监控要能被外部触发才有意义——只监控「容器进程在不在」的话，容器活着但服务卡死时它不会响。</p></li><li><b>加备忘、稍后读和日志面板</b><p>剩下三个都是同样套路，写在同一个 compose.yaml 里：</p><pre><code>  memos:
+    image: neosmemo/memos:stable
+    restart: unless-stopped
+    ports: [&quot;5230:5230&quot;]
+    volumes:
+      - ./memos/data:/var/opt/memos
+
+  linkding:
+    image: sissbruecker/linkding:latest
+    restart: unless-stopped
+    ports: [&quot;9090:9090&quot;]
+    volumes:
+      - ./linkding/data:/etc/linkding/data
+
+  dozzle:
+    image: amir20/dozzle:latest
+    restart: unless-stopped
+    ports: [&quot;9999:8080&quot;]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro</code></pre><p>dozzle 挂的是 docker.sock，只读挂载够用，别给写权限。三个都起来后，用一条命令看全部状态：docker compose ps。</p></li><li><b>一条命令备份，并验证能恢复</b><p>备份不验证等于没有备份。写一个脚本放 /opt/stack/backup.sh：</p><pre><code>#!/bin/sh
+set -e
+cd /opt/stack
+tar czf /srv/backup/stack-$(date +%F).tar.gz \
+  --exclude=&#39;./backup&#39; vaultwarden memos uptime-kuma linkding .env
+find /srv/backup -name &#39;stack-*.tar.gz&#39; -mtime +14 -delete</code></pre><p>加执行权限，用 crontab -e 每天凌晨跑一次（cron 表达式可以用站内工具先算一遍再粘）。关键是下一步：把最近的包解到 /tmp 里，确认 vaultwarden/data 下有 db.sqlite3、memos 下有 memos_prod.db。文件在，恢复路径才成立；只看到 tar 包不算。</p></li><li><b>升级与回滚：别用 latest 赌运气</b><p>第一次装用 latest 无所谓，长期跑要改成具体版本号（比如 vaultwarden/server:1.32.7），否则某天 pull 下来一个不兼容的大版本，数据迁移一旦失败就回不去了。升级流程固定三步：</p><pre><code>docker compose pull vaultwarden
+docker compose up -d vaultwarden
+docker compose logs --tail=50 vaultwarden</code></pre><p>回滚就是把镜像 tag 改回上一个版本再 up -d。所以升级前先备份，升级后先看日志再关终端——这两件事的顺序反了，出事时就没有退路。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>容器起来就退出：先看 docker compose logs 服务名。最常见是数据目录权限不对（容器内用户没有写权限），chown 一下目录再试；其次是 .env 里变量名写错，日志会明确说缺哪个。</li><li>端口被占用：docker compose ps 看有没有旧容器还在跑，或者 ss -lntp 看谁占了端口。改宿主端口（左边那个数字）比杀进程安全。</li><li>磁盘满了：docker system df 看镜像和日志占多少，docker image prune 清掉没用的镜像。日志疯长的话，在 compose 里给每个服务加 logging 的 max-size 限制。</li><li>全部推倒重来：数据都在 /opt/stack 的子目录里，删掉容器和镜像不会动数据。重新 up 之前确认那三个目录还在，就丢不了。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>数据没挂出来</b></div><div class="res-item-note">只写了 image 和 ports，忘了 volumes。容器删掉重建，数据一起没——而且不会有任何报错提示你。判断标准很简单：这个服务一旦删掉容器，你能不能接受数据消失？不能就必须有 volumes，并且要确认宿主机上真的出现了对应目录。</div></div><div class="res-item"><div class="res-item-head"><b>把所有端口直接开到公网</b></div><div class="res-item-note">在路由器上给 3001、5230、9090 都做端口映射，图省事。结果是扫描器几小时内就会找到它们，而这类自建服务的默认配置大多没有防爆破。正确做法是只开一个入口（反向代理 + HTTPS），其余服务只监听 127.0.0.1，或者干脆走内网穿透。</div></div><div class="res-item"><div class="res-item-head"><b>备份放在同一块盘上</b></div><div class="res-item-note">tar 包写在 /srv/backup，而 /srv 就是数据盘本身。盘坏的时候，数据和备份一起没。备份至少要落到第二块物理盘、另一台机器或对象存储，三选一，异地那一份才算数。</div></div><div class="res-item"><div class="res-item-head"><b>用 latest 长期跑生产</b></div><div class="res-item-note">latest 会在某个凌晨变成一个新大版本。数据库结构迁移是不可逆的，回滚镜像不等于回滚数据。定版本号，升级前备份，这两条能把「某天早上服务打不开」变成「某天早上多花十分钟」。</div></div><h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row"><a class="related-chip" href="/tools/password-gen/">强密码生成 →</a><a class="related-chip" href="/tools/cron-parser/">Cron 解析 →</a><a class="related-chip" href="/tools/qrcode/">二维码生成 →</a><a class="related-chip" href="/tools/json-format/">JSON 格式化 →</a></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://docs.docker.com/compose/compose-file/" target="_blank" rel="noopener nofollow">Docker Compose 文件参考</a></div><div class="res-item-note">每个字段的官方定义，写错时来这里对</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://github.com/dani-garcia/vaultwarden/wiki" target="_blank" rel="noopener nofollow">Vaultwarden Wiki</a></div><div class="res-item-note">反向代理、备份、注册开关都在这里</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://github.com/louislam/uptime-kuma" target="_blank" rel="noopener nofollow">Uptime Kuma</a></div><div class="res-item-note">通知渠道列表和 Docker 部署说明</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://dozzle.dev/" target="_blank" rel="noopener nofollow">Dozzle</a></div><div class="res-item-note">轻量日志面板，配置项很少</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>没有公网 IP，也能在外面用吗？</b></div><div class="res-item-note">能。用 Cloudflare Tunnel 或 Tailscale 这类内网穿透，不需要在路由器上开端口，也不需要公网 IP。Cloudflare Tunnel 的好处是顺手给了 HTTPS 和域名，站内有一篇专门讲；Tailscale 更简单，装完就是一张虚拟内网，缺点是每台设备都要装客户端。</div></div><div class="res-item"><div class="res-item-head"><b>2GB 内存的机器真的够吗？</b></div><div class="res-item-note">五个服务全开大概 600MB–1GB，2GB 能跑但没余量，系统更新或某个服务内存泄漏时会开始用 swap，反应变慢。建议 4GB 起步。不够就先只跑 Vaultwarden 和 Uptime Kuma，这两个加起来不到 200MB。</div></div><div class="res-item"><div class="res-item-head"><b>为什么不用 NAS 自带的应用商店？</b></div><div class="res-item-note">自带商店省事，但版本通常落后几个大版本，安全补丁跟得慢，而且换 NAS 品牌时数据迁移路径不透明。Compose 的好处是这套配置在哪台 Linux 上都能跑，换机器就是拷目录 + up。两者不冲突：先在 NAS 上跑 Compose，比在商店里点安装更可控。</div></div><div class="res-item"><div class="res-item-head"><b>docker.sock 挂给 dozzle，会不会有安全风险？</b></div><div class="res-item-note">有。能读 docker.sock 就等于能看所有容器信息，只读挂载能阻止它启停容器，但仍然暴露了容器的环境变量。所以 dozzle 不要直接对公网开放，放在反代后面加一层认证，或者只在内网访问。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="docker-selfhost-stack";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

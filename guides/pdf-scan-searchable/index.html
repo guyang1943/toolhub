@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>把扫描件做成能搜索的 PDF · 教程 · ToolHub</title>
+  <meta name="description" content="拍照、裁正、OCR、合并、压缩：纸质资料变成可检索的电子档，全程不离开自己的电脑。" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/pdf-scan-searchable/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/pdf-scan-searchable/" />
+  <meta property="og:title" content="把扫描件做成能搜索的 PDF · 教程 · ToolHub" />
+  <meta property="og:description" content="拍照、裁正、OCR、合并、压缩：纸质资料变成可检索的电子档，全程不离开自己的电脑。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 140 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"把扫描件做成能搜索的 PDF","description":"拍照、裁正、OCR、合并、压缩：纸质资料变成可检索的电子档，全程不离开自己的电脑。","totalTime":"PT40M","dateModified":"2026-11-26","supply":[{"@type":"HowToSupply","name":"一份或多份纸质资料，以及手机或扫描仪。手机足够，注意光线。"},{"@type":"HowToSupply","name":"知道这些文件的用途：是存档、是提交给别人、还是要长期检索。用途决定要不要花时间校对。"},{"@type":"HowToSupply","name":"电脑上有一个能放中间文件的目录，别在桌面堆二十个「未命名」文件。"}],"step":[{"@type":"HowToStep","position":1,"name":"拍得清楚，比任何算法都重要","text":"OCR 的错误率主要由拍摄质量决定，不是模型。三条实用规则：\n\n1. 光从侧面来，别用手机闪光灯直打（会反光成一片白）。白天靠窗的自然光最好。\n2. 纸张铺平，镜头尽量垂直于纸面。斜着拍会产生透视变形，字会越远越小，识别率断崖式下降。\n3. 让文字占画面宽度的大部分。一张 A4 拍成远景，字只占中间一小块，等于把有效分辨率浪费掉了。\n\n拍完先在手机上放大看一眼最小的那行字（页脚、脚注）。看不清就别指望 OCR 能看清。"},{"@type":"HowToStep","position":2,"name":"先裁边转正，再识别","text":"裁掉桌面、手指、阴影，只留纸面，并让纸的四边尽量平。这一步不只是好看——OCR 会尝试识别画面里的所有文字，桌面上的杂物、书脊、背景文字都会变成噪音，混进结果里。\n\n倾斜不大的话可以在裁剪时顺手转正；倾斜明显的（比如拍书页）用透视裁切效果更好。站内的图片裁剪工具可以直接拖框，输出前把尺寸控制在长边 2000–3000 像素——太小识别不准，太大只是变慢。"},{"@type":"HowToStep","position":3,"name":"OCR：选对语言，认准输出格式","text":"识别中文要明确指定中文语言包（chi_sim），只装英文包的话中文会变成一堆乱码或直接空白。中英混排的文档要同时加载两个语言（chi_sim+eng），否则英文单词会被当成汉字切碎。\n\n输出的三种形式，用途不同：\n\n- 纯文本：适合复制到别处、做全文搜索的索引。\n- 带坐标的结果：适合需要定位「这句话在页面哪个位置」的场景。\n- 双层 PDF：下层是不可见的文字层，上层是原图。既能保持原样，又能搜索和复制——这是存档场景最该选的。\n\n如果工具只给纯文本，就自己保留原图 PDF，把文本另存成同名 .txt 放在一起。"},{"@type":"HowToStep","position":4,"name":"校对：只查三类内容","text":"逐字校对不现实，也没必要。按风险排序只查三类：\n\n1. 数字：金额、日期、编号、身份证号、电话。OCR 最容易把 0/O、1/l、5/S 认错，而这几个字错一位就是另一份文件。\n2. 人名与公司名：影响检索和归档。\n3. 表格的列对齐：跨行跨列的表，OCR 出来的顺序经常是错的，需要人眼确认哪一列属于哪一行。\n\n其余正文错几个字，只要不影响检索关键词，可以接受。把「必查项」写成一个固定清单，每次照着过一遍，比凭感觉可靠。"},{"@type":"HowToStep","position":5,"name":"合并：页码顺序和书签","text":"多页合并时，顺序错是最常见的返工原因。合并前把文件按 01、02、03 重命名，再按文件名排序合并——不要靠拖拽顺序，拖错一格很难发现。\n\n合并完成后立刻做两件事：\n\n- 翻到最后一页，确认页数对得上（原本 12 页，输出也该是 12 页）。\n- 如果工具支持，加一个书签或目录页。十页以上的文档，没有书签等于没有结构。\n\n发票、合同这类有正反面或者附件的，合并顺序按「正文 → 附件 → 补充说明」，和纸质装订顺序一致，别人拿到才看得懂。"},{"@type":"HowToStep","position":6,"name":"压缩：压图片，不压已经拼好的 PDF","text":"顺序很重要：先把每一页图片压到合适大小，再合并成 PDF。反过来先合并再整体压缩，压缩器会重新编码整份文档，文字边缘变糊，体积还不一定降得下来。\n\n一页 A4 黑白文字，JPEG 质量 75–80、长边 2000px，通常落在 150–300KB；彩色合同或带印章的，质量 85 起步，别压到印章发虚。\n\n如果 PDF 里已经嵌了文字层，压缩时确认工具不会把它压掉——有些「一键压缩」会重新栅格化页面，文字层直接消失，搜索功能一起没。压完搜一个词验证一下。"},{"@type":"HowToStep","position":7,"name":"命名与目录：为了三年后还能找到","text":"推荐的命名：\n\n```\n2026-11-26_供应商名_发票_金额1200_3页.pdf\n```\n\n日期在前，按文件名排序就是时间线；中间是来源；后面是类型和关键信息。不要用「扫描件1.pdf」「新建文件夹(2)」。\n\n目录按「年份/类型」两级就够，再深就想不起来放哪了。同一份文件如果要出现在两个分类里，用副本或快捷方式，不要建两套目录——两套目录最后一定会不同步。"},{"@type":"HowToStep","position":8,"name":"敏感文件的两个额外动作","text":"发票、合同、证件扫描件里通常带位置信息（手机拍摄的 EXIF 里有 GPS）和文档属性（作者、软件、创建时间）。分享或上传之前：\n\n1. 去掉 EXIF：站内的 EXIF 清理工具可以批量处理，去掉 GPS、设备型号、拍摄时间。\n2. 检查 PDF 元数据：有些工具会把本机用户名写进「作者」字段。\n\n如果是发给外部，还要考虑是否加水印（用途限定，比如「仅供办理 XX 使用」）。加水印的代价是 OCR 可能受影响，所以水印版和存档版分开存。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"把扫描件做成能搜索的 PDF","item":"https://toolhub.bot.cd/guides/pdf-scan-searchable/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"没有扫描仪，手机拍的行不行？","acceptedAnswer":{"@type":"Answer","text":"绝大多数场景够用。手机的分辨率早就超过一般文档扫描需求，瓶颈在光线和角度，不在像素。需要提交正式材料（签证、投标）时，还是用平板扫描仪或去打印店，因为对方可能要求「扫描件」而非「照片」。"}},{"@type":"Question","name":"OCR 能识别手写吗？","acceptedAnswer":{"@type":"Answer","text":"能识别一部分，但准确率远低于印刷体，连笔字基本不可用。手写内容建议单独录入成文字附在旁边，不要指望 OCR。印刷体 + 表格线是它的舒适区。"}},{"@type":"Question","name":"双层 PDF 和普通 PDF 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"普通扫描 PDF 只有一层图像，看起来一样但不能选中文字。双层 PDF 在图像下面藏了一层不可见的文字，搜索和复制时用到它，显示时用图像。文件会大一点（多几十 KB），但这是存档场景最实用的格式。"}},{"@type":"Question","name":"几十份文件要批量处理，怎么办？","acceptedAnswer":{"@type":"Answer","text":"站内工具一次处理一份，批量更适合用命令行工具（Tesseract 本身支持批量）。但批量的前提是拍摄质量一致——混着不同光线和角度的照片批量跑，结果会一半好一半坏，反而更费时间。先挑十份试跑，看识别率再决定要不要全量。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>把扫描件做成能搜索的 PDF</h1><p>拍照、裁正、OCR、合并、压缩：纸质资料变成可检索的电子档，全程不离开自己的电脑。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 把扫描件做成能搜索的 PDF</div><div class="guide-meta"><span>难度 <b>入门</b></span><span>约 <b>40</b> 分钟</span><span class="gm-risk gm-ok">风险 <b>低</b></span><span>最后核对 <b>2026-11-26</b></span></div><div class="res-intro">用手机拍的合同、发票、说明书，本质上是一张图片——能看，但搜不到、复制不了、也没法按页码引用。加一层 OCR（文字识别）之后，它才变成「文档」：可以全文搜索、可以选中复制、可以用关键词在几十份里找到那一页。整条链路是固定的五步：拍清楚、裁正、识别、合并、压缩。每一步都有对应的免费工具，而且都不需要把文件传到别人的服务器上——发票和合同这类东西，上传本身就值得犹豫。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>可搜索和不可搜索，长期差别巨大。一百份扫描件里找「那张写着我名字的收据」，有 OCR 是几秒，没有是逐份翻。</li><li>体积能压到十分之一。原图直出的一页扫描件通常 2–5MB，处理完 200–400KB，清晰度对阅读没有影响。</li><li>大部分步骤不需要装软件。裁剪、压缩、合并、去 EXIF 用的是站内工具，在浏览器本地跑、断网也能用；OCR 用目录里收录的 Tesseract，装在本机跑。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>一份或多份纸质资料，以及手机或扫描仪。手机足够，注意光线。</li><li>知道这些文件的用途：是存档、是提交给别人、还是要长期检索。用途决定要不要花时间校对。</li><li>电脑上有一个能放中间文件的目录，别在桌面堆二十个「未命名」文件。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>拍得清楚，比任何算法都重要</b><p>OCR 的错误率主要由拍摄质量决定，不是模型。三条实用规则：</p><p>1. 光从侧面来，别用手机闪光灯直打（会反光成一片白）。白天靠窗的自然光最好。
+2. 纸张铺平，镜头尽量垂直于纸面。斜着拍会产生透视变形，字会越远越小，识别率断崖式下降。
+3. 让文字占画面宽度的大部分。一张 A4 拍成远景，字只占中间一小块，等于把有效分辨率浪费掉了。</p><p>拍完先在手机上放大看一眼最小的那行字（页脚、脚注）。看不清就别指望 OCR 能看清。</p></li><li><b>先裁边转正，再识别</b><p>裁掉桌面、手指、阴影，只留纸面，并让纸的四边尽量平。这一步不只是好看——OCR 会尝试识别画面里的所有文字，桌面上的杂物、书脊、背景文字都会变成噪音，混进结果里。</p><p>倾斜不大的话可以在裁剪时顺手转正；倾斜明显的（比如拍书页）用透视裁切效果更好。站内的图片裁剪工具可以直接拖框，输出前把尺寸控制在长边 2000–3000 像素——太小识别不准，太大只是变慢。</p></li><li><b>OCR：选对语言，认准输出格式</b><p>识别中文要明确指定中文语言包（chi_sim），只装英文包的话中文会变成一堆乱码或直接空白。中英混排的文档要同时加载两个语言（chi_sim+eng），否则英文单词会被当成汉字切碎。</p><p>输出的三种形式，用途不同：</p><p>- 纯文本：适合复制到别处、做全文搜索的索引。
+- 带坐标的结果：适合需要定位「这句话在页面哪个位置」的场景。
+- 双层 PDF：下层是不可见的文字层，上层是原图。既能保持原样，又能搜索和复制——这是存档场景最该选的。</p><p>如果工具只给纯文本，就自己保留原图 PDF，把文本另存成同名 .txt 放在一起。</p></li><li><b>校对：只查三类内容</b><p>逐字校对不现实，也没必要。按风险排序只查三类：</p><p>1. 数字：金额、日期、编号、身份证号、电话。OCR 最容易把 0/O、1/l、5/S 认错，而这几个字错一位就是另一份文件。
+2. 人名与公司名：影响检索和归档。
+3. 表格的列对齐：跨行跨列的表，OCR 出来的顺序经常是错的，需要人眼确认哪一列属于哪一行。</p><p>其余正文错几个字，只要不影响检索关键词，可以接受。把「必查项」写成一个固定清单，每次照着过一遍，比凭感觉可靠。</p></li><li><b>合并：页码顺序和书签</b><p>多页合并时，顺序错是最常见的返工原因。合并前把文件按 01、02、03 重命名，再按文件名排序合并——不要靠拖拽顺序，拖错一格很难发现。</p><p>合并完成后立刻做两件事：</p><p>- 翻到最后一页，确认页数对得上（原本 12 页，输出也该是 12 页）。
+- 如果工具支持，加一个书签或目录页。十页以上的文档，没有书签等于没有结构。</p><p>发票、合同这类有正反面或者附件的，合并顺序按「正文 → 附件 → 补充说明」，和纸质装订顺序一致，别人拿到才看得懂。</p></li><li><b>压缩：压图片，不压已经拼好的 PDF</b><p>顺序很重要：先把每一页图片压到合适大小，再合并成 PDF。反过来先合并再整体压缩，压缩器会重新编码整份文档，文字边缘变糊，体积还不一定降得下来。</p><p>一页 A4 黑白文字，JPEG 质量 75–80、长边 2000px，通常落在 150–300KB；彩色合同或带印章的，质量 85 起步，别压到印章发虚。</p><p>如果 PDF 里已经嵌了文字层，压缩时确认工具不会把它压掉——有些「一键压缩」会重新栅格化页面，文字层直接消失，搜索功能一起没。压完搜一个词验证一下。</p></li><li><b>命名与目录：为了三年后还能找到</b><p>推荐的命名：</p><pre><code>2026-11-26_供应商名_发票_金额1200_3页.pdf</code></pre><p>日期在前，按文件名排序就是时间线；中间是来源；后面是类型和关键信息。不要用「扫描件1.pdf」「新建文件夹(2)」。</p><p>目录按「年份/类型」两级就够，再深就想不起来放哪了。同一份文件如果要出现在两个分类里，用副本或快捷方式，不要建两套目录——两套目录最后一定会不同步。</p></li><li><b>敏感文件的两个额外动作</b><p>发票、合同、证件扫描件里通常带位置信息（手机拍摄的 EXIF 里有 GPS）和文档属性（作者、软件、创建时间）。分享或上传之前：</p><p>1. 去掉 EXIF：站内的 EXIF 清理工具可以批量处理，去掉 GPS、设备型号、拍摄时间。
+2. 检查 PDF 元数据：有些工具会把本机用户名写进「作者」字段。</p><p>如果是发给外部，还要考虑是否加水印（用途限定，比如「仅供办理 XX 使用」）。加水印的代价是 OCR 可能受影响，所以水印版和存档版分开存。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>OCR 结果全是乱码：语言包选错了。中文必须显式选 chi_sim；如果只有英文结果，说明中文包没加载。</li><li>识别率很低但图片看着清楚：多半是分辨率或倾斜问题。裁到只剩纸面、长边提到 2500px 再试一次；仍然差就换拍照方式重拍，别在算法上继续试。</li><li>合并后顺序乱了：检查文件名前缀是否补零（1、10、2 会排成 1、10、2），改成 01、02、10。</li><li>压缩后搜不到文字：压缩工具把页面重新栅格化了，文字层丢了。换一个保留文字层的压缩方式，或者只压图片再重新合并。</li><li>文件太大传不上去：先看是体积还是页数限制。体积问题压图片；页数限制只能拆分，拆成「正文」和「附件」两份往往正好。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>先合并再压缩</b></div><div class="res-item-note">顺序反了会导致文字层被破坏、体积降不下来、还多一次画质损失。正确顺序永远是：单页图压好 → 合并 → 只做必要的元数据清理。</div></div><div class="res-item"><div class="res-item-head"><b>把扫描件直接上传到在线 OCR</b></div><div class="res-item-note">免费在线 OCR 的商业模式大多是把文档内容和人工校对结果用于训练。合同、发票、证件属于最不该走这条路的东西。本地工具慢一点，但文件不出机器。</div></div><div class="res-item"><div class="res-item-head"><b>只留 PDF，不留原图</b></div><div class="res-item-note">OCR 一定会有错。三年后需要重新识别、或者要更高清的一页时，原图是唯一的退路。存档目录里保留一个 originals 子目录，成本只是一点磁盘。</div></div><div class="res-item"><div class="res-item-head"><b>用「扫描全能王」类应用处理证件</b></div><div class="res-item-note">这类应用默认会上传做云端增强，隐私政策里通常写明。证件照、银行卡、合同首页这类东西，用系统相机 + 本地工具处理更稳妥。</div></div><h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row"><a class="related-chip" href="/tools/img-crop/">图片裁剪 →</a><a class="related-chip" href="/tools/image-compress/">图片压缩 →</a><a class="related-chip" href="/tools/pdf-merge/">PDF 合并拆分 →</a><a class="related-chip" href="/tools/img-to-pdf/">图片转 PDF →</a><a class="related-chip" href="/tools/exif-strip/">照片元数据剥离 →</a></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://tesseract-ocr.github.io/tessdoc/" target="_blank" rel="noopener nofollow">Tesseract 文档</a></div><div class="res-item-note">语言包安装与输出格式参数</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf" target="_blank" rel="noopener nofollow">PDF 规范（ISO 32000）简介</a></div><div class="res-item-note">文字层与图像层的关系，查证时用</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://exiftool.org/" target="_blank" rel="noopener nofollow">ExifTool</a></div><div class="res-item-note">批量清除 EXIF 与 PDF 元数据的权威工具</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>没有扫描仪，手机拍的行不行？</b></div><div class="res-item-note">绝大多数场景够用。手机的分辨率早就超过一般文档扫描需求，瓶颈在光线和角度，不在像素。需要提交正式材料（签证、投标）时，还是用平板扫描仪或去打印店，因为对方可能要求「扫描件」而非「照片」。</div></div><div class="res-item"><div class="res-item-head"><b>OCR 能识别手写吗？</b></div><div class="res-item-note">能识别一部分，但准确率远低于印刷体，连笔字基本不可用。手写内容建议单独录入成文字附在旁边，不要指望 OCR。印刷体 + 表格线是它的舒适区。</div></div><div class="res-item"><div class="res-item-head"><b>双层 PDF 和普通 PDF 有什么区别？</b></div><div class="res-item-note">普通扫描 PDF 只有一层图像，看起来一样但不能选中文字。双层 PDF 在图像下面藏了一层不可见的文字，搜索和复制时用到它，显示时用图像。文件会大一点（多几十 KB），但这是存档场景最实用的格式。</div></div><div class="res-item"><div class="res-item-head"><b>几十份文件要批量处理，怎么办？</b></div><div class="res-item-note">站内工具一次处理一份，批量更适合用命令行工具（Tesseract 本身支持批量）。但批量的前提是拍摄质量一致——混着不同光线和角度的照片批量跑，结果会一半好一半坏，反而更费时间。先挑十份试跑，看识别率再决定要不要全量。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="pdf-scan-searchable";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

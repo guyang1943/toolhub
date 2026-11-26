@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>把一堆乱 CSV 洗成一张能用的表 · 教程 · ToolHub</title>
+  <meta name="description" content="编码乱码、表头不一致、日期三种格式、还要多表合并——按顺序洗一遍，比在 Excel 里手改快十倍。" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/csv-clean-merge/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/csv-clean-merge/" />
+  <meta property="og:title" content="把一堆乱 CSV 洗成一张能用的表 · 教程 · ToolHub" />
+  <meta property="og:description" content="编码乱码、表头不一致、日期三种格式、还要多表合并——按顺序洗一遍，比在 Excel 里手改快十倍。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 140 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"把一堆乱 CSV 洗成一张能用的表","description":"编码乱码、表头不一致、日期三种格式、还要多表合并——按顺序洗一遍，比在 Excel 里手改快十倍。","totalTime":"PT35M","dateModified":"2026-11-26","supply":[{"@type":"HowToSupply","name":"原始 CSV 文件，并且**先复制一份留底**。后面所有操作都在副本上做。"},{"@type":"HowToSupply","name":"知道这张表的主键是什么（订单号、身份证号、手机号），或者至少知道哪几列组合起来唯一。没有主键的话，去重只能靠整行比对，效果差很多。"},{"@type":"HowToSupply","name":"能打开终端，或者愿意用站内的表格工具。纯 Excel 也能做，但一千行以上会明显变慢。"}],"step":[{"@type":"HowToStep","position":1,"name":"先留底，再动手","text":"复制一份命名为 xxx.raw.csv，之后只改 xxx.csv。这不是形式主义：清洗最常见的翻车是「改到一半发现过滤器写错，删了不该删的行」，而 CSV 没有撤销历史。\n\n留底还有个附带好处——最后校验时，用原始文件的行数、金额合计去对，能发现中间某一步是否误删。"},{"@type":"HowToStep","position":2,"name":"第一步永远是编码","text":"中文 Excel 导出的 CSV 默认是 GBK，而大部分工具按 UTF-8 读，于是出现「鍏徃鍚嶇О」这种乱码。判断方法：用文本编辑器打开，中文正常就说明编码对；乱码就换编码再打开。\n\n转换（命令行，Windows 下用 Git Bash）：\n\n```\niconv -f GBK -t UTF-8 input.csv > output.csv\n```\n\n另一个坑是 UTF-8 BOM：Excel 打开带 BOM 的文件才会正确显示中文，但很多程序读第一列时会带上一个不可见的 \\ufeff，导致「列名匹配不上」。如果下游是程序，存成不带 BOM 的 UTF-8；如果下游是人用 Excel 看，带 BOM 更省事。这是两种用途，别混。"},{"@type":"HowToStep","position":3,"name":"统一表头：改列名，不动数据","text":"多张表合并前，先把列名统一成一套。原则是「改列名，不改数据」——数据一旦被改，原始含义就丢了。\n\n常见的不一致：\n\n- 同一列在不同表里叫「手机号」「手机」「联系电话」。\n- 表头带空格或换行：「 姓名 」「金额\\n(元)」。\n- 表头有合并单元格，导出后变成空列名或 Unnamed: 0。\n\n处理方式：先统一去掉首尾空格、把全角空格换成半角，再建立一张映射表（旧名 → 新名），批量替换。列的顺序也要统一，否则合并后会出现「有的行姓名在第二列、有的在第五列」。"},{"@type":"HowToStep","position":4,"name":"拆列与并列：注意引号里的逗号","text":"CSV 里最经典的坑：地址是「北京市朝阳区, 建国路 1 号」，中间那个逗号如果没被引号包住，整行会多出一列，后面所有列都错位。\n\n正确的 CSV 会给含逗号的字段加双引号，字段内的双引号写成两个（\"\"）。拆分时用能识别引号的解析器，不要用字符串 split(',')——那就是错位的来源。\n\n需要把「省市区」拆成三列时，按最后一个分隔符拆更稳；需要把两列拼成一列时，先确认两列都非空，否则会出现「北京市 null」。"},{"@type":"HowToStep","position":5,"name":"去重：按主键，不按整行","text":"整行去重只能去掉完全相同的行。同一笔订单导出了两次，第二次可能只是时间戳差一秒，整行比对抓不到。\n\n正确做法是按主键去重，并决定保留哪一条：\n\n```\n# 按第 1 列（订单号）去重，保留最后一次出现\nawk -F, '!seen[$1]++' input.csv > dedup.csv\n```\n\n但保留第一条还是最后一条，结果可能完全不同（状态字段会不一样）。业务上的规则要先想清楚：通常保留「最新状态」那条，所以导入前按时间排序，再取最后一条。\n\n去重之后必须核对行数：原始多少行、去重后多少行、去掉的是不是都是重复项。数字对不上就停下来查。"},{"@type":"HowToStep","position":6,"name":"合并：纵向堆和横向连是两件事","text":"纵向合并（union）是把多张同结构的表摞起来。前提是列名和列顺序完全一致，否则会出现「A 表的金额跑到 B 表的备注列」。合并后加一列「来源文件」，出问题时能追溯。\n\n横向合并（join）是按主键把两张表拼宽。必须确认三件事：\n\n1. 两边的键类型一致（一边是文本「001」，一边是数字 1，就对不上）。\n2. 有没有一对多（一个订单多条明细），那会让行数膨胀。\n3. 匹配不上的行怎么处理——inner join 会静默丢掉它们。\n\n合并后立刻查两个数：行数是否等于预期，以及键的唯一性。"},{"@type":"HowToStep","position":7,"name":"日期和数字：统一成一种能被机器读的格式","text":"日期统一成 YYYY-MM-DD。下面这些写法要全部归一：2026/11/26、2026.11.26、26-11-2026、2026年11月26日。\n\n有一类特别危险：11/12/2026，美式是 11 月 12 日，英式是 12 月 11 日，无法从数据本身判断。遇到这种必须问数据来源，不能猜——猜错会在月报里差出一个月。\n\n数字方面：去掉千分位逗号、去掉货币符号、把全角数字和全角空格转半角。金额保留两位小数，不要用四舍五入到整数，累加时会差钱。"},{"@type":"HowToStep","position":8,"name":"校验：三个数字对得上才算洗完","text":"最后一定要跑一遍校验，不要凭「看起来没问题」交付：\n\n1. 行数：清洗后的行数 = 原始行数 − 确认删除的重复/无效行。\n2. 合计：金额列求和，与原始文件的合计对比（允许分位差）。\n3. 空值：关键列（主键、金额、日期）的空值数量，逐个确认为什么空。\n\n再抽 3–5 行人工核对，从原始文件里找对应的记录，看字段是否一一对上。抽样时优先挑边界值：金额最大的一行、日期最早的一行、名字最长的那个。"},{"@type":"HowToStep","position":9,"name":"留痕：让别人（和半年后的自己）能复现","text":"在同目录放一个 README.txt，写清：原始文件从哪来、什么时候导的、做了哪几步处理、每一步删了多少行、校验结果是多少。\n\n如果处理用了命令或脚本，把命令也贴进去。半年后有人质疑数字，你能拿出来复现；没有这份记录，只能重做一遍，而重做的结果很可能不一样。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"把一堆乱 CSV 洗成一张能用的表","item":"https://toolhub.bot.cd/guides/csv-clean-merge/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"没有编程基础，只用 Excel 能做到吗？","acceptedAnswer":{"@type":"Answer","text":"能。编码用「数据 → 从文本/CSV」导入时选对编码；表头统一用查找替换；去重用「数据 → 删除重复值」；合并用 Power Query（数据 → 获取数据）。Power Query 的好处是步骤可保存，下次换一份同样的文件点一下刷新就重跑完。"}},{"@type":"Question","name":"几十万行，Excel 卡死了怎么办？","acceptedAnswer":{"@type":"Answer","text":"用目录里收录的 DuckDB，或者站内的 pandas 工具，直接对 CSV 跑 SQL，比如 SELECT 订单号, SUM(金额) FROM 'x.csv' GROUP BY 1。它不把整表加载到界面里，几百万行也是秒级。"}},{"@type":"Question","name":"怎么快速发现哪几行列数不对？","acceptedAnswer":{"@type":"Answer","text":"用 awk 按逗号数一下每行的字段数，和表头对比（先 print NF，再 sort | uniq -c 统计频次）。输出里除了正常列数之外的那个数字，就是异常行的数量；再用条件 NF != 正常列数 把它们单独列出来。命令和第 4 步是同一套，只是判断条件从「按主键去重」换成「列数不等于表头」。"}},{"@type":"Question","name":"导出的表每次列顺序都不一样，有办法吗？","acceptedAnswer":{"@type":"Answer","text":"有。固定一个目标列顺序，每次导入后按列名重新排列（pandas 的 df[cols] 或 Excel 的选择列）。不要按位置对列，按名字对——位置会变，名字相对稳定。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>把一堆乱 CSV 洗成一张能用的表</h1><p>编码乱码、表头不一致、日期三种格式、还要多表合并——按顺序洗一遍，比在 Excel 里手改快十倍。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 把一堆乱 CSV 洗成一张能用的表</div><div class="guide-meta"><span>难度 <b>入门</b></span><span>约 <b>35</b> 分钟</span><span class="gm-risk gm-ok">风险 <b>低</b></span><span>最后核对 <b>2026-11-26</b></span></div><div class="res-intro">从系统导出的 CSV 几乎不会是干净的：中文变乱码、表头每张表都不一样、日期有「2026/11/26」「2026-11-26」「11/26/2026」三种、金额带千分位和全角空格。手工在 Excel 里改十行还行，一千行就是折磨，而且改到第三遍必然会漏。清洗的顺序是有讲究的——编码不对，后面看到的全是乱码；表头不统一，合并时就对不上列。这篇按固定顺序过一遍，每一步只解决一类问题，做完的表格能直接拿去分析或导入别的系统。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>顺序错了会白干。先改日期再修编码，日期格式的判断会因为乱码而失效，改完还得重来一遍。</li><li>手工改的东西没法复用。下个月再来一份同样的导出，脚本和工具链可以重跑，手改要从头开始。</li><li>合并出错最难发现。两张表拼起来行数不对、金额对不上，往往到出报表时才被发现。留下校验步骤能提前拦住。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>原始 CSV 文件，并且**先复制一份留底**。后面所有操作都在副本上做。</li><li>知道这张表的主键是什么（订单号、身份证号、手机号），或者至少知道哪几列组合起来唯一。没有主键的话，去重只能靠整行比对，效果差很多。</li><li>能打开终端，或者愿意用站内的表格工具。纯 Excel 也能做，但一千行以上会明显变慢。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>先留底，再动手</b><p>复制一份命名为 xxx.raw.csv，之后只改 xxx.csv。这不是形式主义：清洗最常见的翻车是「改到一半发现过滤器写错，删了不该删的行」，而 CSV 没有撤销历史。</p><p>留底还有个附带好处——最后校验时，用原始文件的行数、金额合计去对，能发现中间某一步是否误删。</p></li><li><b>第一步永远是编码</b><p>中文 Excel 导出的 CSV 默认是 GBK，而大部分工具按 UTF-8 读，于是出现「鍏徃鍚嶇О」这种乱码。判断方法：用文本编辑器打开，中文正常就说明编码对；乱码就换编码再打开。</p><p>转换（命令行，Windows 下用 Git Bash）：</p><pre><code>iconv -f GBK -t UTF-8 input.csv &gt; output.csv</code></pre><p>另一个坑是 UTF-8 BOM：Excel 打开带 BOM 的文件才会正确显示中文，但很多程序读第一列时会带上一个不可见的 \ufeff，导致「列名匹配不上」。如果下游是程序，存成不带 BOM 的 UTF-8；如果下游是人用 Excel 看，带 BOM 更省事。这是两种用途，别混。</p></li><li><b>统一表头：改列名，不动数据</b><p>多张表合并前，先把列名统一成一套。原则是「改列名，不改数据」——数据一旦被改，原始含义就丢了。</p><p>常见的不一致：</p><p>- 同一列在不同表里叫「手机号」「手机」「联系电话」。
+- 表头带空格或换行：「 姓名 」「金额\n(元)」。
+- 表头有合并单元格，导出后变成空列名或 Unnamed: 0。</p><p>处理方式：先统一去掉首尾空格、把全角空格换成半角，再建立一张映射表（旧名 → 新名），批量替换。列的顺序也要统一，否则合并后会出现「有的行姓名在第二列、有的在第五列」。</p></li><li><b>拆列与并列：注意引号里的逗号</b><p>CSV 里最经典的坑：地址是「北京市朝阳区, 建国路 1 号」，中间那个逗号如果没被引号包住，整行会多出一列，后面所有列都错位。</p><p>正确的 CSV 会给含逗号的字段加双引号，字段内的双引号写成两个（&quot;&quot;）。拆分时用能识别引号的解析器，不要用字符串 split(&#39;,&#39;)——那就是错位的来源。</p><p>需要把「省市区」拆成三列时，按最后一个分隔符拆更稳；需要把两列拼成一列时，先确认两列都非空，否则会出现「北京市 null」。</p></li><li><b>去重：按主键，不按整行</b><p>整行去重只能去掉完全相同的行。同一笔订单导出了两次，第二次可能只是时间戳差一秒，整行比对抓不到。</p><p>正确做法是按主键去重，并决定保留哪一条：</p><pre><code># 按第 1 列（订单号）去重，保留最后一次出现
+awk -F, &#39;!seen[$1]++&#39; input.csv &gt; dedup.csv</code></pre><p>但保留第一条还是最后一条，结果可能完全不同（状态字段会不一样）。业务上的规则要先想清楚：通常保留「最新状态」那条，所以导入前按时间排序，再取最后一条。</p><p>去重之后必须核对行数：原始多少行、去重后多少行、去掉的是不是都是重复项。数字对不上就停下来查。</p></li><li><b>合并：纵向堆和横向连是两件事</b><p>纵向合并（union）是把多张同结构的表摞起来。前提是列名和列顺序完全一致，否则会出现「A 表的金额跑到 B 表的备注列」。合并后加一列「来源文件」，出问题时能追溯。</p><p>横向合并（join）是按主键把两张表拼宽。必须确认三件事：</p><p>1. 两边的键类型一致（一边是文本「001」，一边是数字 1，就对不上）。
+2. 有没有一对多（一个订单多条明细），那会让行数膨胀。
+3. 匹配不上的行怎么处理——inner join 会静默丢掉它们。</p><p>合并后立刻查两个数：行数是否等于预期，以及键的唯一性。</p></li><li><b>日期和数字：统一成一种能被机器读的格式</b><p>日期统一成 YYYY-MM-DD。下面这些写法要全部归一：2026/11/26、2026.11.26、26-11-2026、2026年11月26日。</p><p>有一类特别危险：11/12/2026，美式是 11 月 12 日，英式是 12 月 11 日，无法从数据本身判断。遇到这种必须问数据来源，不能猜——猜错会在月报里差出一个月。</p><p>数字方面：去掉千分位逗号、去掉货币符号、把全角数字和全角空格转半角。金额保留两位小数，不要用四舍五入到整数，累加时会差钱。</p></li><li><b>校验：三个数字对得上才算洗完</b><p>最后一定要跑一遍校验，不要凭「看起来没问题」交付：</p><p>1. 行数：清洗后的行数 = 原始行数 − 确认删除的重复/无效行。
+2. 合计：金额列求和，与原始文件的合计对比（允许分位差）。
+3. 空值：关键列（主键、金额、日期）的空值数量，逐个确认为什么空。</p><p>再抽 3–5 行人工核对，从原始文件里找对应的记录，看字段是否一一对上。抽样时优先挑边界值：金额最大的一行、日期最早的一行、名字最长的那个。</p></li><li><b>留痕：让别人（和半年后的自己）能复现</b><p>在同目录放一个 README.txt，写清：原始文件从哪来、什么时候导的、做了哪几步处理、每一步删了多少行、校验结果是多少。</p><p>如果处理用了命令或脚本，把命令也贴进去。半年后有人质疑数字，你能拿出来复现；没有这份记录，只能重做一遍，而重做的结果很可能不一样。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>iconv 报 illegal input sequence：说明文件里混了两种编码，或者本身不是 GBK。用 file -i 看它认为是什么，再用编辑器（VS Code 右下角可切换编码）打开另存为 UTF-8。</li><li>Excel 打开中文还是乱码：存成了不带 BOM 的 UTF-8。用 Excel 的「数据 → 从文本/CSV」导入，手动选 UTF-8，或者另存一份带 BOM 的。</li><li>合并后列错位：某行有未转义的逗号。找出列数异常的行（awk -F, 'NF!=期望列数'），修好再合并。</li><li>行数怎么都对不上：先查空行（末尾的换行会产生一行空记录），再查筛选条件是否把空值排除了。</li><li>数据量大到 Excel 打不开：用目录里收录的 DuckDB（直接对 CSV 跑 SQL），或者站内的 pandas 工具，几百万行也没问题，别硬撑 Excel。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>在 Excel 里直接打开 CSV 再保存</b></div><div class="res-item-note">Excel 会按本地设置猜编码和日期格式，保存时还可能改掉前导零（001 变成 1）、把长数字转成科学计数法（身份证、银行卡号后四位变 0000）。要么用导入功能显式指定列类型，要么全程用文本工具处理。</div></div><div class="res-item"><div class="res-item-head"><b>用逗号 split 解析 CSV</b></div><div class="res-item-note">字段里有逗号、引号、换行时全部错位，而且错得很隐蔽——前面几行正常，某一行开始整体偏移。用正经的 CSV 解析器，或者至少用能处理引号的工具。</div></div><div class="res-item"><div class="res-item-head"><b>inner join 之后没查丢了多少行</b></div><div class="res-item-note">匹配不上的行会静默消失，报表数字看起来「合理」但其实少了一块。合并后第一件事就是对比左右两边的行数和键集合。</div></div><div class="res-item"><div class="res-item-head"><b>原始文件被覆盖</b></div><div class="res-item-note">所有清洗都在同一个文件上做，改错了无法回溯。留一份 .raw 副本，成本是几 MB 磁盘。</div></div><h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row"><a class="related-chip" href="/tools/csv-columns/">CSV 选列与重排 →</a><a class="related-chip" href="/tools/csv-json/">CSV ↔ JSON →</a><a class="related-chip" href="/tools/pandas-csv/">CSV 数据体检 →</a><a class="related-chip" href="/tools/text-dedupe/">文本去重排序 →</a><a class="related-chip" href="/tools/json-format/">JSON 格式化 →</a></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://www.rfc-editor.org/rfc/rfc4180" target="_blank" rel="noopener nofollow">RFC 4180（CSV 格式规范）</a></div><div class="res-item-note">引号、逗号、换行的官方规则</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html" target="_blank" rel="noopener nofollow">pandas read_csv</a></div><div class="res-item-note">encoding、dtype、sep 参数怎么用</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://duckdb.org/docs/data/csv/overview" target="_blank" rel="noopener nofollow">DuckDB CSV 读取</a></div><div class="res-item-note">直接对 CSV 跑 SQL，不用先导入</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://learn.microsoft.com/power-query/" target="_blank" rel="noopener nofollow">Power Query 入门</a></div><div class="res-item-note">不写代码的可复用清洗流程</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>没有编程基础，只用 Excel 能做到吗？</b></div><div class="res-item-note">能。编码用「数据 → 从文本/CSV」导入时选对编码；表头统一用查找替换；去重用「数据 → 删除重复值」；合并用 Power Query（数据 → 获取数据）。Power Query 的好处是步骤可保存，下次换一份同样的文件点一下刷新就重跑完。</div></div><div class="res-item"><div class="res-item-head"><b>几十万行，Excel 卡死了怎么办？</b></div><div class="res-item-note">用目录里收录的 DuckDB，或者站内的 pandas 工具，直接对 CSV 跑 SQL，比如 SELECT 订单号, SUM(金额) FROM 'x.csv' GROUP BY 1。它不把整表加载到界面里，几百万行也是秒级。</div></div><div class="res-item"><div class="res-item-head"><b>怎么快速发现哪几行列数不对？</b></div><div class="res-item-note">用 awk 按逗号数一下每行的字段数，和表头对比（先 print NF，再 sort | uniq -c 统计频次）。输出里除了正常列数之外的那个数字，就是异常行的数量；再用条件 NF != 正常列数 把它们单独列出来。命令和第 4 步是同一套，只是判断条件从「按主键去重」换成「列数不等于表头」。</div></div><div class="res-item"><div class="res-item-head"><b>导出的表每次列顺序都不一样，有办法吗？</b></div><div class="res-item-note">有。固定一个目标列顺序，每次导入后按列名重新排列（pandas 的 df[cols] 或 Excel 的选择列）。不要按位置对列，按名字对——位置会变，名字相对稳定。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="csv-clean-merge";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

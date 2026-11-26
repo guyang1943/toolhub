@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>域名解析不对时，按这四步查 · 教程 · ToolHub</title>
+  <meta name="description" content="改了 DNS 不生效？分清是缓存、记录写错还是权威服务器没更新，比反复刷新快得多。" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/dns-troubleshoot/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/dns-troubleshoot/" />
+  <meta property="og:title" content="域名解析不对时，按这四步查 · 教程 · ToolHub" />
+  <meta property="og:description" content="改了 DNS 不生效？分清是缓存、记录写错还是权威服务器没更新，比反复刷新快得多。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 140 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"域名解析不对时，按这四步查","description":"改了 DNS 不生效？分清是缓存、记录写错还是权威服务器没更新，比反复刷新快得多。","totalTime":"PT30M","dateModified":"2026-11-26","supply":[{"@type":"HowToSupply","name":"知道域名在哪家注册、NS 指向哪家（域名注册商和 DNS 托管商经常不是同一家）。"},{"@type":"HowToSupply","name":"能改 DNS 记录的后台权限。"},{"@type":"HowToSupply","name":"一个终端，装了 dig（Windows 可以用 nslookup，或在线工具代替）。"}],"step":[{"@type":"HowToStep","position":1,"name":"第一步：先确认谁在管解析（NS）","text":"很多「改了不生效」的根源是：你在 A 家改，实际生效的是 B 家。查：\n\n```\ndig +short NS example.com\n```\n\n返回的两三行就是真正管解析的服务器。如果它和你改记录的后台不是同一家，改什么都没用。\n\n常见情况：域名在阿里云注册，NS 却指向 Cloudflare（因为要套 CDN）；或者反过来，NS 早就迁回去了，人还在旧后台改。这一步花十秒，能省掉后面半小时。"},{"@type":"HowToStep","position":2,"name":"第二步：搞清四种记录的用途，别混用","text":"A：域名 → IPv4 地址。最基础的一条。\nAAAA：域名 → IPv6 地址。有就配，没有不影响。\nCNAME：域名 → 另一个域名（别名）。解析时会继续追下去。注意：CNAME 不能和同名的其他记录共存，尤其是 MX 和 TXT。\nTXT：任意文本。现在主要用来做域名验证（搜索引擎、证书、邮件），SPF/DKIM/DMARC 也走它。\n\n判断该用哪个：目标是 IP 就用 A，目标是另一个域名（比如 GitHub Pages 的 username.github.io）就用 CNAME。托管平台给的说明里通常会写明用哪个，照抄比推理快。"},{"@type":"HowToStep","position":3,"name":"第三步：按「权威 → 公共 → 本机」的顺序问","text":"这是整套方法的核心。先问权威服务器（数据的源头），再问公共 DNS（缓存），最后才问本机：\n\n```\ndig @ns1.example-dns.com example.com A +short\ndig @1.1.1.1 example.com A +short\ndig example.com A +short\n```\n\n三种结果的组合直接给出结论：\n\n- 权威就错 → 记录写错了，回去改。缓存没问题，等也没用。\n- 权威对、公共错 → 还在缓存期，等 TTL 过期。\n- 公共对、本机错 → 只是本机缓存，换网络或清缓存即可，别人看到的是对的。\n\n不加 @ 的 dig 问的是本机配置的解析器，这一步经常被当成「全世界的现状」，是误判的主要来源。"},{"@type":"HowToStep","position":4,"name":"第四步：看 TTL，算清楚要等多久","text":"TTL 是「这条记录允许被缓存多少秒」。改记录之前先看原来的 TTL：\n\n```\ndig example.com A | grep -A1 'ANSWER SECTION'\n```\n\n如果原来是 86400（一天），改完最坏情况要等一天。所以正确的做法是**提前降 TTL**：计划迁移前 24 小时把 TTL 改成 300，等旧缓存过期，再做变更，改完再调回去。\n\n已经改了才发现 TTL 是一天？没有加速办法。所谓「DNS 加速刷新」的服务大多只是帮你问更多节点，改变不了别人家缓存里的旧值。"},{"@type":"HowToStep","position":5,"name":"高频错误一：根域写 CNAME","text":"example.com 这个裸域（根域）按规范不能有 CNAME，因为它必须同时承载 SOA 和 NS 记录。有些服务商允许你填，实际是内部做了转换（CNAME flattening），行为随服务商不同。\n\n后果：邮件收不到（MX 被压制）、部分验证失败。如果托管商要求根域指向某个域名，优先看它是否提供 A 记录或 ALIAS/ANAME 这类方案。\n\n判断方法：\n\n```\ndig example.com CNAME +short\ndig example.com MX +short\n```\n\n如果第一条有值、第二条为空，而你本来配了邮箱，那基本就是这个坑。"},{"@type":"HowToStep","position":6,"name":"高频错误二：@ 和 www 只配了一个","text":"@ 代表裸域，www 是子域，它们是两条独立的记录。托管平台给的说明里通常要求两条都配：\n\n```\nA     @    185.199.108.153\nCNAME www  username.github.io\n```\n\n只配 www 的结果是：用户在地址栏敲 example.com 打不开，而 www.example.com 正常；或者反过来，加上 HTTPS 之后其中一个报证书错误。\n\n验证两条都通：\n\n```\ndig +short example.com\ndig +short www.example.com\n```\n\n两个都要有结果，且指向正确的地方。"},{"@type":"HowToStep","position":7,"name":"高频错误三：邮件验证记录写坏格式","text":"TXT 记录的值如果是 SPF，必须是一行、以 v=spf1 开头，且一个域名只能有一条 SPF（多条会一起失效）：\n\n```\nv=spf1 include:_spf.example.com ~all\n```\n\nDKIM 的公钥通常很长，粘贴时容易被换行或空格截断；DMARC 放在 _dmarc.example.com 这个子域上，不是根域。\n\n验证：\n\n```\ndig +short TXT example.com\ndig +short TXT _dmarc.example.com\n```\n\nTXT 的值在输出里会被引号分段（因为超过 255 字符会拆开），这是正常的，别自己动手拼。"},{"@type":"HowToStep","position":8,"name":"查完之后：把结论写进变更记录","text":"DNS 变更最容易出的事故是「不知道谁在什么时候改了什么」。至少记三行：改了什么记录、改之前的旧值、改的时间和预期生效时间。\n\n如果站点突然打不开而你没有改过任何东西，先跑一遍前四步——域名过期、NS 被改、记录被误删，都会表现成「网站挂了」，而它们的修法完全不同。域名到期这种事，注册商的续费邮件经常进垃圾箱。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"域名解析不对时，按这四步查","item":"https://toolhub.bot.cd/guides/dns-troubleshoot/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"网站搬家，怎么做到「几乎不停机」？","acceptedAnswer":{"@type":"Answer","text":"提前一天把 TTL 降到 300；新服务器先跑起来并用 IP 或临时域名验证通过；然后一次性切换 A/CNAME。切换后旧服务器至少再开一天，因为还有缓存期内的用户会打到旧地址。"}},{"@type":"Question","name":"为什么别人能打开，我打不开？","acceptedAnswer":{"@type":"Answer","text":"大概率是本机或本地运营商的缓存。换手机流量试一次；如果流量下正常，就是你本地解析器的问题，等 TTL 过期或换个 DNS。少数情况是运营商级缓存（透明代理），只能等。"}},{"@type":"Question","name":"免费 DNS 和付费 DNS 差在哪？","acceptedAnswer":{"@type":"Answer","text":"解析速度和稳定性对个人站差别不大。差别在：付费版通常有更快的全网生效、更多的记录数、健康检查与故障转移、以及更细的日志。域名不多、流量不大时，Cloudflare 免费版已经足够，它还顺带给了 CDN 和证书。"}},{"@type":"Question","name":"域名快到期了，有什么要注意的？","acceptedAnswer":{"@type":"Answer","text":"提前续费，别等到期前一周。到期后通常有 30 天左右的宽限期（可赎回但费用高），过期后可能被他人注册，站点、邮箱、验证记录全部跟着丢。开自动续费，并且确认绑定的支付方式还有效。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>域名解析不对时，按这四步查</h1><p>改了 DNS 不生效？分清是缓存、记录写错还是权威服务器没更新，比反复刷新快得多。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 域名解析不对时，按这四步查</div><div class="guide-meta"><span>难度 <b>入门</b></span><span>约 <b>30</b> 分钟</span><span class="gm-risk gm-ok">风险 <b>低</b></span><span>最后核对 <b>2026-11-26</b></span></div><div class="res-intro">「我改了 DNS，怎么还是不生效」——这个问题九成不是 DNS 慢，而是三件事之一：记录本身写错了、改的地方不是真正生效的地方、或者你在看本机缓存。DNS 是一个分层缓存系统，每一层都有自己的过期时间，所以「改了立刻生效」在原理上就不成立。这篇给一套固定顺序的排查法：从 NS 开始，逐层往下问，十分钟内能定位到底卡在哪一层。顺带把 A / CNAME / TXT 这几个最容易混的记录讲清楚。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>域名问题会伪装成别的问题。站点打不开、证书签发失败、邮件进垃圾箱、小程序校验不通过，根因都可能在一条 TXT 或 CNAME 上。</li><li>排查顺序比工具重要。同样是 dig，先问权威服务器还是先问本机，结论完全不同——先问本机只会看到缓存。</li><li>改错一条记录的影响面很大。CNAME 和 A 冲突会让整条解析失效，根域写 CNAME 会让 MX 记录一起失效。知道边界再动手。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>知道域名在哪家注册、NS 指向哪家（域名注册商和 DNS 托管商经常不是同一家）。</li><li>能改 DNS 记录的后台权限。</li><li>一个终端，装了 dig（Windows 可以用 nslookup，或在线工具代替）。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>第一步：先确认谁在管解析（NS）</b><p>很多「改了不生效」的根源是：你在 A 家改，实际生效的是 B 家。查：</p><pre><code>dig +short NS example.com</code></pre><p>返回的两三行就是真正管解析的服务器。如果它和你改记录的后台不是同一家，改什么都没用。</p><p>常见情况：域名在阿里云注册，NS 却指向 Cloudflare（因为要套 CDN）；或者反过来，NS 早就迁回去了，人还在旧后台改。这一步花十秒，能省掉后面半小时。</p></li><li><b>第二步：搞清四种记录的用途，别混用</b><p>A：域名 → IPv4 地址。最基础的一条。
+AAAA：域名 → IPv6 地址。有就配，没有不影响。
+CNAME：域名 → 另一个域名（别名）。解析时会继续追下去。注意：CNAME 不能和同名的其他记录共存，尤其是 MX 和 TXT。
+TXT：任意文本。现在主要用来做域名验证（搜索引擎、证书、邮件），SPF/DKIM/DMARC 也走它。</p><p>判断该用哪个：目标是 IP 就用 A，目标是另一个域名（比如 GitHub Pages 的 username.github.io）就用 CNAME。托管平台给的说明里通常会写明用哪个，照抄比推理快。</p></li><li><b>第三步：按「权威 → 公共 → 本机」的顺序问</b><p>这是整套方法的核心。先问权威服务器（数据的源头），再问公共 DNS（缓存），最后才问本机：</p><pre><code>dig @ns1.example-dns.com example.com A +short
+dig @1.1.1.1 example.com A +short
+dig example.com A +short</code></pre><p>三种结果的组合直接给出结论：</p><p>- 权威就错 → 记录写错了，回去改。缓存没问题，等也没用。
+- 权威对、公共错 → 还在缓存期，等 TTL 过期。
+- 公共对、本机错 → 只是本机缓存，换网络或清缓存即可，别人看到的是对的。</p><p>不加 @ 的 dig 问的是本机配置的解析器，这一步经常被当成「全世界的现状」，是误判的主要来源。</p></li><li><b>第四步：看 TTL，算清楚要等多久</b><p>TTL 是「这条记录允许被缓存多少秒」。改记录之前先看原来的 TTL：</p><pre><code>dig example.com A | grep -A1 &#39;ANSWER SECTION&#39;</code></pre><p>如果原来是 86400（一天），改完最坏情况要等一天。所以正确的做法是**提前降 TTL**：计划迁移前 24 小时把 TTL 改成 300，等旧缓存过期，再做变更，改完再调回去。</p><p>已经改了才发现 TTL 是一天？没有加速办法。所谓「DNS 加速刷新」的服务大多只是帮你问更多节点，改变不了别人家缓存里的旧值。</p></li><li><b>高频错误一：根域写 CNAME</b><p>example.com 这个裸域（根域）按规范不能有 CNAME，因为它必须同时承载 SOA 和 NS 记录。有些服务商允许你填，实际是内部做了转换（CNAME flattening），行为随服务商不同。</p><p>后果：邮件收不到（MX 被压制）、部分验证失败。如果托管商要求根域指向某个域名，优先看它是否提供 A 记录或 ALIAS/ANAME 这类方案。</p><p>判断方法：</p><pre><code>dig example.com CNAME +short
+dig example.com MX +short</code></pre><p>如果第一条有值、第二条为空，而你本来配了邮箱，那基本就是这个坑。</p></li><li><b>高频错误二：@ 和 www 只配了一个</b><p>@ 代表裸域，www 是子域，它们是两条独立的记录。托管平台给的说明里通常要求两条都配：</p><pre><code>A     @    185.199.108.153
+CNAME www  username.github.io</code></pre><p>只配 www 的结果是：用户在地址栏敲 example.com 打不开，而 www.example.com 正常；或者反过来，加上 HTTPS 之后其中一个报证书错误。</p><p>验证两条都通：</p><pre><code>dig +short example.com
+dig +short www.example.com</code></pre><p>两个都要有结果，且指向正确的地方。</p></li><li><b>高频错误三：邮件验证记录写坏格式</b><p>TXT 记录的值如果是 SPF，必须是一行、以 v=spf1 开头，且一个域名只能有一条 SPF（多条会一起失效）：</p><pre><code>v=spf1 include:_spf.example.com ~all</code></pre><p>DKIM 的公钥通常很长，粘贴时容易被换行或空格截断；DMARC 放在 _dmarc.example.com 这个子域上，不是根域。</p><p>验证：</p><pre><code>dig +short TXT example.com
+dig +short TXT _dmarc.example.com</code></pre><p>TXT 的值在输出里会被引号分段（因为超过 255 字符会拆开），这是正常的，别自己动手拼。</p></li><li><b>查完之后：把结论写进变更记录</b><p>DNS 变更最容易出的事故是「不知道谁在什么时候改了什么」。至少记三行：改了什么记录、改之前的旧值、改的时间和预期生效时间。</p><p>如果站点突然打不开而你没有改过任何东西，先跑一遍前四步——域名过期、NS 被改、记录被误删，都会表现成「网站挂了」，而它们的修法完全不同。域名到期这种事，注册商的续费邮件经常进垃圾箱。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>dig 命令不存在（Windows）：用 nslookup example.com 1.1.1.1，或者用在线 DNS 查询工具，注意选「权威服务器」那个选项。</li><li>所有层都查不到记录：确认记录是不是建在了错误的域名下（比如建在 www 下却查根域），以及是否保存成功。有些后台需要点「发布」才生效。</li><li>解析对了但站点打不开：问题已经不在 DNS。接着查端口、证书、以及托管平台的自定义域名是否验证通过。用 curl -I 看返回码，301 到别处说明跳转配错了。</li><li>改了 NS 之后全部记录消失：NS 切换等于换了一整套解析数据，新服务商那边必须把旧记录全部重建。切换前先把旧记录导出一份。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>用本机 dig 判断「全球生效」</b></div><div class="res-item-note">本机问的是本地解析器，它可能缓存了几小时前的旧值。判断生效要看权威服务器和至少两个公共 DNS（1.1.1.1、8.8.8.8），而不是自己电脑。</div></div><div class="res-item"><div class="res-item-head"><b>改之前不降 TTL</b></div><div class="res-item-note">TTL 一天意味着改完要等一天。正确顺序是提前一天降到 300 秒，等旧缓存全过期再改，改完观察稳定后再调回。反过来做，只能干等。</div></div><div class="res-item"><div class="res-item-head"><b>把 CNAME 和 MX 放在同一个名字下</b></div><div class="res-item-note">同名 CNAME 会压制其他所有记录类型，邮件会静默失效——发出去的邮件没人回，但你收不到退信。要指别名又要有邮件，用服务商提供的 ALIAS/ANAME。</div></div><div class="res-item"><div class="res-item-head"><b>以为 DNS 能解决所有「打不开」</b></div><div class="res-item-note">解析只是第一步。解析对了还打不开，接下来是端口、防火墙、证书、应用本身。把 curl -v 的输出按层看，比继续折腾 DNS 有效。</div></div><h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row"><a class="related-chip" href="/tools/url-kit/">URL 解析构造 →</a><a class="related-chip" href="/tools/http-code/">HTTP 状态码速查 →</a><a class="related-chip" href="/tools/id-validate/">身份证 / 银行卡校验 →</a><a class="related-chip" href="/tools/subnet-calc/">子网计算器 →</a></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://developers.cloudflare.com/dns/manage-dns-records/reference/record-types/" target="_blank" rel="noopener nofollow">Cloudflare DNS 记录类型说明</a></div><div class="res-item-note">每种记录能做什么、不能和什么共存</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://dns.google/" target="_blank" rel="noopener nofollow">Google Public DNS 诊断</a></div><div class="res-item-note">在线查任意记录，可选权威服务器</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://bind9.readthedocs.io/en/latest/manpages.html" target="_blank" rel="noopener nofollow">dig 使用手册</a></div><div class="res-item-note">参数含义与输出解读</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://dmarc.org/overview/" target="_blank" rel="noopener nofollow">DMARC 入门</a></div><div class="res-item-note">邮件验证三条记录的关系</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>网站搬家，怎么做到「几乎不停机」？</b></div><div class="res-item-note">提前一天把 TTL 降到 300；新服务器先跑起来并用 IP 或临时域名验证通过；然后一次性切换 A/CNAME。切换后旧服务器至少再开一天，因为还有缓存期内的用户会打到旧地址。</div></div><div class="res-item"><div class="res-item-head"><b>为什么别人能打开，我打不开？</b></div><div class="res-item-note">大概率是本机或本地运营商的缓存。换手机流量试一次；如果流量下正常，就是你本地解析器的问题，等 TTL 过期或换个 DNS。少数情况是运营商级缓存（透明代理），只能等。</div></div><div class="res-item"><div class="res-item-head"><b>免费 DNS 和付费 DNS 差在哪？</b></div><div class="res-item-note">解析速度和稳定性对个人站差别不大。差别在：付费版通常有更快的全网生效、更多的记录数、健康检查与故障转移、以及更细的日志。域名不多、流量不大时，Cloudflare 免费版已经足够，它还顺带给了 CDN 和证书。</div></div><div class="res-item"><div class="res-item-head"><b>域名快到期了，有什么要注意的？</b></div><div class="res-item-note">提前续费，别等到期前一周。到期后通常有 30 天左右的宽限期（可赎回但费用高），过期后可能被他人注册，站点、邮箱、验证记录全部跟着丢。开自动续费，并且确认绑定的支付方式还有效。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="dns-troubleshoot";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

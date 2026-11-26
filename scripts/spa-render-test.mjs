@@ -264,7 +264,15 @@ if (gFence) {
   await go('/guides/' + gFence.slug);
   const fHtml = document.getElementById('page-body').innerHTML;
   check('指南里的围栏代码块渲染成 pre/code', fHtml.includes('<pre><code>') && !fHtml.includes('```'), gFence.slug);
-  check('代码示例里的标签被转义成文本', fHtml.includes('&lt;!DOCTYPE html&gt;'));
+}
+// v3.39：这条原来跟在上面那篇后面，等于假设「第一个含围栏的篇目里正好有 HTML 示例」。
+// 新增教程插到数组前面之后假设就破了——测的不是转义能力，而是数据顺序。
+// 改成按内容找一篇真正带 HTML 示例的，加多少教程都不受影响。
+const gEscape = guideData.find((x) => x.steps.some((s) => String(s.body).includes('<!DOCTYPE html>')));
+if (gEscape) {
+  await go('/guides/' + gEscape.slug);
+  const eHtml = document.getElementById('page-body').innerHTML;
+  check('代码示例里的标签被转义成文本', eHtml.includes('&lt;!DOCTYPE html&gt;'), gEscape.slug);
 }
 
 // 2) 评测详情页

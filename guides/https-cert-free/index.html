@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>免费 HTTPS 三条路，按你的情况选一条 · 教程 · ToolHub</title>
+  <meta name="description" content="托管平台自带、Cloudflare 一键、Let's Encrypt 自动续期——证书不花钱，坑在回源和混合内容。" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/guides/https-cert-free/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/guides/https-cert-free/" />
+  <meta property="og:title" content="免费 HTTPS 三条路，按你的情况选一条 · 教程 · ToolHub" />
+  <meta property="og:description" content="托管平台自带、Cloudflare 一键、Let's Encrypt 自动续期——证书不花钱，坑在回源和混合内容。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 140 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HowTo","name":"免费 HTTPS 三条路，按你的情况选一条","description":"托管平台自带、Cloudflare 一键、Let's Encrypt 自动续期——证书不花钱，坑在回源和混合内容。","totalTime":"PT35M","dateModified":"2026-11-26","supply":[{"@type":"HowToSupply","name":"先确认你的站点在哪：托管平台（GitHub Pages、Vercel、Netlify）、CDN 后面、还是自己的服务器。三条路的分岔就在这里。"},{"@type":"HowToSupply","name":"有自己的域名，并且能改 DNS 记录。没有域名就没有证书申请的主体，这一步绕不开。"},{"@type":"HowToSupply","name":"如果是自己的服务器：能 SSH 登录、能改 Nginx/Caddy 配置、80 和 443 端口对公网开放（家用宽带常被封 80，见第 5 步）。"},{"@type":"HowToSupply","name":"会用 curl -I 看响应头，会用 openssl s_client 看证书。两条命令，本篇只用这两个工具做验证。"}],"step":[{"@type":"HowToStep","position":1,"name":"先搞清楚证书在证明什么","text":"证书只证明一件事：你连上的这个域名，确实由持有域名控制权的人提供服务。它不证明站点内容可信，也不证明网站是正规公司。所以「有小锁」只代表链路加密 + 域名对得上，看到小锁就往里填身份证号仍然是错的。\n\n顺带一个概念：证书是绑定域名的，www 和裸域是两张证书（或一张多域名证书）。只配了 www，访问裸域照样报错。"},{"@type":"HowToStep","position":2,"name":"路线 A：托管平台自带，什么都不用做","text":"GitHub Pages、Vercel、Netlify、Cloudflare Pages 都给免费证书，签好自动续。你要做的只有两件事：在平台后台确认「强制 HTTPS」是开的，以及确认自定义域名已经验证通过。\n\n验证方法：\n\n```\ncurl -sI http://你的域名 | head -3\n```\n\n返回 301 或 308 且 Location 指向 https，就对了。返回 200 说明还在用 http 提供服务，去后台打开强制跳转。这一条经常被忽略——HTTPS 能用，但用户从 http 进来时没有跳转。"},{"@type":"HowToStep","position":3,"name":"路线 B：Cloudflare，注意回源那一段","text":"把域名 NS 交给 Cloudflare，开代理（橙色云），边缘就有了证书，浏览器到 Cloudflare 这一段是加密的。关键在「Cloudflare 到你的服务器」这一段，SSL/TLS 模式有四个选项：\n\n- Flexible：回源走 http，明文。不能用。它会让「浏览器显示安全」成为假象，而且容易造成重定向死循环。\n- Full：回源走 https，但不校验证书真假。能用，比 Flexible 好。\n- Full (strict)：回源 https 且校验证书。推荐，服务器上要有一张有效证书（可以是 Let's Encrypt，也可以是 Cloudflare 的 Origin Certificate）。\n- Off：全明文。\n\n选 Full (strict)，然后在服务器上装一张 15 年有效期的 Origin Certificate（Cloudflare 后台生成，只对 Cloudflare 回源有效）。这样回源也是加密的，且不用管续期。"},{"@type":"HowToStep","position":4,"name":"路线 C：自己的服务器 + acme.sh + Nginx","text":"装 acme.sh，用 HTTP-01 验证（需要 80 端口可达）：\n\n```\ncurl https://get.acme.sh | sh -s email=you@example.com\n~/.acme.sh/acme.sh --issue -d example.com -d www.example.com -w /var/www/html\n~/.acme.sh/acme.sh --install-cert -d example.com \\\n  --key-file /etc/nginx/ssl/example.key \\\n  --fullchain-file /etc/nginx/ssl/example.crt \\\n  --reloadcmd \"systemctl reload nginx\"\n```\n\n--reloadcmd 是关键：没有它，证书续了新文件，Nginx 还在用内存里的旧证书，到期照样报警。验证续期是否真的生效：\n\n```\nsudo ~/.acme.sh/acme.sh --cron --force\ncurl -sI https://example.com | head -1\n```\n\nacme.sh 装完会自己加一条 cron（或 systemd timer），每天检查一次，到期前 30 天续。"},{"@type":"HowToStep","position":5,"name":"路线 C 的备选：Caddy，两行配置全自动","text":"不想碰 certbot/acme.sh 的续期逻辑，用 Caddy。它的默认行为就是「自动申请 + 自动续期 + 自动跳转 HTTPS」：\n\n```\nexample.com {\n  root * /var/www/html\n  file_server\n}\n```\n\n就这两行，HTTPS 就有了。Caddy 把 ACME 流程内置了，证书放在 /var/lib/caddy/.local/share/caddy 下，续期不需要额外配置。代价是它自带一个 Web 服务器（要换掉 Nginx），以及反代语法和 Nginx 不一样。新机器上直接选 Caddy，比装 Nginx 再配 certbot 省一半时间。"},{"@type":"HowToStep","position":6,"name":"家用宽带没有 80 端口怎么办","text":"很多家用宽带封了 80 和 443 的入站，HTTP-01 验证会失败。三条出路：\n\n1. 用 DNS-01 验证：acme.sh 支持通过 DNS API 加一条 TXT 记录来验证，完全不需要 80 端口。用 Cloudflare 托管 DNS 时最省事，配一个 API Token 就行。\n2. 套 Cloudflare 代理：边缘证书由 Cloudflare 提供，源站用 Origin Certificate，不需要自己申请。\n3. 用内网穿透（Cloudflare Tunnel / frp），由隧道服务端处理 HTTPS。\n\n判断方法：从外网 curl 你的公网 IP 的 80 端口，连不上就是被封了。"},{"@type":"HowToStep","position":7,"name":"验证：别只看浏览器的小锁","text":"浏览器对小锁很宽容，过期证书在强制刷新前也可能显示正常。用命令看真实情况：\n\n```\necho | openssl s_client -connect example.com:443 -servername example.com 2>/dev/null \\\n  | openssl x509 -noout -subject -dates\n```\n\n看两个日期，以及 subject 里的域名对不对。再看协议版本和跳转：\n\n```\ncurl -sI http://example.com | head -3\ncurl -sI https://example.com | head -3\n```\n\n顺带把 HSTS 想清楚再加：Strict-Transport-Security 一旦下发，浏览器在 max-age 内拒绝用 http 访问这个域名。先设一个短值（比如 300 秒）试两天，确认全站资源都是 https 之后再改长。设错了没有撤销按钮，只能等它过期。"},{"@type":"HowToStep","position":8,"name":"混合内容：小锁旁边的那个警告","text":"页面是 https，但里面加载了 http 的图片、脚本或接口，浏览器会把整页降级标记为「部分不安全」，并且直接拦掉脚本。排查方法：打开开发者工具 Console，搜 Mixed Content，或者在页面源码里找 http:// 开头的资源地址。\n\n常见的三处：老主题里的 Google Fonts、图床返回的 http 链接、硬编码的 http 接口地址。改成 // 开头（协议相对）或直接写 https。上线前用 curl 抓一次首页，grep 一遍 http:// 能省掉很多来回。"}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://toolhub.bot.cd/"},{"@type":"ListItem","position":2,"name":"教程","item":"https://toolhub.bot.cd/guides/"},{"@type":"ListItem","position":3,"name":"免费 HTTPS 三条路，按你的情况选一条","item":"https://toolhub.bot.cd/guides/https-cert-free/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"免费证书和付费证书差在哪？","acceptedAnswer":{"@type":"Answer","text":"加密强度没有差别（都是同样的算法和密钥长度）。差别在：付费证书通常带组织信息（OV/EV）、有赔付条款、有效期更长、支持更多域名和通配符的方式更灵活。个人站和大多数企业展示站，Let's Encrypt 完全够用；需要向客户出示「我们是已验证的公司」时才考虑付费。"}},{"@type":"Question","name":"三个月一续会不会哪天忘了就挂？","acceptedAnswer":{"@type":"Answer","text":"自动化之后不需要人记。acme.sh 装完自带定时任务，Caddy 内置续期。真正要防的是「自动任务悄悄失败了」——所以装一个到期提醒：用站内的日期计算工具算出入到期日的天数，或者用 Uptime Kuma 的证书到期监控，剩 14 天告警。"}},{"@type":"Question","name":"多个子域要各申请一张吗？","acceptedAnswer":{"@type":"Answer","text":"可以用一张通配符证书（*.example.com），但通配符只能用 DNS-01 验证，必须能改 DNS 的 TXT 记录。子域不多的话，一张证书带多个 -d 参数更简单，也便于单独吊销某一个。"}},{"@type":"Question","name":"套了 CDN 之后，源站还需要证书吗？","acceptedAnswer":{"@type":"Answer","text":"要。只要 CDN 到源站这一段走 https（Full 或 Full strict），源站就必须有证书。Cloudflare 的 Origin Certificate 是免费且 15 年有效的，专门用在这一段，不占 Let's Encrypt 的签发额度。"}}]}]}</script>
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>免费 HTTPS 三条路，按你的情况选一条</h1><p>托管平台自带、Cloudflare 一键、Let's Encrypt 自动续期——证书不花钱，坑在回源和混合内容。</p><div class="crumb" style="margin-bottom:10px"><a href="/guides/">教程</a> / 免费 HTTPS 三条路，按你的情况选一条</div><div class="guide-meta"><span>难度 <b>入门</b></span><span>约 <b>35</b> 分钟</span><span class="gm-risk gm-ok">风险 <b>低</b></span><span>最后核对 <b>2026-11-26</b></span></div><div class="res-intro">现在拿一张 HTTPS 证书已经不需要花钱，难的是选对路径：站点托管在 GitHub Pages 或 Vercel 上，证书是平台送的，你什么都不用做；套了 Cloudflare，证书在边缘就有，但回源那一段可能是明文；自己管服务器，就得让证书自动签、自动续。三条路对应三种处境，选错会出现「浏览器有小锁，但数据在链路上裸奔」或者「三个月后证书过期，站点打不开」。这篇先把证书到底在证明什么说清楚，再按处境给三条可执行的路。</div><h2 class="res-group-title">为什么值得折腾</h2><ul><li>不加密的站点在现代浏览器里已经被标记为「不安全」，登录框、表单都会被警告，输入法插件也会提醒用户。这不是形象问题，是转化问题。</li><li>搜索引擎把 HTTPS 当排名因素，Chrome 也会对 http 页面做降级提示。免费能拿到的东西，没有理由不做。</li><li>证书自动化之后是零维护。真正会出事的不是「没配」，而是「配了但忘了续」——三个月后过期当天才发现的站点，每年都有。</li></ul><h2 class="res-group-title">开工前要有的</h2><ul><li>先确认你的站点在哪：托管平台（GitHub Pages、Vercel、Netlify）、CDN 后面、还是自己的服务器。三条路的分岔就在这里。</li><li>有自己的域名，并且能改 DNS 记录。没有域名就没有证书申请的主体，这一步绕不开。</li><li>如果是自己的服务器：能 SSH 登录、能改 Nginx/Caddy 配置、80 和 443 端口对公网开放（家用宽带常被封 80，见第 5 步）。</li><li>会用 curl -I 看响应头，会用 openssl s_client 看证书。两条命令，本篇只用这两个工具做验证。</li></ul><h2 class="res-group-title">步骤</h2><ol class="guide-steps"><li><b>先搞清楚证书在证明什么</b><p>证书只证明一件事：你连上的这个域名，确实由持有域名控制权的人提供服务。它不证明站点内容可信，也不证明网站是正规公司。所以「有小锁」只代表链路加密 + 域名对得上，看到小锁就往里填身份证号仍然是错的。</p><p>顺带一个概念：证书是绑定域名的，www 和裸域是两张证书（或一张多域名证书）。只配了 www，访问裸域照样报错。</p></li><li><b>路线 A：托管平台自带，什么都不用做</b><p>GitHub Pages、Vercel、Netlify、Cloudflare Pages 都给免费证书，签好自动续。你要做的只有两件事：在平台后台确认「强制 HTTPS」是开的，以及确认自定义域名已经验证通过。</p><p>验证方法：</p><pre><code>curl -sI http://你的域名 | head -3</code></pre><p>返回 301 或 308 且 Location 指向 https，就对了。返回 200 说明还在用 http 提供服务，去后台打开强制跳转。这一条经常被忽略——HTTPS 能用，但用户从 http 进来时没有跳转。</p></li><li><b>路线 B：Cloudflare，注意回源那一段</b><p>把域名 NS 交给 Cloudflare，开代理（橙色云），边缘就有了证书，浏览器到 Cloudflare 这一段是加密的。关键在「Cloudflare 到你的服务器」这一段，SSL/TLS 模式有四个选项：</p><p>- Flexible：回源走 http，明文。不能用。它会让「浏览器显示安全」成为假象，而且容易造成重定向死循环。
+- Full：回源走 https，但不校验证书真假。能用，比 Flexible 好。
+- Full (strict)：回源 https 且校验证书。推荐，服务器上要有一张有效证书（可以是 Let&#39;s Encrypt，也可以是 Cloudflare 的 Origin Certificate）。
+- Off：全明文。</p><p>选 Full (strict)，然后在服务器上装一张 15 年有效期的 Origin Certificate（Cloudflare 后台生成，只对 Cloudflare 回源有效）。这样回源也是加密的，且不用管续期。</p></li><li><b>路线 C：自己的服务器 + acme.sh + Nginx</b><p>装 acme.sh，用 HTTP-01 验证（需要 80 端口可达）：</p><pre><code>curl https://get.acme.sh | sh -s email=you@example.com
+~/.acme.sh/acme.sh --issue -d example.com -d www.example.com -w /var/www/html
+~/.acme.sh/acme.sh --install-cert -d example.com \
+  --key-file /etc/nginx/ssl/example.key \
+  --fullchain-file /etc/nginx/ssl/example.crt \
+  --reloadcmd &quot;systemctl reload nginx&quot;</code></pre><p>--reloadcmd 是关键：没有它，证书续了新文件，Nginx 还在用内存里的旧证书，到期照样报警。验证续期是否真的生效：</p><pre><code>sudo ~/.acme.sh/acme.sh --cron --force
+curl -sI https://example.com | head -1</code></pre><p>acme.sh 装完会自己加一条 cron（或 systemd timer），每天检查一次，到期前 30 天续。</p></li><li><b>路线 C 的备选：Caddy，两行配置全自动</b><p>不想碰 certbot/acme.sh 的续期逻辑，用 Caddy。它的默认行为就是「自动申请 + 自动续期 + 自动跳转 HTTPS」：</p><pre><code>example.com {
+  root * /var/www/html
+  file_server
+}</code></pre><p>就这两行，HTTPS 就有了。Caddy 把 ACME 流程内置了，证书放在 /var/lib/caddy/.local/share/caddy 下，续期不需要额外配置。代价是它自带一个 Web 服务器（要换掉 Nginx），以及反代语法和 Nginx 不一样。新机器上直接选 Caddy，比装 Nginx 再配 certbot 省一半时间。</p></li><li><b>家用宽带没有 80 端口怎么办</b><p>很多家用宽带封了 80 和 443 的入站，HTTP-01 验证会失败。三条出路：</p><p>1. 用 DNS-01 验证：acme.sh 支持通过 DNS API 加一条 TXT 记录来验证，完全不需要 80 端口。用 Cloudflare 托管 DNS 时最省事，配一个 API Token 就行。
+2. 套 Cloudflare 代理：边缘证书由 Cloudflare 提供，源站用 Origin Certificate，不需要自己申请。
+3. 用内网穿透（Cloudflare Tunnel / frp），由隧道服务端处理 HTTPS。</p><p>判断方法：从外网 curl 你的公网 IP 的 80 端口，连不上就是被封了。</p></li><li><b>验证：别只看浏览器的小锁</b><p>浏览器对小锁很宽容，过期证书在强制刷新前也可能显示正常。用命令看真实情况：</p><pre><code>echo | openssl s_client -connect example.com:443 -servername example.com 2&gt;/dev/null \
+  | openssl x509 -noout -subject -dates</code></pre><p>看两个日期，以及 subject 里的域名对不对。再看协议版本和跳转：</p><pre><code>curl -sI http://example.com | head -3
+curl -sI https://example.com | head -3</code></pre><p>顺带把 HSTS 想清楚再加：Strict-Transport-Security 一旦下发，浏览器在 max-age 内拒绝用 http 访问这个域名。先设一个短值（比如 300 秒）试两天，确认全站资源都是 https 之后再改长。设错了没有撤销按钮，只能等它过期。</p></li><li><b>混合内容：小锁旁边的那个警告</b><p>页面是 https，但里面加载了 http 的图片、脚本或接口，浏览器会把整页降级标记为「部分不安全」，并且直接拦掉脚本。排查方法：打开开发者工具 Console，搜 Mixed Content，或者在页面源码里找 http:// 开头的资源地址。</p><p>常见的三处：老主题里的 Google Fonts、图床返回的 http 链接、硬编码的 http 接口地址。改成 // 开头（协议相对）或直接写 https。上线前用 curl 抓一次首页，grep 一遍 http:// 能省掉很多来回。</p></li></ol><h2 class="res-group-title">翻车了怎么办</h2><ul class="guide-fallback"><li>证书申请失败：先看 acme.sh 的日志（~/.acme.sh/acme.sh.log）。最常见的三种是 80 端口不通、DNS 还没生效、以及域名已经有一张短期证书导致触发速率限制（Let's Encrypt 对同一域名每周有签发次数上限，等一周或换 staging 环境调试）。</li><li>配完打不开、报重定向次数过多：多半是 Cloudflare 的 SSL 模式选了 Flexible，而源站又强制跳 https，两边互相踢。改成 Full (strict)，或者先关掉源站的强制跳转。</li><li>证书续了但浏览器还显示旧的：服务器进程没 reload。检查 reloadcmd 是否执行成功，手动 systemctl reload nginx 再看一次日期。</li><li>彻底搞不定：先退回托管平台。把站点放 GitHub Pages 或 Cloudflare Pages，证书问题自动消失，等服务能稳定跑了再回来折腾自建服务器。</li></ul><h2 class="res-group-title">容易踩的坑</h2><div class="res-item"><div class="res-item-head"><b>用 Flexible 模式，以为就安全了</b></div><div class="res-item-note">浏览器到 Cloudflare 加密，Cloudflare 到源站明文。用户的密码在公网最后一段是裸的，而站长看到的却是「小锁正常」。这是最危险的一种「看起来配好了」。要么 Full (strict)，要么源站也上一张证书。</div></div><div class="res-item"><div class="res-item-head"><b>只配了 www，裸域打不开</b></div><div class="res-item-note">证书是绑域名的，www.example.com 的证书对 example.com 无效。申请时两个都带上（-d example.com -d www.example.com），DNS 也两条都解析到同一处。这个错误在手机上特别容易漏——很多人只在自己的浏览器里试过 https://www。</div></div><div class="res-item"><div class="res-item-head"><b>证书自动续期了，但服务没重载</b></div><div class="res-item-note">acme.sh 续期成功不等于生效。没有 --reloadcmd，Nginx 会一直用启动时加载的那张证书，直到你重启它——而那时候证书已经过期了。装证书时就把 reload 命令写进去，并且每季度手动 --cron --force 跑一次确认。</div></div><div class="res-item"><div class="res-item-head"><b>HSTS 一上来就设一年</b></div><div class="res-item-note">HSTS 是浏览器端的强制策略，max-age 一年意味着一年内这个域名只能用 https 访问，用户无法点「继续访问」。如果站内还有 http 资源或某个子域没证书，用户会直接打不开，且你无法远程撤销。先短后长，是唯一安全的顺序。</div></div><h2 class="res-group-title">这篇里用到的站内工具</h2><div class="related-row"><a class="related-chip" href="/tools/http-code/">HTTP 状态码速查 →</a><a class="related-chip" href="/tools/url-kit/">URL 解析构造 →</a><a class="related-chip" href="/tools/date-calc/">日期计算器 →</a><a class="related-chip" href="/tools/sha256-hash/">哈希计算 →</a></div><h2 class="res-group-title">参考链接</h2><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://letsencrypt.org/docs/" target="_blank" rel="noopener nofollow">Let's Encrypt 文档</a></div><div class="res-item-note">速率限制和验证方式的官方说明</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://github.com/acmesh-official/acme.sh" target="_blank" rel="noopener nofollow">acme.sh</a></div><div class="res-item-note">DNS-01 各家服务商的 API 配置示例</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://caddyserver.com/docs/automatic-https" target="_blank" rel="noopener nofollow">Caddy 自动 HTTPS</a></div><div class="res-item-note">为什么它默认就能自动签</div></div><div class="res-item"><div class="res-item-head"><a class="guide-link" href="https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/" target="_blank" rel="noopener nofollow">Cloudflare SSL/TLS 模式</a></div><div class="res-item-note">四种模式的区别，别选 Flexible</div></div><h2 class="res-group-title">常见问题</h2><div class="res-item"><div class="res-item-head"><b>免费证书和付费证书差在哪？</b></div><div class="res-item-note">加密强度没有差别（都是同样的算法和密钥长度）。差别在：付费证书通常带组织信息（OV/EV）、有赔付条款、有效期更长、支持更多域名和通配符的方式更灵活。个人站和大多数企业展示站，Let's Encrypt 完全够用；需要向客户出示「我们是已验证的公司」时才考虑付费。</div></div><div class="res-item"><div class="res-item-head"><b>三个月一续会不会哪天忘了就挂？</b></div><div class="res-item-note">自动化之后不需要人记。acme.sh 装完自带定时任务，Caddy 内置续期。真正要防的是「自动任务悄悄失败了」——所以装一个到期提醒：用站内的日期计算工具算出入到期日的天数，或者用 Uptime Kuma 的证书到期监控，剩 14 天告警。</div></div><div class="res-item"><div class="res-item-head"><b>多个子域要各申请一张吗？</b></div><div class="res-item-note">可以用一张通配符证书（*.example.com），但通配符只能用 DNS-01 验证，必须能改 DNS 的 TXT 记录。子域不多的话，一张证书带多个 -d 参数更简单，也便于单独吊销某一个。</div></div><div class="res-item"><div class="res-item-head"><b>套了 CDN 之后，源站还需要证书吗？</b></div><div class="res-item-note">要。只要 CDN 到源站这一段走 https（Full 或 Full strict），源站就必须有证书。Cloudflare 的 Origin Certificate 是免费且 15 年有效的，专门用在这一段，不占 Let's Encrypt 的签发额度。</div></div><div class="crumb" style="margin-top:24px"><a href="/guides/">← 全部教程</a> · <a href="/">返回首页</a></div></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册" data-en="70 run in your browser · 140 listed · 64 resources · no sign-up">70 个在本机跑 · 140 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__GUIDE__="https-cert-free";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>
