@@ -1571,9 +1571,9 @@ function renderHeroStats(reg) {
   // Hero 标题与副标题（双语）。v3.9：标题从两行长句压成一行短语，
   // 数字不再单独占一行统计条，而是并进入口卡（见 renderRouteCards）。
   const h1 = document.querySelector('.hero h1');
-  if (h1) h1.textContent = t('不装软件，也不上传文件', 'heroTitle1');
+  if (h1) h1.textContent = t('能本地跑的，都在你电脑上跑', 'heroTitle1');
   const hp = document.querySelector('.hero p');
-  if (hp) hp.textContent = t('挑一个工具，填参数，出结果。文件留在这台电脑上。', 'heroDesc');
+  if (hp) hp.textContent = t('140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。', 'heroDesc');
 
   const btn = $('#random-btn');
   if (btn) {
@@ -1591,6 +1591,8 @@ function renderHeroStats(reg) {
    工具页含表单渲染、结果区、分享/草稿/加密分享，只有 /tools/* 用到。
    拆出去后首页不为它付字节；依赖由这里注入，避免主模块与子模块循环引用。 */
 async function openTool(id) {
+  // v3.36：埋点按需加载，模块已在缓存里时就是一个微任务；失败静默，不影响打开工具。
+  import('/assets/lib/beacon.js').then((m) => m.track('tool_open')).catch(() => {});
   let m;
   try {
     m = await import('/assets/tool-page.js');
@@ -1969,6 +1971,12 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+// 访问统计（v3.36）：动态加载，不进首屏包。
+// 埋点内容与关闭方式见 assets/lib/beacon.js 与 /privacy/；失败静默，绝不阻塞首屏。
+import('/assets/lib/beacon.js')
+  .then((m) => m.init())
+  .catch(() => {});
 
 route();
 

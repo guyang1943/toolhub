@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.35 · 预缓存 360 个地址 · 约 5.8 MB
-const VERSION = "toolhub-v3.35";
+// 版本：toolhub-v3.36 · 预缓存 361 个地址 · 约 5.8 MB
+const VERSION = "toolhub-v3.36";
 const CORE = [
   "/",
   "/offline/",
@@ -213,6 +213,7 @@ const FULL = [
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
+  "/assets/lib/beacon.js",
   "/assets/lib/drop-route.js",
   "/assets/lib/events.js",
   "/assets/lib/guide-meta.js",

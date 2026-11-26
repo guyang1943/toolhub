@@ -61,6 +61,14 @@ export const KEYS = [
 
   { id: 'usage', group: 'stats', kind: 'object', what: '每个工具在本机用过几次', tail: '只用来排「最常用」', clear: true },
   {
+    id: 'visitor',
+    group: 'stats',
+    kind: 'string',
+    what: '本机随机访客号',
+    tail: '16 位随机串，不含任何身份信息；只用来区分「同一台设备是不是又来了一次」，删掉就换一个新的',
+    clear: true,
+  },
+  {
     id: 'events',
     group: 'stats',
     kind: 'array',

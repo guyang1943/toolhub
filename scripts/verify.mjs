@@ -1051,6 +1051,55 @@ check('隐私说明与统计口径（D3）', () => {  const page = join(root, 'p
   return '隐私页 + sitemap + 退出开关';
 });
 
+// ---------- v3.36：定位改成「本地优先」，并开始有自己的访问统计 ----------
+// 为什么要有这一条：v3.35 之前全站靠一句「不装软件，也不上传文件」立信，而 v3.36 起
+// 会向自己的接口发访问事件。**说法必须跟着行为改**，否则就是拿旧的绝对化承诺盖住新的行为——
+// 那正是 v3.20 修过的同一类错（行为对、说法错）。所以这里查两件事：
+//   ① 绝对化表述不能再出现在任何要给人看的页面里；
+//   ② 隐私页必须把「存了哪四个字段、保留多久」写清楚，少一个词都不行。
+check('本地优先口径与访问统计（v3.36）', () => {
+  const BANNED = /零第三方请求|永不联网|任何情况下都不会联网/;
+  for (const f of ['index.html', 'privacy/index.html', 'about/index.html', 'my/index.html']) {
+    const p = join(root, f);
+    if (!existsSync(p)) continue;
+    const h = readFileSync(p, 'utf8');
+    assert(!BANNED.test(h), `${f} 还写着绝对化的隐私承诺（行为变了，说法要跟着改）`);
+  }
+
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  assert(/能本地跑的/.test(home), '首页标题还是旧口径（应为「能本地跑的，都在你电脑上跑」）');
+
+  const pv = readFileSync(join(root, 'privacy/index.html'), 'utf8');
+  for (const kw of ['本机随机号', '90 天', '不存 IP', '事件名']) {
+    assert(pv.includes(kw), `隐私页缺「${kw}」——统计口径必须逐项写清，不能只说「少量数据」`);
+  }
+
+  const beacon = readFileSync(join(root, 'assets', 'lib', 'beacon.js'), 'utf8');
+  const code = beacon.replace(/^\s*\/\/.*$/gm, ''); // 去掉整行注释再判外部地址
+  assert(!/https?:\/\//.test(code), 'beacon.js 里出现了外部地址（统计必须同域）');
+  assert(!/document\.cookie/.test(beacon), 'beacon.js 用了 cookie');
+  assert(/no-analytics/.test(beacon), 'beacon.js 没读「在本机关闭统计」的开关');
+  assert(/doNotTrack/.test(beacon), 'beacon.js 没检查 Do Not Track');
+  assert(/sendBeacon/.test(beacon) && /\.catch\(/.test(beacon), 'beacon.js 缺 sendBeacon 或失败兜底');
+  assert(/onLine === false/.test(beacon), 'beacon.js 没在断网时跳过（离线包里不该发请求）');
+
+  const worker = readFileSync(join(root, '_worker.js', 'index.js'), 'utf8');
+  assert(/EVENTS = new Set\(\[/.test(worker), '_worker.js 缺事件白名单');
+  assert(!/cf-connecting-ip|user-agent|referer/i.test(worker), '_worker.js 读了 IP / UA / referer');
+  assert(/Cache-Control': 'no-store'/.test(worker), '/api 与 /admin 必须 no-store（否则会被边缘缓存或泄露）');
+
+  // 开关必须与产物一致：off 时产物里不许有注入行，否则线上会对着 GitHub Pages 打 404，
+  // 而那条请求会把 IP 带到托管方——恰好违反隐私页写的那句「不存 IP」。
+  const cfg = JSON.parse(readFileSync(join(root, 'analytics.json'), 'utf8'));
+  const injected = /__TH_BEACON__/.test(home);
+  assert(
+    injected === (cfg.beacon === 'on'),
+    `analytics.json beacon=${cfg.beacon}，但产物${injected ? '注入' : '没注入'}了开关 —— 两者必须一致`
+  );
+  assert(/window\.__TH_BEACON__/.test(beacon), 'beacon.js 没读构建期开关（关闭时仍会发事件）');
+  return '本地优先口径 + 四字段 + 白名单 + no-store + 开关一致';
+});
+
 // ---------- v3.21 外链证据层 ----------
 // 已经人工核过的条目，id 写在这里。改回 imported 就是「把核过的又变回没核过」，
 // 等于让「0 字节上传服务器」这句话重新失去依据——所以只许加，不许减。

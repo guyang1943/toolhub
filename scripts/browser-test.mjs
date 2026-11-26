@@ -356,6 +356,21 @@ async function feedFile(selector, dataUrl, name, type) {
   // v3.5：工具页样式拆成独立文件后，首页绝不能把它捎上——不然拆了个寂寞
   const homeHasToolCss = await evaluate(`!!document.querySelector('link[href="/assets/style.tool.css"]')`);
   check('首页不加载工具页样式', homeHasToolCss === false);
+  // v3.36：访问统计是构建期开关（analytics.json 的 beacon），默认关。两种配置都要有断言：
+  //   开 → 真的初始化并写入本机随机号；关 → 什么都不做（不发事件、不写号）。
+  // 只写一个分支的话，开关被写反了没人会发现。
+  const beaconOn = await evaluate(`!!window.__TH_BEACON__`);
+  if (beaconOn) {
+    let visitorRaw = '';
+    for (let i = 0; i < 25 && !visitorRaw; i++) {
+      visitorRaw = await evaluate(`localStorage.getItem('toolhub:visitor') || ''`).catch(() => '');
+      if (!visitorRaw) await sleep(100);
+    }
+    check('统计开启时写入本机随机号', /"[0-9a-f]{8,}"/.test(String(visitorRaw)), String(visitorRaw).slice(0, 20));
+  } else {
+    const visitorRaw = await evaluate(`localStorage.getItem('toolhub:visitor') || ''`).catch(() => '');
+    check('统计关闭时不写本机号', !visitorRaw, String(visitorRaw).slice(0, 20));
+  }
   await shot('01-home');
 
   // ---- 1.5 /?q= 搜索落地（v3.10）----

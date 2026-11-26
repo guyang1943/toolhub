@@ -1,9 +1,10 @@
 {
-  "version": 2,
+  "version": 3,
   "provider": "none",
+  "beacon": "off",
   "token": "",
   "domain": "",
   "scriptUrl": "",
   "honorDNT": true,
-  "note": "provider 可选 none / cloudflare / plausible / umami。none 时页面完全不加载任何统计脚本（零第三方请求）。cloudflare 需填 token；plausible 需填 domain；umami 需填 scriptUrl 与 token（website id）。honorDNT 为 true 时，浏览器发出 Do Not Track 就不加载。启用第三方统计前，需要在 assets/lib/security-headers.js 的 CSP 里放行对应域名，node scripts/verify.mjs 会检查这一步，漏了会直接报错。"
+  "note": "两个独立开关。① provider 是第三方统计（none / cloudflare / plausible / umami），none 时不加载任何第三方脚本。② beacon 是本站自有的事件上报（off / on）：on 才会把 window.__TH_BEACON__ 注入页面，assets/lib/beacon.js 才会向 /api/e 发事件。默认 off 的原因很具体：站点发布在 GitHub Pages，没有 /api/e，开了就是每次加载一个 404，而那条请求仍会把 IP 带到托管方的边缘——与隐私页「不存 IP」冲突。把站点切到 Cloudflare Workers（wrangler deploy + D1 binding，见 wrangler.toml）之后再改成 on 并重新构建。启用第三方统计前，需要在 assets/lib/security-headers.js 的 CSP 里放行对应域名，node scripts/verify.mjs 会检查这一步，漏了会直接报错。"
 }

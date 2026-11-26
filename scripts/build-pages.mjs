@@ -142,7 +142,21 @@ const GUIDE_DIFF_EN = { 入门: 'Beginner', 中等: 'Intermediate', 进阶: 'Adv
 // 工具页在构建期就把这张表引进 <head>（整页加载无闪烁）；从首页点卡片进工具的
 // SPA 路径由 app.js 的 ensureCss() 先取到再画——两条路径都靠「rel + href」认亲。
 const TOOL_CSS_LINK = '  <link rel="stylesheet" href="/assets/style.tool.css" />';
-const rawTpl = readFileSync(join(root, 'index.html'), 'utf8');
+// v3.36：自有埋点的构建期开关。默认 off，因为它依赖 /api/e（只有 Cloudflare Workers 上有）。
+// 站点目前发布在 GitHub Pages，开了就是每页一个 404，且那条请求会把 IP 带到托管方边缘。
+const BEACON_ON = (() => {
+  try {
+    return JSON.parse(readFileSync(join(root, 'analytics.json'), 'utf8')).beacon === 'on';
+  } catch {
+    return false;
+  }
+})();
+// 读回来的 index.html 是上一轮的产物，内部带的开关行要先剥掉，否则开关打开后每构建一次
+// 就多叠一行（同一类问题 v3.13 在 hs: 块上踩过）。
+const rawTpl = readFileSync(join(root, 'index.html'), 'utf8').replace(
+  /  <script>window\.__TH_BEACON__=1<\/script>\r?\n/g,
+  ''
+);
 // 读回来的 index.html 是上一轮的构建产物，里面已经带着首页静态化区块与首页 JSON-LD
 // （WebSite / Organization / SearchAction）。不清掉的话，它们会跟着模板扩散到每一个页面 ——
 // v3.13 就是这样发现全站 140 多个页面都在声明首页的 WebSite，每个页面都嵌一份 SearchAction。
@@ -194,6 +208,8 @@ function fillMeta(html, { title, desc, url, botInject, jsonld }) {
   // 非首页统一先标 page；工具页由 tool-page.js 运行时改成 tool。
   out = out.replace('<body data-view="home">', '<body data-view="page">');
   if (jsonld) out = out.replace('</head>', `  <script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
+  // v3.36：只有开关打开时才注入，beacon.js 据此决定要不要发事件（见 analytics.json 的说明）
+  if (BEACON_ON) out = out.replace('</head>', '  <script>window.__TH_BEACON__=1</script>\n</head>');
   // botInject 不是每页都有（如 /tools/ 总览页），以前无条件拼进去，产物里就多一行
   // `<script>undefined</script>`。空值要当「没有」，不是当字符串。
   return out.replace(
@@ -553,7 +569,8 @@ const staticPages = [
     h1: '关于 ToolHub',
     content:
       '<h2>为什么做这个平台</h2><p>GitHub 上有大量优秀的开源小工具，但要用起来得装环境、敲命令。ToolHub 把它们做成了打开网页就能用的形态。</p>' +
-      '<h2>与普通在线工具站的区别</h2><p>普通工具站把你的数据传到它的服务器；ToolHub 的本地工具在浏览器内用 WebAssembly 执行，服务端全程不接触你的输入。</p>',
+      '<h2>与普通在线工具站的区别</h2><p>普通工具站把你的数据传到它的服务器；ToolHub 的本地工具在浏览器内用 WebAssembly 执行，服务端全程不接触你的输入。</p>' +
+      '<h2>数据与运营</h2><p>本站不卖数据、不投广告、不加载第三方统计脚本。为了知道哪些工具真的有人用、卡在哪一步，v3.36 起用自己的接口记录少量访问事件：页面路径、事件名、本机随机号、时间戳，不记录你在工具里填的任何内容，保留 90 天。完整口径与关闭方式见<a href="/privacy/">隐私说明</a>。</p>',
   },
   {
     path: 'batch',
@@ -611,10 +628,10 @@ const staticPages = [
   {
     path: 'privacy',
     title: '隐私说明 · 你的输入不会离开这台设备 · ToolHub',
-    desc: 'ToolHub 的数据流向逐条说明：本地工具在浏览器内执行、不上传输入、无后端数据库；浏览器里存了什么、如何清除、访问统计口径与关闭方式。',
+    desc: 'ToolHub 的数据流向逐条说明：本地工具在浏览器内执行、不接收文件与输入；浏览器里存了什么、如何清除；访问统计记了哪四个字段、保留多久、怎么关。',
     h1: '隐私说明',
     content:
-      '<h2>一句话结论</h2><p>本地工具的<b>文件</b>输入不上传、不落盘，在浏览器内存里处理完即随页面释放；<b>文本</b>类输入会留一份 ≤4 KB 的草稿在你自己的浏览器里（刷新后能接着填），文件永远不进存储。本站没有后端数据库，也没有上传接口，这不是承诺而是架构上就不存在。</p>' +
+      '<h2>一句话结论</h2><p>本地工具的<b>文件</b>输入不上传、不落盘，在浏览器内存里处理完即随页面释放；<b>文本</b>类输入会留一份 ≤4 KB 的草稿在你自己的浏览器里（刷新后能接着填），文件永远不进存储。本站没有接收文件与输入内容的接口——发给服务器的只有静态资源请求和访问统计（下面第三节逐项列出）。</p>' +
       '<h2>三类工具，三种数据流向</h2><p>本地执行类工具（含 Pyodide 驱动的 Python 工具）全部在浏览器内完成，服务端不接触输入；目录类工具是第三方开源项目的官方在线版，点击「打开官网」后进入对方站点，适用对方的隐私政策；还有一类是<b>点对点直传</b>（PairDrop、LocalSend、FilePizza），文件从你的设备直接发到另一台设备，不经过站点服务器——但它确实离开了这台机器，所以不归入「本机处理」。</p>' +
       '<p>每个外链工具的详情页都标了数据边界，并写明这条标注<b>凭什么成立</b>：是人工打开页面核过的、按产品机制推断的、还是照抄上游清单的。三种说法的可信度不同，页面不会把它们混成一句「已核实」——写「尚未核实」的条目一样可以点开用，只是你得自己看一眼对方的隐私政策。</p>' +
       '<h2>浏览器里存了什么</h2><p>只有本地偏好与草稿，没有文件。完整键名清单：</p>' +
@@ -622,7 +639,9 @@ const staticPages = [
       '<p>外加 Service Worker 缓存（离线包），可在<a href="/offline/">离线说明</a>里查看与清理。</p>' +
       '<p>这些数据不会上传，也不会跨设备同步。<a href="/my/">「我的数据」页</a>把每一条实际占多少、怎么单独删逐项列了出来，也能按类一次清除。</p>' +
       '<p>这张表不是手写的：它由 <code>assets/lib/store-keys.js</code> 的键清单渲染，构建期与站内跳转后的重渲染调的是同一个函数；<code>verify.mjs</code> 另有闸门核对「清单 / 代码里真实读写的键 / 这张表」三者一一对应，漏一个就构建失败。</p>' +
-      '<h2>访问统计</h2><p>本站默认不加载任何统计脚本。若启用统计，只采集聚合访问量，不使用 Cookie、不记录输入内容、不跨站追踪；浏览器发出 Do Not Track 时自动跳过，也可在本页一键关闭。</p>' +
+      '<h2>访问统计</h2><p>本站<b>不加载任何第三方统计脚本</b>。访问统计由本站自己的一个接口完成，只存四个字段：<b>页面路径、事件名</b>（打开页面 / 打开工具 / 跑完一次 / 点结果操作）、<b>本机随机号</b>、<b>时间戳</b>，外加一个<b>国家级地区码</b>（由 CDN 提供，只到国家，不含城市）。不存 IP、不存浏览器标识、不存来源页、不存你在工具里填的任何内容，也不使用 Cookie。保留 90 天，到期删除。</p>' +
+      '<p>本机随机号是首次访问时随机生成的 16 位串，存在你自己的浏览器里（下面那张表里的「本机随机访客号」），换设备或删掉都会变成另一个号——我们无法用它认出你是谁。</p>' +
+      '<p>三种情况一律不发：你在「我的数据」页关掉统计、浏览器发出 Do Not Track、设备断网。</p>' +
       '<h2>加密分享</h2><p>分享结果时可选择加密：内容经 AES-GCM 在本地加密后放入链接的井号片段，该片段不会随请求发送到服务器，因此服务器与 CDN 日志中不会出现明文。设置口令时，拿到链接的人还需口令才能解开。</p>' +
       '<h2>如何自行验证</h2><p>打开开发者工具的 Network 面板运行任意本地工具，不会出现上传请求；缓存过离线包后断网刷新，本地工具仍可使用。</p>',
   },

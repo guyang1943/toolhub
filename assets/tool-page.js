@@ -12,6 +12,7 @@
 // 不走 bindToolPage 的依赖注入——注入是为了避免与主模块循环引用，而这里没有那个风险。
 // 顺带把 app.js 的预算留出来（它只剩 0.8 KB）。
 import { record } from './lib/events.js';
+import { track } from './lib/beacon.js';
 import * as store from './lib/store.js';
 
 let $, $$, esc, t, toolMeta, catName, navigate, loadRegistry, loadI18n, loadArticles, loadArticle;
@@ -813,12 +814,14 @@ export async function openTool(id) {
       if (out.after) out.after(box);
       pushUsage(meta.id); // 仅本机计数
       record(meta.id, 'ok'); // v3.20：只记「跑成了」，不记输入
+      track('run'); // v3.36：只记「这个工具被真的跑完了一次」，不带参数
       focusResult(box);
     } catch (e) {
       box.innerHTML = stateHTML('error', { title: t('出错了', 'errorPrefix'), detail: e.message });
       // 失败也记一条：没有分母就算不出完成率，而「哪些工具在真实使用中经常跑挂」
       // 正是最该被看见的信号。只记工具与事件，不记 e.message（可能带用户输入）。
       record(meta.id, 'err');
+      track('run_err'); // 失败也算一次尝试：没有分母就算不出完成率
       focusResult(box);
     } finally {
       setProgressHandler(null);

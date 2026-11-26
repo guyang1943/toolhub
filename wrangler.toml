@@ -8,3 +8,19 @@ compatibility_date = "2026-10-01"
 directory = "."
 not_found_handling = "404-page"
 html_handling = "auto-trailing-slash"
+
+# ---------------------------------------------------------------------------
+# v3.36 自有埋点（可选）：不配这一段也能正常部署，/api/e 会静默丢弃事件。
+# 要开启（四步，约 3 分钟）：
+#   1) npx wrangler d1 create toolhub          # 记下返回的 database_id
+#   2) 取消下面三行的注释，把 database_id 填进去
+#   3) npx wrangler d1 execute toolhub --file=migrations/0001_telemetry.sql --remote
+#   4) npx wrangler secret put ADMIN_TOKEN     # 随便一串长随机值，/admin 用它登录
+# 之后打开 https://toolhub.bot.cd/admin 即可看数（页面会要 token）。
+#
+# 为什么不默认打开：D1 是计费资源，且「收不收数据」应该是一个显式的决定，
+# 不该因为合并了一次代码就悄悄开始记录。
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "toolhub"
+# database_id = "<在第一步拿到的 id>"

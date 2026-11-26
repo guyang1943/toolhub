@@ -94,12 +94,25 @@ function resolve(pathname) {
 }
 
 const server = createServer((req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const pathname = url.pathname;
+
+  // v3.36：本地也接收访问事件，行为与线上一致（线上写 D1，本地直接丢弃）。
+  // 不加这一段，本地测试会看到 /api/e 405 而线上是 204 —— 又一处「本地绿、线上怪」。
+  if (pathname === '/api/e') {
+    if (req.method !== 'POST') {
+      res.writeHead(405, { Allow: 'POST', 'Cache-Control': 'no-store' });
+      return res.end();
+    }
+    req.resume(); // 把请求体读掉再回，避免连接挂住
+    res.writeHead(204, { 'Cache-Control': 'no-store' });
+    return res.end();
+  }
+
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405, { Allow: 'GET, HEAD' });
     return res.end('Method Not Allowed');
   }
-  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-  const pathname = url.pathname;
   const isAsset = pathname.startsWith('/assets/');
   const file = resolve(pathname);
 
