@@ -90,6 +90,17 @@
 }
 .my-set-new { margin-top: 12px; }
 
+/* 我的流程（v3.37）：与集合同一套表面，不做第二种卡片样式——它们是同一类东西 */
+.my-flow {
+  border: 1px solid var(--border); border-radius: 12px; background: var(--panel);
+  padding: 12px 14px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.my-flow-head { display: flex; align-items: baseline; gap: 10px; flex: 1; min-width: 0; flex-wrap: wrap; }
+.my-flow-head b { font-size: 14.5px; font-weight: 500; }
+.my-flow-acts { display: flex; align-items: center; gap: 8px; }
+.my-flow-acts .btn { padding: 5px 10px; font-size: 12.5px; }
+
 /* 按类清除：四个按钮，每个下面一行小字写明删掉哪些键 */
 .my-wipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
 .my-wipe { display: flex; flex-direction: column; gap: 3px; text-align: left; }

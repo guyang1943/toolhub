@@ -16,3 +16,6 @@ Desktop.ini
 
 # 本地临时脚本与日志
 _out/
+
+# 项目记忆（只留本地，不进仓库）
+.workbuddy/

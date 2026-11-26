@@ -551,6 +551,11 @@ check('我的数据页接入（v3.22）', () => {
   const my = readFileSync(join(root, 'assets', 'my.js'), 'utf8');
   assert(/clearableGroups\(\)/.test(my), '清除按钮没有从清单生成（手写的那份迟早会漏键）');
   assert(/byGroup\(\)/.test(my), '存储明细没有从清单生成');
+  // v3.37：流程参数以前存了但找不到——只有回 /workflows/ 选对那一条才看得见。
+  // 这三条分别对应「有区块」「能删」「能跳回去跑」，缺任何一个，那一块就是摆设。
+  assert(/flowsBlock\(\)/.test(my), '工作台没有「我的流程」区块（流程参数存了但找不到）');
+  assert(/data-flow-del/.test(my), '我的流程缺删除入口（只能存不能删，等于只能增不能减）');
+  assert(/workflows\/\?flow=/.test(my), '我的流程缺「去跑」深链（看得到用不上）');
   const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
   assert(/path: '\/my\/'/.test(reg), '/my/ 没进页面注册表（离线包与体检都会漏掉它）');
   return '容器 + 模块 + 清单驱动 + 注册表';

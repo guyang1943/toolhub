@@ -29,6 +29,7 @@ const SET_TOOLS_MAX = 30;
 
 let NAMES = new Map(); // 工具 id → 名字，去掉「查不到就显示 id」的突兀
 let ALL_TOOLS = []; // [{id, name}]，给集合的输入提示用
+const FLOW_NAMES = new Map(); // 流程 id → 中文名，只用于把「我存的那套参数」说清楚是哪条流程
 let box = null;
 
 /* ---------- 数据读取 ---------- */
@@ -212,6 +213,57 @@ function storeTable() {
   );
 }
 
+/* ---------- 渲染：我的流程（v3.37） ---------- */
+// 为什么放在工作台：流程参数以前是「存了但找不到」——只有回到 /workflows/ 并选对那一条，
+// 才看得见自己存过什么。收藏、集合、流程是同一类东西（我攒下来的），三样里缺一样，
+// 这一页就不成立。这里只做展示、跳转与删除；套用与校验仍在工作流页，口径只留一份。
+function loadFlows() {
+  const v = store.get('flows', {});
+  return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+}
+
+function fmtDay(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getMonth() + 1}-${p(d.getDate())}`;
+}
+
+function flowsBlock() {
+  const all = loadFlows();
+  const items = Object.entries(all)
+    .filter(([, v]) => v && v.name)
+    .sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
+  if (!items.length) {
+    return section(
+      'my-flows',
+      '我的流程',
+      empty('还没有存过流程参数。去「工作流」选一条，展开参数改几个值、起个名字，下次就能一键套用。')
+    );
+  }
+  const rows = items
+    .map(([id, v]) => {
+      const fname = FLOW_NAMES.get(v.flow) || v.flow || '';
+      const args = Object.keys(v.args || {}).length;
+      return (
+        `<div class="my-flow" data-flow="${esc(id)}">` +
+        `<div class="my-flow-head"><b>${esc(v.name)}</b>` +
+        `<span class="my-dim">${esc(fname)} · ${args} 个参数 · ${fmtDay(v.at)}</span></div>` +
+        `<div class="my-flow-acts">` +
+        `<a class="btn ghost" href="/workflows/?flow=${encodeURIComponent(v.flow || '')}">去跑</a>` +
+        `<button type="button" class="my-x" data-flow-del="${esc(id)}">删除</button>` +
+        `</div></div>`
+      );
+    })
+    .join('');
+  return section(
+    'my-flows',
+    `我的流程（${items.length}）`,
+    rows,
+    '只存参数，不存你选的文件与产物；换设备不会同步。'
+  );
+}
+
 /* ---------- 渲染：自定义集合 ---------- */
 
 function setsBlock() {
@@ -292,6 +344,7 @@ function render() {
     usageBlock() +
     runsBlock() +
     setsBlock() +
+    flowsBlock() +
     section('my-store', '存了什么，存在哪', storeTable(), '这一行的数字是当场量的，不是配置里写的上限。两者对不上，就是代码有 bug。') +
     clearBlock();
 }
@@ -333,6 +386,13 @@ function handleClick(e) {
     const sets = loadSets();
     delete sets[t.dataset.setDel];
     saveSets(sets);
+    return tidy();
+  }
+  if (t.dataset.flowDel !== undefined) {
+    // 与工作流页的删除走同一个键、同一种结构：那边删完这边刷新即空，不会出现两份真相。
+    const flows = loadFlows();
+    delete flows[t.dataset.flowDel];
+    store.set('flows', flows);
     return tidy();
   }
   if (t.dataset.setRm !== undefined) {
@@ -444,6 +504,16 @@ export async function mountMy(el, reg) {
       for (const d of dir.tools || []) if (!NAMES.has(d.id)) NAMES.set(d.id, d.name);
     } catch {
       /* 取不到就用 id 显示，不影响任何操作 */
+    }
+  }
+
+  // 只在真的存过流程时才去取流程名。/my/ 不是首屏，但也不该为一个可能用不上的名字多一次请求。
+  if (Object.keys(loadFlows()).length) {
+    try {
+      const wf = await (await fetch('/workflows/workflows.json')).json();
+      for (const f of wf.flows || []) FLOW_NAMES.set(f.id, f.name);
+    } catch {
+      /* 取不到就退回显示流程 id，不影响删除与跳转 */
     }
   }
 
