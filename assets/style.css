@@ -1,6 +1,4 @@
-/* 配色取自「工作台 + 说明书」这个场景：纸感的中性底、一条钴蓝只做动作色。
-   以前是冷灰配蓝紫渐变，任何产品都能用，也就不说明任何事。
-   去装饰的工序参考 unslop（Damir Sokolovsky，CC BY 4.0）：github.com/heydamir/unslop */
+/* 配色：纸感中性底 + 一条钴蓝只做动作色；去装饰工序参考 unslop（Damir Sokolovsky，CC BY 4.0，github.com/heydamir/unslop）。 */
 :root {
   --bg: #f4f1eb; --panel: #ffffff; --raised: #f1eee7; --border: #e3ddd2;
   --text: #1f1b16; --secondary: #574f45; --muted: #6f665a; --accent: #1d4ed8;
@@ -55,11 +53,9 @@ a { color: inherit; text-decoration: none; }
 body[data-view='home'] #search { display: none; }
 body[data-view='home'] #search-open { display: inline-flex; }
 
-/* v3.4：1000 → 1160。正文页有自己的 .page{max-width:720px} 兜底，
-   加宽只作用在目录类界面（首页工具网格、资源、对比），不会把长文行宽拉到读不动 */
+/* v3.4：1000 → 1160，只作用于目录类界面（长文有 .page 720px 兜底）。 */
 .container { max-width: 1160px; margin: 0 auto; padding: 28px 20px 60px; }
-/* 首屏：左对齐的一段话加一个搜索框。以前是居中三件套——胶囊小徽标、渐变字、
-   渐变下划线，那是模板的默认长相，说明不了这是个工具站。 */
+/* 首屏：左对齐一段话 + 搜索框；居中的胶囊 / 渐变字是模板长相，说明不了这是工具站。 */
 .hero { padding: 40px 0 26px; max-width: 640px; }
 .hero h1 { font-size: 34px; line-height: 1.24; font-weight: 500; letter-spacing: -.01em; margin: 0 0 12px; }
 .hero p { color: var(--secondary); font-size: 15px; line-height: 1.7; margin: 0 0 20px; text-wrap: pretty; }
@@ -176,8 +172,7 @@ body[data-view='home'] #search-open { display: inline-flex; }
   .list-row { grid-template-columns: 26px minmax(0, 1fr); }
   .list-row .lr-meta { grid-column: 2; text-align: left; }
 }
-/* 测评页顶部的对比入口（v3.16）：对比不再是独立导航项，但它是测评最该被先看到的那一半 ——
-   拿掉了顶部导航的位置，就在这一页把它放到第一屏。 */
+/* 测评页顶部对比入口（v3.16）：导航里拿掉了它，就在这一页第一屏还回来。 */
 .cmp-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 0 0 20px; }
 .cmp-cta b { display: block; font-size: 14.5px; margin-bottom: 2px; }
 .cmp-cta span { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
@@ -201,9 +196,7 @@ body[data-view='home'] #search-open { display: inline-flex; }
 .rec-title { margin-top: 14px; font-size: 13px; }
 .rec-row { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 
-/* 工具页专用样式（堆叠提示、结果导出、结果表格、个税大数字、二维码布局、
-   教程/常见错误、diff 与 Markdown 预览、口令弹层…）已拆到 assets/style.tool.css（v3.5）。
-   这里的 .panel / .field / .btn / .result 是工具页与内容页共用的基础件，不要搬走。 */
+/* 工具页专用样式已拆到 style.tool.css（v3.5）；这里 .panel/.field/.btn/.result 是共用基础件，别搬走。 */
 .crumb { font-size: 13px; color: var(--muted); margin-bottom: 14px; cursor: pointer; }
 .tool-head .desc { color: var(--muted); margin: 0 0 4px; font-size: 14px; }
 .tool-head .src { font-size: 12px; color: var(--muted); }
@@ -235,8 +228,7 @@ body[data-view='home'] #search-open { display: inline-flex; }
 .result pre.ok { outline: 2px solid var(--ok); }
 .result pre.err { outline: 2px solid var(--err); }
 .msg-ok { color: var(--ok); font-size: 13px; }
-/* v3.7：提醒类提示（「已收缩到边缘」「校验值不一致」）。之前只有 .msg-ok，
-   .msg-warn 在 exif-strip、file-hash、csv-columns 和提交页的工具构建器里都是裸文本。 */
+/* v3.7：提醒类提示；此前只有 .msg-ok，警告在四处工具里都是裸文本。 */
 .msg-warn { color: var(--warn); font-size: 13px; }
 .msg-err { color: var(--err); font-size: 13px; }
 /* 统一结果出口：复制 / 下载 / 分享 */
@@ -392,8 +384,7 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .trust-strip b { display: block; font-size: 13.5px; margin-bottom: 3px; }
 .trust-strip span { font-size: 12.5px; color: var(--muted); line-height: 1.6; }
 .trust-strip .ts-stat b { font-family: var(--mono); font-size: 32px; line-height: 1.1; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
-/* /my/ 的唯一出口，挂在「收藏与记录只存在本机」后面——承诺要接上兑现的地方。
-   padding 是为凑够 WCAG 2.5.8 的 24px 点击高：第一版只有字高 16px，被浏览器测试报了出来。 */
+/* /my/ 的唯一出口；padding 为凑 WCAG 2.5.8 的 24px 点击高（第一版 16px 被测试报出）。 */
 .trust-strip .ts-link { display: inline-block; margin-top: 2px; padding: 5px 0; font-size: 12.5px; line-height: 14px; font-weight: 600; }
 
 /* ===== 对比表 ===== */
@@ -591,15 +582,11 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .hero-intent b { font-size: 14px; color: var(--text); }
 .hero-intent .hi-params { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
 .hero-intent .hi-go { margin-left: auto; font-size: 12px; color: var(--accent); }
-/* ===== 首屏两栏：左边说是什么，右边是目录索引 =====
-   以前首屏是居中一段话 + 四张彩色大卡铺满，右半边空着；
-   现在左文右索引，右栏的四个数字就是「这里有什么」本身。 */
+/* 首屏两栏（v3.35）：左文右索引；右栏那几个数字就是「这里有什么」本身。 */
 .home-intro { display: grid; grid-template-columns: minmax(0, 1fr) 452px; gap: 48px; align-items: end; }
 @media (max-width: 1040px) { .home-intro { grid-template-columns: 1fr; gap: 26px; align-items: start; } }
 
-/* 四个入口（v3.35）：四张彩色卡片合成一条索引带。
-   原来每张卡有自己的色相、emoji 徽章、胶囊标签，四个颜色互相抢；
-   现在只有细线分栏，靠数字和名称区分。 */
+/* 四个入口（v3.35）：合成一条索引带，靠细线分栏与数字区分，不再各带色相。 */
 .route-cards {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
   background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
@@ -619,6 +606,15 @@ footer .foot-note { margin-top: 8px; font-size: 11px; opacity: .8; max-width: 72
 .route-card span.rc-desc { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
 .route-card em { font-style: normal; font-size: 12px; color: var(--secondary); margin-top: auto; padding-top: 8px; }
 .route-card:hover em { color: var(--accent); }
+
+/* AI 横带（v3.38）：留在索引容器内但跨满整行——四个入口 + 一条横切维度。 */
+.route-card.rc--ai {
+  grid-column: 1 / -1;
+  flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: 2px 10px;
+  padding: 12px 18px;
+}
+.route-card.rc--ai .rc-desc { flex: 1 1 220px; }
+.route-card.rc--ai em { margin-top: 0; padding-top: 0; margin-left: auto; }
 
 /* ===== 命令面板 ===== */
 #palette {
@@ -838,10 +834,7 @@ body.dp-lock { overflow: hidden; }
   color: var(--muted); font-size: 15px; line-height: 1; cursor: pointer;
 }
 
-/* ===== 统一状态：空 / 加载 / 错误（v3.3）=====
-   以前工具各自写 div.empty / msg-err，留白与文案都不一致。
-   统一成一套 .state：视觉一致、语义带 role（loading/empty=status，error=alert）。
-   颜色全部走 CSS 变量，深色模式自动跟随，无需再写一份覆盖。 */
+/* 统一状态：空 / 加载 / 错误（v3.3）；role 带语义，颜色走变量以便深色自动跟随。 */
 .state {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 8px; text-align: center; padding: 34px 18px;
@@ -870,18 +863,13 @@ body.dp-lock { overflow: hidden; }
   .state-spinner { animation: none; border-top-color: var(--accent); }
 }
 
-/* ===== 窄屏（≤560px）触摸目标 =====
-   体检只把 <24px 判成硬伤，但 24～27px 在 375px 上仍然经常点空。
-   这里把刚好卡在 24px 的两个元素撑到 28px 舒适线（33 个工具页共用同一份
-   排行/卡片星标与页脚「快捷键」入口，改一处全站生效）。 */
+/* 窄屏触摸目标：把卡在 24px 的两个元素撑到 28px（33 个工具页共用）。 */
 @media (max-width: 560px) {
   .star { min-width: 28px; min-height: 28px; top: 8px; right: 8px; }
   .foot-link-btn { min-height: 28px; padding: 0 2px; }
 }
 
-/* 折腾指南（v3.15）：指南页独有的三块——元信息条、风险提示、步骤序号列。
-   步骤用 counter 而不是 <ol> 默认序号：默认序号贴着文字基线，长段落里几乎看不见，
-   而这一页的步骤是「做到第几步了」的唯一坐标，必须一眼能找到。 */
+/* 折腾指南（v3.15）：步骤号用 counter 而非 <ol>，默认序号贴基线、长段落里看不见。 */
 .guide-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; font-size: 13px; color: var(--muted); }
 .guide-meta span { background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; }
 .guide-meta b { color: var(--text); }

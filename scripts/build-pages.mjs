@@ -1494,6 +1494,12 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
   // v3.16：导航收敛为「工具 / 资源 / 教程 / 测评」四栏，入口卡按同一顺序排。
   // 对比台不再是独立入口——它挪到了测评页第一屏（见 content-pages.js 的 openEvaluations）。
   const guideSteps = GUIDES.reduce((a, g) => a + g.steps.length, 0);
+  // v3.38：AI 一直在分类页里，首页没有它的位置（用户原话：主页几乎看不到影子）。
+  // 做法不是第五张卡——两列栅格里五格必留一个孤儿；也不是容器外的独立一条——那会被写进
+  // 全部 208 个页面的模板，而只有首页会被构建期填满，从别的页面 SPA 回首页时它会是个空盒子。
+  // 所以它留在容器内、用 grid-column 跨满整行：读作「四个入口 + 一条横切维度」，
+  // 且与四张卡共用同一条 1px 细线，视觉上是一体的。
+  const aiCount = dirTools.filter((t) => t.category === 'AI').length;
   const routeCards = `
     <a class="route-card rc--tools" href="/tools/">
       <span class="rc-tag" data-zh="工具箱" data-en="Toolbox">工具箱</span>
@@ -1518,6 +1524,12 @@ writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${B
       <b><span class="rc-num">${evaluations.evaluations.length}</span><span data-zh="篇测评" data-en="reviews">篇测评</span></b>
       <span class="rc-desc" data-zh="横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清" data-en="Hands-on tests and side-by-side comparisons: privacy, speed, limits">横向实测 + 同类并排对比：隐私、速度、功能边界一次讲清</span>
       <em data-zh="读测评 →" data-en="Read reviews →">读测评 →</em>
+    </a>
+    <a class="route-card rc--ai" href="/categories/ai/" data-ai="${aiCount}">
+      <span class="rc-tag" data-zh="AI 工具" data-en="AI tools">AI 工具</span>
+      <b><span class="rc-num">${aiCount}</span><span data-zh="个工具" data-en="tools">个工具</span></b>
+      <span class="rc-desc" data-zh="本地推理 / 自托管 / 编码助手，逐条标清跑在哪" data-en="Local inference, self-hosted or coding assistant — labelled where it runs">本地推理 / 自托管 / 编码助手，逐条标清跑在哪</span>
+      <em data-zh="看 AI 工具 →" data-en="Browse AI tools →">看 AI 工具 →</em>
     </a>`;
 
   // v3.4：13 → 8 条，并改成行式列表（卡片形式与下方工具网格太像，会被误认成同一份列表）

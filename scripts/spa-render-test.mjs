@@ -296,11 +296,19 @@ await go('/topics');
 const topicsHtml = document.getElementById('page-body').innerHTML;
 check('专题列表渲染 10 个', (topicsHtml.match(/topic-card/g) || []).length === 10, `${(topicsHtml.match(/topic-card/g) || []).length} 个`);
 
-// 5) 首页路由卡（4 张）
+// 5) 首页路由卡（4 张入口 + 一条 AI 通栏）
 await go('/');
 const cardsHtml = document.getElementById('route-cards').innerHTML;
-check('首页路由卡 4 张', (cardsHtml.match(/route-card/g) || []).length === 4, `${(cardsHtml.match(/route-card/g) || []).length} 张`);
+const cardCount = (cardsHtml.match(/route-card/g) || []).length;
+check('首页路由卡 5 张（含 AI 通栏）', cardCount === 5, `${cardCount} 张`);
 check('首页含评测卡', cardsHtml.includes('/evaluations/'));
+// v3.38：AI 从「分类里的一栏」变成首页一条通栏。它必须由 app.js 也渲染一份——
+// 别的页面里 #route-cards 是空的，从那里 SPA 回首页时没有第二份就会是个空盒子。
+check(
+  'AI 通栏是最后一张卡且指向分类页',
+  /rc--ai"[\s\S]*href="\/categories\/ai\/"[\s\S]*<\/a>$/.test(cardsHtml.trim()),
+  cardsHtml.slice(-120)
+);
 // v3.14：工具箱那张卡原来 href="#tools-anchor" 加 onclick 抢默认行为，点了只是滚一下。
 // 现在它是真链接——链接语义、右键新开、cmd+点击才都还在。
 check('工具箱卡指向 /tools/', /class="route-card rc--tools" href="\/tools\/"[^>]*data-spa/.test(cardsHtml), '入口卡是真链接');

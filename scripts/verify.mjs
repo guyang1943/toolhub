@@ -1580,6 +1580,44 @@ check('首页教程栏与数据一致（v3.33）', () => {
   return `${rows.length} 条推荐（两栏同数） / 入口卡 ${guides.length} 篇 · ${steps} 步`;
 });
 
+// ---------- v3.38：AI 在首页要有位置 ----------
+// 背景：AI 一直是第 10 个分类里的一栏，首页与导航都没有它。用户提过「主页几乎看不到影子」。
+// 做法是入口容器里的一条通栏（跨整行），不是第五张卡——两列栅格里五格必留孤儿，
+// 而且 8 条外链与 140 个工具并排会被读成同一量级。
+// 这条检查钉四件事：它在、指对地方、条数与目录一致、两份渲染（构建期 / app.js）文案没走形。
+check('首页 AI 横带（v3.38）', () => {
+  const home = readFileSync(join(root, 'index.html'), 'utf8');
+  const dir = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 'utf8')).tools || [];
+  const aiCount = dir.filter((t) => t.category === 'AI').length;
+  assert(aiCount > 0, '目录里一条 AI 工具都没有——横带的条数会变成 0');
+
+  const box = home.match(/<div class="route-cards" id="route-cards">([\s\S]*?)<\/div>/);
+  assert(box, '首页找不到 #route-cards 容器');
+  const band = box[1].match(/<a class="route-card rc--ai" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+  assert(band, '入口容器里没有 AI 横带（rc--ai）——构建期注入失败或被删了');
+  assert(band[1] === '/categories/ai/', `AI 横带应指向 /categories/ai/，实际是 ${band[1]}`);
+  assert(
+    new RegExp(`<span class="rc-num">${aiCount}</span>`).test(band[2]),
+    `AI 横带条数应为 ${aiCount}（目录里 AI 分类的条目数）。改完目录忘了重建，就会显示上一版的数`
+  );
+  // 位置：必须是容器里最后一个 route-card。插在中间会把「四个入口 + 一条维度」读成五张并列卡。
+  const cards = box[1].match(/class="route-card rc--[a-z]+"/g) || [];
+  assert(cards.length === 5, `入口容器里应有 5 个 route-card（4 入口 + AI），实际 ${cards.length}`);
+  assert(/rc--ai"$/.test(cards[cards.length - 1]), 'AI 横带必须是最后一个入口卡');
+
+  // 两份渲染的文案必须同源。构建期一份、app.js 一份，改一处忘另一处，切语言或 SPA 回首页就会露馅。
+  const appJs = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(/rc--ai/.test(appJs), 'app.js 没有渲染 AI 横带——从别的页面 SPA 回首页时它会消失');
+  for (const word of ['AI 工具', 'AI tools', '本地推理 / 自托管 / 编码助手，逐条标清跑在哪']) {
+    assert(home.includes(word) && appJs.includes(word), `AI 横带文案「${word}」在两份渲染里不一致`);
+  }
+  const zh = (band[2].match(/data-zh=/g) || []).length;
+  const en = (band[2].match(/data-en=/g) || []).length;
+  assert(zh === 4 && en === 4, `AI 横带应有 4 组 data-zh / data-en，实际 ${zh} / ${en}`);
+
+  return `指向 /categories/ai/，${aiCount} 条，通栏，两份文案一致`;
+});
+
 checkAsync('意图解析规则（E4）', async () => {
   const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'intent.js')).href);
   const cases = [

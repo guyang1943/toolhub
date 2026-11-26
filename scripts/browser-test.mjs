@@ -436,7 +436,13 @@ async function feedFile(selector, dataUrl, name, type) {
   // v3.23：导航多了一栏「工作流」——工作流页需要入口，而顶部导航是唯一每页都在的位置。
   check('导航五栏且顺序为 工具/工作流/资源/教程/测评', navLabels === '工具/工作流/资源/教程/测评', navLabels);
   const cardOrder = await evaluate(`[...document.querySelectorAll('#route-cards .route-card')].map((a) => a.getAttribute('href')).join(',')`);
-  check('入口卡与导航同序', cardOrder === '/tools/,/resources/,/guides/,/evaluations/', cardOrder);
+  // v3.38：末尾多了 AI 一条（跨整行）。它指分类页而不是新建的 AI 总览页——
+  // 分类页已有正文，再造一个只列 8 条外链的壳，是把同一个答案写两遍。
+  check(
+    '入口卡顺序为 工具/资源/教程/测评/AI',
+    cardOrder === '/tools/,/resources/,/guides/,/evaluations/,/categories/ai/',
+    cardOrder
+  );
   check(
     '信任区不再是卡片',
     await evaluate(`!!document.querySelector('.trust-strip') && !document.querySelector('.trust-item, .trust-grid')`)
@@ -2015,7 +2021,25 @@ qr.make_image(fill_color='black', back_color='white').convert('RGB').save(${JSON
   const gridCols = await colsOf('#grid');
   check('手机端工具网格两列', gridCols === 2, gridCols + ' 列');
   const routeCols = await colsOf('#route-cards');
-  check('手机端入口卡 2×2', routeCols === 2, routeCols + ' 列');
+  check('手机端入口卡两列', routeCols === 2, routeCols + ' 列');
+  // v3.38：AI 横带在 375px 下改成了 flex row，最容易出的问题是内部挤到溢出
+  // （标签 + 数字 + 说明 + 入口四段并排）。量 scrollWidth 与 clientWidth 的差，
+  // 比看截图可靠——溢出 3px 截图上看不出来，手机上就是一条能左右拽的缝。
+  const aiBandFit = await evaluate(`(() => {
+    const band = document.querySelector('#route-cards .rc--ai');
+    if (!band || !band.offsetParent) return -1;
+    return band.scrollWidth - band.clientWidth;
+  })()`);
+  check('手机端 AI 横带不溢出', aiBandFit >= 0 && aiBandFit <= 1, '溢出 ' + aiBandFit + 'px');
+  // 跨满整行靠 grid-column: 1/-1。断点改错会退回成第五个格子（就是这次要避免的孤儿格），
+  // 那种错只有量宽度看得出来——它照样能显示，只是短了一截。
+  const aiSpanGap = await evaluate(`(() => {
+    const band = document.querySelector('#route-cards .rc--ai');
+    const box = document.querySelector('#route-cards');
+    if (!band || !box) return -1;
+    return Math.round(box.clientWidth - band.getBoundingClientRect().width);
+  })()`);
+  check('手机端 AI 通栏跨满整行', aiSpanGap >= 0 && aiSpanGap <= 4, '差 ' + aiSpanGap + 'px');
   const featCols = await colsOf('#featured-section');
   check('手机端推荐区堆成单列', featCols === 1, featCols + ' 列');
   // 两栏同条数（v3.33 收尾）：桌面 8 对 8，窄屏照原样铺完不砍——砍两条会让右栏看着像没加载完
