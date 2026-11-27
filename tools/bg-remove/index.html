@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>去背景 · ToolHub</title>
+  <meta name="description" content="用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/tools/bg-remove/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/tools/bg-remove/" />
+  <meta property="og:title" content="去背景 · ToolHub" />
+  <meta property="og:description" content="用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 144 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"去背景","description":"用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传","url":"https://toolhub.bot.cd/tools/bg-remove/","applicationCategory":"WebApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"license":"Apache-2.0 / MIT"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"图片会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会。推理在页面进程内完成，模型文件是本站在自己域名下提供的静态文件，处理过程中没有任何请求带着你的图片出去。要验证的话：第一次跑完、等浏览器缓存住之后拔掉网线再跑一次，功能照常，结果一样。"}},{"@type":"Question","name":"为什么第一次要等那么久？","acceptedAnswer":{"@type":"Answer","text":"第一次要下 10 MB 的推理引擎加 4.4 MB 的模型，合计约 14.5 MB。之后它们进了浏览器缓存（本站的 Service Worker 也会收），断网都能跑。工具页一打开就开始下载，你选图那几秒一般已经下完了。"}},{"@type":"Question","name":"为什么一张要三秒？别人的在线工具很快","acceptedAnswer":{"@type":"Answer","text":"别人的在线工具是在服务器上用 GPU 跑的，快是因为用了显卡，代价是你的图传到了他们的机器上。这里跑在浏览器单线程 wasm 上，没有 GPU 加速也没有多线程。想更快只有两条路：换 WebGPU（要多下 10 MB 内核，且不是所有设备都支持），或者把图上传走云端——后者这个站不做。"}},{"@type":"Question","name":"边缘一圈毛边怎么办？","acceptedAnswer":{"@type":"Answer","text":"这是 320×320 分辨率带来的：模型在低分辨率上判断哪些像素是前景，放大回原图时边界只能靠插值猜。把「边缘柔化」调到 2-3 能压住毛刺，但会让边缘略显发虚。另一个办法是拍图时让主体离背景远一点、光线均匀，模型的判断会准得多。"}},{"@type":"Question","name":"发丝、半透明的东西能抠吗？","acceptedAnswer":{"@type":"Answer","text":"能，但会丢细节。u2netp 是给「主体清楚、背景干净」的场景优化的；真正处理发丝质量好的模型（比如带 trimap 精修的流程）动辄几十上百 MB，不适合放进网页。要做商业级精修，还是得上桌面软件。"}},{"@type":"Question","name":"能一次处理一批吗？","acceptedAnswer":{"@type":"Answer","text":"这一版一次一张。批量要处理进度、失败重试和打包下载，是另一套界面，留给「批量处理」那条线。现在急着用的话，多选几次下载也比上传到别人服务器省事。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"怎么用去背景","description":"用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传","totalTime":"PT3M","tool":[{"@type":"HowToTool","name":"去背景"}],"step":[{"@type":"HowToStep","position":1,"name":"选一张图。主体和背景颜色差别越大，边缘越干净；毛发、纱、玻璃杯这类半透明边缘…","text":"选一张图。主体和背景颜色差别越大，边缘越干净；毛发、纱、玻璃杯这类半透明边缘会有毛边，属于这类模型的通病","url":"https://toolhub.bot.cd/tools/bg-remove/#step1"},{"@type":"HowToStep","position":2,"name":"背景选「透明」得到带 alpha 的 PNG，选「白色」直接铺白底——证件照…","text":"背景选「透明」得到带 alpha 的 PNG，选「白色」直接铺白底——证件照、商品主图常用后者","url":"https://toolhub.bot.cd/tools/bg-remove/#step2"},{"@type":"HowToStep","position":3,"name":"点「去背景」，第一次会先下载推理引擎（约 10 MB）和模型（4.4 MB）…","text":"点「去背景」，第一次会先下载推理引擎（约 10 MB）和模型（4.4 MB），之后每张只花推理时间","url":"https://toolhub.bot.cd/tools/bg-remove/#step3"},{"@type":"HowToStep","position":4,"name":"边缘有毛刺就把「边缘柔化」调到 2 到 3，蒙版会被轻微模糊，毛边不明显但形…","text":"边缘有毛刺就把「边缘柔化」调到 2 到 3，蒙版会被轻微模糊，毛边不明显但形状更圆滑","url":"https://toolhub.bot.cd/tools/bg-remove/#step4"},{"@type":"HowToStep","position":5,"name":"下载 PNG。原图长边超过 4096 时会先按比例缩小再处理，结果里会写明最…","text":"下载 PNG。原图长边超过 4096 时会先按比例缩小再处理，结果里会写明最终尺寸","url":"https://toolhub.bot.cd/tools/bg-remove/#step5"}]}</script>
+  <link rel="stylesheet" href="/assets/style.tool.css" />
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>去背景</h1><p>用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传</p><h2>关于去背景</h2><p>去背景这件事，现在有两种做法：把图上传到别人的服务器，或者让模型跑在你自己这台机器上。这个工具是后者——它用 U²-Net 的轻量版（u2netp，1.1M 参数）在浏览器里算出每个像素属于前景的概率，再把这张概率图当成 alpha 通道贴回原图。模型文件 4.4 MB，推理引擎 10 MB，第一次用要下载，之后浏览器会缓存；图片本身从来不上传，也不需要注册。代价是速度：单线程 wasm 跑一张 320×320 的推理大约 3 秒，这是 GitHub Pages 上没法开多线程（响应头不由我们控制）导致的上限，不是模型的问题。</p><h2>使用步骤</h2><ol><li>选一张图。主体和背景颜色差别越大，边缘越干净；毛发、纱、玻璃杯这类半透明边缘会有毛边，属于这类模型的通病</li><li>背景选「透明」得到带 alpha 的 PNG，选「白色」直接铺白底——证件照、商品主图常用后者</li><li>点「去背景」，第一次会先下载推理引擎（约 10 MB）和模型（4.4 MB），之后每张只花推理时间</li><li>边缘有毛刺就把「边缘柔化」调到 2 到 3，蒙版会被轻微模糊，毛边不明显但形状更圆滑</li><li>下载 PNG。原图长边超过 4096 时会先按比例缩小再处理，结果里会写明最终尺寸</li></ol><h2>常见错误</h2><h3>拿全身照抠头发</h3><p>全身照里头发往往只有几十个像素宽，320×320 的模型分辨不出来，结果是一团糊。换成半身或头像特写，同样的图会干净很多——这不是参数问题，是分辨率问题。</p><h3>背景和主体颜色接近</h3><p>穿白衬衫站白墙前，模型会连墙一起留下。它没有「语义」上的先验，靠的是颜色和纹理的边界。换一件对比色衣服，或者换一面墙，比调任何参数都有效。</p><h3>处理完直接拿去印刷</h3><p>结果是从 320×320 的蒙版放大来的，边缘精度达不到印刷要求（放大看是一圈渐变）。屏幕展示、电商主图够用；印刷品请用专业工具或人工修边。</p><h2>常见问题</h2><h3>图片会上传吗？</h3><p>不会。推理在页面进程内完成，模型文件是本站在自己域名下提供的静态文件，处理过程中没有任何请求带着你的图片出去。要验证的话：第一次跑完、等浏览器缓存住之后拔掉网线再跑一次，功能照常，结果一样。</p><h3>为什么第一次要等那么久？</h3><p>第一次要下 10 MB 的推理引擎加 4.4 MB 的模型，合计约 14.5 MB。之后它们进了浏览器缓存（本站的 Service Worker 也会收），断网都能跑。工具页一打开就开始下载，你选图那几秒一般已经下完了。</p><h3>为什么一张要三秒？别人的在线工具很快</h3><p>别人的在线工具是在服务器上用 GPU 跑的，快是因为用了显卡，代价是你的图传到了他们的机器上。这里跑在浏览器单线程 wasm 上，没有 GPU 加速也没有多线程。想更快只有两条路：换 WebGPU（要多下 10 MB 内核，且不是所有设备都支持），或者把图上传走云端——后者这个站不做。</p><h3>边缘一圈毛边怎么办？</h3><p>这是 320×320 分辨率带来的：模型在低分辨率上判断哪些像素是前景，放大回原图时边界只能靠插值猜。把「边缘柔化」调到 2-3 能压住毛刺，但会让边缘略显发虚。另一个办法是拍图时让主体离背景远一点、光线均匀，模型的判断会准得多。</p><h3>发丝、半透明的东西能抠吗？</h3><p>能，但会丢细节。u2netp 是给「主体清楚、背景干净」的场景优化的；真正处理发丝质量好的模型（比如带 trimap 精修的流程）动辄几十上百 MB，不适合放进网页。要做商业级精修，还是得上桌面软件。</p><h3>能一次处理一批吗？</h3><p>这一版一次一张。批量要处理进度、失败重试和打包下载，是另一套界面，留给「批量处理」那条线。现在急着用的话，多选几次下载也比上传到别人服务器省事。</p><p>来源：U²-Net (u2netp) + ONNX Runtime Web · License: Apache-2.0 / MIT · 分类：<a href="/categories/image/">图片</a></p><h2>相关阅读</h2><ul><li><a href="/tools/image-compress/">图片压缩</a> —— 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器</li><li><a href="/tools/image-resize/">图片缩放</a> —— 按最大边长等比缩放图片，生成头像/封面尺寸</li><li><a href="/tools/image-base64/">图片转 Base64</a> —— 图片与 Data URI / Base64 双向转换</li><li><a href="/tools/squoosh/">Squoosh</a> —— 同类第三方工具（官方在线版）</li><li><a href="/tools/picsum/">Picsum Photos</a> —— 同类第三方工具（官方在线版）</li><li><a href="/categories/image/">全部图片类工具</a> —— 按分类浏览</li></ul><p><a href="/">← 返回 ToolHub 全部工具</a></p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="74 个在本机跑 · 144 个已收录 · 64 条资源 · 无需注册" data-en="74 run in your browser · 144 listed · 64 resources · no sign-up">74 个在本机跑 · 144 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__TOOL__="bg-remove";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

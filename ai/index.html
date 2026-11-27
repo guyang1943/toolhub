@@ -42,7 +42,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
-  <meta name="twitter:description" content="精选 142 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:description" content="精选 144 个开源工具，本地执行保护隐私，打开网页就能用。" />
   <meta name="twitter:image" content="/assets/og.png" />
   <link rel="apple-touch-icon" href="/assets/icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
@@ -107,10 +107,12 @@
   </header>
 
   <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>AI 中心</h1><p>两个站内 AI 工具（浏览器内置模型做摘要翻译改写、本机能跑多大模型）、四条路径对比、跑不动时怎么退。不上传、不注册。</p>
-      <h2>能直接用的 2 个</h2>
-      <ul><li><a href="/tools/ai-local/"><b>浏览器内置 AI：总结 / 翻译 / 改写</b></a> —— 用浏览器自带的本地模型做摘要、翻译与改写，权重不经过本站，文本不出你的机器</li><li><a href="/tools/ai-hw-check/"><b>本机能跑多大模型</b></a> —— 当场检测 WebGPU、内存与核数，算出你的机器能跑多大的本地模型（3B 到 70B、四档量化）</li></ul>
-      <p>两个工具的分工：带 AI 的那个回答「这件事现在能不能做」，硬件那个回答「这台机器适合走哪条路」。
-      它们都不下载模型——一个用浏览器自带的，一个只做检测。</p>
+      <h2>能直接用的 4 个</h2>
+      <ul><li><a href="/tools/ai-local/"><b>浏览器内置 AI：总结 / 翻译 / 改写</b></a> —— 用浏览器自带的本地模型做摘要、翻译与改写，权重不经过本站，文本不出你的机器</li><li><a href="/tools/ai-hw-check/"><b>本机能跑多大模型</b></a> —— 当场检测 WebGPU、内存与核数，算出你的机器能跑多大的本地模型（3B 到 70B、四档量化）</li><li><a href="/tools/bg-remove/"><b>去背景</b></a> —— 用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传</li><li><a href="/tools/face-blur/"><b>人脸打码</b></a> —— 自动找到照片里的人脸并打码，模型在浏览器里跑，图片不上传</li></ul>
+      <p>分两类。文字类的调浏览器自带的模型（权重由浏览器管，本站不分发也不托管）；
+      图片类的用本站自己带的两个小模型——U²-Net 轻量版做去背景、YuNet 找人脸，合计 4.8 MB。
+      这两个第一次用要连带 10.2 MB 的推理引擎一起下载，之后浏览器缓存住，<b>断网也能继续用</b>。</p>
+      <p>还有一个不下载任何模型：量硬件的那个只读这台机器的 WebGPU、内存与核数，回答「这条路上哪一档跑得动」。</p>
 
       <h2>四条路，别混着走</h2>
       <table class="cmp-table">
@@ -123,6 +125,9 @@
       </table>
       <p>这张表不是「哪个最好」，是「哪个适合你现在这件事」。同一台机器上，写一封邮件用第一列就够了，
       跑一份几十页的合同就该走第二列，而要求最高质量时第四列才是对的——代价是你得承认内容出去了。</p>
+      <p>第一列不只处理文字。去背景和人脸打码也走这条路：模型是本站在自己域名下提供的静态文件，
+      算力来自你这台机器的 CPU，图片从头到尾没有离开浏览器——同一个网站里的另外两种做法，
+      一种是把图传给别人的服务器，一种是让你装软件。</p>
 
       <h2>跑不动怎么办</h2>
       <p>先别急着加内存。三个动作按顺序试：把量化降一档（Q8 到 Q4_K_M 大约省一半）、把规模降一档（13B 到 7B 也是大约一半）、
@@ -152,7 +157,7 @@
             <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
           </div>
           <div class="hero-search-hint">
-            <span data-zh="72 个在本机跑 · 142 个已收录 · 64 条资源 · 无需注册" data-en="72 run in your browser · 142 listed · 64 resources · no sign-up">72 个在本机跑 · 142 个已收录 · 64 条资源 · 无需注册</span>
+            <span data-zh="74 个在本机跑 · 144 个已收录 · 64 条资源 · 无需注册" data-en="74 run in your browser · 144 listed · 64 resources · no sign-up">74 个在本机跑 · 144 个已收录 · 64 条资源 · 无需注册</span>
             <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
           </div>
         </div>

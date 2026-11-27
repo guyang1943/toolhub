@@ -1,8 +1,8 @@
 {
   "site": "ToolHub",
   "version": 1,
-  "updated": "2026-11-26",
-  "total": 142,
+  "updated": "2026-11-27",
+  "total": 144,
   "tools": [
     {
       "id": "json-format",
@@ -1078,6 +1078,40 @@
         "webgpu",
         "硬件检测",
         "ollama"
+      ]
+    },
+    {
+      "id": "bg-remove",
+      "name": "去背景",
+      "desc": "用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/bg-remove/",
+      "source": "U²-Net (u2netp) + ONNX Runtime Web",
+      "license": "Apache-2.0 / MIT",
+      "tags": [
+        "图片",
+        "ai",
+        "抠图",
+        "背景",
+        "透明"
+      ]
+    },
+    {
+      "id": "face-blur",
+      "name": "人脸打码",
+      "desc": "自动找到照片里的人脸并打码，模型在浏览器里跑，图片不上传",
+      "category": "图片",
+      "runtime": "browser",
+      "url": "https://toolhub.bot.cd/tools/face-blur/",
+      "source": "YuNet (OpenCV Zoo) + ONNX Runtime Web",
+      "license": "MIT",
+      "tags": [
+        "图片",
+        "ai",
+        "隐私",
+        "打码",
+        "人脸"
       ]
     },
     {

@@ -1,7 +1,7 @@
 # ToolHub
 > 开源在线工具目录：能在浏览器里跑的都在本机处理，文件 0 字节上传服务器；第三方工具只做跳转，适用对方隐私政策。
 
-## 本地工具（72 个，在本机运行，0 字节上传）
+## 本地工具（74 个，在本机运行，0 字节上传）
 - [JSON 格式化](https://toolhub.bot.cd/tools/json-format/): 美化/压缩 JSON，自动校验语法错误
 - [图片压缩](https://toolhub.bot.cd/tools/image-compress/): 在浏览器本地压缩 JPG/PNG/WebP，图片不上传服务器
 - [二维码生成](https://toolhub.bot.cd/tools/qrcode/): 把文本/网址变成二维码，可下载 PNG
@@ -74,6 +74,8 @@
 - [汉字转拼音](https://toolhub.bot.cd/tools/pinyin-convert/): 汉字转全拼或首字母，注明多音字与声调口径
 - [浏览器内置 AI：总结 / 翻译 / 改写](https://toolhub.bot.cd/tools/ai-local/): 用浏览器自带的本地模型做摘要、翻译与改写，权重不经过本站，文本不出你的机器
 - [本机能跑多大模型](https://toolhub.bot.cd/tools/ai-hw-check/): 当场检测 WebGPU、内存与核数，算出你的机器能跑多大的本地模型（3B 到 70B、四档量化）
+- [去背景](https://toolhub.bot.cd/tools/bg-remove/): 用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传
+- [人脸打码](https://toolhub.bot.cd/tools/face-blur/): 自动找到照片里的人脸并打码，模型在浏览器里跑，图片不上传
 
 ## 第三方目录（70 个，跳转对方官网，适用对方隐私政策）
 - [Excalidraw](https://toolhub.bot.cd/tools/excalidraw/): 手绘风格白板画图，协作绘图神器（数据边界：看用法）

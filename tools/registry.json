@@ -107,6 +107,8 @@
     "ascii-art",
     "pinyin-convert",
     "ai-local",
-    "ai-hw-check"
+    "ai-hw-check",
+    "bg-remove",
+    "face-blur"
   ]
 }

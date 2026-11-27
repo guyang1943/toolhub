@@ -1243,6 +1243,29 @@ check('离线包清单（E1）', () => {
   assert(!full.some((u) => /^\/assets\/vendor\/pyodide\//.test(u) || /\.whl$/i.test(u)), '离线包不应包含 Pyodide 运行时');
   assert(full.some((u) => /pyodide-loader\.js$/.test(u)), '离线包缺 pyodide-loader.js（离线时 Python 工具会静默失败）');
 
+  // v3.41：ONNX 推理内核（10.06 MB）与两个权重（4.36 MB + 0.23 MB）同样不能进包——
+  // 进了就从 6.4 MB 变 16.6 MB，「下载离线包」这个按钮会变得没人敢按。
+  // 它们按需取，但 SW 的 fetch 处理器会把第一次取到的收进缓存，所以用过一次之后离线仍可用。
+  // 反过来，加载器 assets/onnx-runtime.js 必须是包里的——它只有几 KB，缺了就是「离线点运行没反应」。
+  assert(
+    !full.some((u) => /^\/assets\/vendor\/onnx\//.test(u) || /^\/assets\/models\//.test(u) || /\.onnx$/i.test(u)),
+    '离线包不应包含 ONNX 运行时或模型权重（会把离线包从 6.4 MB 撑到 16.6 MB）'
+  );
+  assert(full.some((u) => /\/assets\/onnx-runtime\.js$/.test(u)), '离线包缺 assets/onnx-runtime.js');
+  // 权重和内核真的在磁盘上：缺席时工具不会报 404，而是「下载失败」——两种错看起来一样，
+  // 但修法完全不同（一个是构建漏拷，一个是网络）。这一条把构建的问题钉在构建这一侧。
+  for (const [rel, minBytes] of [
+    ['assets/vendor/onnx/ort-wasm-simd.wasm', 9 * 1048576],
+    ['assets/vendor/onnx/ort.wasm.min.js', 100 * 1024],
+    ['assets/models/u2netp.onnx', 4 * 1048576],
+    ['assets/models/yunet.onnx', 200 * 1024],
+  ]) {
+    const p = join(root, rel);
+    assert(existsSync(p), `缺 ${rel}（去背景 / 人脸打码要用）`);
+    const sz = statSync(p).size;
+    assert(sz >= minBytes, `${rel} 只有 ${sz} B，像是下成了 HTML 错误页或 LFS 指针`);
+  }
+
   // 应用自身的按需模块（batch / drop / zip / 加密分享 / 意图解析 …）也必须在包里。
   // 这些是 import() 加载的，缺了不会白屏，而是「离线点一下没反应」——更难发现也更容易漏。
   const appModules = readdirSync(join(root, 'assets'))

@@ -180,6 +180,14 @@
         "name": "Built-in AI: Summarise / Translate / Rewrite",
         "desc": "Summarise, translate and rewrite with the model your browser already ships — no upload, nothing leaves your device"
       },
+      "bg-remove": {
+        "name": "Remove Background",
+        "desc": "Cut the subject out with an on-device U²-Net model and get a transparent PNG — the image never leaves your browser"
+      },
+      "face-blur": {
+        "name": "Blur Faces in Photos",
+        "desc": "Detect faces with YuNet, then mosaic, blur or block them — detection runs in your browser, nothing is uploaded"
+      },
       "ai-hw-check": {
         "name": "How Big a Model Can This Machine Run",
         "desc": "Probe WebGPU, memory and CPU cores, then work out which local model sizes and quantisations actually fit"

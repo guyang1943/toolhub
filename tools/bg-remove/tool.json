@@ -1,0 +1,41 @@
+{
+  "id": "bg-remove",
+  "name": "去背景",
+  "desc": "用站内 U²-Net 模型在浏览器里抠图，输出透明 PNG，图片不上传",
+  "category": "图片",
+  "source": "U²-Net (u2netp) + ONNX Runtime Web",
+  "license": "Apache-2.0 / MIT",
+  "runtime": "browser",
+  "tags": [
+    "图片",
+    "ai",
+    "抠图",
+    "背景",
+    "透明"
+  ],
+  "io": {
+    "in": [
+      "image"
+    ],
+    "out": [
+      "image"
+    ]
+  },
+  "hot": true,
+  "aliases": [
+    "qubei",
+    "koutu",
+    "去背景",
+    "抠图",
+    "抠像",
+    "透明底",
+    "去底",
+    "白底图",
+    "证件照换底",
+    "商品图",
+    "去背景图",
+    "remove background",
+    "bg remove",
+    "background remover"
+  ]
+}

@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.40 · 预缓存 384 个地址 · 约 6.3 MB
-const VERSION = "toolhub-v3.40";
+// 版本：toolhub-v3.41 · 预缓存 391 个地址 · 约 6.4 MB
+const VERSION = "toolhub-v3.41";
 const CORE = [
   "/",
   "/offline/",
@@ -189,6 +189,10 @@ const FULL = [
   "/tools/ai-local/run.js",
   "/tools/ai-hw-check/",
   "/tools/ai-hw-check/run.js",
+  "/tools/bg-remove/",
+  "/tools/bg-remove/run.js",
+  "/tools/face-blur/",
+  "/tools/face-blur/run.js",
   "/assets/vendor/jsQR.js",
   "/assets/vendor/marked.min.js",
   "/assets/vendor/pdf-lib.min.js",
@@ -233,6 +237,7 @@ const FULL = [
   "/assets/lib/zip.js",
   "/assets/my.js",
   "/assets/offline.js",
+  "/assets/onnx-runtime.js",
   "/assets/open-page.js",
   "/assets/submit-page.js",
   "/assets/submit-resource.js",
@@ -252,6 +257,7 @@ const FULL = [
   "/articles/ascii-art.json",
   "/articles/barcode-gen.json",
   "/articles/base64-url.json",
+  "/articles/bg-remove.json",
   "/articles/bmi-calc.json",
   "/articles/case-convert.json",
   "/articles/color-contrast.json",
@@ -265,6 +271,7 @@ const FULL = [
   "/articles/env-parser.json",
   "/articles/exif-strip.json",
   "/articles/expense-aa.json",
+  "/articles/face-blur.json",
   "/articles/file-hash.json",
   "/articles/gradient-gen.json",
   "/articles/http-code.json",

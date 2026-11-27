@@ -1,0 +1,40 @@
+{
+  "id": "face-blur",
+  "name": "人脸打码",
+  "desc": "自动找到照片里的人脸并打码，模型在浏览器里跑，图片不上传",
+  "category": "图片",
+  "source": "YuNet (OpenCV Zoo) + ONNX Runtime Web",
+  "license": "MIT",
+  "runtime": "browser",
+  "tags": [
+    "图片",
+    "ai",
+    "隐私",
+    "打码",
+    "人脸"
+  ],
+  "io": {
+    "in": [
+      "image"
+    ],
+    "out": [
+      "image"
+    ]
+  },
+  "hot": true,
+  "aliases": [
+    "dama",
+    "renlian",
+    "人脸打码",
+    "打码",
+    "马赛克",
+    "脸部模糊",
+    "糊脸",
+    "多人合影",
+    "隐私处理",
+    "人脸模糊",
+    "face blur",
+    "blur face",
+    "mosaic face"
+  ]
+}

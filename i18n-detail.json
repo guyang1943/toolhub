@@ -2245,6 +2245,71 @@
         "lang": "Target language (translation only)"
       }
     },
+  "bg-remove": {
+    "usage": "Pick a photo and the tool runs u2netp, a 4.4 MB segmentation model, right here in your browser. Its output becomes the alpha channel of a new PNG. Choose “Transparent” to keep alpha, or “White” to lay the cut-out on a white background — the latter is what ID photos and product shots usually want. The first run downloads a 10 MB inference engine plus the model; after that both are cached and it works offline.",
+    "tips": [
+      "First run downloads ~14.5 MB (engine + model) once; the tool page starts fetching as soon as it opens",
+      "One image takes about 3 seconds here — single-threaded WebAssembly, no GPU. That is the price of not uploading your image",
+      "Hair and semi-transparent edges will smear; raise “Edge softness” to 2-3 to hide the fringe",
+      "Images longer than 4096 px are scaled down first, and the result states the final size"
+    ],
+    "scenarios": [
+      {
+        "scene": "Product shots need a clean background",
+        "how": "Pick the image → Transparent → download",
+        "result": "A PNG with alpha you can drop onto any background"
+      },
+      {
+        "scene": "An ID photo needs a white background",
+        "how": "Pick the image → Background: White",
+        "result": "Edges fade according to the softness value, no hard staircase"
+      },
+      {
+        "scene": "You do not want a face photo on someone else's server",
+        "how": "Process it on this page",
+        "result": "The image never leaves your machine"
+      }
+    ],
+    "runLabel": "Remove background",
+    "labels": {
+      "file": "Image",
+      "bg": "Background",
+      "edge": "Edge softness (px)"
+    }
+  },
+  "face-blur": {
+    "usage": "Pick a photo and the tool runs YuNet, a 227 KB face detector, in your browser. Every detected face is covered with a mosaic, a Gaussian blur or a solid block. The sensitivity setting trades recall for precision: “rather too many” also covers non-face regions, “rather too few” only touches faces it is sure about. Check the result yourself before publishing — profile views, masked faces and very small faces do get missed.",
+    "tips": [
+      "Profile views beyond roughly 45 degrees, masks and tiny faces are the main sources of misses",
+      "Solid blocks are the safest choice for anything leaving your hands; low-strength blur can be partly reconstructed",
+      "Strength has to scale with the image: a 4 px blur is nothing on a 4000 px wide photo",
+      "HEIC files from iPhone will not open in any browser — export to JPG first"
+    ],
+    "scenarios": [
+      {
+        "scene": "A group photo is going into a public chat",
+        "how": "Pick the image → Mosaic → rather too many",
+        "result": "Every frontal face covered, only blocks remain"
+      },
+      {
+        "scene": "A screenshot has someone's avatar in it",
+        "how": "Pick the image → Gaussian blur → strength 24",
+        "result": "A natural fade instead of a grey patch"
+      },
+      {
+        "scene": "ID material with a face has to be sent out",
+        "how": "Solid block, strength 30",
+        "result": "Fully covered, no reliance on whether compression is reversible"
+      }
+    ],
+    "runLabel": "Find faces and blur",
+    "labels": {
+      "file": "Image",
+      "style": "Effect",
+      "strength": "Strength",
+      "sens": "Sensitivity"
+    }
+  },
     "ai-hw-check": {
       "usage": "Pick a model size, quantisation level and context length. The tool probes WebGPU, memory and CPU cores on the spot, then compares what the model needs against what this machine has. Nothing is downloaded.",
       "tips": [
