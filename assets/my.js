@@ -29,6 +29,9 @@ const SET_TOOLS_MAX = 30;
 
 let NAMES = new Map(); // 工具 id → 名字，去掉「查不到就显示 id」的突兀
 let ALL_TOOLS = []; // [{id, name}]，给集合的输入提示用
+// 进度只算「在这个站里执行」的工具。注册表里 link 是外链（70 条），
+// 它们跑没跑完我们无从得知，混进分母就会写出「0 / 144」这种假进度。
+let LOCAL_TOOLS = [];
 const FLOW_NAMES = new Map(); // 流程 id → 中文名，只用于把「我存的那套参数」说清楚是哪条流程
 let box = null;
 
@@ -69,6 +72,69 @@ function cards() {
     one(runs, '本机运行次数', '#my-usage') +
     one(evs.length, '运行记录条数', '#my-runs') +
     '</div>'
+  );
+}
+
+/* ---------- 渲染：进度（v3.42） ---------- */
+
+/**
+ * 「用过几个」只认成功跑完的那一次（store.get('usage')），不把「打开过」算进来。
+ * 打开不产生结果，算进去会让进度虚高，这条数字就失去意义了。
+ *
+ * 只统计本地工具：目录工具是别人的站点，跑没跑完我们无从得知，
+ * 混进来会让分母变成 144，而其中 70 个根本不在这个站上执行。
+ */
+function progressBlock() {
+  const total = LOCAL_TOOLS.length;
+  if (!total) return '';
+  const usage = store.get('usage', {});
+  const known = new Set(LOCAL_TOOLS.map((x) => x.id));
+  const used = new Set(
+    Object.keys(usage).filter((id) => known.has(id) && Number(usage[id]) > 0)
+  );
+  const left = total - used.size;
+  const pct = Math.round((used.size / total) * 100);
+
+  // 每天换一批：按天数旋转名单，同一天刷新不变，隔天起点后移，
+  // 免得总推同样三个、把其余工具永远埋在下面。
+  //
+  // 还要**按分类分散**：工具按分类排序，直接取连续三名会得到「图片水印 / 图片拼接 /
+  // 图片滤镜」这种——三个都是图片类，等于没给选择。所以每个分类最多取一个。
+  const unused = LOCAL_TOOLS.filter((x) => !used.has(x.id));
+  const day = Math.floor(Date.now() / 86400000);
+  const off = unused.length ? day % unused.length : 0;
+  const picks = [];
+  const seenCat = new Set();
+  for (let i = 0; i < unused.length && picks.length < 3; i++) {
+    const x = unused[(off + i) % unused.length];
+    if (seenCat.has(x.cat)) continue;
+    seenCat.add(x.cat);
+    picks.push(x);
+  }
+  const pickList = picks.length
+    ? '<h3>还没试过的，从这三个开始</h3><ul class="my-picks">' +
+      picks
+        .map(
+          (x) =>
+            `<li><a href="/tools/${esc(x.id)}/">${esc(x.name)}</a>` +
+            `<span>${esc(x.desc || '')}</span></li>`
+        )
+        .join('') +
+      '</ul>'
+    : '';
+
+  const line = left
+    ? `<b>${used.size}</b> / ${total} 个工具用过 —— 还有 ${left} 个没碰过`
+    : `<b>${total}</b> 个工具全跑过了。这站里本地能做的事，你都试过一遍。`;
+
+  return section(
+    'my-progress',
+    '用过的工具',
+    `<p class="my-progress-line">${line}</p>` +
+      `<div class="my-meter" role="img" aria-label="已用 ${pct}%">` +
+      `<i style="width:${Math.max(pct, 1)}%"></i></div>` +
+      pickList,
+    '「用过」指成功跑完过至少一次，只记在这台设备上；打开页面但没跑不算。清掉「本机统计」这一组会归零——那是真的删了，不是藏起来。'
   );
 }
 
@@ -339,6 +405,7 @@ function section(id, title, body, note) {
 function render() {
   box.innerHTML =
     cards() +
+    progressBlock() +
     favsBlock() +
     recentBlock() +
     usageBlock() +
@@ -487,7 +554,10 @@ export async function mountMy(el, reg) {
   box = el;
   const tools = (reg && reg.tools) || [];
   for (const t of tools) NAMES.set(t.id, t.name);
-  ALL_TOOLS = tools.map((t) => ({ id: t.id, name: t.name }));
+  const brief = (t) => ({ id: t.id, name: t.name, desc: t.desc || '', cat: t.category || '' });
+  ALL_TOOLS = tools.map(brief);
+  // 集合允许收外链工具（ALL_TOOLS 保留全部），进度只认站内执行的（LOCAL_TOOLS）。
+  LOCAL_TOOLS = tools.filter((t) => t.runtime !== 'link').map(brief);
 
   // 目录工具（62 条外链）也可能被收藏，名字在另一份数据里。
   // 只在「有 id 查不到名字」时才去取——本地工具已覆盖大部分情况，不必为一个名字多等一次请求。

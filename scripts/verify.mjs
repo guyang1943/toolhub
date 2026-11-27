@@ -1799,6 +1799,39 @@ check('我的数据页在首页有入口（v3.22.2）', () => {
   return '首页信任区 → /my/，中英各一条';
 });
 
+// ---------- v3.42：/my/ 的进度是从记录现算的，不是另存一份成就 ----------
+// 这一条要防的是三种「看起来做了」的做法：
+//   ① 定义了 progressBlock 但没挂进 render——块永远不出现，测试却看不出；
+//   ② 拿 recent（打开过）当「用过」——数字虚高，进度变成装饰；
+//   ③ 分母写成 144——目录工具是别人的站点，我们不知道跑没跑完。
+check('我的数据页的进度从记录现算（v3.42）', () => {
+  const myJs = readFileSync(join(root, 'assets/my.js'), 'utf8');
+  const css = readFileSync(join(root, 'assets/style.my.css'), 'utf8');
+  const page = readFileSync(join(root, 'my/index.html'), 'utf8');
+
+  const renderBody = myJs.slice(myJs.indexOf('function render()'));
+  assert(renderBody.includes('progressBlock()'), 'render() 没调用 progressBlock()，进度块永远不出现');
+
+  const fn = myJs.slice(
+    myJs.indexOf('function progressBlock'),
+    myJs.indexOf('/* ---------- 渲染：各类列表')
+  );
+  assert(fn.includes("store.get('usage'"), '进度没读 usage——「用过」的判据就是成功跑完过');
+  assert(!/store\.get\('recent'/.test(fn), '进度里混进了 recent（打开过）：打开不产生结果，算进去就虚高了');
+  assert(fn.includes('const total = LOCAL_TOOLS.length'), '分母不是本地工具数——用注册表全量会写出「0 / 144」，把 70 条外链算成没跑过的工具');
+  assert(myJs.includes("filter((t) => t.runtime !== 'link')"), '没把外链（runtime === link）排除在进度之外');
+  assert(myJs.includes('known.has(id)'), '没过滤已下架 / 目录工具的 usage 记录，可能出现 12 / 74 却数出 13 个');
+  assert(fn.includes('seenCat'), '推荐没按分类分散：工具按分类排序，连续取三名会得到三个同类工具，等于没给选择');
+
+  assert(css.includes('.my-meter'), '缺进度条样式');
+  const bootCss = readFileSync(join(root, 'assets/style.css'), 'utf8');
+  assert(!bootCss.includes('.my-meter'), '/my/ 的样式跑进首屏样式了，它该留在 style.my.css（页级分片）');
+
+  assert(page.includes('「用过 N 个」是怎么算的'), '静态页缺算法说明：爬虫与禁用 JS 的人看不到这段');
+  assert(page.includes('href="/feed.xml"'), '/my/ 没有 RSS 入口——feed.xml 一直在，但以前只有更新日志页链得到');
+  return '进度读 usage、分母只算本地、样式在页级分片、RSS 有入口';
+});
+
 // ---------- v3.22.1：README 头部数字由数据推导 ----------
 // 这一条是被现实咬出来的：e46ae70 加了第 38 个本地工具，站点首页（数字由数据推导）当场变成
 // 「38 个在本机跑 · 100 个已收录」，而 README 开头还写着 99 / 37，一直到 v3.22 都没人发现。
