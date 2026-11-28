@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.43 · 预缓存 395 个地址 · 约 6.5 MB
-const VERSION = "toolhub-v3.43";
+// 版本：toolhub-v3.44 · 预缓存 399 个地址 · 约 6.6 MB
+const VERSION = "toolhub-v3.44";
 const CORE = [
   "/",
   "/offline/",
@@ -205,6 +205,8 @@ const FULL = [
   "/assets/vendor/pinyin.min.js",
   "/ai/",
   "/ai/matrix/",
+  "/ai/where/",
+  "/ai/cost/",
   "/tools/",
   "/categories/",
   "/guides/",
@@ -223,7 +225,9 @@ const FULL = [
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
+  "/assets/lib/ai-cost.js",
   "/assets/lib/ai-matrix.js",
+  "/assets/lib/ai-where.js",
   "/assets/lib/beacon.js",
   "/assets/lib/drop-route.js",
   "/assets/lib/events.js",

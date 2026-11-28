@@ -31,22 +31,28 @@ export function aiBody(tools) {
     .map((t) => `<li><a href="/tools/${t.id}/"><b>${AI_ESC(t.name)}</b></a> —— ${AI_ESC(t.desc)}</li>`)
     .join('');
   return `
-      <h2>三个问题，先问哪个</h2>
+      <h2>四个问题，先问哪个</h2>
       <div class="dec">
-        <div class="dec-card">
+        <a class="dec-card" href="/ai/where/">
           <span class="dec-q">问 01</span>
           <b>这件事该在哪跑？</b>
-          <span class="dec-a">本机、浏览器、自建、云端，四条路的代价与数据流向摆在一起，不推荐「最好」的那条。</span>
-          <em>↓ 本页第二节</em>
-        </div>
-        <a class="dec-card" href="/ai/matrix/">
+          <span class="dec-a">按任务 × 数据敏感度查：合同走本机、周报随便。四条的代价摆在一起，不推荐「最好」的那条。</span>
+          <em>查决策表 →</em>
+        </a>
+        <a class="dec-card" href="/ai/cost/">
           <span class="dec-q">问 02</span>
+          <b>这要花多少钱？</b>
+          <span class="dec-a">一个公式、三个反直觉的点、一个换算器。不给价格表——抄一次就错一次，单价你自己填。</span>
+          <em>算一下 →</em>
+        </a>
+        <a class="dec-card" href="/ai/matrix/">
+          <span class="dec-q">问 03</span>
           <b>这些说法凭什么？</b>
           <span class="dec-a">七项属性逐条查官方文档，每条标出处与核对日期；文档没说的留问号，不替厂商下结论。</span>
           <em>打开能力矩阵 →</em>
         </a>
         <a class="dec-card" href="/guides/">
-          <span class="dec-q">问 03</span>
+          <span class="dec-q">问 04</span>
           <b>怎么一步步做完？</b>
           <span class="dec-a">按「做完一件事」组织的教程，带前置条件、每步命令与踩过的坑，不按工具名排。</span>
           <em>看教程 →</em>
@@ -69,6 +75,8 @@ export function aiBody(tools) {
       <p>第一列不只处理文字。去背景和人脸打码也走这条路：模型是本站在自己域名下提供的静态文件，
       算力来自你这台机器的 CPU，图片从头到尾没有离开浏览器——同一个网站里的另外两种做法，
       一种是把图传给别人的服务器，一种是让你装软件。</p>
+      <p>四条路里只有第四条按量收钱，前三条付的是「时间、内存、一台常开的机器」。这笔账怎么算、
+      哪些钱容易被忽略，单独放在<a href="/ai/cost/">AI 要花多少钱</a>里——那一页给公式和换算器，不给价格表。</p>
 
       <h2>本地能跑到哪一档</h2>
       <p>「我这台机器能跑多大」是被答得最玄的问题。它其实由四个数决定：参数量、量化位数、上下文长度、可用内存。
@@ -149,6 +157,26 @@ export function makePages(reg, { analyticsOptedOut = () => false } = {}) {
       <p><a href="/ai/">← 回 AI 中心</a></p>`);
     }
     return shell(matrixBody(data, todayISO()));
+  },
+  // v3.44：在哪跑。纯静态正文，没有交互——所以不需要额外挂载。
+  'ai-where': async () => {
+    const { whereBody, WHERE_LEAD } = await import('./ai-where.js');
+    return `
+    <div class="page">
+      <h1>这件事该在哪跑</h1>
+      <p class="lead">${WHERE_LEAD}</p>
+      ${whereBody()}
+    </div>`;
+  },
+  // v3.44：成本。正文静态渲染（爬虫与禁用 JS 时读得到公式），计算器在 open-page 的挂载表里接。
+  'ai-cost': async () => {
+    const { costBody, COST_LEAD } = await import('./ai-cost.js');
+    return `
+    <div class="page">
+      <h1>AI 要花多少钱</h1>
+      <p class="lead">${COST_LEAD}</p>
+      ${costBody()}
+    </div>`;
   },
   about: () => `
     <div class="page">

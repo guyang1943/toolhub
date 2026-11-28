@@ -1651,7 +1651,10 @@ function ensureCss(href) {
 }
 const PAGE_CSS = {
   ai: '/assets/style.ai.css',
+  // v3.44：四个 AI 子页共用一片 CSS。键要逐个写——PAGE_CSS 按页面名查，只留 'ai' 的话直达就没样式。
   'ai-matrix': '/assets/style.ai.css',
+  'ai-where': '/assets/style.ai.css',
+  'ai-cost': '/assets/style.ai.css',
   batch: '/assets/style.batch.css',
   my: '/assets/style.my.css',
   offline: '/assets/style.offline.css',
@@ -1721,8 +1724,9 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
-  // v3.43：AI 能力矩阵是 /ai/ 的子页，先于下面那条单段路由判断（否则会被兜底成首页）
-  if (p === '/ai/matrix') return openPage('ai-matrix');
+  // v3.43–44：/ai/ 的子页先于下面那条单段路由判断（否则会被兜底成首页）
+  const aiSub = p.match(/^\/ai\/(matrix|where|cost)$/);
+  if (aiSub) return openPage('ai-' + aiSub[1]);
   const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my|workflows|ai)$/);
   if (page) return openPage(page[1]);
   return renderHome();

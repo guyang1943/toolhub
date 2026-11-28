@@ -505,6 +505,29 @@ await sleep(300);
   check('/batch/ 页链接到单图工具', batchHtml.includes('/tools/image-compress/') && batchHtml.includes('/tools/image-resize/'));
 }
 
+// 9b2. v3.44：/ai/ 的两个新子页。这里验的是「站内点进去能画出来」——
+// 静态产物是构建期就有的，SPA 走的是 pages.js 里那两个 async 函数，
+// 少一处 import 或拼错页面名，只有这条能发现（页面名拼错会变成「页面不存在」）。
+await go('/ai/where/');
+await sleep(300);
+{
+  const h = document.getElementById('page-body').innerHTML;
+  check('/ai/where/ 页渲染', h.includes('这件事该在哪跑') && h.includes('w-table'), `#page-body ${h.length} 字符`);
+  check('决策表三档敏感度都在', ['高', '中', '低'].every((k) => h.includes(`data-lv="${k}"`)));
+  check('决策表每行都有「去哪」入口', (h.match(/class="w-go"/g) || []).length >= 6, `${(h.match(/class="w-go"/g) || []).length} 行`);
+}
+await go('/ai/cost/');
+await sleep(300);
+{
+  const h = document.getElementById('page-body').innerHTML;
+  check('/ai/cost/ 页渲染', h.includes('AI 要花多少钱') && h.includes('cost-app'), `#page-body ${h.length} 字符`);
+  const ids = ['c-in-tok', 'c-out-tok', 'c-reqs', 'c-in-price', 'c-out-price', 'c-hit-rate', 'c-hit-price'];
+  check('成本页七个输入框齐全', ids.every((id) => h.includes(`id="${id}"`)), ids.filter((id) => !h.includes(`id="${id}"`)).join(',') || '全部就位');
+  // 结果区在构建期就渲染好，SPA 重画时也必须立刻有数——不能先空着等用户输入
+  check('成本页初始结果已算出', h.includes('$0.00060') && h.includes('$6.00'));
+  check('成本页有「恢复默认」出口', h.includes('id="c-reset"'));
+}
+
 // 9c. 命令面板：一句中文 → 「也许你要」+ 预填参数
 await go('/');
 searchEl.value = '';

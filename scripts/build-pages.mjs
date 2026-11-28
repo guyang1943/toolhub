@@ -22,6 +22,9 @@ import { renderKeyTable } from '../assets/lib/store-keys.js';
 import { aiBody, countLocalAi } from '../assets/lib/pages.js';
 // v3.43：/ai/matrix/ 的正文与保鲜判定。静态页与 SPA 都调这一份，谁都不许另写一张表。
 import { matrixBody, validateMatrix, todayISO, MATRIX_LEAD } from '../assets/lib/ai-matrix.js';
+// v3.44：决策表与成本页。同样只有一份正文——静态页与 SPA 调同一个 whereBody() / costBody()。
+import { whereBody, WHERE_LEAD } from '../assets/lib/ai-where.js';
+import { costBody, COST_LEAD, validateCost } from '../assets/lib/ai-cost.js';
 // 教程正文的渲染：静态页与 SPA 共用同一段（v3.28）。围栏代码块两边都得变成 <pre><code>，
 // 否则同一段正文在「爬虫看到的」和「用户看到的」之间会悄悄长出两套样子。
 import { guideText } from '../assets/lib/guide-text.js';
@@ -95,6 +98,19 @@ const TODAY = todayISO();
       `，过期 ${stats.stale.length} 条（最老 ${oldest}，今天 ${TODAY}）`
   );
   if (stats.stale.length) console.log(`   待核清单：${stats.stale.map((s) => `${s.id}(${s.age}天)`).join('、')}`);
+}
+// 0.7) 成本页闸门（v3.44）。规矩是用户拍板的那三条：默认单价必须带来源与取价日期、
+//      必须能一键退回默认、必须明写「以官方页为准」。三条里少一条，这一页就退化成
+//      「一张看起来像实时报价的静态数字」——那比不写价格更危险，所以构建直接失败。
+{
+  const { errors, presets } = validateCost({ today: TODAY });
+  if (errors.length) {
+    console.error(`\n❌ 成本页校验失败（${errors.length} 个问题），构建中止：\n`);
+    for (const e of errors) console.error(`   ${e}`);
+    console.error('\n   规则见 assets/lib/ai-cost.js 的 validateCost；改数据：同文件的 PRESETS / DEFAULTS\n');
+    process.exit(1);
+  }
+  console.log(`✅ 成本页：${presets} 条默认单价，均带来源与取价日期；有恢复默认；已声明「以官方页为准」`);
 }
 
 const i18n = JSON.parse(readFileSync(join(root, 'i18n.json'), 'utf8')).en;
@@ -607,6 +623,26 @@ const staticPages = [
     extraCss: '/assets/style.ai.css',
     pri: '0.7',
     content: matrixBody(MATRIX, TODAY),
+  },
+  {
+    // v3.44：按任务 × 敏感度查「在哪跑」。第一列是任务不是产品——按产品排的表最后都只会说「都行」。
+    path: 'ai/where',
+    title: '这件事该在哪跑 · 按任务与数据敏感度查 · ToolHub',
+    desc: WHERE_LEAD,
+    h1: '这件事该在哪跑',
+    extraCss: '/assets/style.ai.css',
+    pri: '0.7',
+    content: whereBody(),
+  },
+  {
+    // v3.44：成本。不抄价格表——只给公式、三个反直觉点、换算器与官方入口。
+    path: 'ai/cost',
+    title: 'AI 要花多少钱 · 成本公式、三个反直觉点与换算器 · ToolHub',
+    desc: COST_LEAD,
+    h1: 'AI 要花多少钱',
+    extraCss: '/assets/style.ai.css',
+    pri: '0.6',
+    content: costBody(),
   },
   {
     path: 'about',

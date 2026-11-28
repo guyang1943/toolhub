@@ -18,7 +18,7 @@ export async function openPage(name, deps) {
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   setView('page');
-  const titles = { ai: 'AI 中心', 'ai-matrix': 'AI 能力矩阵', about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
+  const titles = { ai: 'AI 中心', 'ai-matrix': 'AI 能力矩阵', 'ai-where': '这件事该在哪跑', 'ai-cost': 'AI 要花多少钱', about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
   // v3.43：页面函数可以是 async（能力矩阵要先取那份 JSON）。await 一个字符串是合法的，
   // 所以已有页面一行都不用改；抛错也只降级成错误态，不会把整页留在空壳。
@@ -64,6 +64,9 @@ export async function openPage(name, deps) {
     ['flow-app', '/assets/workflow.js', 'mountWorkflows', 1, '工作流引擎'],
     ['batch-app', '/assets/batch.js', 'mountBatch', 0, '批量模块'],
     ['offline-app', '/assets/offline.js', 'mountOffline', 0, '离线模块'],
+    // v3.44：成本页的计算器。静态页里的数字是构建期渲染的示例值，交互必须由这里接上，
+    // 否则未启用 JS 时表格还在、能按的按钮一个都不动。
+    ['cost-app', '/assets/lib/ai-cost.js', 'mountCost', 0, '成本换算器'],
   ]) {
     const box = document.getElementById(id);
     if (!box) continue;

@@ -30,6 +30,10 @@ export const STATIC_PAGES = [
   // v3.43：能力矩阵。它单独进离线包的账算得清——正文只有一张表加一份 10 KB 的 JSON，
   // 而「断网时我还能不能核对这条说法」正是这一页的用处。数据文件由 gen-sw 扫 assets/data 收进包。
   { path: '/ai/matrix/', title: 'AI 能力矩阵', offline: 'full', audit: true, smoke: true },
+  // v3.44：决策表与成本页。两页都只有文字和一张表（成本页多一个本机计算器），
+  // 进完整离线包的理由和能力矩阵一样——「断网时还能不能查这件事该在哪跑」正是它们的用处。
+  { path: '/ai/where/', title: '这件事该在哪跑', offline: 'full', audit: true, smoke: true },
+  { path: '/ai/cost/', title: 'AI 要花多少钱', offline: 'full', audit: true, smoke: true },
   { path: '/tools/', title: '全部工具', offline: 'full', audit: true, smoke: true },
   { path: '/categories/', title: '全部分类', offline: 'full', audit: true, smoke: true },
   { path: '/guides/', title: '教程总览', offline: 'full', audit: true, smoke: true },

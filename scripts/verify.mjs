@@ -1803,7 +1803,10 @@ checkAsync('AI 能力矩阵（v3.43）', async () => {
   const aiHtml = readFileSync(join(root, 'ai', 'index.html'), 'utf8');
   assert(aiHtml.includes('/ai/matrix/'), '/ai/ 页没有指向能力矩阵的入口——建了页面没人走得进去');
   const appSrc = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
-  assert(appSrc.includes("'/ai/matrix'"), 'app.js 路由没接 /ai/matrix——直接访问会被兜底成首页');
+  // v3.44 起路由收成一条子页通配（/ai/(matrix|where|cost)），所以这里核「被这条正则覆盖」，
+  // 而不是核某个字面路径——否则每加一个子页就要改一次断言，改着改着就没人改了。
+  assert(appSrc.includes('/^\\/ai\\/(matrix|where|cost)$/'), 'app.js 路由没接 /ai/matrix——直接访问会被兜底成首页');
+  assert(appSrc.includes("openPage('ai-' + aiSub[1])"), 'app.js 的子页路由没有拼成 ai-<子页> 的页面名');
   assert(appSrc.includes("'ai-matrix': '/assets/style.ai.css'"), 'app.js 的 PAGE_CSS 没有 ai-matrix——SPA 进来会没样式');
   const pagesSrc = readFileSync(join(root, 'assets', 'lib', 'pages.js'), 'utf8');
   assert(pagesSrc.includes("'ai-matrix': async"), 'pages.js 没有 aiMatrix 页面函数');
@@ -1818,6 +1821,132 @@ checkAsync('AI 能力矩阵（v3.43）', async () => {
   assert(sw.includes('/assets/data/ai-matrix.json'), '矩阵数据没进离线包——断网打开这一页会是一张空表');
 
   return `${st.count} 条 / ${data.groups.length} 组，已核 ${st.known} 格 · 待核 ${st.unknown} 格，过期 ${st.stale.length} 条`;
+});
+
+// ---------- v3.44：/ai/where/ 决策表 ----------
+// 这一页最容易坏的地方不是文案，是链接：半年后工具改名、教程下架，表还在、点进去是 404。
+// 所以这里逐条核磁盘产物，而不是核「有没有 href」。
+checkAsync('AI 决策表（v3.44）', async () => {
+  const pagePath = join(root, 'ai', 'where', 'index.html');
+  assert(existsSync(pagePath), '/ai/where/ 没有产物——注册表加了页面，但 build-pages 没生成');
+  const html = readFileSync(pagePath, 'utf8');
+  const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'ai-where.js')).href);
+
+  // 正文同源：静态页里的每个 h2 都必须来自 whereBody()
+  const heads = [...mod.whereBody().matchAll(/<h2>([^<]+)<\/h2>/g)].map((m) => m[1]);
+  assert(heads.length >= 4, `whereBody() 只产出 ${heads.length} 个小标题，正文被删短了`);
+  for (const h of heads) assert(html.includes(h), `静态页缺少 whereBody() 里的「${h}」——两份正文开始分叉了`);
+
+  // 行数、敏感度分档
+  assert(mod.WHERE_ROWS.length >= 6, `决策表只有 ${mod.WHERE_ROWS.length} 行`);
+  for (const r of mod.WHERE_ROWS) {
+    assert(['高', '中', '低', '—'].includes(r.level), `「${r.task}」的敏感度是 ${r.level}，只能是 高/中/低/—`);
+    assert(r.links && r.links.length, `「${r.task}」没有任何「去哪」入口——这一行等于只说了「别在这跑」`);
+  }
+  const lv = (v) => (html.match(new RegExp(`data-lv="${v}"`, 'g')) || []).length;
+  for (const k of ['高', '中', '低']) {
+    const n = mod.WHERE_ROWS.filter((r) => r.level === k).length;
+    assert(lv(k) === n, `敏感度「${k}」页面 ${lv(k)} 行、数据 ${n} 行——渲染与数据对不上`);
+    assert(n > 0, `敏感度「${k}」一行都没有——三档里少一档，这张表就没法按敏感度查了`);
+  }
+
+  // 每一行的链接必须真的有产物。这是这一页最会腐烂的地方。
+  const bad = [];
+  for (const r of mod.WHERE_ROWS) {
+    for (const l of r.links) {
+      const p = l.href.split('#')[0].replace(/\?.*$/, '');
+      if (!p.startsWith('/')) continue;
+      const f = p === '/' ? 'index.html' : p.replace(/^\//, '').replace(/\/$/, '') + '/index.html';
+      if (!existsSync(join(root, f))) bad.push(`「${r.task}」→ ${l.href}（缺 ${f}）`);
+    }
+  }
+  assert(!bad.length, `决策表指向了不存在的页面：\n     ${bad.join('\n     ')}`);
+
+  // 接线：/ai/ 入口 / 路由 / 样式 / 页面函数 / 标题表 / 注册表 / sitemap / 离线包
+  const aiHtml = readFileSync(join(root, 'ai', 'index.html'), 'utf8');
+  assert(aiHtml.includes('/ai/where/'), '/ai/ 页没有指向决策表的入口——建了页面没人走得进去');
+  const appSrc = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(appSrc.includes('(matrix|where|cost)'), 'app.js 路由没接 /ai/where——直接访问会被兜底成首页');
+  assert(appSrc.includes("'ai-where': '/assets/style.ai.css'"), 'app.js 的 PAGE_CSS 没有 ai-where——直达时没样式');
+  const pagesSrc = readFileSync(join(root, 'assets', 'lib', 'pages.js'), 'utf8');
+  assert(pagesSrc.includes("'ai-where': async"), 'pages.js 没有 ai-where 页面函数');
+  const openSrc = readFileSync(join(root, 'assets', 'open-page.js'), 'utf8');
+  assert(openSrc.includes("'ai-where': '这件事该在哪跑'"), 'open-page.js 的标题表没有 ai-where');
+  const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
+  assert(reg.includes("path: '/ai/where/'"), '页面注册表没登记 /ai/where/');
+  const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
+  assert(sm.includes('/ai/where/'), 'sitemap 里没有 /ai/where/');
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('/ai/where/'), '决策表没进离线包——断网时「查这件事该在哪跑」正是它的用处');
+
+  return `${mod.WHERE_ROWS.length} 行 · 链接 ${mod.WHERE_ROWS.reduce((n, r) => n + r.links.length, 0)} 条全部有产物`;
+});
+
+// ---------- v3.44：/ai/cost/ 成本页 ----------
+// 三条硬规矩（用户拍板）：默认单价带来源与取价日期 / 能一键恢复默认 / 明写以官方页为准。
+// 这三条在构建期是闸门（validateCost），在这里再核一遍页面产物——
+// 闸门管的是数据，这里管的是「渲染出来还在不在」。
+checkAsync('AI 成本页（v3.44）', async () => {
+  const pagePath = join(root, 'ai', 'cost', 'index.html');
+  assert(existsSync(pagePath), '/ai/cost/ 没有产物——注册表加了页面，但 build-pages 没生成');
+  const html = readFileSync(pagePath, 'utf8');
+  const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'ai-cost.js')).href);
+
+  // 1) 数据规矩：闸门函数本身也要是绿的（构建期跑过，这里再跑一次防「构建用的是旧产物」）
+  const { errors } = mod.validateCost();
+  assert(!errors.length, `成本页规矩被破坏：${errors.join('；')}`);
+
+  // 2) 算得对：这是纯函数，可以直接对账。命中率最容易乘错位置（乘到总价上而不是输入上）。
+  const c = mod.costOf({ inTok: 2000, outTok: 500, reqs: 10000, inPrice: 0.15, outPrice: 0.6, hitRate: 0, hitPrice: 0.003 });
+  assert(Math.abs(c.perReq - 0.0006) < 1e-9, `单次成本算成了 ${c.perReq}，应为 0.0006（(2000×0.15+500×0.6)/1e6）`);
+  assert(Math.abs(c.monthly - 6) < 1e-6, `月成本算成了 ${c.monthly}，应为 6`);
+  assert(Math.abs(c.outShare - 0.5) < 1e-9, `输出占比算成了 ${c.outShare}，应为 0.5`);
+  const allHit = mod.costOf({ inTok: 1e6, outTok: 0, reqs: 1, inPrice: 0.15, outPrice: 0.6, hitRate: 100, hitPrice: 0.003 });
+  assert(Math.abs(allHit.perReq - 0.003) < 1e-9, `100% 命中时单价应按命中价算：得到 ${allHit.perReq}，应为 0.003`);
+
+  // 3) 页面上的初始数字必须与算出来的一致——禁用 JS 时看到的不能是另一个数
+  assert(html.includes('$0.00060'), '静态页没有渲染初始的单次成本（禁用 JS 时结果区会是空的）');
+  assert(html.includes('$6.00'), '静态页没有渲染初始的月成本');
+  assert(html.includes('id="cost-out"'), '静态页缺少结果区容器 #cost-out');
+  for (const id of ['c-in-tok', 'c-out-tok', 'c-reqs', 'c-in-price', 'c-out-price', 'c-hit-rate', 'c-hit-price']) {
+    assert(html.includes(`id="${id}"`), `计算器缺输入框 ${id}`);
+  }
+  assert(html.includes('id="c-reset"'), '缺「恢复默认」——改完单价退不回去，这一页就只进不出');
+  assert(html.includes('以官方页为准'), '缺「以官方页为准」的声明');
+  assert(html.includes('没有给默认值'), '没有交代哪几家没给默认值——读者会把表里那三条当成全部');
+
+  // 4) 四个官方入口都得在页面上（只给链接不抄数字，是这一页的设计）
+  for (const u of [
+    'https://api-docs.deepseek.com/quick_start/pricing',
+    'https://platform.claude.com/docs/en/about-claude/pricing',
+    'https://platform.openai.com/docs/pricing',
+    'https://ai.google.dev/gemini-api/docs/pricing',
+  ]) {
+    assert(html.includes(`href="${u}"`), `官方定价入口缺 ${u}`);
+  }
+  // 每条默认单价都要标核对日期（日期渲染在表格里，和 PRESETS 对得上）
+  for (const p of mod.PRESETS) {
+    assert(html.includes(`$${p.in}`) && html.includes(`$${p.out}`), `默认单价表里没有 ${p.name} 的价格`);
+  }
+
+  // 5) 接线
+  const aiHtml = readFileSync(join(root, 'ai', 'index.html'), 'utf8');
+  assert(aiHtml.includes('/ai/cost/'), '/ai/ 页没有指向成本页的入口');
+  const appSrc = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(appSrc.includes("'ai-cost': '/assets/style.ai.css'"), 'app.js 的 PAGE_CSS 没有 ai-cost');
+  const pagesSrc = readFileSync(join(root, 'assets', 'lib', 'pages.js'), 'utf8');
+  assert(pagesSrc.includes("'ai-cost': async"), 'pages.js 没有 ai-cost 页面函数');
+  const openSrc = readFileSync(join(root, 'assets', 'open-page.js'), 'utf8');
+  assert(openSrc.includes("'ai-cost': 'AI 要花多少钱'"), 'open-page.js 的标题表没有 ai-cost');
+  assert(openSrc.includes("['cost-app'"), 'open-page.js 的挂载表没有 cost-app——按钮会一个都不动');
+  const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
+  assert(reg.includes("path: '/ai/cost/'"), '页面注册表没登记 /ai/cost/');
+  const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
+  assert(sm.includes('/ai/cost/'), 'sitemap 里没有 /ai/cost/');
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('/ai/cost/'), '成本页没进离线包');
+
+  return `${mod.PRESETS.length} 条默认单价 · 单次 $0.00060 / 每月 $6.00 对账通过 · 三条免责齐全`;
 });
 
 checkAsync('意图解析规则（E4）', async () => {
