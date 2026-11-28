@@ -151,6 +151,14 @@ export function buildSw({ quiet = false } = {}) {
   for (const f of readdirSync(join(root, 'assets'))) {
     if (f.endsWith('.css')) full.add('/assets/' + f);
   }
+  // 按需数据（v3.43）：/ai/matrix/ 进页面后要 fetch 这份 JSON。它不在启动数据里，
+  // 但离线打开那一页时缺了它就是「一张空表 + 一句取不到数据」，所以进包。
+  // 扫目录而不是写死文件名：以后 assets/data/ 再加数据文件，自动跟上。
+  if (existsSync(join(root, 'assets', 'data'))) {
+    for (const f of readdirSync(join(root, 'assets', 'data'))) {
+      if (f.endsWith('.json')) full.add('/assets/data/' + f);
+    }
+  }
   // 单篇教程 JSON（v3.10）：工具页按需取自己那一篇。离线时工具页要能照常显示
   // 使用步骤与常见错误，所以一起进包——37 个文件合计约 45 KB，相对 2.7 MB 忽略不计。
   if (existsSync(join(root, 'articles'))) {

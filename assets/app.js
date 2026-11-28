@@ -1650,6 +1650,8 @@ function ensureCss(href) {
   return pending;
 }
 const PAGE_CSS = {
+  ai: '/assets/style.ai.css',
+  'ai-matrix': '/assets/style.ai.css',
   batch: '/assets/style.batch.css',
   my: '/assets/style.my.css',
   offline: '/assets/style.offline.css',
@@ -1719,6 +1721,8 @@ function route() {
     const ids = new URLSearchParams(location.search).get('ids');
     return openCompare(ids ? ids.split(',').filter(Boolean) : null);
   }
+  // v3.43：AI 能力矩阵是 /ai/ 的子页，先于下面那条单段路由判断（否则会被兜底成首页）
+  if (p === '/ai/matrix') return openPage('ai-matrix');
   const page = p.match(/^\/(about|submit|feedback|privacy|batch|offline|my|workflows|ai)$/);
   if (page) return openPage(page[1]);
   return renderHome();

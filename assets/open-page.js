@@ -1,4 +1,4 @@
-// 页面型路由：about / submit / feedback / privacy / batch / offline / my / workflows
+// 页面型路由：about / submit / feedback / privacy / batch / offline / my / workflows / ai / ai-matrix
 //
 // 从 app.js 拆出（v3.32）。这八个页面首页一次都进不去，而 openPage 是首屏脚本里
 // 第二大的单个函数；它躺在 app.js 里，等于每个进首页的人都在为「可能去看隐私说明」付解析成本。
@@ -18,9 +18,17 @@ export async function openPage(name, deps) {
   if (PAGE_CSS[name]) ensureCss(PAGE_CSS[name]);
   const fn = PAGES[name];
   setView('page');
-  const titles = { ai: 'AI 中心', about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
+  const titles = { ai: 'AI 中心', 'ai-matrix': 'AI 能力矩阵', about: '关于', submit: '投稿', feedback: '意见反馈', privacy: '隐私说明', batch: '批量处理', offline: '离线包与安装', my: '我的数据', workflows: '工作流' };
   document.title = `${titles[name] || '页面'} · ${SITE}`;
-  $('#page-body').innerHTML = fn ? fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
+  // v3.43：页面函数可以是 async（能力矩阵要先取那份 JSON）。await 一个字符串是合法的，
+  // 所以已有页面一行都不用改；抛错也只降级成错误态，不会把整页留在空壳。
+  let body;
+  try {
+    body = fn ? await fn() : stateHTML('empty', { title: '页面不存在', detail: '看看地址是否拼错，或回到首页重新找。' });
+  } catch (e) {
+    body = stateHTML('error', { title: '页面加载失败', detail: e.message });
+  }
+  $('#page-body').innerHTML = body;
 
   // 反馈页的复制模板
   const copyBtn = document.getElementById('fb-copy');

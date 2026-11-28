@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 能力矩阵 · 谁支持 MCP、能不能本地跑、要不要自带 Key · ToolHub</title>
+  <meta name="description" content="七项属性 × 每个工具，逐条查官方文档，每条标出处与核对日期。文档没说的留问号——它不是「不支持」，是「没核到」。这张表宁可承认不知道，也不替厂商下结论。" />
+  <meta name="theme-color" content="#f4f1eb" />
+  <meta name="color-scheme" content="light dark" />
+  <!-- 首帧前定主题：避免深色模式下加载时先闪一下白屏。
+       这里是**唯一**不能走 store 的地方：store 是 ES module，要等下载解析完才执行，
+       而这段必须在 CSS 画出第一帧之前同步跑完，否则防闪白就没意义了。
+       代价是要自己兼容两种存量格式——v3.22 起存 JSON（"dark"），之前是裸字符串（dark）。
+       少兼容任何一种，对应那批用户升级当天都会看到一次白闪。 -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('toolhub:theme');
+        if (t) {
+          try {
+            t = JSON.parse(t);
+          } catch (e) {
+            /* 裸字符串（v3.22 之前的存量）：保持原值，下面照常判断 */
+          }
+        }
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#0f1219' : '#2563eb');
+      } catch (e) {}
+    })();
+  </script>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toolhub.bot.cd/ai/matrix/" />
+  <link rel="canonical" href="https://toolhub.bot.cd/ai/matrix/" />
+  <meta property="og:title" content="AI 能力矩阵 · 谁支持 MCP、能不能本地跑、要不要自带 Key · ToolHub" />
+  <meta property="og:description" content="七项属性 × 每个工具，逐条查官方文档，每条标出处与核对日期。文档没说的留问号——它不是「不支持」，是「没核到」。这张表宁可承认不知道，也不替厂商下结论。" />
+  <meta property="og:image" content="https://toolhub.bot.cd/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ToolHub · 本地执行的开源在线工具" />
+  <meta name="twitter:description" content="精选 144 个开源工具，本地执行保护隐私，打开网页就能用。" />
+  <meta name="twitter:image" content="/assets/og.png" />
+  <link rel="apple-touch-icon" href="/assets/icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232563eb'/%3E%3Ctext y='72' x='50' font-size='58' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext y='360' x='256' font-size='300' text-anchor='middle' fill='white' font-family='sans-serif'%3E%E2%9A%99%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/assets/style.css" />
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"AI 能力矩阵 · 谁支持 MCP、能不能本地跑、要不要自带 Key · ToolHub","description":"七项属性 × 每个工具，逐条查官方文档，每条标出处与核对日期。文档没说的留问号——它不是「不支持」，是「没核到」。这张表宁可承认不知道，也不替厂商下结论。","url":"https://toolhub.bot.cd/ai/matrix/"}</script>
+  <link rel="stylesheet" href="/assets/style.ai.css" />
+</head>
+<body data-view="page">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="logo" id="home-btn" role="link" tabindex="0" aria-label="ToolHub 首页">ToolHub<small data-zh="开源工具 · 打开即用" data-en="Open source · just open it">开源工具 · 打开即用</small></div>
+    <nav class="main-nav" id="main-nav" aria-label="主导航">
+      <a href="/tools/" data-nav="tools" data-zh="工具" data-en="Tools">工具</a>
+      <a href="/workflows/" data-nav="workflows" data-zh="工作流" data-en="Workflows">工作流</a>
+      <a href="/resources/" data-nav="resources" data-zh="资源" data-en="Resources">资源</a>
+      <a href="/guides/" data-nav="guides" data-zh="教程" data-en="Guides">教程</a>
+      <a href="/evaluations/" data-nav="evaluations" data-zh="测评" data-en="Reviews">测评</a>
+    </nav>
+    <input id="search" type="text" placeholder="搜索工具…" aria-label="搜索工具" role="searchbox" />
+    <div class="header-actions">
+      <button id="search-open" class="icon-btn" type="button" title="搜索全站（Ctrl/⌘ K）" aria-label="搜索全站（工具、资源、专题、测评、页面）">搜索</button>
+      <button id="lang-btn" class="icon-btn" title="Switch language" aria-label="切换语言 / Switch language">EN</button>
+      <button id="theme-btn" class="icon-btn" title="切换主题" aria-label="切换深色/浅色主题" data-zh-aria="切换深色/浅色主题" data-en-aria="Toggle light / dark theme">深色</button>
+      <a class="icon-btn" href="/about/" title="关于" aria-label="关于 ToolHub" data-zh-aria="关于 ToolHub" data-en-aria="About ToolHub">关于</a>
+      <a class="icon-btn" href="/submit/" title="投稿" aria-label="投稿：资源、工具、教程、测评" data-zh-aria="投稿：资源、工具、教程、测评" data-en-aria="Contribute: resources, tools, guides, reviews">投稿</a>
+    </div>
+  </header>
+
+  <main class="container" id="main-content" tabindex="-1"><div id="seo-static" style="max-width:760px;margin:40px auto;padding:0 20px;font-family:system-ui,sans-serif;line-height:1.8"><h1>AI 能力矩阵</h1><p>七项属性 × 每个工具，逐条查官方文档，每条标出处与核对日期。文档没说的留问号——它不是「不支持」，是「没核到」。这张表宁可承认不知道，也不替厂商下结论。</p><div class="mx-sum"><p class="mx-num"><b>28</b> 条 · 七项属性 <b>196</b> 格 · 已核 <b>116</b> 格 · 待核 <b>80</b> 格</p><p>核对日期见每行右侧。超过保鲜期的条目不删除、不隐藏，只在后面标一句「可能已变」——删掉过期条目等于假装它一直有效。</p></div><h2>这张表怎么读</h2><ul class="mx-legend"><li><span class="mx-key mx-y">✓</span> 官方文档明确写了支持。</li><li><span class="mx-key mx-n">✕</span> 官方文档明确写了不支持，或给出了完整特性清单而它不在其中。</li><li><span class="mx-u">?</span> <b>官方文档没说</b>，或者我没找到依据。它不是「不支持」——很多能力是文档没提，而不是没有。宁可留一个问号，也不替厂商下结论。</li></ul><p>一处口径要说清：<b>MCP 服务端没有「订阅」这回事</b>。要你自己带 token 或数据库地址的，「自带 Key」记 ✓；完全不需要凭据的记 ?,那是因为这个问题对它不成立，而不是它不支持。</p><p>七项属性各问一件事：<b>MCP</b>（能接 Model Context Protocol——作为客户端或服务端，有配置入口）；<b>本地模型</b>（能连本地模型或自托管端点，而不是只能用厂商云）；<b>自带 Key</b>（可自带 API key 或第三方兼容端点，不被官方订阅绑死）；<b>开源</b>（源码公开，且有开源许可证）；<b>免费档</b>（有能用的免费档、免费额度或完全免费）；<b>多代理</b>（支持多个子代理并行或委派，而不只是单轮问答）；<b>无界面</b>（可非交互运行（CLI 参数 / 服务模式 / 可脚本化批量调用））。</p><p>这张表回答的是「文档承诺了什么」，不是「用起来好不好」。能力属性大约按季度变化，所以每条都带核对日期和官方出处；价格和型号变化快得多，这里一个字都不写——那种表上线两周就开始撒谎。</p><h2 id="mx-agent">编码与通用 Agent</h2><p class="mx-desc">这一类是「你在哪儿跟模型说话」。最该先看的是「自带 Key」与「开源」——它们决定你在不想付订阅的时候，能不能换个模型接着用。这一组的问号也最多：多数产品的文档只写功能，不写「不支持什么」。</p><div class="mx-wrap"><table class="mx-table"><thead><tr><th scope="col">项目</th><th scope="col" title="能接 Model Context Protocol——作为客户端或服务端，有配置入口">MCP</th><th scope="col" title="能连本地模型或自托管端点，而不是只能用厂商云">本地模型</th><th scope="col" title="可自带 API key 或第三方兼容端点，不被官方订阅绑死">自带 Key</th><th scope="col" title="源码公开，且有开源许可证">开源</th><th scope="col" title="有能用的免费档、免费额度或完全免费">免费档</th><th scope="col" title="支持多个子代理并行或委派，而不只是单轮问答">多代理</th><th scope="col" title="可非交互运行（CLI 参数 / 服务模式 / 可脚本化批量调用）">无界面</th><th scope="col">依据</th></tr></thead><tbody><tr><th scope="row"><span class="mx-name">Claude Code</span><span class="mx-note">官方文档只核到 MCP；其余项留问号，没核到不等于没有</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="n" title="开源：不支持"><span class="mx-n">✕</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://code.claude.com/docs/en/mcp" target="_blank" rel="noopener" title="claude mcp add --transport http/stdio; .mcp.json 的 mcpServers，三种 scope">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Codex CLI</span><span class="mx-note">Apache-2.0；可用 API key；README 只讲安装与登录</span></th><td class="mx-c" data-v="u" title="MCP：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://raw.githubusercontent.com/openai/codex/main/README.md" target="_blank" rel="noopener" title="licensed under the Apache-2.0 License; You can also use Codex with an API key">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Cursor</span><span class="mx-note">闭源；MCP 支持三种传输；自带 Key 那一页没写</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="n" title="开源：不支持"><span class="mx-n">✕</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://cursor.com/docs/context/mcp" target="_blank" rel="noopener" title="Create .cursor/mcp.json; stdio/SSE/Streamable HTTP 三种传输">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">GitHub Copilot CLI</span><span class="mx-note">随附 GitHub 自家 MCP 服务端；无 BYOK 或本地端点说明</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="开源：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://raw.githubusercontent.com/github/copilot-cli/main/README.md" target="_blank" rel="noopener" title="ships with GitHub&#39;s MCP server; supports custom MCP servers; headless server">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Gemini CLI</span><span class="mx-note">官方已取消免费档；Apache-2.0；gemini -p 可脚本化</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="n" title="免费档：不支持"><span class="mx-n">✕</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://raw.githubusercontent.com/google-gemini/gemini-cli/main/README.md" target="_blank" rel="noopener" title="No free tier or Google AI plans; ~/.gemini/settings.json; gemini -p; Apache 2.0">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Cline</span><span class="mx-note">Apache-2.0；能接 Ollama / LM Studio；有 Multi-Agent Teams</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="多代理：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://raw.githubusercontent.com/cline/cline/main/README.md" target="_blank" rel="noopener" title="Ollama / LM Studio; Any OpenAI-compatible API; Apache 2.0; Multi-Agent Teams; fully headless">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Zed</span><span class="mx-note">GPL-3.0；并行 agent 指多线程，不是主从委派</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="多代理：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://zed.dev/docs/assistant/assistant" target="_blank" rel="noopener" title="built-in tools, profiles, skills ... and MCP servers; local models; provider API keys; Parallel Agents">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Continue</span><span class="mx-note">Apache-2.0；MCP 只在 docs 页写明；README 已归档只读</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://docs.continue.dev/customize/mcp-tools" target="_blank" rel="noopener" title="MCP servers let Continue connect to external tools; Apache 2.0">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">OpenCode</span><span class="mx-note">能探本机 Ollama / LM Studio；开源许可未核实</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="开源：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://opencode.ai/docs/providers/" target="_blank" rel="noopener" title="probes http://127.0.0.1:11434; LM Studio 127.0.0.1:1234/v1; custom baseURL">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Aider</span><span class="mx-note">不支持 MCP；architect 是两个模型分工，不是子代理</span></th><td class="mx-c" data-v="n" title="MCP：不支持"><span class="mx-n">✕</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://aider.chat/docs/" target="_blank" rel="noopener" title="文档全目录无 MCP 条目; Ollama/LM Studio/OpenAI compatible; Scripting aider">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Windsurf</span><span class="mx-note">文档已并入 Devin Desktop；MCP 配置在 .devin/ 下</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="开源：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="多代理：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://docs.windsurf.com/windsurf/cascade/mcp" target="_blank" rel="noopener" title="MCP servers configured in .devin/mcp_config.json; Subagents">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Trae</span><span class="mx-note">docs.trae.ai 全跳升级公告，只核到「多 agent 并行」</span></th><td class="mx-c" data-v="u" title="MCP：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="开源：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="免费档：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="多代理：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="无界面：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-src"><a href="https://docs.trae.ai/" target="_blank" rel="noopener" title="orchestrate multiple agents to drive different tasks forward in parallel">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr></tbody></table></div><h2 id="mx-mcp">MCP 客户端与服务端</h2><p class="mx-desc">这些不是「AI 产品」，是让 Agent 能读文件、开浏览器、查数据库的那一层。它们的价值顺序和上面相反：先看「开源」与「免费档」——服务端跑在你自己机器上，数据才不出门。</p><div class="mx-wrap"><table class="mx-table"><thead><tr><th scope="col">项目</th><th scope="col" title="能接 Model Context Protocol——作为客户端或服务端，有配置入口">MCP</th><th scope="col" title="能连本地模型或自托管端点，而不是只能用厂商云">本地模型</th><th scope="col" title="可自带 API key 或第三方兼容端点，不被官方订阅绑死">自带 Key</th><th scope="col" title="源码公开，且有开源许可证">开源</th><th scope="col" title="有能用的免费档、免费额度或完全免费">免费档</th><th scope="col" title="支持多个子代理并行或委派，而不只是单轮问答">多代理</th><th scope="col" title="可非交互运行（CLI 参数 / 服务模式 / 可脚本化批量调用）">无界面</th><th scope="col">依据</th></tr></thead><tbody><tr><th scope="row"><span class="mx-name">MCP Filesystem</span><span class="mx-note">官方参考服务端，npx 启动，默认 stdio；参数只有目录白名单，不需要凭据</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/modelcontextprotocol/servers" target="_blank" rel="noopener" title="npx -y @modelcontextprotocol/server-filesystem; Every server serves stdio by default">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Playwright MCP</span><span class="mx-note">浏览器自动化服务端；npx 启动，--headless 可无界面</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener" title="npx @playwright/mcp; --headless run browser in headless mode">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">GitHub MCP Server</span><span class="mx-note">官方 GitHub MCP；要自带 PAT 或 OAuth；本地版 docker -i 走 stdio</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener" title="GITHUB_PERSONAL_ACCESS_TOKEN / OAuth; docker run -i">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Postgres MCP Pro</span><span class="mx-note">crystaldba 版；要自带 DATABASE_URI；stdio / SSE / Streamable HTTP 都支持</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/crystaldba/postgres-mcp" target="_blank" rel="noopener" title="supports stdio, SSE and Streamable HTTP; DATABASE_URI">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Chrome DevTools MCP</span><span class="mx-note">Chrome 调试与自动化；npx 启动，另提供 CLI 与 --headless</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/ChromeDevTools/chrome-devtools-mcp" target="_blank" rel="noopener" title="available as an MCP server and as a CLI; npx -y chrome-devtools-mcp@latest">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Context7</span><span class="mx-note">文档检索服务端；远程直连，带免费 key 可提高限额</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/upstash/context7" target="_blank" rel="noopener" title="free API key for higher rate limits; https://mcp.context7.com/mcp">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">MCP Inspector</span><span class="mx-note">调试客户端（Web / CLI / TUI）；--cli 模式可无界面</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="u" title="自带 Key：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/modelcontextprotocol/inspector" target="_blank" rel="noopener" title="CLI — a scriptable command-line client; npx @modelcontextprotocol/inspector --cli">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">mcp-proxy</span><span class="mx-note">stdio 与 Streamable HTTP 互转的网关；token 鉴权可选</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="本地模型：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/sparfenyuk/mcp-proxy" target="_blank" rel="noopener" title="A bridge between Streamable HTTP and stdio MCP transports; API_ACCESS_TOKEN optional">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr></tbody></table></div><h2 id="mx-engine">本地推理引擎</h2><p class="mx-desc">自己跑模型的那一层。这一组的「本地模型」全是 ✓，所以真正要比的是「无界面」（能不能进脚本）、「免费档」与「开源」——以及文档里没写、只能实测的吞吐。</p><div class="mx-wrap"><table class="mx-table"><thead><tr><th scope="col">项目</th><th scope="col" title="能接 Model Context Protocol——作为客户端或服务端，有配置入口">MCP</th><th scope="col" title="能连本地模型或自托管端点，而不是只能用厂商云">本地模型</th><th scope="col" title="可自带 API key 或第三方兼容端点，不被官方订阅绑死">自带 Key</th><th scope="col" title="源码公开，且有开源许可证">开源</th><th scope="col" title="有能用的免费档、免费额度或完全免费">免费档</th><th scope="col" title="支持多个子代理并行或委派，而不只是单轮问答">多代理</th><th scope="col" title="可非交互运行（CLI 参数 / 服务模式 / 可脚本化批量调用）">无界面</th><th scope="col">依据</th></tr></thead><tbody><tr><th scope="row"><span class="mx-name">llama.cpp</span><span class="mx-note">llama-server 能挂 MCP 服务端（实验性，仅 stdio）</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md" target="_blank" rel="noopener" title="server can expose tools coming from MCP servers (stdio only)">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">Ollama</span><span class="mx-note">最省事的本地起步；REST 与 OpenAI 兼容层都在，MCP 文档里没有</span></th><td class="mx-c" data-v="u" title="MCP：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/ollama/ollama/blob/main/README.md" target="_blank" rel="noopener" title="Access the latest releases locally; Ollama has a REST API">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">LM Studio</span><span class="mx-note">0.3.17 起自己就是 MCP Host；图形界面之外还有 lms CLI</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="开源：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://lmstudio.ai/docs/app/mcp" target="_blank" rel="noopener" title="Starting LM Studio 0.3.17, LM Studio acts as an MCP Host">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">vLLM</span><span class="mx-note">并发上来之后该换的那一层；Responses API 可直接挂 MCP 工具</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://docs.vllm.ai/en/latest/examples/tool_calling/openai_responses_client_with_mcp_tools/" target="_blank" rel="noopener" title="&quot;type&quot;:&quot;mcp&quot;,&quot;server_url&quot;; server with MCP tools enabled">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">MLX</span><span class="mx-note">Apple 芯片上的那条路（mlx-lm）；纯 Python 库，没有界面</span></th><td class="mx-c" data-v="u" title="MCP：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/ml-explore/mlx-lm" target="_blank" rel="noopener" title="generating text ... on Apple silicon with MLX">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">SGLang</span><span class="mx-note">自建 GPU 的高吞吐选择；文档索引里没有 MCP 条目</span></th><td class="mx-c" data-v="u" title="MCP：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://docs.sglang.io/docs/get-started/quickstart.md" target="_blank" rel="noopener" title="Start a model server ... sglang serve MODEL_PATH">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">llamafile</span><span class="mx-note">一个文件双击就能跑；server 模式给 /v1 兼容接口</span></th><td class="mx-c" data-v="u" title="MCP：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://docs.mozilla.ai/llamafile/using-llamafile/api.md" target="_blank" rel="noopener" title="server mode ... OpenAI-compatible APIs under /v1">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr><tr><th scope="row"><span class="mx-name">text-generation-webui</span><span class="mx-note">仓库已改名 oobabooga/textgen，AGPL-3.0；--nowebui 可无界面</span></th><td class="mx-c" data-v="y" title="MCP：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="本地模型：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="自带 Key：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="开源：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="y" title="免费档：支持"><span class="mx-y">✓</span></td><td class="mx-c" data-v="u" title="多代理：官方文档未提及，未核实"><span class="mx-u">?</span></td><td class="mx-c" data-v="y" title="无界面：支持"><span class="mx-y">✓</span></td><td class="mx-src"><a href="https://github.com/oobabooga/textgen" target="_blank" rel="noopener" title="MCP servers are also supported; --nowebui">依据 ↗</a><span class="mx-date">2026-11-28</span></td></tr></tbody></table></div><h2>这张表不做什么</h2><p>不做价格表，不做跑分榜，也不做「收录 500 个」清单。价格与型号是周级变化，抄一次就错一次；跑分不等于你的任务；收录量是别人更新更快的地方。这里只留变化慢、且能被官方文档核对的东西。</p><p>也不替你选。同一行里「开源 ✓、免费档 ✕」是好是坏，取决于你是要省钱还是要能改源码——这张表的用处是让你在掏钱或交数据之前，先看见自己在选什么。</p><p class="mx-foot">数据源：<code>assets/data/ai-matrix.json</code>，构建期校验——缺出处、日期非法、七项没逐项表态，任何一条都会让构建失败。本页最老的一条核于 2026-11-28。</p></div>
+    <!-- 首页 -->
+    <section id="view-home">
+      <div class="home-intro">
+      <div class="hero">
+        <h1 data-zh="能本地跑的，都在你电脑上跑" data-en="If it can run locally, it runs on your device">能本地跑的，都在你电脑上跑</h1>
+        <p data-zh="140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。" data-en="140 tools, 70 of them work offline. When something needs the network, we tell you what gets sent.">140 个工具，70 个断网也能用。要联网的，先告诉你会传什么。</p>
+        <div class="hero-search-wrap">
+          <div class="hs-field">
+            <input id="hero-search" type="text" placeholder="搜索工具或资源" aria-label="搜索工具或资源" data-zh-placeholder="搜索工具或资源" data-en-placeholder="Search tools or resources" />
+            <kbd class="hs-kbd" aria-hidden="true">Ctrl K</kbd>
+          </div>
+          <div class="hero-search-hint">
+            <span data-zh="74 个在本机跑 · 144 个已收录 · 64 条资源 · 无需注册" data-en="74 run in your browser · 144 listed · 64 resources · no sign-up">74 个在本机跑 · 144 个已收录 · 64 条资源 · 无需注册</span>
+            <button class="random-btn" id="random-btn" title="随机发现一个工具" data-zh="随便看看" data-en="Surprise me">随便看看</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="route-cards" id="route-cards"></div>
+      </div>
+
+
+      <div class="featured-section" id="featured-section" style="">
+        <div class="fc fc--tools">
+          <div class="section-title"><span data-zh="高频推荐" data-en="Popular picks">高频推荐</span><em data-zh="大家都在用 · 优先试试这些" data-en="Most used · start here">大家都在用 · 优先试试这些</em></div>
+          <div class="featured-list" id="featured-grid"></div>
+        </div>
+        <div class="fc fc--guides">
+          <div class="section-title"><span data-zh="教程推荐" data-en="Guides to start with">教程推荐</span><a class="sec-more" href="/guides/" data-spa data-zh="全部 24 篇教程 →" data-en="All 16 guides →">全部 24 篇教程 →</a></div>
+          <div class="guide-list" id="home-guides"></div>
+        </div>
+      </div>
+
+      <div class="res-preview" id="res-preview" style="">
+        <div class="section-title"><span data-zh="资源库精选" data-en="Picked from the library">资源库精选</span><em data-zh="免费可用的图标、字体、配色与学习资源" data-en="Free icons, fonts, palettes and learning material">免费可用的图标、字体、配色与学习资源</em><a class="sec-more" href="/resources/" data-zh="全部 8 个合集 →" data-en="All 8 collections →">全部 8 个合集 →</a></div>
+        <div class="res-preview-grid" id="res-preview-grid"></div>
+      </div>
+
+      <div class="task-row" id="task-row"></div>
+      <div class="chips" id="chips"></div>
+      <div class="filterbar" id="filterbar"></div>
+      <div class="recent-row" id="recent-row" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+      <div class="pager" id="pager"></div>
+
+      <div class="trust-section">
+        <div class="section-title"><span data-zh="为什么本地执行更放心" data-en="Why local execution is safer">为什么本地执行更放心</span><em data-zh="这一条是我们和多数工具站的根本区别" data-en="This is the real difference from most tool sites">这一条是我们和多数工具站的根本区别</em></div>
+        <div class="trust-strip">
+          <div class="ts-stat">
+            <b>0</b>
+            <span data-zh="字节上传服务器（本地工具）" data-en="bytes uploaded (local tools)">字节上传服务器（本地工具）</span>
+          </div>
+          <div>
+            <b data-zh="数据不出设备" data-en="Data never leaves">数据不出设备</b>
+            <span data-zh="图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入" data-en="Images, tokens and spreadsheets are processed in your browser; the server never sees them">图片、Token、表格都在你的浏览器内处理，服务端不接触你的输入</span>
+          </div>
+          <div>
+            <b data-zh="没有账号体系" data-en="No accounts">没有账号体系</b>
+            <span data-zh="不注册、不收邮箱、不做用户画像，收藏与记录只存在本机" data-en="No sign-up, no email, no profiling — favourites stay on this device">不注册、不收邮箱、不做用户画像，收藏与记录只存在本机</span><a class="ts-link" href="/my/" data-zh="在哪、怎么删 →" data-en="Where it lives, how to delete →">在哪、怎么删 →</a>
+          </div>
+          <div>
+            <b data-zh="可离线使用" data-en="Works offline">可离线使用</b>
+            <span data-zh="安装为桌面/手机应用后，断网也能运行全部本地工具" data-en="Install it as an app and every local tool keeps working offline">安装为桌面/手机应用后，断网也能运行全部本地工具</span>
+          </div>
+        </div>
+        <p class="trust-note" style="margin-top:10px;font-size:13px;opacity:.85"><span data-zh="以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。" data-en="These promises apply to tools marked “local”; tools marked “external” open third-party sites governed by their own privacy policies.">以上承诺适用于标「本地」的工具；标「在线」的为第三方官网直达，跳转后适用对方隐私政策。</span> <a href="/privacy/" data-zh="查看数据边界说明 →" data-en="Data boundary details →">查看数据边界说明 →</a></p>
+      </div>
+    </section>
+
+    <!-- 工具页 -->
+    <section id="view-tool" style="display:none">
+      <div class="crumb" id="crumb">← 返回工具列表</div>
+      <div id="tool-body"></div>
+    </section>
+
+    <!-- 静态内容页（关于 / 投稿） -->
+    <section id="view-page" style="display:none">
+      <div class="crumb" id="page-crumb">← 返回首页</div>
+      <div id="page-body"></div>
+    </section>
+  </main>
+
+  <div id="palette" role="dialog" aria-modal="true" aria-label="命令面板" aria-hidden="true">
+    <div class="pal-box">
+      <input id="palette-input" type="text" placeholder="搜索工具、资源、页面…" autocomplete="off" aria-label="搜索工具、资源、页面" />
+      <div id="palette-results"></div>
+      <div class="pal-foot">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+    </div>
+  </div>
+
+  <div id="kbd-help" role="dialog" aria-modal="true" aria-label="键盘快捷键" aria-hidden="true">
+    <div class="kbd-box">
+      <div class="kbd-head">
+        <b data-zh="键盘快捷键" data-en="Keyboard shortcuts">键盘快捷键</b>
+        <button type="button" class="kbd-close" id="kbd-close" aria-label="关闭快捷键帮助" data-zh-aria="关闭快捷键帮助" data-en-aria="Close shortcuts help">✕</button>
+      </div>
+      <table class="kbd-table">
+        <tbody>
+          <tr><td><kbd>/</kbd></td><td data-zh="聚焦搜索框" data-en="Focus the search box">聚焦搜索框</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>K</kbd></td><td data-zh="打开命令面板（搜索工具、资源、页面）" data-en="Open the command palette (tools, resources, pages)">打开命令面板（搜索工具、资源、页面）</td></tr>
+          <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td data-zh="在首页工具列表中向下 / 向上移动选中项" data-en="Move the selection down / up in the tool grid">在首页工具列表中向下 / 向上移动选中项</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td data-zh="打开当前选中的工具" data-en="Open the selected tool">打开当前选中的工具</td></tr>
+          <tr><td><kbd>g</kbd> <kbd>h</kbd></td><td data-zh="回到首页" data-en="Go back home">回到首页</td></tr>
+          <tr><td><kbd>⌘</kbd> / <kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td data-zh="在工具表单里运行（多行输入框内）" data-en="Run from inside a multi-line field">在工具表单里运行（多行输入框内）</td></tr>
+          <tr><td><kbd>t</kbd></td><td data-zh="切换浅色 / 深色主题" data-en="Toggle light / dark theme">切换浅色 / 深色主题</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td data-zh="关闭弹层、清空搜索、取消选中" data-en="Close overlays, clear search, drop selection">关闭弹层、清空搜索、取消选中</td></tr>
+          <tr><td><kbd>?</kbd></td><td data-zh="打开这个帮助面板" data-en="Open this help panel">打开这个帮助面板</td></tr>
+        </tbody>
+      </table>
+      <p class="kbd-note" data-zh="全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。" data-en="Everything works from the keyboard: search → open a tool → fill in the form → run → copy the result.">全部功能都能用键盘完成：搜索 → 进入工具 → 填参数 → 运行 → 复制结果。</p>
+    </div>
+  </div>
+
+  <div id="cmp-bar" class="cmp-bar"></div>
+  <button id="to-top" class="to-top" title="回到顶部" aria-label="回到页面顶部">↑</button>
+
+  <footer>
+    <div>ToolHub · <span data-zh="开源项目工具化平台" data-en="open-source tools, made usable">开源项目工具化平台</span> · <span id="foot-count"></span></div>
+    <div class="foot-note" id="foot-note">
+      本地工具的数据只在你的浏览器里处理，不会上传。目录工具均为第三方开源项目，版权归各作者，来源仓库见工具卡片
+    </div>
+    <div class="foot-links"><a href="/resources/" data-zh="资源库" data-en="Resources">资源库</a> · <a href="/topics/" data-zh="专题" data-en="Topics">专题</a> · <a href="/evaluations/" data-zh="评测" data-en="Reviews">评测</a> · <a href="/compare/" data-zh="对比" data-en="Compare">对比</a> · <a href="/changelog/" data-zh="更新日志" data-en="Changelog">更新日志</a> · <a href="/batch/" data-zh="批量" data-en="Batch">批量</a> · <a href="/about/" data-zh="关于" data-en="About">关于</a> · <a href="/privacy/" data-zh="隐私" data-en="Privacy">隐私</a> · <a href="/feedback/" data-zh="反馈" data-en="Feedback">反馈</a> · <a href="/submit/" data-zh="投稿" data-en="Contribute">投稿</a> · <a href="https://github.com/guyang1943/toolhub" target="_blank" rel="noopener" data-zh="GitHub 开源" data-en="GitHub">GitHub 开源</a> · <button type="button" class="foot-link-btn" id="kbd-btn" aria-label="查看键盘快捷键" data-zh="快捷键" data-en="Shortcuts">快捷键</button></div>
+  </footer>
+
+  <!-- 第三方库按需加载：二维码 / Markdown / Pyodide 各自在自己的工具页里注入，
+       首屏不再为少数工具背着 90KB 的解析成本（v2.9 D4） -->
+  <script>window.__PAGE__="ai/matrix";</script>
+  <script type="module" src="/assets/app.js"></script>
+</body>
+</html>

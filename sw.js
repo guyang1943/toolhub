@@ -1,6 +1,6 @@
 // 由 scripts/gen-sw.mjs 生成，请勿手改（改模板请改脚本）
-// 版本：toolhub-v3.42 · 预缓存 391 个地址 · 约 6.4 MB
-const VERSION = "toolhub-v3.42";
+// 版本：toolhub-v3.43 · 预缓存 395 个地址 · 约 6.5 MB
+const VERSION = "toolhub-v3.43";
 const CORE = [
   "/",
   "/offline/",
@@ -204,6 +204,7 @@ const FULL = [
   "/assets/vendor/figlet-fonts.js",
   "/assets/vendor/pinyin.min.js",
   "/ai/",
+  "/ai/matrix/",
   "/tools/",
   "/categories/",
   "/guides/",
@@ -222,6 +223,7 @@ const FULL = [
   "/assets/batch.js",
   "/assets/content-pages.js",
   "/assets/drop.js",
+  "/assets/lib/ai-matrix.js",
   "/assets/lib/beacon.js",
   "/assets/lib/drop-route.js",
   "/assets/lib/events.js",
@@ -244,6 +246,7 @@ const FULL = [
   "/assets/tool-page.js",
   "/assets/toolbuilder.js",
   "/assets/workflow.js",
+  "/assets/style.ai.css",
   "/assets/style.batch.css",
   "/assets/style.compare.css",
   "/assets/style.guides.css",
@@ -252,6 +255,7 @@ const FULL = [
   "/assets/style.submit.css",
   "/assets/style.tool.css",
   "/assets/style.workflows.css",
+  "/assets/data/ai-matrix.json",
   "/articles/ai-hw-check.json",
   "/articles/ai-local.json",
   "/articles/ascii-art.json",

@@ -31,14 +31,30 @@ export function aiBody(tools) {
     .map((t) => `<li><a href="/tools/${t.id}/"><b>${AI_ESC(t.name)}</b></a> —— ${AI_ESC(t.desc)}</li>`)
     .join('');
   return `
-      <h2>能直接用的 ${local.length} 个</h2>
-      <ul>${items}</ul>
-      <p>分两类。文字类的调浏览器自带的模型（权重由浏览器管，本站不分发也不托管）；
-      图片类的用本站自己带的两个小模型——U²-Net 轻量版做去背景、YuNet 找人脸，合计 4.8 MB。
-      这两个第一次用要连带 10.2 MB 的推理引擎一起下载，之后浏览器缓存住，<b>断网也能继续用</b>。</p>
-      <p>还有一个不下载任何模型：量硬件的那个只读这台机器的 WebGPU、内存与核数，回答「这条路上哪一档跑得动」。</p>
+      <h2>三个问题，先问哪个</h2>
+      <div class="dec">
+        <div class="dec-card">
+          <span class="dec-q">问 01</span>
+          <b>这件事该在哪跑？</b>
+          <span class="dec-a">本机、浏览器、自建、云端，四条路的代价与数据流向摆在一起，不推荐「最好」的那条。</span>
+          <em>↓ 本页第二节</em>
+        </div>
+        <a class="dec-card" href="/ai/matrix/">
+          <span class="dec-q">问 02</span>
+          <b>这些说法凭什么？</b>
+          <span class="dec-a">七项属性逐条查官方文档，每条标出处与核对日期；文档没说的留问号，不替厂商下结论。</span>
+          <em>打开能力矩阵 →</em>
+        </a>
+        <a class="dec-card" href="/guides/">
+          <span class="dec-q">问 03</span>
+          <b>怎么一步步做完？</b>
+          <span class="dec-a">按「做完一件事」组织的教程，带前置条件、每步命令与踩过的坑，不按工具名排。</span>
+          <em>看教程 →</em>
+        </a>
+      </div>
 
       <h2>四条路，别混着走</h2>
+      <div class="ai-routes">
       <table class="cmp-table">
         <tr><th></th><th>浏览器内置</th><th>装在本机</th><th>自建服务</th><th>调云端 API</th></tr>
         <tr><td>要装什么</td><td>什么都不用装，模型随浏览器</td><td>一个客户端</td><td>一台常开的机器</td><td>什么都不用装</td></tr>
@@ -47,17 +63,41 @@ export function aiBody(tools) {
         <tr><td>门槛</td><td>Chrome 138 以上、16GB 内存、22GB 磁盘</td><td>8GB 内存起步</td><td>会 Docker、有机器</td><td>要 Key、按量付费</td></tr>
         <tr><td>适合</td><td>临时处理几百字</td><td>日常主力</td><td>团队共用一套</td><td>质量优先、能接受上传</td></tr>
       </table>
+      </div>
       <p>这张表不是「哪个最好」，是「哪个适合你现在这件事」。同一台机器上，写一封邮件用第一列就够了，
       跑一份几十页的合同就该走第二列，而要求最高质量时第四列才是对的——代价是你得承认内容出去了。</p>
       <p>第一列不只处理文字。去背景和人脸打码也走这条路：模型是本站在自己域名下提供的静态文件，
       算力来自你这台机器的 CPU，图片从头到尾没有离开浏览器——同一个网站里的另外两种做法，
       一种是把图传给别人的服务器，一种是让你装软件。</p>
 
+      <h2>本地能跑到哪一档</h2>
+      <p>「我这台机器能跑多大」是被答得最玄的问题。它其实由四个数决定：参数量、量化位数、上下文长度、可用内存。
+      按「权重 + KV cache + 运行开销」估，四档大致是这样（<b>±20%，按系统内存算，实际以跑起来为准</b>）：</p>
+      <div class="ai-routes">
+      <table class="cmp-table">
+        <tr><th>系统内存</th><th>能稳跑</th><th>勉强</th><th>放弃</th></tr>
+        <tr><td>8 GB</td><td>3B–4B 的 Q4</td><td>7B Q4（能加载，会换页，慢得明显）</td><td>13B 及以上</td></tr>
+        <tr><td>16 GB</td><td>7B Q4_K_M</td><td>13B Q4</td><td>32B</td></tr>
+        <tr><td>32 GB</td><td>13B–14B 的 Q4 / Q8</td><td>32B Q4（差一口气）</td><td>70B</td></tr>
+        <tr><td>64 GB 及以上</td><td>32B Q4</td><td>70B Q4（要专业卡更稳）</td><td>—</td></tr>
+      </table>
+      </div>
+      <p>上面是从公式推出来的，不是从你这台机器量出来的。想拿到自己的数：
+      <a href="/tools/ai-hw-check/">在本机量一遍 WebGPU、内存与核数</a>——它不下载任何模型，只读浏览器能报的几个值。
+      浏览器不暴露显存总量，所以它给的是估算区间，不是显卡规格书上那个数。</p>
+
       <h2>跑不动怎么办</h2>
       <p>先别急着加内存。三个动作按顺序试：把量化降一档（Q8 到 Q4_K_M 大约省一半）、把规模降一档（13B 到 7B 也是大约一半）、
       把上下文从 32K 降到 4K。三样都试过还不够，才轮到硬件。</p>
       <p>要真的跑起来，看这两篇：<a href="/guides/ollama-local-ai/">在本机跑一个开源大模型</a>、
       <a href="/guides/local-ai-coding/">用本地模型写代码</a>。</p>
+
+      <h2>能直接用的 ${local.length} 个</h2>
+      <ul>${items}</ul>
+      <p>分两类。文字类的调浏览器自带的模型（权重由浏览器管，本站不分发也不托管）；
+      图片类的用本站自己带的两个小模型——U²-Net 轻量版做去背景、YuNet 找人脸，合计 4.8 MB。
+      这两个第一次用要连带 10.2 MB 的推理引擎一起下载，之后浏览器缓存住，<b>断网也能继续用</b>。</p>
+      <p>还有一个不下载任何模型：量硬件的那个只读这台机器的 WebGPU、内存与核数，回答「这条路上哪一档跑得动」。</p>
 
       <h2>目录里的 ${dir.length} 个本地模型工具</h2>
       <p>Ollama、GPT4All、AnythingLLM、Open WebUI、ComfyUI、Dify、WebLLM、Cline——每一条都先回答两件事：
@@ -68,7 +108,9 @@ export function aiBody(tools) {
       <h2>这一页不做什么</h2>
       <p>不接云端大模型，也不做需要注册的聊天窗口。本站没有后端数据库，为一个聊天框把用户输入送到别人服务器上，
       和这个站的其他部分不是同一套逻辑。想要网页里的对话，浏览器内置 AI 已经够用；想要更强的模型，
-      第二步那条「装在本机」才是该走的路。</p>`;
+      第二步那条「装在本机」才是该走的路。</p>
+      <p>也不做价格表和跑分榜。价格是周级变化，静态表上线两周就开始撒谎；跑分不等于你的任务。
+      这里只留变化慢、且能被官方文档核对的东西——这也是<a href="/ai/matrix/">能力矩阵</a>存在的理由。</p>`;
 }
 
 export function makePages(reg, { analyticsOptedOut = () => false } = {}) {
@@ -81,6 +123,33 @@ export function makePages(reg, { analyticsOptedOut = () => false } = {}) {
       没有「随便聊聊」的输入框，也没有需要注册的账号。</p>
       ${aiBody(reg ? reg.tools : [])}
     </div>`,
+  // v3.43：能力矩阵。正文与静态页共用 ai-matrix.js 的 matrixBody()，这里只负责把数据取来。
+  // 数据不进首屏（assets/data/ 不在启动数据里），离线包里有它，断网也看得到。
+  // 键名必须与 app.js 传给 openPage() 的字符串一致（'ai-matrix'），否则页面上是「页面不存在」。
+  'ai-matrix': async () => {
+    const { matrixBody, todayISO, MATRIX_LEAD } = await import('./ai-matrix.js');
+    let data = null;
+    let err = '';
+    try {
+      const res = await fetch('/assets/data/ai-matrix.json');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      data = await res.json();
+    } catch (e) {
+      err = e.message;
+    }
+    const shell = (inner) => `
+    <div class="page">
+      <h1>AI 能力矩阵</h1>
+      <p class="lead">${MATRIX_LEAD}</p>
+      ${inner}
+    </div>`;
+    if (!data) {
+      return shell(`<p>矩阵数据没取到（<code>/assets/data/ai-matrix.json</code>：${AI_ESC(err || '未知错误')}）。
+      刷新一次通常就好；断网时先装离线包，这份数据在包里。</p>
+      <p><a href="/ai/">← 回 AI 中心</a></p>`);
+    }
+    return shell(matrixBody(data, todayISO()));
+  },
   about: () => `
     <div class="page">
       <h1>关于 ToolHub</h1>

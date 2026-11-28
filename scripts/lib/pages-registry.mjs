@@ -27,6 +27,9 @@ export const STATIC_PAGES = [
   // v3.40：AI 中心。它进离线包是有理由的——站内 AI 的两个工具都在本机跑，
   // 断网时「这台机器能跑多大模型」更应该量得出来。
   { path: '/ai/', title: 'AI 中心', offline: 'full', audit: true, smoke: true },
+  // v3.43：能力矩阵。它单独进离线包的账算得清——正文只有一张表加一份 10 KB 的 JSON，
+  // 而「断网时我还能不能核对这条说法」正是这一页的用处。数据文件由 gen-sw 扫 assets/data 收进包。
+  { path: '/ai/matrix/', title: 'AI 能力矩阵', offline: 'full', audit: true, smoke: true },
   { path: '/tools/', title: '全部工具', offline: 'full', audit: true, smoke: true },
   { path: '/categories/', title: '全部分类', offline: 'full', audit: true, smoke: true },
   { path: '/guides/', title: '教程总览', offline: 'full', audit: true, smoke: true },

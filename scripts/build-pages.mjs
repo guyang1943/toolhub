@@ -20,6 +20,8 @@ import { renderKeyTable } from '../assets/lib/store-keys.js';
 // v3.40：/ai/ 的正文只写一份，静态页与 SPA（pages.js 的 ai()）调同一个 aiBody()。
 // 静态页与站内跳转看到的段落必须逐字相同，否则「爬虫读到的」和「用户看到的」会慢慢分叉。
 import { aiBody, countLocalAi } from '../assets/lib/pages.js';
+// v3.43：/ai/matrix/ 的正文与保鲜判定。静态页与 SPA 都调这一份，谁都不许另写一张表。
+import { matrixBody, validateMatrix, todayISO, MATRIX_LEAD } from '../assets/lib/ai-matrix.js';
 // 教程正文的渲染：静态页与 SPA 共用同一段（v3.28）。围栏代码块两边都得变成 <pre><code>，
 // 否则同一段正文在「爬虫看到的」和「用户看到的」之间会悄悄长出两套样子。
 import { guideText } from '../assets/lib/guide-text.js';
@@ -73,6 +75,28 @@ const dirTools = JSON.parse(readFileSync(join(root, 'tools', 'directory.json'), 
   console.log(`✅ 边界字段：${metaSummary(stats)}`);
   console.log(`   证据：${evidenceLine(stats.evidence)}`);
 }
+// 0.6) AI 能力矩阵闸门（v3.43）。这一页的可信度全靠一条规矩：**没有出处的条目不许上线**。
+//      所以缺 source、日期非法、七项没逐项表态，一律构建失败——不给「先占个位、以后补」留口子。
+//      它同时把「过期」算出来：超期条目不删不藏，页面上标「可能已变」，构建日志里报数。
+const MATRIX = JSON.parse(readFileSync(join(root, 'assets', 'data', 'ai-matrix.json'), 'utf8'));
+const TODAY = todayISO();
+{
+  const { errors, warns, stats } = validateMatrix(MATRIX, { today: TODAY });
+  if (errors.length) {
+    console.error(`\n❌ AI 能力矩阵校验失败（${errors.length} 个问题），构建中止：\n`);
+    for (const e of errors) console.error(`   ${e}`);
+    console.error('\n   规则见 assets/lib/ai-matrix.js 的 validateMatrix；改数据：assets/data/ai-matrix.json\n');
+    process.exit(1);
+  }
+  for (const w of warns) console.log(`⚠️ 矩阵：${w}`);
+  const oldest = MATRIX.entries.map((e) => e.checkedAt).sort()[0];
+  console.log(
+    `✅ AI 能力矩阵：${stats.count} 条 / ${stats.count * stats.attrs} 格，已核 ${stats.known} · 待核 ${stats.unknown}` +
+      `，过期 ${stats.stale.length} 条（最老 ${oldest}，今天 ${TODAY}）`
+  );
+  if (stats.stale.length) console.log(`   待核清单：${stats.stale.map((s) => `${s.id}(${s.age}天)`).join('、')}`);
+}
+
 const i18n = JSON.parse(readFileSync(join(root, 'i18n.json'), 'utf8')).en;
 const articles = JSON.parse(readFileSync(join(root, 'articles.json'), 'utf8'));
 // v3.12：评测拆成「索引 + 单篇」。索引给列表页和搜索面板（几个短字段），
@@ -570,7 +594,19 @@ const staticPages = [
     title: 'AI 中心 · 能在你机器上跑的 AI · ToolHub',
     desc: '两个站内 AI 工具（浏览器内置模型做摘要翻译改写、本机能跑多大模型）、四条路径对比、跑不动时怎么退。不上传、不注册。',
     h1: 'AI 中心',
+    // v3.43：决策三卡与四路对照表的样式单独成片，首页不为它付字节
+    extraCss: '/assets/style.ai.css',
     content: aiBody([...tools, ...dirTools]),
+  },
+  {
+    // v3.43：能力矩阵。唯一做静态表的地方——能力属性按季度变化，能在页面上标日期就还站得住。
+    path: 'ai/matrix',
+    title: 'AI 能力矩阵 · 谁支持 MCP、能不能本地跑、要不要自带 Key · ToolHub',
+    desc: MATRIX_LEAD,
+    h1: 'AI 能力矩阵',
+    extraCss: '/assets/style.ai.css',
+    pri: '0.7',
+    content: matrixBody(MATRIX, TODAY),
   },
   {
     path: 'about',
@@ -1434,7 +1470,7 @@ const urls = [
   ...[...tools, ...dirTools].map((t) => ({ loc: `${BASE}/tools/${t.id}/`, pri: '0.8', freq: 'weekly' })),
   // 全部工具页比单个工具更值钱：它是「开源工具大全」这类词的落地页
   { loc: `${BASE}/tools/`, pri: '0.9', freq: 'weekly' },
-  ...staticPages.map((p) => ({ loc: `${BASE}/${p.path}/`, pri: '0.4', freq: 'monthly' })),
+  ...staticPages.map((p) => ({ loc: `${BASE}/${p.path}/`, pri: p.pri || '0.4', freq: 'monthly' })),
   // 分类页与工具页同级：它们承接「图片压缩工具」这类最值钱的品类词
   { loc: `${BASE}/categories/`, pri: '0.8', freq: 'weekly' },
   ...CATS.map((c) => ({ loc: `${BASE}${CAT_URL(c.name)}`, pri: '0.8', freq: 'weekly' })),

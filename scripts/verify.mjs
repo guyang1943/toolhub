@@ -1557,6 +1557,38 @@ check('折腾指南（v3.15）', () => {
   return `${g.length} 篇 / ${groups.length} 类 / ${g.reduce((n, x) => n + x.steps.length, 0)} 步`;
 });
 
+// ---------- v3.43：教程里的「我实测」必须有方法 ----------
+// 用户拍板的第三条：可以写「我实测」，但必须附机器配置、量化档、测了几次。
+// 为什么做成闸门而不是写进文档：AI 内容里最廉价的一句话就是「我实测」——
+// 没有方法说明的实测，和「据说」是同一种东西。文档拦不住，断言拦得住。
+//
+// 两档，都按「谁在测」区分（第一版一刀切，把「社区实测」也判红了）：
+//   · 第一人称「我实测 / 我们实测」→ 必须同时给环境（机器/配置/显存/内存/显卡）与「N 次」
+//   · 「本站实测 / 本机实测」→ 必须给日期（YYYY-MM-DD），能追到哪一天的哪个版本
+// 「社区实测」「据实测」这类转述不拦——它本来就不声称是站长的测试，拦它等于逼人改写事实。
+// 双分支：现在 0 篇触发，闸门空转也照跑，等 v3.45 的 AI 教程进来才真的开始拦人。
+check('教程里的「我实测」必须附方法（v3.43 硬规则）', () => {
+  const g = JSON.parse(readFileSync(join(root, 'content', 'guides.json'), 'utf8')).guides;
+  const bad = [];
+  let mine = 0;
+  let site = 0;
+  for (const x of g) {
+    const text = JSON.stringify([x.intro, x.why, x.steps, x.pitfalls, x.fallback, x.faq]);
+    if (/我实测|我们实测|我亲自测/.test(text)) {
+      mine++;
+      const noRig = !/机器|配置|硬件|显存|内存|显卡/.test(text);
+      const noTimes = !/\d+\s*次/.test(text);
+      if (noRig || noTimes) bad.push(`${x.slug}（我实测缺${[noRig ? '机器配置' : '', noTimes ? '测了几次' : ''].filter(Boolean).join('、')}）`);
+    }
+    if (/本站实测|本机实测/.test(text)) {
+      site++;
+      if (!/\d{4}-\d{2}-\d{2}/.test(text)) bad.push(`${x.slug}（本站实测缺日期）`);
+    }
+  }
+  assert(!bad.length, `这些教程写了「实测」却没有可追的方法：${bad.join('、')}——补上方法，或者别用这个词`);
+  return `${g.length} 篇：第一人称实测 ${mine} 篇 · 本站实测 ${site} 篇，均附方法`;
+});
+
 // ---------- v3.33：首页教程栏与入口卡的数字口径 ----------
 // 这一版把「教程」从入口卡上的一个数字，变成首页右侧一栏真实可点的篇目。
 // 三件容易悄悄坏掉的事各钉一条：picks 里写了不存在的 slug（首页会静默少一条）、
@@ -1707,6 +1739,85 @@ checkAsync('AI 中心页（v3.40）', async () => {
   assert(sm.includes('/ai/'), 'sitemap 里没有 /ai/');
 
   return `正文 ${heads.length} 段，两份同源，五处接线齐全`;
+});
+
+// ---------- v3.43：AI 能力矩阵 ----------
+// 这一页的价值全在「三态」和「出处」上，所以断言也钉这两件：
+//   1) 格数必须与数据逐态对得上——`?` 被画成 `✕` 是这张表变成第二个不可信表格的最短路径；
+//   2) 每条出处必须真的渲染在页面上。数据里有、页面没渲染，等于没有。
+checkAsync('AI 能力矩阵（v3.43）', async () => {
+  const pagePath = join(root, 'ai', 'matrix', 'index.html');
+  assert(existsSync(pagePath), '/ai/matrix/ 没有产物——注册表加了页面，但 build-pages 没生成');
+  const html = readFileSync(pagePath, 'utf8');
+  const mod = await import(pathToFileURL(join(root, 'assets', 'lib', 'ai-matrix.js')).href);
+  const data = read('assets/data/ai-matrix.json');
+  const today = mod.todayISO();
+  const st = mod.matrixStats(data, today);
+  assert(st.count >= 20, `矩阵只有 ${st.count} 条，太少——按官方文档核到哪算哪，但别低于 20 条`);
+  assert(data.groups.length >= 3, `只有 ${data.groups.length} 个分组，三类（Agent / MCP / 引擎）应各有一组`);
+
+  // 正文同源：静态页里的每个 h2 都必须来自 matrixBody()
+  const body = mod.matrixBody(data, today);
+  const heads = [...body.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((m) => m[1]);
+  assert(heads.length >= 4, `matrixBody() 只产出 ${heads.length} 个小标题`);
+  for (const h of heads) assert(html.includes(h), `静态页缺少 matrixBody() 里的「${h}」——两份正文开始分叉了`);
+
+  // 三态没被压成二态
+  let t = 0, f = 0, u = 0;
+  for (const e of data.entries) for (const k of mod.MATRIX_KEYS) {
+    const v = mod.attrState(e, k);
+    if (v === true) t++; else if (v === false) f++; else u++;
+  }
+  const cells = (v) => (html.match(new RegExp(`data-v="${v}"`, 'g')) || []).length;
+  assert(
+    cells('y') === t && cells('n') === f && cells('u') === u,
+    `三态格数与数据对不上：页面 ✓${cells('y')}/✕${cells('n')}/?${cells('u')}，数据 ✓${t}/✕${f}/?${u}`
+  );
+  assert(u > 0, '一条 ? 都没有——要么每条都核到了，要么把「没核到」悄悄改成了 ✕。后者才是常见的那种退化。');
+  assert(t > 0, '一条 ✓ 都没有——这不像矩阵，像一份免责声明');
+
+  // 每条出处必须在页面上
+  for (const e of data.entries) {
+    assert(/^https?:\/\//.test(e.source || ''), `${e.id} 没有出处链接（构建期该拦下的，跑到这里说明闸门被绕过了）`);
+    assert(html.includes(`href="${e.source}"`), `${e.id} 的出处没渲染到页面上——数据里有、页面没有，等于没有`);
+  }
+
+  // 过期机制：双分支，不因「当前没超期」而消失。
+  // 注意别拿「可能已变」这四个字判页面有没有超期行——说明文字里本来就有这个词
+  // （「只在后面标一句『可能已变』」），第一版因此误判。判的是带 mx-old 的行数。
+  const oldRows = (html.match(/class="mx-old"/g) || []).length;
+  assert(
+    oldRows === st.stale.length,
+    `页面标了 ${oldRows} 行「已过期」，数据里是 ${st.stale.length} 条——保鲜标记必须由 checkedAt 算出来，不能另有来源`
+  );
+  // 单元级：400 天前的条目必须被认出来（这条与真实数据无关，数据变好也不会失效）
+  const attrsAll = Object.fromEntries(mod.MATRIX_KEYS.map((k) => [k, '?']));
+  const old = mod.matrixBody(
+    { groups: [{ id: 'g', title: 'G' }], entries: [{ id: 'x', name: 'X', group: 'g', attrs: attrsAll, source: 'https://example.com', checkedAt: '2024-01-01' }] },
+    today
+  );
+  assert(old.includes('可能已变'), '超期判定失效：400 天前的条目渲染不出「可能已变」——保鲜机制等于没有');
+  assert(/data-v="u"/.test(old), '三态渲染失效：全 ? 的条目没画成问号格');
+
+  // 接线六处：/ai/ 入口 / 路由 / 页面函数 / 标题表 / 注册表 / sitemap / 离线包
+  const aiHtml = readFileSync(join(root, 'ai', 'index.html'), 'utf8');
+  assert(aiHtml.includes('/ai/matrix/'), '/ai/ 页没有指向能力矩阵的入口——建了页面没人走得进去');
+  const appSrc = readFileSync(join(root, 'assets', 'app.js'), 'utf8');
+  assert(appSrc.includes("'/ai/matrix'"), 'app.js 路由没接 /ai/matrix——直接访问会被兜底成首页');
+  assert(appSrc.includes("'ai-matrix': '/assets/style.ai.css'"), 'app.js 的 PAGE_CSS 没有 ai-matrix——SPA 进来会没样式');
+  const pagesSrc = readFileSync(join(root, 'assets', 'lib', 'pages.js'), 'utf8');
+  assert(pagesSrc.includes("'ai-matrix': async"), 'pages.js 没有 aiMatrix 页面函数');
+  const openSrc = readFileSync(join(root, 'assets', 'open-page.js'), 'utf8');
+  assert(openSrc.includes("'ai-matrix': 'AI 能力矩阵'"), 'open-page.js 的标题表没有 ai-matrix');
+  assert(openSrc.includes('await fn()'), 'open-page.js 没支持 async 页面函数——矩阵页会在页面上渲染出 "[object Promise]"');
+  const reg = readFileSync(join(root, 'scripts', 'lib', 'pages-registry.mjs'), 'utf8');
+  assert(reg.includes("path: '/ai/matrix/'"), '页面注册表没登记 /ai/matrix/');
+  const sm = readFileSync(join(root, 'sitemap.xml'), 'utf8');
+  assert(sm.includes('/ai/matrix/'), 'sitemap 里没有 /ai/matrix/');
+  const sw = readFileSync(join(root, 'sw.js'), 'utf8');
+  assert(sw.includes('/assets/data/ai-matrix.json'), '矩阵数据没进离线包——断网打开这一页会是一张空表');
+
+  return `${st.count} 条 / ${data.groups.length} 组，已核 ${st.known} 格 · 待核 ${st.unknown} 格，过期 ${st.stale.length} 条`;
 });
 
 checkAsync('意图解析规则（E4）', async () => {

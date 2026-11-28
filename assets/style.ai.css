@@ -1,0 +1,93 @@
+/* AI 中心 · 页面分片（v3.43）
+   只在 /ai/ 与 /ai/matrix/ 用到：静态页由构建期注入 <link>，SPA 内跳转由 ensureCss() 补上。
+   首页与工具页不为它付一个字节。
+   视觉口径照全站：暖纸底、单一钴蓝、细线分层；状态靠字重与字色，不用色块和图标。 */
+
+/* ===== /ai/ 决策入口三卡 ===== */
+.dec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 6px; }
+@media (max-width: 820px) { .dec { grid-template-columns: 1fr; } }
+.dec-card {
+  display: flex; flex-direction: column; gap: 5px; padding: 14px 15px 13px;
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+  color: var(--text); text-decoration: none; min-height: 96px;
+  transition: border-color .12s var(--ease), background .12s var(--ease);
+}
+.dec-card:hover { border-color: var(--accent); background: var(--accent-soft); }
+.dec-card .dec-q { font-size: 12px; color: var(--muted); font-family: var(--mono); letter-spacing: .02em; }
+.dec-card b { font-size: 14.5px; font-weight: 500; line-height: 1.5; }
+.dec-card span.dec-a { font-size: 12.5px; color: var(--secondary); line-height: 1.65; margin-top: auto; }
+.dec-card em { font-size: 12px; color: var(--accent); font-style: normal; }
+
+/* ===== /ai/matrix/ 汇总条 ===== */
+.mx-sum {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+  padding: 13px 15px; margin: 16px 0 4px;
+}
+.mx-sum p { margin: 0; font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+.mx-sum p.mx-num { font-size: 13px; color: var(--text); margin-bottom: 5px; }
+.mx-sum b { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+.mx-sum p.mx-num b { color: var(--accent); }
+
+/* ===== 图例 ===== */
+.mx-legend { margin: 8px 0 4px; padding-left: 18px; font-size: 13px; line-height: 1.85; }
+.mx-legend li { margin-bottom: 2px; }
+.mx-key { display: inline-block; width: 19px; margin-right: 4px; text-align: center; }
+
+/* ===== 表体 ===== */
+.mx-wrap {
+  overflow-x: auto; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--panel); margin: 10px 0 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.mx-table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: 13px; }
+.mx-table thead th {
+  position: sticky; top: 0; z-index: 1;
+  background: var(--bg); color: var(--secondary); font-weight: 500; font-size: 11.5px;
+  text-align: center; padding: 9px 6px; border-bottom: 1px solid var(--border);
+  white-space: nowrap; cursor: help;
+}
+.mx-table thead th:first-child { text-align: left; padding-left: 14px; }
+.mx-table thead th:last-child { text-align: left; padding-left: 10px; cursor: default; }
+.mx-table tbody th, .mx-table tbody td { border-top: 1px solid var(--border); padding: 9px 6px; vertical-align: middle; }
+/* 竖线不能省：七列窄格子没有竖分隔时，眼睛会把相邻两列读串——那比没有表更糟 */
+.mx-table thead th + th, .mx-table tbody td + td, .mx-table tbody th + td { border-left: 1px solid var(--border); }
+.mx-table tbody th { text-align: left; padding-left: 14px; width: 34%; }
+.mx-table tbody tr:hover { background: var(--bg); }
+.mx-name { display: block; font-weight: 500; font-size: 13.5px; color: var(--text); }
+.mx-note { display: block; font-weight: 400; font-size: 11.5px; color: var(--muted); line-height: 1.6; margin-top: 2px; }
+
+/* 三态。✓ 用正文字色（支持是常态，不必强调）；✕ 用弱化色（没有不等于坏）；
+   ? 是这张表最该被看见的格子——虚线圆圈 + 钴蓝，一眼扫得出哪里「没核到」。 */
+.mx-c { text-align: center; font-size: 13px; line-height: 1.3; white-space: nowrap; }
+.mx-y { color: var(--text); font-weight: 600; }
+.mx-n { color: var(--muted); }
+.mx-c .mx-y, .mx-c .mx-n { font-size: 14px; }
+/* 用 inline-block + line-height 居中，不用 inline-flex：flex 盒在表格单元格里以内容基线对齐，
+   19px 的圆圈会被顶到行上沿，与同行的 ✓/✕ 错开半行（v3.43 首版就是这样，肉眼像多了几个问号）。 */
+.mx-u {
+  display: inline-block; width: 19px; height: 19px; line-height: 17px;
+  border: 1px dashed var(--accent); border-radius: 50%;
+  color: var(--accent); font-size: 11px; font-family: var(--mono);
+  text-align: center; cursor: help; vertical-align: -4px;
+}
+
+/* 依据列 */
+.mx-src { white-space: nowrap; width: 1%; padding-left: 10px !important; }
+.mx-src a { font-size: 12px; color: var(--accent); text-decoration: none; }
+.mx-src a:hover { text-decoration: underline; }
+.mx-date {
+  display: block; font-size: 10.5px; color: var(--muted); margin-top: 2px;
+  font-family: var(--mono); font-variant-numeric: tabular-nums;
+}
+
+/* 过期行：整行降一点对比，但不清零——过期内容是「可能不成立」，不是「不存在」 */
+.mx-table tr.mx-old .mx-name { color: var(--secondary); }
+.mx-table tr.mx-old .mx-date { color: var(--accent); }
+
+.mx-desc { font-size: 12.5px; color: var(--muted); margin: 2px 0 0; max-width: 68ch; }
+.mx-foot { font-size: 12px; color: var(--muted); margin-top: 14px; }
+.mx-foot code { font-family: var(--mono); font-size: 11.5px; }
+
+/* ===== /ai/ 四路对照表在窄屏：横向滚动而不是压缩列宽 ===== */
+.ai-routes { overflow-x: auto; }
+.ai-routes .cmp-table { min-width: 620px; }

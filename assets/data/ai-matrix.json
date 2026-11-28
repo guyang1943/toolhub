@@ -1,0 +1,331 @@
+{
+  "updated": "2026-11-28",
+  "note": "能力矩阵数据。改这里之前先读 assets/lib/ai-matrix.js 顶部那三条规矩：三态不许退化成两态、每条必须有 source、过期的只标注不删除。",
+  "groups": [
+    {
+      "id": "agent",
+      "title": "编码与通用 Agent",
+      "desc": "这一类是「你在哪儿跟模型说话」。最该先看的是「自带 Key」与「开源」——它们决定你在不想付订阅的时候，能不能换个模型接着用。这一组的问号也最多：多数产品的文档只写功能，不写「不支持什么」。"
+    },
+    {
+      "id": "mcp",
+      "title": "MCP 客户端与服务端",
+      "desc": "这些不是「AI 产品」，是让 Agent 能读文件、开浏览器、查数据库的那一层。它们的价值顺序和上面相反：先看「开源」与「免费档」——服务端跑在你自己机器上，数据才不出门。"
+    },
+    {
+      "id": "engine",
+      "title": "本地推理引擎",
+      "desc": "自己跑模型的那一层。这一组的「本地模型」全是 ✓，所以真正要比的是「无界面」（能不能进脚本）、「免费档」与「开源」——以及文档里没写、只能实测的吞吐。"
+    }
+  ],
+  "entries": [
+    {
+      "id": "claude-code",
+      "name": "Claude Code",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": false, "freeTier": "?", "multiAgent": "?", "headless": "?" },
+      "note": "官方文档只核到 MCP；其余项留问号，没核到不等于没有",
+      "source": "https://code.claude.com/docs/en/mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "claude mcp add --transport http/stdio; .mcp.json 的 mcpServers，三种 scope"
+    },
+    {
+      "id": "codex-cli",
+      "name": "Codex CLI",
+      "group": "agent",
+      "attrs": { "mcp": "?", "localModel": "?", "ownKey": true, "openSource": true, "freeTier": "?", "multiAgent": "?", "headless": "?" },
+      "note": "Apache-2.0；可用 API key；README 只讲安装与登录",
+      "source": "https://raw.githubusercontent.com/openai/codex/main/README.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "licensed under the Apache-2.0 License; You can also use Codex with an API key"
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": false, "freeTier": "?", "multiAgent": "?", "headless": "?" },
+      "note": "闭源；MCP 支持三种传输；自带 Key 那一页没写",
+      "source": "https://cursor.com/docs/context/mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "Create .cursor/mcp.json; stdio/SSE/Streamable HTTP 三种传输"
+    },
+    {
+      "id": "copilot-cli",
+      "name": "GitHub Copilot CLI",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": "?", "freeTier": "?", "multiAgent": "?", "headless": true },
+      "note": "随附 GitHub 自家 MCP 服务端；无 BYOK 或本地端点说明",
+      "source": "https://raw.githubusercontent.com/github/copilot-cli/main/README.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "ships with GitHub's MCP server; supports custom MCP servers; headless server"
+    },
+    {
+      "id": "gemini-cli",
+      "name": "Gemini CLI",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": true, "openSource": true, "freeTier": false, "multiAgent": "?", "headless": true },
+      "note": "官方已取消免费档；Apache-2.0；gemini -p 可脚本化",
+      "source": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/README.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "No free tier or Google AI plans; ~/.gemini/settings.json; gemini -p; Apache 2.0"
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": true, "freeTier": "?", "multiAgent": true, "headless": true },
+      "note": "Apache-2.0；能接 Ollama / LM Studio；有 Multi-Agent Teams",
+      "source": "https://raw.githubusercontent.com/cline/cline/main/README.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "Ollama / LM Studio; Any OpenAI-compatible API; Apache 2.0; Multi-Agent Teams; fully headless"
+    },
+    {
+      "id": "zed",
+      "name": "Zed",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": true, "freeTier": "?", "multiAgent": true, "headless": "?" },
+      "note": "GPL-3.0；并行 agent 指多线程，不是主从委派",
+      "source": "https://zed.dev/docs/assistant/assistant",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "built-in tools, profiles, skills ... and MCP servers; local models; provider API keys; Parallel Agents"
+    },
+    {
+      "id": "continue",
+      "name": "Continue",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": true, "freeTier": "?", "multiAgent": "?", "headless": "?" },
+      "note": "Apache-2.0；MCP 只在 docs 页写明；README 已归档只读",
+      "source": "https://docs.continue.dev/customize/mcp-tools",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "MCP servers let Continue connect to external tools; Apache 2.0"
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": "?", "freeTier": "?", "multiAgent": "?", "headless": "?" },
+      "note": "能探本机 Ollama / LM Studio；开源许可未核实",
+      "source": "https://opencode.ai/docs/providers/",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "probes http://127.0.0.1:11434; LM Studio 127.0.0.1:1234/v1; custom baseURL"
+    },
+    {
+      "id": "aider",
+      "name": "Aider",
+      "group": "agent",
+      "attrs": { "mcp": false, "localModel": true, "ownKey": true, "openSource": true, "freeTier": "?", "multiAgent": "?", "headless": true },
+      "note": "不支持 MCP；architect 是两个模型分工，不是子代理",
+      "source": "https://aider.chat/docs/",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "文档全目录无 MCP 条目; Ollama/LM Studio/OpenAI compatible; Scripting aider"
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf",
+      "group": "agent",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": "?", "freeTier": "?", "multiAgent": true, "headless": "?" },
+      "note": "文档已并入 Devin Desktop；MCP 配置在 .devin/ 下",
+      "source": "https://docs.windsurf.com/windsurf/cascade/mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "MCP servers configured in .devin/mcp_config.json; Subagents"
+    },
+    {
+      "id": "trae",
+      "name": "Trae",
+      "group": "agent",
+      "attrs": { "mcp": "?", "localModel": "?", "ownKey": "?", "openSource": "?", "freeTier": "?", "multiAgent": true, "headless": "?" },
+      "note": "docs.trae.ai 全跳升级公告，只核到「多 agent 并行」",
+      "source": "https://docs.trae.ai/",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "orchestrate multiple agents to drive different tasks forward in parallel"
+    },
+    {
+      "id": "mcp-filesystem",
+      "name": "MCP Filesystem",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "官方参考服务端，npx 启动，默认 stdio；参数只有目录白名单，不需要凭据",
+      "source": "https://github.com/modelcontextprotocol/servers",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "npx -y @modelcontextprotocol/server-filesystem; Every server serves stdio by default"
+    },
+    {
+      "id": "playwright-mcp",
+      "name": "Playwright MCP",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "浏览器自动化服务端；npx 启动，--headless 可无界面",
+      "source": "https://github.com/microsoft/playwright-mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "npx @playwright/mcp; --headless run browser in headless mode"
+    },
+    {
+      "id": "github-mcp",
+      "name": "GitHub MCP Server",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "官方 GitHub MCP；要自带 PAT 或 OAuth；本地版 docker -i 走 stdio",
+      "source": "https://github.com/github/github-mcp-server",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "GITHUB_PERSONAL_ACCESS_TOKEN / OAuth; docker run -i"
+    },
+    {
+      "id": "mcp-postgres",
+      "name": "Postgres MCP Pro",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "crystaldba 版；要自带 DATABASE_URI；stdio / SSE / Streamable HTTP 都支持",
+      "source": "https://github.com/crystaldba/postgres-mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "supports stdio, SSE and Streamable HTTP; DATABASE_URI"
+    },
+    {
+      "id": "chrome-devtools-mcp",
+      "name": "Chrome DevTools MCP",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "Chrome 调试与自动化；npx 启动，另提供 CLI 与 --headless",
+      "source": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "available as an MCP server and as a CLI; npx -y chrome-devtools-mcp@latest"
+    },
+    {
+      "id": "context7",
+      "name": "Context7",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "文档检索服务端；远程直连，带免费 key 可提高限额",
+      "source": "https://github.com/upstash/context7",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "free API key for higher rate limits; https://mcp.context7.com/mcp"
+    },
+    {
+      "id": "mcp-inspector",
+      "name": "MCP Inspector",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": "?", "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "调试客户端（Web / CLI / TUI）；--cli 模式可无界面",
+      "source": "https://github.com/modelcontextprotocol/inspector",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "CLI — a scriptable command-line client; npx @modelcontextprotocol/inspector --cli"
+    },
+    {
+      "id": "mcp-proxy",
+      "name": "mcp-proxy",
+      "group": "mcp",
+      "attrs": { "mcp": true, "localModel": "?", "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "stdio 与 Streamable HTTP 互转的网关；token 鉴权可选",
+      "source": "https://github.com/sparfenyuk/mcp-proxy",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "A bridge between Streamable HTTP and stdio MCP transports; API_ACCESS_TOKEN optional"
+    },
+    {
+      "id": "llama-cpp",
+      "name": "llama.cpp",
+      "group": "engine",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "llama-server 能挂 MCP 服务端（实验性，仅 stdio）",
+      "source": "https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "server can expose tools coming from MCP servers (stdio only)"
+    },
+    {
+      "id": "ollama",
+      "name": "Ollama",
+      "group": "engine",
+      "attrs": { "mcp": "?", "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "最省事的本地起步；REST 与 OpenAI 兼容层都在，MCP 文档里没有",
+      "source": "https://github.com/ollama/ollama/blob/main/README.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "Access the latest releases locally; Ollama has a REST API"
+    },
+    {
+      "id": "lm-studio",
+      "name": "LM Studio",
+      "group": "engine",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": "?", "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "0.3.17 起自己就是 MCP Host；图形界面之外还有 lms CLI",
+      "source": "https://lmstudio.ai/docs/app/mcp",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "Starting LM Studio 0.3.17, LM Studio acts as an MCP Host"
+    },
+    {
+      "id": "vllm",
+      "name": "vLLM",
+      "group": "engine",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "并发上来之后该换的那一层；Responses API 可直接挂 MCP 工具",
+      "source": "https://docs.vllm.ai/en/latest/examples/tool_calling/openai_responses_client_with_mcp_tools/",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "\"type\":\"mcp\",\"server_url\"; server with MCP tools enabled"
+    },
+    {
+      "id": "mlx",
+      "name": "MLX",
+      "group": "engine",
+      "attrs": { "mcp": "?", "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "Apple 芯片上的那条路（mlx-lm）；纯 Python 库，没有界面",
+      "source": "https://github.com/ml-explore/mlx-lm",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "generating text ... on Apple silicon with MLX"
+    },
+    {
+      "id": "sglang",
+      "name": "SGLang",
+      "group": "engine",
+      "attrs": { "mcp": "?", "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "自建 GPU 的高吞吐选择；文档索引里没有 MCP 条目",
+      "source": "https://docs.sglang.io/docs/get-started/quickstart.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "Start a model server ... sglang serve MODEL_PATH"
+    },
+    {
+      "id": "llamafile",
+      "name": "llamafile",
+      "group": "engine",
+      "attrs": { "mcp": "?", "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "一个文件双击就能跑；server 模式给 /v1 兼容接口",
+      "source": "https://docs.mozilla.ai/llamafile/using-llamafile/api.md",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "server mode ... OpenAI-compatible APIs under /v1"
+    },
+    {
+      "id": "textgen-webui",
+      "name": "text-generation-webui",
+      "group": "engine",
+      "attrs": { "mcp": true, "localModel": true, "ownKey": true, "openSource": true, "freeTier": true, "multiAgent": "?", "headless": true },
+      "note": "仓库已改名 oobabooga/textgen，AGPL-3.0；--nowebui 可无界面",
+      "source": "https://github.com/oobabooga/textgen",
+      "checkedAt": "2026-11-28",
+      "staleAfterDays": 180,
+      "evidence": "MCP servers are also supported; --nowebui"
+    }
+  ]
+}
